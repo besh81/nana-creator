@@ -12,6 +12,7 @@
 #include <nana/gui/place.hpp>
 #include "ctrls/property.h"
 #include "namemanager.h"
+#include "codegenerator.h"
 
 
 namespace ctrls
@@ -49,7 +50,7 @@ namespace ctrls
 		void update(properties_collection* properties);
 		void updatefield(nana::window child, const std::string& weight, const std::string& margin);
 
-		void generatecode(properties_collection* properties, std::vector<std::string>* decl, std::vector<std::string>* init);
+		void generatecode(properties_collection* properties, code_struct* cc);
 
 		std::string getdiv();
 

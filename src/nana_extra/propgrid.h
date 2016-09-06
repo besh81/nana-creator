@@ -327,7 +327,7 @@ namespace nana
 			};
 
 			struct scheme
-				: public widget_colors
+				: public widget_geometrics
 			{
 				unsigned max_header_width{ 3000 },     /// \todo how to implement some geometrical parameters ??
 					ext_w = 5;

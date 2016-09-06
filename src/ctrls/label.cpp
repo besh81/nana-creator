@@ -33,9 +33,32 @@ namespace ctrls
 		auto pw = nana::API::get_widget(parent());
 		bool inherited;
 		nana::color col;
+		
+		// format and caption
+		if(properties->property("format").as_bool())
+		{
+			try
+			{
+				caption(properties->property("caption").as_string());
+				format(true);
+			}
+			catch(...)
+			{
+				nana::msgbox m(0, CREATOR_NAME, nana::msgbox::ok);
+				m.icon(m.icon_warning);
+				m << "Errore formato!"; //TODO
+				m();
+
+				format(false);
+				caption(properties->property("caption").as_string());
+			}
+		}
+		else
+		{
+			format(false);
+			caption(properties->property("caption").as_string());
+		}
 		//
-		caption(properties->property("caption").as_string());
-		format(properties->property("format").as_bool());
 		enabled(properties->property("enabled").as_bool());
 		//
 		col = nana::to_color(properties->property("bgcolor").as_string(), inherited);
@@ -49,20 +72,42 @@ namespace ctrls
 	}
 
 
-	void label::generatecode(properties_collection* properties, std::vector<std::string>* decl, std::vector<std::string>* init)
+	void label::generatecode(properties_collection* properties, code_struct* cc)
 	{
-		if(decl)
-			decl->push_back("nana::label " + properties->property("name").as_string() + ";");
+		// headers
+		cc->hpps.push_back("#include <nana/gui/widgets/label.hpp>");
 
-		if(init)
-		{
-			std::string var = properties->property("name").as_string();
+		auto name = properties->property("name").as_string();
 
-			init->clear();
-			init->push_back("// " + var);
-			init->push_back(var + ".caption(\"" + properties->property("caption").as_string() + "\");");
-			init->push_back(var + ".format(" + properties->property("format").as_string() + ");");
-		}
+		// declaration
+		cc->decl.push_back("nana::label " + name + ";");
+
+		// init
+		cc->init.push_back("// " + name);
+		cc->init.push_back(name + ".create(" + cc->create + ");");
+		cc->init.push_back(name + ".caption(\"" + properties->property("caption").as_string() + "\");");
+		cc->init.push_back(name + ".format(" + properties->property("format").as_string() + ");");
+		cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+		// color
+		bool inherited;
+		std::string col;
+		// bg
+		col = properties->property("bgcolor").as_string();
+		nana::to_color(col, inherited);
+		if(!inherited)
+			cc->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+		// fg
+		col = properties->property("fgcolor").as_string();
+		nana::to_color(col, inherited);
+		if(!inherited)
+			cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+		// transparent
+		cc->init.push_back(name + ".transparent(" + properties->property("transparent").as_string("false") + ");");
+		// text align
+		cc->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties->property("halign").as_string() + "), static_cast<nana::align_v>(" + properties->property("valign").as_string() + "));");
+
+		// placement
+		cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
 	}
 
 
@@ -70,7 +115,6 @@ namespace ctrls
 	{
 		// properties - main
 		properties->append("type") = CTRL_LABEL;
-		properties->append("header") = "nana/gui/widgets/label.hpp";
 		properties->append("name") = name;
 		// common
 		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "Label";

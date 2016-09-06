@@ -328,7 +328,7 @@ namespace nana
 				void property_changed(const drawerbase::propertygrid::item_proxy& ip)
 				{
 					arg_propertygrid arg{ ip };
-					lister.wd_ptr()->events().property_changed.emit(arg);
+					lister.wd_ptr()->events().property_changed.emit(arg, lister.wd_ptr()->handle());
 				}
 
 
@@ -389,7 +389,7 @@ namespace nana
 
 				::nana::size items_area()
 				{
-					return { columns.get_min_width(0) + columns.get_min_width(1), lister.the_height_of_expanded() };
+					return { columns.get_min_width(0) + columns.get_min_width(1), static_cast<unsigned>(lister.the_height_of_expanded()) };
 				}
 
 
@@ -1062,7 +1062,7 @@ namespace nana
 				if(update)
 				{
 					refresh(graph);
-					API::lazy_refresh();
+					API::dev::lazy_refresh();
 				}
 			}
 
@@ -1073,7 +1073,7 @@ namespace nana
 					essence_->pointer_where.reset();
 
 					refresh(graph);
-					API::lazy_refresh();
+					API::dev::lazy_refresh();
 				}
 			}
 
@@ -1091,7 +1091,7 @@ namespace nana
 				{
 					essence_->adjust_scroll_value();
 					refresh(graph);
-					API::lazy_refresh();
+					API::dev::lazy_refresh();
 				}
 			}
 
@@ -1115,14 +1115,14 @@ namespace nana
 
 				essence_->adjust_scroll_life();
 				refresh(graph);
-				API::lazy_refresh();
+				API::dev::lazy_refresh();
 			}
 
 			void trigger::resized(graph_reference graph, const arg_resized&)
 			{
 				essence_->adjust_scroll_life();
 				refresh(graph);
-				API::lazy_refresh();
+				API::dev::lazy_refresh();
 			}
 
 			void trigger::key_press(graph_reference graph, const arg_keyboard& arg)
@@ -1142,7 +1142,7 @@ namespace nana
 					return;
 				}
 				refresh(graph);
-				API::lazy_refresh();
+				API::dev::lazy_refresh();
 				*/
 			}
 			//end class trigger

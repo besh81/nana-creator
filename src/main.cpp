@@ -104,7 +104,7 @@ public:
 		cpp.generate();
 
 		cpp.print(std::cout);
-		return true;
+		return cpp.save_file(filename);
 	}
 
 

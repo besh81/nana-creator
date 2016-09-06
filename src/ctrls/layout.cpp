@@ -117,18 +117,49 @@ namespace ctrls
 	}
 
 
-	void layout::generatecode(properties_collection* properties, std::vector<std::string>* decl, std::vector<std::string>* init)
+	void layout::generatecode(properties_collection* properties, code_struct* cc)
 	{
-		if(decl)
-			decl->push_back("nana::panel<false> " + properties->property("name").as_string() + ";");
+		// headers
+		cc->hpps.push_back("#include <nana/gui/place.hpp>");
+		if(!cc->place.empty())
+			cc->hpps.push_back("#include <nana/gui/widgets/panel.hpp>");
 
-		if(init)
+		auto name = properties->property("name").as_string();
+		
+		// declaration
+		if(!cc->place.empty())
 		{
-			std::string var = properties->property("name").as_string();
-
-			init->clear();
-			init->push_back("// " + var);
+			//if parent is not a panel panel (only panel has empty place) add a transparent panel
+			cc->decl.push_back("nana::panel<false> " + name + "_panel;");
 		}
+
+		cc->decl.push_back("nana::place " + name + "_place;");
+
+		// init
+		cc->init.push_back("// " + name);
+		if(!cc->place.empty())
+		{
+			cc->init.push_back(name + "_panel.create(" + cc->create + ");");
+			cc->init.push_back(name + "_place.bind(" + name + "_panel);");
+		}
+		else
+		{
+			cc->init.push_back(name + "_place.bind(" + cc->create + ");");
+		}
+		cc->init.push_back(name + "_place.div(\"" + getdiv() + "\");");
+
+		// placement
+		if(!cc->place.empty())
+			cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + "_panel;");
+
+		// collocate
+		if(cc->place.empty())
+			cc->init_post.push_back(name + "_place.collocate();");
+
+		// children
+		if(!cc->place.empty())
+			cc->create = name + "_panel";
+		cc->place = name + "_place";
 	}
 
 
@@ -136,7 +167,6 @@ namespace ctrls
 	{
 		// properties - main
 		properties->append("type") = CTRL_LAYOUT;
-		properties->append("header") = "nana/gui/widgets/panel.hpp";
 		properties->append("name") = name;
 		// common
 		properties->append("layout").label("Layout").category(CAT_COMMON).type(pg_type::choice).type_hints(std::vector<std::string>{ CITEM_HLAYOUT, CITEM_VLAYOUT }) = static_cast<int>(layout_orientation::horizontal);

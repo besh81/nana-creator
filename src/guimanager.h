@@ -88,8 +88,6 @@ public:
 	bool deserialize(pugi::xml_node* xml_parent);
 	bool deserialize(tree_node<control_struct>* node, pugi::xml_node* xml_parent);
 
-	bool generatecode(tree_node<control_struct>* node, std::vector<std::string>* decl, std::vector<std::string>* init);
-
 private:
 	bool _checksonship(const std::string& child, const std::string& parent);
 

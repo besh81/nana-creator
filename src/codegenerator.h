@@ -16,12 +16,28 @@
 #include "namemanager.h"
 
 
+
+struct code_struct
+{
+	std::vector<std::string> hpps;
+	std::vector<std::string> decl;
+	std::vector<std::string> init;
+	std::vector<std::string> init_post;
+
+	std::string create;
+	std::string place;
+
+	int field;
+};
+
+
 class codegenerator
 {
 public:
 	codegenerator();
 
 	bool load_file(const std::string& path);
+	bool save_file(const std::string& path);
 
 	bool generate();
 	bool generateOLD();
@@ -41,8 +57,7 @@ protected:
 	void _write_initfunc();
 	void _write_declarations();
 
-	void _generate(tree_node<control_struct>* node, const std::string& owner, const std::string& field);
-
+	void _generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field);
 
 
 	std::string			_buffer;			// files in memory
@@ -56,12 +71,13 @@ protected:
 	};
 	std::vector<tag>	_tags;				// tags positions
 	//
-	namemanager			_hpps;				// necessary headers
-	std::vector<std::string>	_declarations;		// members declarations
+	namemanager					_headers;		// necessary headers
+	std::vector<std::string>	_declarations;	// members declarations
 	std::vector<std::string>	_initfunc;
+	std::vector<std::string>	_initfunc_post;
 
 	std::string			_code;
-	int					_indent{ 0 };
+	size_t				_indent{ 0 };
 	
 
 	struct widget

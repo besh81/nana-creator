@@ -225,7 +225,7 @@ namespace drawerbase
 		{
 			essence_->adjust_scroll_life();
 			refresh(graph);
-			::nana::API::lazy_refresh();
+			::nana::API::dev::lazy_refresh();
 		}
 
 		void trigger::_m_draw_border()

@@ -10,6 +10,12 @@
 #include <streambuf>
 #include "codegenerator.h"
 #include "guimanager.h"
+////////////////////////////////
+#include "ctrls/layout.h"
+#include "ctrls/panel.h"
+#include "ctrls/button.h"
+#include "ctrls/label.h"
+#include "ctrls/textbox.h"
 
 
 #define BEGIN_TAG			"//<*"
@@ -38,13 +44,13 @@ bool codegenerator::load_file(const std::string& path)
 	if(stat(path.c_str(), &buf) == -1)
 		return false;
 
-	std::ifstream t(path.c_str());
+	std::ifstream f(path.c_str());
 
-	t.seekg(0, std::ios::end);
-	_buffer.reserve(static_cast<size_t>(t.tellg()));
-	t.seekg(0, std::ios::beg);
+	f.seekg(0, std::ios::end);
+	_buffer.reserve(static_cast<size_t>(f.tellg()));
+	f.seekg(0, std::ios::beg);
 
-	_buffer.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+	_buffer.assign((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
 
 	if(!_parse())
 	{
@@ -55,14 +61,26 @@ bool codegenerator::load_file(const std::string& path)
 	return true;
 }
 
+bool codegenerator::save_file(const std::string& path)
+{
+	std::ofstream t(path.c_str());
+
+	t << _buffer;
+
+	return true;
+}
+
+
 bool codegenerator::generate()
 {
-	_hpps.clear();
+	_headers.clear();
 	_declarations.clear();
 	_initfunc.clear();
 	
-	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "");
+	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
 
+
+	// replace code between tags
 	_indent = 0;
 	while(1)
 	{
@@ -203,7 +221,7 @@ void codegenerator::_write_line(const std::string& line, bool endl)
 	else
 	{
 		// indent
-		for(int i = _indent; i; --i)
+		for(size_t i = _indent; i; --i)
 			ln.append("\t");
 		// line
 		ln.append(line);
@@ -238,9 +256,9 @@ void codegenerator::_write_headers()
 			_indent = i.indent;
 
 			_write_line();
-			std::vector<std::string> hpps = _hpps.getlist();
+			std::vector<std::string> hpps = _headers.getlist();
 			for(auto it = hpps.begin(); it != hpps.end(); ++it)
-				_write_line("#include <" + *it + ">");
+				_write_line(*it);
 			_write_line("", false);
 
 			_buffer.replace(i.begin, i.end - i.begin, _code);
@@ -281,6 +299,9 @@ void codegenerator::_write_initfunc()
 			++_indent;
 			for(auto it = _initfunc.begin(); it != _initfunc.end(); ++it)
 				_write_line(*it);
+			_write_line();
+			for(auto it = _initfunc_post.begin(); it != _initfunc_post.end(); ++it)
+				_write_line(*it);
 			--_indent;
 			_write_line("}");
 			_write_line("", false);
@@ -312,10 +333,10 @@ void codegenerator::_write_declarations()
 
 bool codegenerator::generateOLD()
 {
-	_hpps.clear();
+	_headers.clear();
 	_indent = 0;
 
-	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "");
+	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
 
 
 	//---- file header - START
@@ -325,7 +346,7 @@ bool codegenerator::generateOLD()
 	_write_line();
 
 	//---- c++ headers - START
-	std::vector<std::string> hpps = _hpps.getlist();
+	std::vector<std::string> hpps = _headers.getlist();
 	for(auto it = hpps.begin(); it != hpps.end(); ++it)
 		_write_line("#include <" + *it + ">");
 	//---- c++ headers - END
@@ -426,71 +447,56 @@ bool codegenerator::generateOLD()
 }
 
 
-void codegenerator::_generate(tree_node<control_struct>* node, const std::string& owner, const std::string& field)
+void codegenerator::_generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field)
 {
 	if(!node)
 		return;
 
-	std::string owner_ = owner;
-	std::string field_ = field;
-
 	auto attr = &node->value->properties;
 
-	// headers
-	_hpps.add(attr->property("header").as_string());
+	code_struct cc;
+	cc.create = create;
+	cc.place = place;
+	cc.field = field;
 
+	auto ctrl = node->value;
 
-	std::vector<std::string> decl;
-	std::vector<std::string> init;
-
-	if(attr->property("mainclass").as_bool())
-		g_gui_mgr.generatecode(node, 0, &init);
-	else
-		g_gui_mgr.generatecode(node, &decl, &init);
-
-	for(auto i : decl)
-		_declarations.push_back(i);
-	for(auto i : init)
-		_initfunc.push_back(i);
-
-	/*std::string type = attr->property("type").as_string();
+	auto type = ctrl->properties.property("type").as_string();
 	if(type == CTRL_LAYOUT)
 	{
-		/*auto parent_attr = node->owner->value->properties;
-		if(parent_attr.property("type").as_string() == CTRL_PANEL)
-		{
-			owner_ = parent_attr.property("name").as_string();
-		}
-		else
-		{
-			_widgets.push_back(widget{ attr->property("name").as_string(), "panel<false>", owner_, field_ });
-			owner_ = attr->property("name").as_string();
-		}
-
-		field_ = "_place_" + owner_;
-
-		_widgets.push_back(widget{ field_, "place", owner_, static_cast<ctrls::layout*>(node->value->nanawdg.get())->getdiv() });
+		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
 	}
-	else
+	else if(type == CTRL_PANEL)
 	{
-		if(attr->property("mainclass").as_bool())
-			_mainwidget = widget{ attr->property("name").as_string(), type, "", "" };
-		else
-		{
-			_widgets.push_back(widget{ attr->property("name").as_string(), type, owner_, field_ });
+		static_cast<ctrls::panel*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
+	else if(type == CTRL_BUTTON)
+	{
+		static_cast<ctrls::button*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
+	else if(type == CTRL_LABEL)
+	{
+		static_cast<ctrls::label*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
+	else if(type == CTRL_TEXTBOX)
+	{
+		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
 
-			if(attr->property("type").as_string() == CTRL_PANEL)
-			{
-				// this become the owner for the children
-				owner_ = attr->property("name").as_string();
-			}
-		}
-	}*/
+
+	for(auto i : cc.hpps)
+		_headers.add(i);
+	for(auto i : cc.decl)
+		_declarations.push_back(i);
+	for(auto i : cc.init)
+		_initfunc.push_back(i);
+	for(auto i : cc.init_post)
+		_initfunc_post.push_back(i);
 
 	// children
-	_generate(node->child, owner_, field_);
+	_generate(node->child, cc.create, cc.place, 1);
 	// siblings
-	_generate(node->next, owner, field);
+	_generate(node->next, create, place, field + 1);
 }
 
 

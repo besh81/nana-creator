@@ -449,36 +449,6 @@ bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* 
 }
 
 
-bool guimanager::generatecode(tree_node<control_struct>* node, std::vector<std::string>* decl, std::vector<std::string>* init)
-{
-	auto ctrl = node->value;
-
-	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT)
-	{
-		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, decl, init);
-	}
-	else if(type == CTRL_PANEL)
-	{
-		static_cast<ctrls::panel*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, decl, init);
-	}
-	else if(type == CTRL_BUTTON)
-	{
-		static_cast<ctrls::button*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, decl, init);
-	}
-	else if(type == CTRL_LABEL)
-	{
-		static_cast<ctrls::label*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, decl, init);
-	}
-	else if(type == CTRL_TEXTBOX)
-	{
-		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, decl, init);
-	}
-
-	return true;
-}
-
-
 bool guimanager::_checksonship(const std::string& child, const std::string& parent)
 {
 	if(parent == CTRL_LAYOUT)

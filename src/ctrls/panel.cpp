@@ -72,9 +72,11 @@ namespace ctrls
 		if(properties->property("mainclass").as_bool())
 			pw = nana::API::get_widget(pw->parent());
 
+		//
+		enabled(properties->property("enabled").as_bool());
+		//
 		col = nana::to_color(properties->property("bgcolor").as_string(), inherited);
 		bgcolor(inherited ? pw->bgcolor() : col);
-
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
 
@@ -83,18 +85,63 @@ namespace ctrls
 	}
 
 
-	void panel::generatecode(properties_collection* properties, std::vector<std::string>* decl, std::vector<std::string>* init)
+	void panel::generatecode(properties_collection* properties, code_struct* cc)
 	{
-		if(decl)
-			decl->push_back("nana::panel<true> " + properties->property("name").as_string() + ";"); //todo: controllare hasbackground
+		// headers
+		cc->hpps.push_back("#include <nana/gui/widgets/panel.hpp>");
 
-		if(init)
+		auto name = properties->property("name").as_string();
+
+		// declaration
+		if(!properties->property("mainclass").as_bool())
+			cc->decl.push_back("nana::panel<true> " + name + ";"); //todo: controllare hasbackground
+
+		// init
+		cc->init.push_back("// " + name);
+		if(!properties->property("mainclass").as_bool())
 		{
-			std::string var = properties->property("name").as_string();
-
-			init->clear();
-			init->push_back("// " + var);
+			cc->init.push_back(name + ".create(" + cc->create + ");");
+			cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+			// color
+			bool inherited;
+			std::string col;
+			// bg
+			col = properties->property("bgcolor").as_string();
+			nana::to_color(col, inherited);
+			if(!inherited)
+				cc->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+			// fg
+			col = properties->property("fgcolor").as_string();
+			nana::to_color(col, inherited);
+			if(!inherited)
+				cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
 		}
+		else
+		{
+			cc->init.push_back("enabled(" + properties->property("enabled").as_string() + ");");
+			// color
+			bool inherited;
+			std::string col;
+			// bg
+			col = properties->property("bgcolor").as_string();
+			nana::to_color(col, inherited);
+			if(!inherited)
+				cc->init.push_back(name + "bgcolor(nana::color(" + col + "));");
+			// fg
+			col = properties->property("fgcolor").as_string();
+			nana::to_color(col, inherited);
+			if(!inherited)
+				cc->init.push_back(name + "fgcolor(nana::color(" + col + "));");
+		}
+
+		// placement
+		if(!properties->property("mainclass").as_bool())
+			cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
+
+		// children
+		if(!properties->property("mainclass").as_bool())
+			cc->create = name;
+		cc->place = "";
 	}
 
 
@@ -102,10 +149,10 @@ namespace ctrls
 	{
 		// properties - main
 		properties->append("type") = CTRL_PANEL;
-		properties->append("header") = "nana/gui/widgets/panel.hpp";
 		properties->append("name") = name;
 		// common
 		//properties->append(property_t{ "hasbackground", "", "Has Background", "", pg_type::check }) = true;
+		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = "true";
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "[inherited],200,200,200";
 		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "[inherited],0,0,0";

@@ -10,6 +10,7 @@
 
 #include <nana/gui/widgets/label.hpp>
 #include "ctrls/property.h"
+#include "codegenerator.h"
 
 
 namespace ctrls
@@ -23,7 +24,7 @@ namespace ctrls
 
 		void update(properties_collection* properties);
 
-		void generatecode(properties_collection* properties, std::vector<std::string>* decl, std::vector<std::string>* init);
+		void generatecode(properties_collection* properties, code_struct* cc);
 
 
 	protected:
