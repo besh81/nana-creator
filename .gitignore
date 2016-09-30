@@ -241,3 +241,4 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 nana_creator.VC.db
+icons/Thumbs.db

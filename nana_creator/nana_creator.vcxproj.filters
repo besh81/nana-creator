@@ -84,6 +84,12 @@
     <ClCompile Include="..\src\nana_extra\pg_items.cpp">
       <Filter>Source Files\nana_extra</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ctrls\combox.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ctrls\spinbox.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\TODO.txt" />
@@ -154,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="..\src\nana_extra\propgrid.h">
       <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ctrls\combox.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ctrls\spinbox.h">
+      <Filter>Header Files\ctrls</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

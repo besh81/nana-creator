@@ -46,6 +46,11 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	auto & img_pnl = _assets.icon(CTRL_PANEL);
 	img_pnl.normal.open("icons/panel_dark.png");
 
+	auto & img_com = _assets.icon(CTRL_COMBOX);
+	img_com.normal.open("icons/combox_dark.png");
+
+	auto & img_spn = _assets.icon(CTRL_SPINBOX);
+	img_spn.normal.open("icons/spinbox_dark.png");
 
 	// events
 	_assets.events().selected([this](const nana::arg_treebox & arg)
@@ -68,8 +73,10 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	//
 	set = _assets.insert("controls", "Controls").value(cursor_state{ cursor_action::select });
 	set.append("controls/button", CTRL_BUTTON_NAME, cursor_state{ cursor_action::add, CTRL_BUTTON }).icon(CTRL_BUTTON);
+	set.append("controls/combox", CTRL_COMBOX_NAME, cursor_state{ cursor_action::add, CTRL_COMBOX }).icon(CTRL_COMBOX);
 	set.append("controls/label", CTRL_LABEL_NAME, cursor_state{ cursor_action::add, CTRL_LABEL }).icon(CTRL_LABEL);
 	set.append("controls/panel", CTRL_PANEL_NAME, cursor_state{ cursor_action::add, CTRL_PANEL }).icon(CTRL_PANEL);
+	set.append("controls/spinbox", CTRL_SPINBOX_NAME, cursor_state{ cursor_action::add, CTRL_SPINBOX }).icon(CTRL_SPINBOX);
 	set.append("controls/textbox", CTRL_TEXTBOX_NAME, cursor_state{ cursor_action::add, CTRL_TEXTBOX }).icon(CTRL_TEXTBOX);
 	set.expand(true);
 

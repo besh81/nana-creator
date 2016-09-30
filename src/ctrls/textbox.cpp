@@ -17,7 +17,7 @@ namespace ctrls
 
 	//textbox
 	textbox::textbox(nana::window wd, properties_collection* properties, const std::string& name)
-		: nana::textbox(wd, CTRL_TEXTBOX_NAME)
+		: nana::textbox(wd, "")
 	{
 		nana::API::ignore_mouse_focus(*this, false);
 		nana::API::effects_edge_nimbus(*this, nana::effects::edge_nimbus::none);
@@ -35,12 +35,18 @@ namespace ctrls
 		nana::color col;
 
 		//
+		caption(properties->property("caption").as_string());
+		tip_string(properties->property("tip_string").as_string());
+		editable(properties->property("editable").as_bool());
 		enabled(properties->property("enabled").as_bool());
 		//
 		col = nana::to_color(properties->property("bgcolor").as_string(), inherited);
 		bgcolor(inherited ? pw->bgcolor() : col);
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
+		//
+		line_wrapped(properties->property("line_wrapped").as_bool());
+		multi_lines(properties->property("multi_lines").as_bool());
 	}
 
 
@@ -57,6 +63,9 @@ namespace ctrls
 		// init
 		cc->init.push_back("// " + name);
 		cc->init.push_back(name + ".create(" + cc->create + ");");
+		cc->init.push_back(name + ".caption(\"" + properties->property("caption").as_string() + "\");");
+		cc->init.push_back(name + ".tip_string(\"" + properties->property("tip_string").as_string() + "\");");
+		cc->init.push_back(name + ".editable(" + properties->property("editable").as_string() + ");");
 		cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
 		// color
 		bool inherited;
@@ -71,6 +80,9 @@ namespace ctrls
 		nana::to_color(col, inherited);
 		if(!inherited)
 			cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+		//
+		cc->init.push_back(name + ".line_wrapped(" + properties->property("line_wrapped").as_string() + ");");
+		cc->init.push_back(name + ".multi_lines(" + properties->property("multi_lines").as_string() + ");");
 
 		// placement
 		cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
@@ -83,11 +95,15 @@ namespace ctrls
 		properties->append("type") = CTRL_TEXTBOX;
 		properties->append("name") = name;
 		// common
-		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = "true";
+		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
+		properties->append("tip_string").label("Tip").category(CAT_COMMON).type(pg_type::string) = "";
+		properties->append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = editable();
+		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 		// appearance
-		//properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "255,255,255";
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);
-		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "0,0,0";
+		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), false);
+		properties->append("line_wrapped").label("Line Wrapped").category(CAT_APPEARANCE).type(pg_type::check) = line_wrapped();
+		properties->append("multi_lines").label("Multiple Lines").category(CAT_APPEARANCE).type(pg_type::check) = multi_lines();
 		// layout
 		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;

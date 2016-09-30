@@ -10,6 +10,8 @@
 #include "ctrls/button.h"
 #include "ctrls/label.h"
 #include "ctrls/textbox.h"
+#include "ctrls/combox.h"
+#include "ctrls/spinbox.h"
 #include "guimanager.h"
 #include "style.h"
 
@@ -138,6 +140,14 @@ tree_node<control_struct>* guimanager::addcommonctrl(tree_node<control_struct>* 
 	else if(type == CTRL_TEXTBOX)
 	{
 		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::textbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_TEXTBOX) : name));
+	}
+	else if(type == CTRL_COMBOX)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::combox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_COMBOX) : name));
+	}
+	else if(type == CTRL_SPINBOX)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::spinbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_SPINBOX) : name));
 	}
 	else
 		return 0;
@@ -555,6 +565,14 @@ void guimanager::_updatectrl(tree_node<control_struct>* node, bool update_owner,
 	else if(type == CTRL_TEXTBOX)
 	{
 		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_COMBOX)
+	{
+		static_cast<ctrls::combox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_SPINBOX)
+	{
+		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
 	}
 
 	// update parent ctrl

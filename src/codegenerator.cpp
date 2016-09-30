@@ -16,6 +16,8 @@
 #include "ctrls/button.h"
 #include "ctrls/label.h"
 #include "ctrls/textbox.h"
+#include "ctrls/combox.h"
+#include "ctrls/spinbox.h"
 
 
 #define BEGIN_TAG			"//<*"
@@ -481,6 +483,14 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 	else if(type == CTRL_TEXTBOX)
 	{
 		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
+	else if(type == CTRL_COMBOX)
+	{
+		static_cast<ctrls::combox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+	}
+	else if(type == CTRL_SPINBOX)
+	{
+		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
 	}
 
 

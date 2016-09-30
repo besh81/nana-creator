@@ -46,6 +46,12 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	auto & img_txt = _objects.icon(CTRL_TEXTBOX);
 	img_txt.normal.open("icons/textbox_dark.png");
 
+	auto & img_com = _objects.icon(CTRL_COMBOX);
+	img_com.normal.open("icons/combox_dark.png");
+
+	auto & img_spn = _objects.icon(CTRL_SPINBOX);
+	img_spn.normal.open("icons/spinbox_dark.png");
+
 
 	// context menu
 	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)

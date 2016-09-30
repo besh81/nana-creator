@@ -33,7 +33,10 @@
 #define CTRL_LABEL_NAME			"Label"
 #define CTRL_TEXTBOX			"textbox"
 #define CTRL_TEXTBOX_NAME		"Textbox"
-
+#define CTRL_COMBOX				"combox"
+#define CTRL_COMBOX_NAME		"Combox"
+#define CTRL_SPINBOX			"spinbox"
+#define CTRL_SPINBOX_NAME		"Spinbox"
 
 
 // project file
@@ -47,6 +50,8 @@
 #define NODE_LABEL				CTRL_LABEL
 #define NODE_TEXTBOX			CTRL_TEXTBOX
 #define NODE_PANEL				CTRL_PANEL
+#define NODE_COMBOX				CTRL_COMBOX
+#define NODE_SPINBOX			CTRL_SPINBOX
 
 
 

@@ -131,10 +131,12 @@
     <ClCompile Include="..\src\assetspanel.cpp" />
     <ClCompile Include="..\src\codegenerator.cpp" />
     <ClCompile Include="..\src\ctrls\button.cpp" />
+    <ClCompile Include="..\src\ctrls\combox.cpp" />
     <ClCompile Include="..\src\ctrls\label.cpp" />
     <ClCompile Include="..\src\ctrls\layout.cpp" />
     <ClCompile Include="..\src\ctrls\panel.cpp" />
     <ClCompile Include="..\src\ctrls\property.cpp" />
+    <ClCompile Include="..\src\ctrls\spinbox.cpp" />
     <ClCompile Include="..\src\ctrls\textbox.cpp" />
     <ClCompile Include="..\src\guimanager.cpp" />
     <ClCompile Include="..\src\main.cpp" />
@@ -155,11 +157,13 @@
     <ClInclude Include="..\src\codegenerator.h" />
     <ClInclude Include="..\src\config.h" />
     <ClInclude Include="..\src\ctrls\button.h" />
+    <ClInclude Include="..\src\ctrls\combox.h" />
     <ClInclude Include="..\src\ctrls\ctrl.h" />
     <ClInclude Include="..\src\ctrls\label.h" />
     <ClInclude Include="..\src\ctrls\layout.h" />
     <ClInclude Include="..\src\ctrls\panel.h" />
     <ClInclude Include="..\src\ctrls\property.h" />
+    <ClInclude Include="..\src\ctrls\spinbox.h" />
     <ClInclude Include="..\src\ctrls\textbox.h" />
     <ClInclude Include="..\src\guimanager.h" />
     <ClInclude Include="..\src\lock_guard.h" />

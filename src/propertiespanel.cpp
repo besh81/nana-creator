@@ -140,6 +140,14 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	{
 		_img.open("icons/textbox_dark.png");
 	}
+	else if(type == CTRL_COMBOX)
+	{
+		_img.open("icons/combox_dark.png");
+	}
+	else if(type == CTRL_SPINBOX)
+	{
+		_img.open("icons/spinbox_dark.png");
+	}
 	else
 	{
 		type = "UNKNOWN !!!";

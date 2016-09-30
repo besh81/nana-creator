@@ -152,10 +152,10 @@ namespace ctrls
 		properties->append("name") = name;
 		// common
 		//properties->append(property_t{ "hasbackground", "", "Has Background", "", pg_type::check }) = true;
-		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = "true";
+		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 		// appearance
-		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "[inherited],200,200,200";
-		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = "[inherited],0,0,0";
+		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), true);
+		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), true);
 		// layout
 		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
