@@ -80,28 +80,44 @@ namespace ctrls
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
 
+		//
+		if(properties->property("mainclass").as_bool())
+			size(nana::size(properties->property("width").as_uint(), properties->property("height").as_uint()));
 
 		_place.collocate();
 	}
 
 
-	void panel::generatecode(properties_collection* properties, code_struct* cc)
+	void panel::generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci)
 	{
-		// headers
-		cc->hpps.push_back("#include <nana/gui/widgets/panel.hpp>");
-
 		auto name = properties->property("name").as_string();
+
+		// mainclass definition
+		if(properties->property("mainclass").as_bool())
+		{
+			cd->mainclass = name;
+			cd->mainclass_base = "nana::panel<true>"; //TODO: controllare hasbackground
+			cd->mainclass_ctor = "(nana::window wd, bool visible = true)";
+			cd->mainclass_base_ctor = "(wd, visible)";
+
+			// filename
+			cd->filename = properties->property("filename").as_string();
+		}
+
+
+		// headers
+		cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 
 		// declaration
 		if(!properties->property("mainclass").as_bool())
-			cc->decl.push_back("nana::panel<true> " + name + ";"); //todo: controllare hasbackground
+			cd->decl.push_back("nana::panel<true> " + name + ";"); //TODO: controllare hasbackground
 
 		// init
-		cc->init.push_back("// " + name);
+		cd->init.push_back("// " + name);
 		if(!properties->property("mainclass").as_bool())
 		{
-			cc->init.push_back(name + ".create(" + cc->create + ");");
-			cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+			cd->init.push_back(name + ".create(" + ci->create + ");");
+			cd->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
 			// color
 			bool inherited;
 			std::string col;
@@ -109,16 +125,16 @@ namespace ctrls
 			col = properties->property("bgcolor").as_string();
 			nana::to_color(col, inherited);
 			if(!inherited)
-				cc->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+				cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
 			// fg
 			col = properties->property("fgcolor").as_string();
 			nana::to_color(col, inherited);
 			if(!inherited)
-				cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+				cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
 		}
 		else
 		{
-			cc->init.push_back("enabled(" + properties->property("enabled").as_string() + ");");
+			cd->init.push_back("enabled(" + properties->property("enabled").as_string() + ");");
 			// color
 			bool inherited;
 			std::string col;
@@ -126,22 +142,22 @@ namespace ctrls
 			col = properties->property("bgcolor").as_string();
 			nana::to_color(col, inherited);
 			if(!inherited)
-				cc->init.push_back(name + "bgcolor(nana::color(" + col + "));");
+				cd->init.push_back(name + "bgcolor(nana::color(" + col + "));");
 			// fg
 			col = properties->property("fgcolor").as_string();
 			nana::to_color(col, inherited);
 			if(!inherited)
-				cc->init.push_back(name + "fgcolor(nana::color(" + col + "));");
+				cd->init.push_back(name + "fgcolor(nana::color(" + col + "));");
 		}
 
 		// placement
 		if(!properties->property("mainclass").as_bool())
-			cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
+			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
 
 		// children
 		if(!properties->property("mainclass").as_bool())
-			cc->create = name;
-		cc->place = "";
+			ci->create = name;
+		ci->place = "";
 	}
 
 
@@ -150,6 +166,11 @@ namespace ctrls
 		// properties - main
 		properties->append("type") = CTRL_PANEL;
 		properties->append("name") = name;
+		// project
+		if(properties->property("mainclass").as_bool())
+		{
+			properties->append("filename").label("File Name").category(CAT_CPPCODE).type(pg_type::string) = DEFAULT_FILENAME;
+		}
 		// common
 		//properties->append(property_t{ "hasbackground", "", "Has Background", "", pg_type::check }) = true;
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
@@ -157,8 +178,16 @@ namespace ctrls
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), true);
 		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), true);
 		// layout
-		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
-		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
+		if(!properties->property("mainclass").as_bool())
+		{
+			properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
+			properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
+		}
+		else
+		{
+			properties->append("width").label("Width").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_W;
+			properties->append("height").label("Height").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_H;
+		}
 	}
 
 

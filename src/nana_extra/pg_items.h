@@ -8,6 +8,7 @@
 #ifndef NANA_CREATOR_PG_ITEMS_H
 #define NANA_CREATOR_PG_ITEMS_H
 
+#include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
@@ -48,8 +49,8 @@ namespace nana
 
 		mutable ::nana::textbox	txt_;
 	};
-			
-			
+
+
 	/// class pg_string_int
 	class pg_string_int
 		: public pg_string
@@ -203,6 +204,33 @@ namespace nana
 		bool			inherited_{ false };
 		bool			inherited_value_{ false };
 	};
+
+
+	/// class pg_collection
+	class pg_collection
+		: public pgitem
+	{
+	public:
+		pg_collection() = default;
+
+		pg_collection(const std::string& label, const std::string& value)
+			: pgitem(label, value)
+		{}
+
+		virtual void value(const std::string& value) override;
+		virtual std::string value() const override;
+
+		virtual void set_accept(std::function<bool(wchar_t)> f);
+
+	protected:
+		virtual void create(window wd) override;
+
+		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+
+		mutable ::nana::textbox	txt_;
+		mutable ::nana::button	btn_;
+	};
+
 }//end namespace nana
 
 #endif //NANA_CREATOR_PG_ITEMS_H

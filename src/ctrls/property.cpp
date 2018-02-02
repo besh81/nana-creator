@@ -126,36 +126,42 @@ namespace ctrls
 
 	property_proxy& property_proxy::value(const char* value)
 	{
-		_prop->value = value;
+		if(_prop)
+			_prop->value = value;
 		return *this;
 	}
 	property_proxy& property_proxy::value(int value)
 	{
-		_prop->value = std::to_string(value);
+		if(_prop)
+			_prop->value = std::to_string(value);
 		return *this;
 	}
 
 	property_proxy& property_proxy::value(unsigned int value)
 	{
-		_prop->value = std::to_string(value);
+		if(_prop)
+			_prop->value = std::to_string(value);
 		return *this;
 	}
 
 	property_proxy& property_proxy::value(double value)
 	{
-		_prop->value = std::to_string(value);
+		if(_prop)
+			_prop->value = std::to_string(value);
 		return *this;
 	}
 
 	property_proxy& property_proxy::value(float value)
 	{
-		_prop->value = std::to_string(value);
+		if(_prop)
+			_prop->value = std::to_string(value);
 		return *this;
 	}
 
 	property_proxy& property_proxy::value(bool value)
 	{
-		_prop->value = value ? "true" : "false";
+		if(_prop)
+			_prop->value = value ? "true" : "false";
 		return *this;
 	}
 

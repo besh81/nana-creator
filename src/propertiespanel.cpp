@@ -148,6 +148,22 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	{
 		_img.open("icons/spinbox_dark.png");
 	}
+	else if(type == CTRL_LISTBOX)
+	{
+		_img.open("icons/listbox_dark.png");
+	}
+	else if(type == CTRL_CHECKBOX)
+	{
+		_img.open("icons/checkbox_dark.png");
+	}
+	else if(type == CTRL_DATECHOOSER)
+	{
+		_img.open("icons/datechooser_dark.png");
+	}
+	else if(type == CTRL_TOOLBAR)
+	{
+		_img.open("icons/toolbar_dark.png");
+	}
 	else
 	{
 		type = "UNKNOWN !!!";
@@ -205,6 +221,10 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
 		}
+		else if(prop.type() == ctrls::pg_type::collection)
+		{
+			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_collection(prop.label(), prop.value())));
+		}
 		else //nana::pg_type::string
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string(prop.label(), prop.value())));
@@ -214,8 +234,8 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	// set image, type and name
 	_pic.load(_img);
 	_type_txt.caption(type);
-	_name_txt.caption(_properties->property("name").as_string());
 	_name_txt.editable(true);
-	
+	_name_txt.caption(_properties->property("name").as_string());
+
 	_place.collocate();
 }

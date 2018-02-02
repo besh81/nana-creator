@@ -10,7 +10,8 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.2.0"
+#define CREATOR_VERSION			"0.3.0"
+
 
 
 // available controls
@@ -37,6 +38,15 @@
 #define CTRL_COMBOX_NAME		"Combox"
 #define CTRL_SPINBOX			"spinbox"
 #define CTRL_SPINBOX_NAME		"Spinbox"
+#define CTRL_LISTBOX			"listbox"
+#define CTRL_LISTBOX_NAME		"Listbox"
+#define CTRL_CHECKBOX			"checkbox"
+#define CTRL_CHECKBOX_NAME		"Checkbox"
+#define CTRL_DATECHOOSER		"datechooser"
+#define CTRL_DATECHOOSER_NAME	"DateChooser"
+#define CTRL_TOOLBAR			"toolbar"
+#define CTRL_TOOLBAR_NAME		"Toolbar"
+
 
 
 // project file
@@ -52,11 +62,16 @@
 #define NODE_PANEL				CTRL_PANEL
 #define NODE_COMBOX				CTRL_COMBOX
 #define NODE_SPINBOX			CTRL_SPINBOX
+#define NODE_LISTBOX			CTRL_LISTBOX
+#define NODE_CHECKBOX			CTRL_CHECKBOX
+#define NODE_DATECHOOSER		CTRL_DATECHOOSER
+#define NODE_TOOLBAR			CTRL_TOOLBAR
 
 
 
 // categories
 //--------------------------------------------------------
+#define CAT_CPPCODE				"C++ Code"
 #define CAT_COMMON				"Common"
 #define CAT_APPEARANCE			"Appearance"
 #define CAT_LAYOUT				"Layout"
@@ -77,6 +92,15 @@
 // code-generator
 //--------------------------------------------------------
 #define CTRL_NAMESPACE			"nana::"
+#define DEFAULT_FILENAME		"code"
+
+
+
+// UI
+//--------------------------------------------------------
+#define MAIN_WDG_W				400
+#define MAIN_WDG_H				300
+
 
 
 #endif //NANA_CREATOR_CONFIG_H

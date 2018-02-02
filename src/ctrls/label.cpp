@@ -72,22 +72,22 @@ namespace ctrls
 	}
 
 
-	void label::generatecode(properties_collection* properties, code_struct* cc)
+	void label::generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci)
 	{
 		// headers
-		cc->hpps.push_back("#include <nana/gui/widgets/label.hpp>");
+		cd->hpps.add("#include <nana/gui/widgets/label.hpp>");
 
 		auto name = properties->property("name").as_string();
 
 		// declaration
-		cc->decl.push_back("nana::label " + name + ";");
+		cd->decl.push_back("nana::label " + name + ";");
 
 		// init
-		cc->init.push_back("// " + name);
-		cc->init.push_back(name + ".create(" + cc->create + ");");
-		cc->init.push_back(name + ".caption(\"" + properties->property("caption").as_string() + "\");");
-		cc->init.push_back(name + ".format(" + properties->property("format").as_string() + ");");
-		cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+		cd->init.push_back("// " + name);
+		cd->init.push_back(name + ".create(" + ci->create + ");");
+		cd->init.push_back(name + ".caption(\"" + properties->property("caption").as_string() + "\");");
+		cd->init.push_back(name + ".format(" + properties->property("format").as_string() + ");");
+		cd->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
 		// color
 		bool inherited;
 		std::string col;
@@ -95,19 +95,19 @@ namespace ctrls
 		col = properties->property("bgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cc->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+			cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
 		// fg
 		col = properties->property("fgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
 		// transparent
-		cc->init.push_back(name + ".transparent(" + properties->property("transparent").as_string("false") + ");");
+		cd->init.push_back(name + ".transparent(" + properties->property("transparent").as_string("false") + ");");
 		// text align
-		cc->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties->property("halign").as_string() + "), static_cast<nana::align_v>(" + properties->property("valign").as_string() + "));");
+		cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties->property("halign").as_string() + "), static_cast<nana::align_v>(" + properties->property("valign").as_string() + "));");
 
 		// placement
-		cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
+		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
 	}
 
 

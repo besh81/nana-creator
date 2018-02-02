@@ -24,7 +24,8 @@ namespace ctrls
 		check,
 		spin,
 		color,
-		color_inherited
+		color_inherited,
+		collection
 	};
 
 	struct property_t

@@ -17,13 +17,33 @@
 
 
 
-struct code_struct
+struct code_data_struct
 {
-	std::vector<std::string> hpps;
-	std::vector<std::string> decl;
-	std::vector<std::string> init;
-	std::vector<std::string> init_post;
+	namemanager					hpps;	// necessary headers
+	std::vector<std::string>	decl;	// members declarations
+	std::vector<std::string>	init;
+	std::vector<std::string>	init_post;
 
+	std::string					mainclass;
+	std::string					mainclass_ctor;
+	std::string					mainclass_base;
+	std::string					mainclass_base_ctor;
+	std::string					filename;
+
+	void clear()
+	{
+		hpps.clear();
+		decl.clear();
+		init.clear();
+		init_post.clear();
+
+		mainclass.clear();
+		filename = "";
+	}
+};
+
+struct code_info_struct
+{
 	std::string create;
 	std::string place;
 
@@ -36,13 +56,9 @@ class codegenerator
 public:
 	codegenerator();
 
-	bool load_file(const std::string& path);
-	bool save_file(const std::string& path);
+	bool generate(nana::window wd, const std::string& path = "");
 
-	bool generate();
-	bool generateOLD();
 	const std::string& getcode() const { return _code; }
-
 	void print(std::basic_ostream<char, std::char_traits<char> >& stream) const;
 
 protected:
@@ -50,17 +66,18 @@ protected:
 	bool _parse();
 
 	void _write_line(const std::string& line = "", bool endl = true);
-	void _write_file_header();
-	
-	void _write_headers();
-	void _write_init();
-	void _write_initfunc();
-	void _write_declarations();
+
+	void _write_headers_tag();
+	void _write_init_tag();
+	void _write_initfunc_tag();
+	void _write_declarations_tag();
+
+	bool _write_new_file();
+	bool _write_existing_file();
 
 	void _generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field);
 
 
-	std::string			_buffer;			// files in memory
 	//
 	struct tag
 	{
@@ -69,27 +86,15 @@ protected:
 		size_t			begin;
 		size_t			end;
 	};
-	std::vector<tag>	_tags;				// tags positions
+	std::vector<tag>	_tags;		// tags positions
 	//
-	namemanager					_headers;		// necessary headers
-	std::vector<std::string>	_declarations;	// members declarations
-	std::vector<std::string>	_initfunc;
-	std::vector<std::string>	_initfunc_post;
+	code_data_struct	_code_data;
 
-	std::string			_code;
+	std::string			_buffer;	// file in memory
+	std::string			_code;		// generated code to write
 	size_t				_indent{ 0 };
-	
 
-	struct widget
-	{
-		std::string		name;
-		std::string		type;
-		std::string		owner;
-		std::string		xxx;
-	};
-
-	widget				_mainwidget;
-	std::vector<widget>	_widgets;
+	std::string			_filename;
 };
 
 #endif //NANA_CREATOR_CODEGEN_H

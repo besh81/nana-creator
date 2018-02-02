@@ -25,7 +25,7 @@ namespace ctrls
 
 		void update(properties_collection* properties);
 
-		void generatecode(properties_collection* properties, code_struct* cc);
+		void generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci);
 
 		void prepareforinsert();
 		bool append(nana::window child);

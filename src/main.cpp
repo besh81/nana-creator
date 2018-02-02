@@ -95,16 +95,12 @@ public:
 	}
 
 
-	bool generate_cpp(const std::string& filename)
+	bool generate_cpp()
 	{
 		codegenerator cpp;
-
-		cpp.load_file(filename);
-		
-		cpp.generate();
-
+		cpp.generate(handle());
 		cpp.print(std::cout);
-		return cpp.save_file(filename);
+		return true;
 	}
 
 
@@ -113,6 +109,9 @@ private:
 	{
 		// toolbar
 		_toolbar.scale(21);
+		nana::paint::image _img_new;
+		_img_new.open("icons/new_prj_dark.png");
+		_toolbar.append("New project", _img_new);
 		nana::paint::image _img_load;
 		_img_load.open("icons/load_prj_dark.png");
 		_toolbar.append("Load project", _img_load);
@@ -139,6 +138,11 @@ private:
 		{
 			if(arg.button == 0)
 			{
+				//TODO: messaggio di conferma
+				g_gui_mgr.clear();
+			}
+			else if(arg.button == 1)
+			{
 				filebox fb(*this, true);
 				std::string ext("*."); ext.append(PROJECT_EXT);
 				fb.add_filter("Nana Creator Project", ext);
@@ -146,13 +150,14 @@ private:
 
 				if(fb())
 				{
+					//TODO: messaggio di conferma
 					g_gui_mgr.clear();
 
 					std::cout << "Load file: " << fb.file() << std::endl;
 					load_xml(fb.file());
 				}
 			}
-			else if(arg.button == 1)
+			else if(arg.button == 2)
 			{
 				filebox fb(*this, false);
 				std::string ext("*." PROJECT_EXT);
@@ -164,32 +169,21 @@ private:
 					save_xml(fb.file());
 				}
 			}
-			else if(arg.button == 3)
+			else if(arg.button == 4)
 			{
-				/*
-				filebox fb(*this, false);
-				std::string ext("*.h");
-				fb.add_filter("C++ Header file", ext);
-
-				if(fb())
-				{
-					std::cout << "Generate code: " << fb.file() << std::endl;
-					generate_cpp(fb.file());
-				}
-				*/
-				generate_cpp("code.h");
+				generate_cpp();
 			}
-			else if(arg.button == 5)
+			else if(arg.button == 6)
 			{
 				// delete current selection
 				g_gui_mgr.deleteselected();
 			}
-			else if(arg.button == 7)
+			else if(arg.button == 8)
 			{
 				// move up current selection
 				g_gui_mgr.moveupselected();
 			}
-			else if(arg.button == 8)
+			else if(arg.button == 9)
 			{
 				// move down current selection
 				g_gui_mgr.movedownselected();
@@ -218,7 +212,7 @@ private:
 
 
 		//TEMP - main panel
-		g_gui_mgr.addmainpanel();
+		//g_gui_mgr.addmainpanel();
 	}
 
 

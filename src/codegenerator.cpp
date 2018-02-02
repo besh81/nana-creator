@@ -10,6 +10,7 @@
 #include <streambuf>
 #include "codegenerator.h"
 #include "guimanager.h"
+#include "wdir.h"
 ////////////////////////////////
 #include "ctrls/layout.h"
 #include "ctrls/panel.h"
@@ -18,6 +19,10 @@
 #include "ctrls/textbox.h"
 #include "ctrls/combox.h"
 #include "ctrls/spinbox.h"
+#include "ctrls/listbox.h"
+#include "ctrls/checkbox.h"
+#include "ctrls/date_chooser.h"
+#include "ctrls/toolbar.h"
 
 
 #define BEGIN_TAG			"//<*"
@@ -38,81 +43,65 @@ codegenerator::codegenerator()
 }
 
 
-bool codegenerator::load_file(const std::string& path)
+bool codegenerator::generate(nana::window wd, const std::string& path)
 {
-	_buffer.clear();
+	bool create_file = false;
 
-	struct stat buf;
-	if(stat(path.c_str(), &buf) == -1)
-		return false;
-
-	std::ifstream f(path.c_str());
-
-	f.seekg(0, std::ios::end);
-	_buffer.reserve(static_cast<size_t>(f.tellg()));
-	f.seekg(0, std::ios::beg);
-
-	_buffer.assign((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
-
-	if(!_parse())
-	{
-		std::cout << "Parsing error\n";
-		return false;
-	}
-
-	return true;
-}
-
-bool codegenerator::save_file(const std::string& path)
-{
-	std::ofstream t(path.c_str());
-
-	t << _buffer;
-
-	return true;
-}
-
-
-bool codegenerator::generate()
-{
-	_headers.clear();
-	_declarations.clear();
-	_initfunc.clear();
-	
+	// generate code from controls
+	_code_data.clear();
 	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
 
 
-	// replace code between tags
-	_indent = 0;
-	while(1)
+	_filename = path;
+	if(_filename.empty())
 	{
-		size_t imax = 0;
-		size_t vmax = 0;
-		for(size_t i = 0; i < _tags.size(); ++i)
-		{
-			if(_tags[i].begin > vmax)
-			{
-				vmax = _tags[i].begin;
-				imax = i;
-			}
-		}
-
-		if(vmax == 0)
-			break;
-
-		if(_tags[imax].name == HEADERS_TAG)
-			_write_headers();
-		else if(_tags[imax].name == INIT_TAG)
-			_write_init();
-		else if(_tags[imax].name == INITFUNC_TAG)
-			_write_initfunc();
-		else if(_tags[imax].name == DECLARATIONS_TAG)
-			_write_declarations();
-
-		// set as done
-		_tags[imax].begin = 0;
+		// use name file in panel - mainclass
+		_filename = GetCurrentWorkingDir() + "\\" + _code_data.filename + ".h";
 	}
-	
+
+	// check file
+	struct stat buf;
+	if(stat(_filename.c_str(), &buf) == -1)
+	{
+		// file doesn't exist -> create a new one
+		create_file = true;
+	}
+	else
+	{
+		// file exist -> check
+		std::fstream in_file(_filename.c_str(), std::ios::out | std::ios::in);
+
+		in_file.seekg(0, std::ios::end);
+		_buffer.clear();
+		_buffer.reserve(static_cast<size_t>(in_file.tellg()));
+		in_file.seekg(0, std::ios::beg);
+		_buffer.assign((std::istreambuf_iterator<char>(in_file)), std::istreambuf_iterator<char>());
+		in_file.close();
+
+		if(!_parse())
+		{
+			nana::msgbox m(wd, CREATOR_NAME, nana::msgbox::yes_no);
+			m.icon(m.icon_question);
+			m << "Existing file corrupted!";
+			m << "Overwrite the file?";
+			if(m() == nana::msgbox::pick_yes)
+			{
+				create_file = true;
+			}
+			else
+				return false;
+		}
+	}
+
+	if(create_file)
+		_write_new_file();
+	else
+		_write_existing_file();
+
+	// write buffer into file
+	std::ofstream out_file(_filename.c_str());
+	out_file << _buffer;
+
 	return true;
 }
 
@@ -236,19 +225,7 @@ void codegenerator::_write_line(const std::string& line, bool endl)
 }
 
 
-void codegenerator::_write_file_header()
-{
-	const char* header =
-		"/*************************************************\n"
-		" *\tC++ code generated with " CREATOR_NAME " (" CREATOR_VERSION ")\n"
-		" *\tGitHub repo:\n"
-		"*************************************************/\n";
-
-	_write_line(header);
-}
-
-
-void codegenerator::_write_headers()
+void codegenerator::_write_headers_tag()
 {
 	_code.clear();
 
@@ -258,7 +235,7 @@ void codegenerator::_write_headers()
 			_indent = i.indent;
 
 			_write_line();
-			std::vector<std::string> hpps = _headers.getlist();
+			std::vector<std::string> hpps = _code_data.hpps.getlist();
 			for(auto it = hpps.begin(); it != hpps.end(); ++it)
 				_write_line(*it);
 			_write_line("", false);
@@ -268,7 +245,7 @@ void codegenerator::_write_headers()
 		}
 }
 
-void codegenerator::_write_init()
+void codegenerator::_write_init_tag()
 {
 	_code.clear();
 
@@ -286,7 +263,7 @@ void codegenerator::_write_init()
 		}
 }
 
-void codegenerator::_write_initfunc()
+void codegenerator::_write_initfunc_tag()
 {
 	_code.clear();
 
@@ -299,10 +276,10 @@ void codegenerator::_write_initfunc()
 			_write_line("void init_()");
 			_write_line("{");
 			++_indent;
-			for(auto it = _initfunc.begin(); it != _initfunc.end(); ++it)
+			for(auto it = _code_data.init.begin(); it != _code_data.init.end(); ++it)
 				_write_line(*it);
 			_write_line();
-			for(auto it = _initfunc_post.begin(); it != _initfunc_post.end(); ++it)
+			for(auto it = _code_data.init_post.begin(); it != _code_data.init_post.end(); ++it)
 				_write_line(*it);
 			--_indent;
 			_write_line("}");
@@ -313,7 +290,7 @@ void codegenerator::_write_initfunc()
 		}
 }
 
-void codegenerator::_write_declarations()
+void codegenerator::_write_declarations_tag()
 {
 	_code.clear();
 
@@ -323,129 +300,13 @@ void codegenerator::_write_declarations()
 			_indent = i.indent;
 
 			_write_line();
-			for(auto it = _declarations.begin(); it != _declarations.end(); ++it)
+			for(auto it = _code_data.decl.begin(); it != _code_data.decl.end(); ++it)
 				_write_line(*it);
 			_write_line("", false);
 
 			_buffer.replace(i.begin, i.end - i.begin, _code);
 			break;
 		}
-}
-
-
-bool codegenerator::generateOLD()
-{
-	_headers.clear();
-	_indent = 0;
-
-	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
-
-
-	//---- file header - START
-	_write_file_header();
-	//---- file header - END
-
-	_write_line();
-
-	//---- c++ headers - START
-	std::vector<std::string> hpps = _headers.getlist();
-	for(auto it = hpps.begin(); it != hpps.end(); ++it)
-		_write_line("#include <" + *it + ">");
-	//---- c++ headers - END
-
-	_write_line();
-	_write_line();
-
-	//---- class declaration - START
-	_write_line("class " + _mainwidget.name);
-	_indent++;
-	_write_line(": public " CTRL_NAMESPACE + _mainwidget.type);
-	_indent--;
-	_write_line("{");
-
-
-	// public
-	_write_line("public:");
-	_indent++;
-
-
-	//---- ctor - START
-	_write_line(_mainwidget.name + "(nana::window wd, bool visible = true)");
-	_indent++;
-	_write_line(": " CTRL_NAMESPACE + _mainwidget.type + "(wd, visible)");
-	_indent--;
-	_write_line("{");
-	_indent++;
-
-	//---- widgets creation - START
-	for(auto it = _widgets.begin(); it != _widgets.end(); ++it)
-	{
-		if(it->type != "place")
-		{
-			if(it->owner == _mainwidget.name)
-				_write_line(it->name + ".create(*this);");
-			else
-				_write_line(it->name + ".create(" + it->owner + ");");
-		}
-	}
-	//---- widgets creation - END
-
-	_write_line();
-
-	//---- place binding - START
-	for(auto it = _widgets.begin(); it != _widgets.end(); ++it)
-	{
-		if(it->type == "place")
-		{
-			if(it->owner == _mainwidget.name)
-				_write_line(it->name + ".bind(*this);");
-			else
-				_write_line(it->name + ".bind(" + it->owner + ");");
-			_write_line(it->name + ".div(\"" + it->xxx + "\");");
-		}
-	}
-	//---- place binding - END
-
-	_write_line();
-
-	//---- widgets placement - START
-	for(auto it = _widgets.begin(); it != _widgets.end(); ++it)
-	{
-		if(it->type != "place")
-			_write_line(it->xxx + ".field(\"abc\") << " + it->name + ";");
-	}
-	//---- widgets placement - END
-
-	_write_line();
-
-	//---- place collocate - START
-	for(auto it = _widgets.rbegin(); it != _widgets.rend(); ++it)
-	{
-		if(it->type == "place")
-			_write_line(it->name + ".collocate();");
-		
-	}
-	//---- place collocate - END
-
-	_indent--;
-	_write_line("};");
-	//---- ctor - END
-
-	_write_line();
-	_write_line();
-
-	//---- widgets declaration - START
-	for(auto it = _widgets.begin(); it != _widgets.end(); ++it)
-	{
-		_write_line(CTRL_NAMESPACE + it->type + " " + it->name + ";");
-	}
-	//---- widgets declaration - END
-
-	_indent--;
-	_write_line("};");
-	//---- class declaration - END
-
-	return true;
 }
 
 
@@ -456,76 +317,206 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 
 	auto attr = &node->value->properties;
 
-	code_struct cc;
-	cc.create = create;
-	cc.place = place;
-	cc.field = field;
+	code_info_struct ci;
+	ci.create = create;
+	ci.place = place;
+	ci.field = field;
 
 	auto ctrl = node->value;
 
 	auto type = ctrl->properties.property("type").as_string();
 	if(type == CTRL_LAYOUT)
 	{
-		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_PANEL)
 	{
-		static_cast<ctrls::panel*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::panel*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_BUTTON)
 	{
-		static_cast<ctrls::button*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::button*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_LABEL)
 	{
-		static_cast<ctrls::label*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::label*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_TEXTBOX)
 	{
-		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_COMBOX)
 	{
-		static_cast<ctrls::combox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::combox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 	else if(type == CTRL_SPINBOX)
 	{
-		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &cc);
+		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_LISTBOX)
+	{
+		static_cast<ctrls::listbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_CHECKBOX)
+	{
+		static_cast<ctrls::checkbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_DATECHOOSER)
+	{
+		static_cast<ctrls::date_chooser*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_TOOLBAR)
+	{
+		static_cast<ctrls::toolbar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 
-
-	for(auto i : cc.hpps)
-		_headers.add(i);
-	for(auto i : cc.decl)
-		_declarations.push_back(i);
-	for(auto i : cc.init)
-		_initfunc.push_back(i);
-	for(auto i : cc.init_post)
-		_initfunc_post.push_back(i);
-
 	// children
-	_generate(node->child, cc.create, cc.place, 1);
+	_generate(node->child, ci.create, ci.place, 1);
 	// siblings
 	_generate(node->next, create, place, field + 1);
 }
 
 
-/*void codegenerator::writecode(std::fstream& stream)
+bool codegenerator::_write_new_file()
 {
-	// load content in memory
-	std::string file_str;
+	_code.clear();
+	_indent = 0;
 
-	stream.seekg(0, std::ios::end);
-	file_str.reserve(stream.tellg());
-	stream.seekg(0, std::ios::beg);
+	//---- file header - START
+	const char* header =
+		"/*****************************************************\n"
+		" *\tC++ code generated with " CREATOR_NAME " (" CREATOR_VERSION ")\n"
+		" *\tGitHub repo:\n"
+		"*****************************************************/\n";
+	_write_line(header);
+	//---- file header - END
 
-	//file_str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+	_write_line();
+
+	//---- c++ headers - START
+	_write_line(BEGIN_TAG HEADERS_TAG);
+	std::vector<std::string> hpps = _code_data.hpps.getlist();
+	for(auto it = hpps.begin(); it != hpps.end(); ++it)
+		_write_line(*it);
+	_write_line(END_TAG);
+	//---- c++ headers - END
+
+	_write_line();
+
+	//---- class declaration - START
+	_write_line("class " + _code_data.mainclass);
+	_indent++;
+	_write_line(": public " + _code_data.mainclass_base);
+	_indent--;
+	_write_line("{");
+
+	//---- public - START
+	_write_line("public:");
+	_indent++;
+
+	//---- ctor - START
+	_write_line(_code_data.mainclass + _code_data.mainclass_ctor);
+	_indent++;
+	_write_line(": " + _code_data.mainclass_base + _code_data.mainclass_base_ctor);
+	_indent--;
+	_write_line("{");
+	_indent++;
+
+	_write_line(BEGIN_TAG INIT_TAG);
+	_write_line("init_();");
+	_write_line(END_TAG);
+
+	_indent--;
+	_write_line("}");
+	//---- ctor - END
+
+	//---- public - END
+
+	_write_line();
+
+	//---- private - START
+	_indent--;
+	_write_line();
+	_write_line("private:");
+	_indent++;
 
 
-	// look for tags
-	// replace code inside tags
-	// write file
+	_write_line(BEGIN_TAG INITFUNC_TAG);
+	_write_line("void init_()");
+	_write_line("{");
+	_indent++;
 
-	//stream << "Work in progress ..." << std::endl;
+	for(auto it = _code_data.init.begin(); it != _code_data.init.end(); ++it)
+		_write_line(*it);
+	_write_line();
+	for(auto it = _code_data.init_post.begin(); it != _code_data.init_post.end(); ++it)
+		_write_line(*it);
+
+	_indent--;
+	_write_line("}");
+	_write_line(END_TAG);
+	//---- private - END
+
+	_write_line();
+
+	//---- protected - START
+	_indent--;
+	_write_line();
+	_write_line("protected:");
+	_indent++;
+
+
+	_write_line(BEGIN_TAG DECLARATIONS_TAG);
+
+	for(auto it = _code_data.decl.begin(); it != _code_data.decl.end(); ++it)
+		_write_line(*it);
+
+	_write_line(END_TAG);
+	//---- protected - END
+
+
+	_indent--;
+	_write_line("};");
+	_write_line();
+
+	_buffer = _code;
+
+	return true;
 }
-*/
+
+
+bool codegenerator::_write_existing_file()
+{
+	// replace code between tags
+	_indent = 0;
+	while(1)
+	{
+		size_t imax = 0;
+		size_t vmax = 0;
+		for(size_t i = 0; i < _tags.size(); ++i)
+		{
+			if(_tags[i].begin > vmax)
+			{
+				vmax = _tags[i].begin;
+				imax = i;
+			}
+		}
+
+		if(vmax == 0)
+			break;
+
+		if(_tags[imax].name == HEADERS_TAG)
+			_write_headers_tag();
+		else if(_tags[imax].name == INIT_TAG)
+			_write_init_tag();
+		else if(_tags[imax].name == INITFUNC_TAG)
+			_write_initfunc_tag();
+		else if(_tags[imax].name == DECLARATIONS_TAG)
+			_write_declarations_tag();
+
+		// set as done
+		_tags[imax].begin = 0;
+	}
+
+	return true;
+}

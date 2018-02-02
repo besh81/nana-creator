@@ -265,7 +265,7 @@ bool resizablecanvas::add(nana::window child)
 		return false; // already has a child
 
 	_child = nana::API::get_widget(child);
-	_child->move(nana::rectangle(5, 5, 400, 300));
+	_child->move(nana::rectangle(5, 5, MAIN_WDG_W, MAIN_WDG_H));
 
 	return true;
 }

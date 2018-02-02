@@ -15,8 +15,6 @@
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/picture.hpp>
-#include <nana/gui/widgets/spinbox.hpp>
-#include <nana/gui/widgets/button.hpp>
 #include "ctrls/property.h"
 #include "nana_extra/propgrid.h"
 

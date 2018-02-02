@@ -45,21 +45,21 @@ namespace ctrls
 	}
 
 
-	void spinbox::generatecode(properties_collection* properties, code_struct* cc)
+	void spinbox::generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci)
 	{
 		// headers
-		cc->hpps.push_back("#include <nana/gui/widgets/spinbox.hpp>");
+		cd->hpps.add("#include <nana/gui/widgets/spinbox.hpp>");
 
 		std::string name = properties->property("name").as_string();
 
 		// declaration
-		cc->decl.push_back("nana::spinbox " + name + ";");
+		cd->decl.push_back("nana::spinbox " + name + ";");
 
 		// init
-		cc->init.push_back("// " + name);
-		cc->init.push_back(name + ".create(" + cc->create + ");");
-		cc->init.push_back(name + ".editable(" + properties->property("editable").as_string() + ");");
-		cc->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+		cd->init.push_back("// " + name);
+		cd->init.push_back(name + ".create(" + ci->create + ");");
+		cd->init.push_back(name + ".editable(" + properties->property("editable").as_string() + ");");
+		cd->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
 		// color
 		bool inherited;
 		std::string col;
@@ -67,15 +67,15 @@ namespace ctrls
 		col = properties->property("bgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cc->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+			cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
 		// fg
 		col = properties->property("fgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cc->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
 
 		// placement
-		cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + ";");
+		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
 	}
 
 

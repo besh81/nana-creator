@@ -7,8 +7,10 @@
 
 #include <iostream>
 #include <algorithm>
+#include <nana/gui/wvl.hpp> // used to create the form -> choises
 #include "pg_items.h"
 #include "lock_guard.h"
+#include "choises.h"
 
 
 #define PG_BORDER_X		1
@@ -518,4 +520,76 @@ namespace nana
 		return false;
 	}
 	/// class pg_color end
+
+
+
+	/// class pg_collection
+#define CHOISES_BUTTON_SIZE		30
+
+	void pg_collection::value(const std::string& value)
+	{
+		value_ = value;
+
+		lock_guard evt_lock(&evt_emit_, false);
+		txt_.caption(value);
+	}
+	std::string pg_collection::value() const
+	{
+		return value_;
+	}
+
+	void pg_collection::set_accept(std::function<bool(wchar_t)> f)
+	{
+		txt_.set_accept(f);
+	}
+
+	void pg_collection::create(window wd)
+	{
+		txt_.create(wd);
+		txt_.multi_lines(false);
+		txt_.caption(value_);
+		txt_.editable(false);
+
+		txt_.events().click.connect_front([this](const nana::arg_click& arg)
+		{
+			scroll();
+		});
+		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
+		{
+			txt_.select(true);
+		});
+
+
+		//button
+		btn_.create(wd);
+		btn_.caption("...");
+
+		btn_.events().click.connect_front([this](const nana::arg_click& arg)
+		{
+			//choises dialog
+			choises_dialog choises(arg.window_handle, nana::size(300, 400), appear::decorate<appear::taskbar>());
+			choises.caption("Choises");
+
+			choises.choises.value(txt_.caption());
+			choises.modality();
+
+			if(choises.choises.return_val() == nana::msgbox::pick_ok)
+			{
+				txt_.caption(choises.choises.value());
+				value_ = txt_.caption();
+				emit_event();
+			}
+		});
+	}
+
+	bool pg_collection::draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
+	{
+		txt_.move(PG_BORDER_X, PG_BORDER_Y);
+		txt_.size(nana::size(rect.width - 2 * PG_BORDER_X - CHOISES_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
+
+		btn_.move(PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
+		btn_.size(nana::size(CHOISES_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
+		return false;
+	}
+	/// class pg_collection end
 }//end namespace nana

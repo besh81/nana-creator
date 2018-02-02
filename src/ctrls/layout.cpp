@@ -117,49 +117,49 @@ namespace ctrls
 	}
 
 
-	void layout::generatecode(properties_collection* properties, code_struct* cc)
+	void layout::generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci)
 	{
 		// headers
-		cc->hpps.push_back("#include <nana/gui/place.hpp>");
-		if(!cc->place.empty())
-			cc->hpps.push_back("#include <nana/gui/widgets/panel.hpp>");
+		cd->hpps.add("#include <nana/gui/place.hpp>");
+		if(!ci->place.empty())
+			cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 
 		auto name = properties->property("name").as_string();
 		
 		// declaration
-		if(!cc->place.empty())
+		if(!ci->place.empty())
 		{
 			//if parent is not a panel panel (only panel has empty place) add a transparent panel
-			cc->decl.push_back("nana::panel<false> " + name + "_panel;");
+			cd->decl.push_back("nana::panel<false> " + name + "_panel;");
 		}
 
-		cc->decl.push_back("nana::place " + name + "_place;");
+		cd->decl.push_back("nana::place " + name + "_place;");
 
 		// init
-		cc->init.push_back("// " + name);
-		if(!cc->place.empty())
+		cd->init.push_back("// " + name);
+		if(!ci->place.empty())
 		{
-			cc->init.push_back(name + "_panel.create(" + cc->create + ");");
-			cc->init.push_back(name + "_place.bind(" + name + "_panel);");
+			cd->init.push_back(name + "_panel.create(" + ci->create + ");");
+			cd->init.push_back(name + "_place.bind(" + name + "_panel);");
 		}
 		else
 		{
-			cc->init.push_back(name + "_place.bind(" + cc->create + ");");
+			cd->init.push_back(name + "_place.bind(" + ci->create + ");");
 		}
-		cc->init.push_back(name + "_place.div(\"" + getdiv() + "\");");
+		cd->init.push_back(name + "_place.div(\"" + getdiv() + "\");");
 
 		// placement
-		if(!cc->place.empty())
-			cc->init.push_back(cc->place + "[\"field" + std::to_string(cc->field) + "\"] << " + name + "_panel;");
+		if(!ci->place.empty())
+			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + "_panel;");
 
 		// collocate
-		if(cc->place.empty())
-			cc->init_post.push_back(name + "_place.collocate();");
+		if(ci->place.empty())
+			cd->init_post.push_back(name + "_place.collocate();");
 
 		// children
-		if(!cc->place.empty())
-			cc->create = name + "_panel";
-		cc->place = name + "_place";
+		if(!ci->place.empty())
+			ci->create = name + "_panel";
+		ci->place = name + "_place";
 	}
 
 

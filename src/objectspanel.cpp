@@ -52,6 +52,18 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	auto & img_spn = _objects.icon(CTRL_SPINBOX);
 	img_spn.normal.open("icons/spinbox_dark.png");
 
+	auto & img_lst = _objects.icon(CTRL_LISTBOX);
+	img_lst.normal.open("icons/listbox_dark.png");
+
+	auto & img_chk = _objects.icon(CTRL_CHECKBOX);
+	img_chk.normal.open("icons/checkbox_dark.png");
+
+	auto & img_dtc = _objects.icon(CTRL_DATECHOOSER);
+	img_dtc.normal.open("icons/datechooser_dark.png");
+
+	auto & img_tlb = _objects.icon(CTRL_TOOLBAR);
+	img_tlb.normal.open("icons/toolbar_dark.png");
+
 
 	// context menu
 	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)

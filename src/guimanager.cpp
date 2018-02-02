@@ -12,6 +12,10 @@
 #include "ctrls/textbox.h"
 #include "ctrls/combox.h"
 #include "ctrls/spinbox.h"
+#include "ctrls/listbox.h"
+#include "ctrls/checkbox.h"
+#include "ctrls/date_chooser.h"
+#include "ctrls/toolbar.h"
 #include "guimanager.h"
 #include "style.h"
 
@@ -26,7 +30,9 @@ void guimanager::clear()
 	{
 		auto root_child = root->child;
 		if(root_child)
+		{
 			_main_wd->remove(*root_child->value->nanawdg);
+		}
 	}
 	
 	_ctrls.clear();
@@ -62,11 +68,11 @@ tree_node<control_struct>* guimanager::addmainpanel(const std::string& name)
 	}
 
 	control_struct ctrl = control_struct(new ctrls::ctrl_struct());
-
-	// nana::widget + properties
-	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name));
 	// attibutes
 	ctrl->properties.append("mainclass") = true;
+	// nana::widget + properties
+	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name));
+	
 	//TEMP
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
 	//
@@ -149,6 +155,22 @@ tree_node<control_struct>* guimanager::addcommonctrl(tree_node<control_struct>* 
 	{
 		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::spinbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_SPINBOX) : name));
 	}
+	else if(type == CTRL_LISTBOX)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::listbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_LISTBOX) : name));
+	}
+	else if(type == CTRL_CHECKBOX)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::checkbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_CHECKBOX) : name));
+	}
+	else if(type == CTRL_DATECHOOSER)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::date_chooser(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_DATECHOOSER) : name));
+	}
+	else if(type == CTRL_TOOLBAR)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::toolbar(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_TOOLBAR) : name));
+	}
 	else
 		return 0;
 
@@ -157,7 +179,7 @@ tree_node<control_struct>* guimanager::addcommonctrl(tree_node<control_struct>* 
 
 	// events
 	control_struct_ptr pctrl = ctrl;
-	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
+	ctrl->nanawdg->events().click.connect_front([this, pctrl](const nana::arg_click & arg)
 	{
 		clickctrl(pctrl.lock());
 	});
@@ -573,6 +595,22 @@ void guimanager::_updatectrl(tree_node<control_struct>* node, bool update_owner,
 	else if(type == CTRL_SPINBOX)
 	{
 		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_LISTBOX)
+	{
+		static_cast<ctrls::listbox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_CHECKBOX)
+	{
+		static_cast<ctrls::checkbox*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_DATECHOOSER)
+	{
+		static_cast<ctrls::date_chooser*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_TOOLBAR)
+	{
+		static_cast<ctrls::toolbar*>(ctrl->nanawdg.get())->update(&ctrl->properties);
 	}
 
 	// update parent ctrl

@@ -75,7 +75,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/src;$(NANALIB)/include;..\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>USE_NEW_THEME;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -102,6 +102,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)/src;$(NANALIB)/include;..\libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -128,24 +129,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\libs\pugixml\pugixml.cpp" />
+    <ClCompile Include="..\libs\tokenizer\Tokenizer.cpp" />
     <ClCompile Include="..\src\assetspanel.cpp" />
     <ClCompile Include="..\src\codegenerator.cpp" />
     <ClCompile Include="..\src\ctrls\button.cpp" />
+    <ClCompile Include="..\src\ctrls\checkbox.cpp" />
     <ClCompile Include="..\src\ctrls\combox.cpp" />
+    <ClCompile Include="..\src\ctrls\date_chooser.cpp" />
     <ClCompile Include="..\src\ctrls\label.cpp" />
     <ClCompile Include="..\src\ctrls\layout.cpp" />
+    <ClCompile Include="..\src\ctrls\listbox.cpp" />
     <ClCompile Include="..\src\ctrls\panel.cpp" />
     <ClCompile Include="..\src\ctrls\property.cpp" />
     <ClCompile Include="..\src\ctrls\spinbox.cpp" />
     <ClCompile Include="..\src\ctrls\textbox.cpp" />
+    <ClCompile Include="..\src\ctrls\toolbar.cpp" />
     <ClCompile Include="..\src\guimanager.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\namemanager.cpp" />
+    <ClCompile Include="..\src\nana_extra\choises.cpp" />
     <ClCompile Include="..\src\nana_extra\pg_items.cpp" />
     <ClCompile Include="..\src\nana_extra\propgrid.cpp" />
     <ClCompile Include="..\src\objectspanel.cpp" />
     <ClCompile Include="..\src\propertiespanel.cpp" />
     <ClCompile Include="..\src\resizablecanvas.cpp" />
+    <ClCompile Include="..\src\wdir.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\TODO.txt" />
@@ -153,21 +161,27 @@
   <ItemGroup>
     <ClInclude Include="..\libs\pugixml\pugiconfig.hpp" />
     <ClInclude Include="..\libs\pugixml\pugixml.hpp" />
+    <ClInclude Include="..\libs\tokenizer\Tokenizer.h" />
     <ClInclude Include="..\src\assetspanel.h" />
     <ClInclude Include="..\src\codegenerator.h" />
     <ClInclude Include="..\src\config.h" />
     <ClInclude Include="..\src\ctrls\button.h" />
+    <ClInclude Include="..\src\ctrls\checkbox.h" />
     <ClInclude Include="..\src\ctrls\combox.h" />
     <ClInclude Include="..\src\ctrls\ctrl.h" />
+    <ClInclude Include="..\src\ctrls\date_chooser.h" />
     <ClInclude Include="..\src\ctrls\label.h" />
     <ClInclude Include="..\src\ctrls\layout.h" />
+    <ClInclude Include="..\src\ctrls\listbox.h" />
     <ClInclude Include="..\src\ctrls\panel.h" />
     <ClInclude Include="..\src\ctrls\property.h" />
     <ClInclude Include="..\src\ctrls\spinbox.h" />
     <ClInclude Include="..\src\ctrls\textbox.h" />
+    <ClInclude Include="..\src\ctrls\toolbar.h" />
     <ClInclude Include="..\src\guimanager.h" />
     <ClInclude Include="..\src\lock_guard.h" />
     <ClInclude Include="..\src\namemanager.h" />
+    <ClInclude Include="..\src\nana_extra\choises.h" />
     <ClInclude Include="..\src\nana_extra\pg_items.h" />
     <ClInclude Include="..\src\nana_extra\propgrid.h" />
     <ClInclude Include="..\src\objectspanel.h" />
@@ -175,6 +189,7 @@
     <ClInclude Include="..\src\resizablecanvas.h" />
     <ClInclude Include="..\src\style.h" />
     <ClInclude Include="..\src\tree.h" />
+    <ClInclude Include="..\src\wdir.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

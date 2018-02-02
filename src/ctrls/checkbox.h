@@ -1,14 +1,14 @@
 /*
- *		ctrls::textbox Implementation
+ *		ctrls::checkbox Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_TEXTBOX_H
-#define NANA_CREATOR_TEXTBOX_H
+#ifndef NANA_CREATOR_CHECKBOX_H
+#define NANA_CREATOR_CHECKBOX_H
 
-#include <nana/gui/widgets/textbox.hpp>
+#include <nana/gui/widgets/checkbox.hpp>
 #include "ctrls/property.h"
 #include "codegenerator.h"
 
@@ -16,11 +16,11 @@
 namespace ctrls
 {
 
-	class textbox
-		: public nana::textbox
+	class checkbox
+		: public nana::checkbox
 	{
 	public:
-		textbox(nana::window wd, properties_collection* properties, const std::string& name);
+		checkbox(nana::window wd, properties_collection* properties, const std::string& name);
 
 		void update(properties_collection* properties);
 
@@ -33,4 +33,4 @@ namespace ctrls
 
 }//end namespace ctrls
 
-#endif //NANA_CREATOR_TEXTBOX_H
+#endif //NANA_CREATOR_CHECKBOX_H
