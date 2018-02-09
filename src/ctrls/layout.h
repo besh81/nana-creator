@@ -54,7 +54,6 @@ namespace ctrls
 
 		std::string getdiv();
 
-		void prepareforinsert();
 		bool append(nana::window child);
 		bool remove(nana::window child);
 		bool moveup(nana::window child);
@@ -66,9 +65,6 @@ namespace ctrls
 		void _padding(int pixels);
 
 		void _initproperties(properties_collection* properties, const std::string& name);
-
-		bool			_is_highlighted{ false };
-		nana::color		_bgcolor;
 
 		std::string		_orientation_str;
 		std::string		_padding_str;

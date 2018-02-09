@@ -9,11 +9,8 @@
 #include <algorithm>
 #include "ctrls/layout.h"
 #include "ctrls/panel.h"
-#include "guimanager.h"
 #include "style.h"
 
-
-extern guimanager	g_gui_mgr;
 
 
 namespace ctrls
@@ -61,26 +58,6 @@ namespace ctrls
 
 		_initproperties(properties, name);
 		update(properties);
-
-		//TODO - spostare in guimanager
-		events().mouse_enter([this]()
-		{
-			if(!_is_highlighted && g_gui_mgr.cursor().action != cursor_action::select)
-			{
-				_is_highlighted = true;
-				_bgcolor = bgcolor();
-				bgcolor(HIGHLIGHT_ON_PLACE);
-			}
-		});
-
-		events().mouse_leave([this]()
-		{
-			if(_is_highlighted)
-			{
-				_is_highlighted = false;
-				bgcolor(_bgcolor);
-			}
-		});
 	}
 
 
@@ -187,14 +164,6 @@ namespace ctrls
 	{
 		// [css boxmodel]padding -> [nana]margin
 		_padding_str = "margin=" + std::to_string(pixels) + " ";
-	}
-
-
-	void layout::prepareforinsert()
-	{
-		// reset bgcolor highlight
-		_is_highlighted = false;
-		bgcolor(_bgcolor);
 	}
 
 

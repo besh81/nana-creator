@@ -1,49 +1,30 @@
-/*
-*		nana::choises Implementation
-*
-*      Nana C++ Library - Creator
-*      Author: besh81
-*/
+/*****************************************************
+ *	C++ code generated with Nana Creator (0.4.0)
+ *	GitHub repo:
+*****************************************************/
+
 
 //<*Headers()
-#include <nana/gui/widgets/panel.hpp>
+#include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
 #include <nana/gui/widgets/toolbar.hpp>
 #include <nana/gui/widgets/listbox.hpp>
+#include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/button.hpp>
 //*>
 
-
-class choises_panel
-	: public nana::panel<true>
+class items_dialog
+	: public nana::form
 {
 public:
-	choises_panel()
-		: nana::panel<true>()
-	{ }
-
-	choises_panel(nana::window wd, bool visible = true)
-		: nana::panel<true>(wd, visible)
+	items_dialog(nana::window wd, const ::nana::size& sz = {300, 400}, const nana::appearance& apr = {true, true, false, false, false, false, false})
+		: nana::form(wd, sz, apr)
 	{
 		//<*Initialize()
 		init_();
 		//*>
 
 		init();
-	};
-
-	bool create(nana::window wd, bool visible = true)
-	{
-		if(!nana::panel<true>::create(wd, visible))
-			return false;
-
-		//<*Initialize()
-		init_();
-		//*>
-
-		init();
-
-		return true;
 	}
 
 
@@ -56,7 +37,7 @@ private:
 	//<*InitFunction()
 	void init_()
 	{
-		// choises_panel
+		caption("Items");
 		enabled(true);
 		// main_lyt
 		main_lyt_place.bind(*this);
@@ -66,9 +47,13 @@ private:
 		_toolbar.enabled(true);
 		_toolbar.bgcolor(nana::color(212,208,200));
 		_toolbar.fgcolor(nana::color(0,0,0));
+		_toolbar.scale(21);
 		main_lyt_place["field1"] << _toolbar;
 		// _list
 		_list.create(*this);
+		_list.append_header("items");
+		_list.checkable(false);
+		_list.enable_single(true, true);
 		_list.enabled(true);
 		_list.bgcolor(nana::color(255,255,255));
 		_list.fgcolor(nana::color(0,0,0));
@@ -122,24 +107,5 @@ protected:
 	//*>
 
 	nana::msgbox::pick_t ret_val;
-};
-
-
-
-class choises_dialog
-	: public nana::form
-{
-public:
-	choises_dialog(nana::window owner, const ::nana::size& sz = { 300, 400 }, const nana::appearance& apr = {})
-		: nana::form(owner, sz, apr)
-	{
-		choises.create(*this, true);
-		choises.size(sz);
-
-		collocate();
-	}
-
-
-	choises_panel choises;
 };
 

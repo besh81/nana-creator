@@ -275,6 +275,7 @@ bool resizablecanvas::remove(nana::window child)
 	if(!haschild())
 		return false; // no child to remove
 
+	_child->move(nana::rectangle(0, 0, 5, 5));
 	_child = 0;
 	return true;
 }

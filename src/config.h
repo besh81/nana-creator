@@ -10,22 +10,24 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.3.0"
+#define CREATOR_VERSION			"0.4.0"
 
 
 
 // available controls
 //--------------------------------------------------------
 // templates/forms
-#define CTRL_WIDGET				"widget"
-#define CTRL_WIDGET_NAME		"Widget"
+#define CTRL_MAINFORM			"mainform"
+#define CTRL_MAINPANEL			"mainpanel"
 
 // controls with child/children
-#define CTRL_LAYOUT				"layout"
-#define CTRL_LAYOUT_NAME		"Horizontal/Vertical"
-//
 #define CTRL_PANEL				"panel"
 #define CTRL_PANEL_NAME			"Panel"
+#define CTRL_FORM				"form"
+#define CTRL_FORM_NAME			"Form"
+//
+#define CTRL_LAYOUT				"layout"
+#define CTRL_LAYOUT_NAME		"Horizontal/Vertical"
 
 // controls without child/children
 #define CTRL_BUTTON				"button"
@@ -66,6 +68,7 @@
 #define NODE_CHECKBOX			CTRL_CHECKBOX
 #define NODE_DATECHOOSER		CTRL_DATECHOOSER
 #define NODE_TOOLBAR			CTRL_TOOLBAR
+#define NODE_FORM				CTRL_FORM
 
 
 

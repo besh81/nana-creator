@@ -64,6 +64,10 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	auto & img_tlb = _assets.icon(CTRL_TOOLBAR);
 	img_tlb.normal.open("icons/toolbar_dark.png");
 
+	auto & img_frm = _assets.icon(CTRL_FORM);
+	img_frm.normal.open("icons/form_dark.png");
+
+
 	// events
 	_assets.events().selected([this](const nana::arg_treebox & arg)
 	{
@@ -75,8 +79,9 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 
 
 	// populate
-	auto set = _assets.insert("forms", "Forms").value(cursor_state{ cursor_action::select });
-	set.append("panel", CTRL_WIDGET_NAME, cursor_state{ cursor_action::add, CTRL_WIDGET }).icon(CTRL_PANEL);
+	auto set = _assets.insert("widgets", "Widgets").value(cursor_state{ cursor_action::select });
+	set.append("widgets/form", CTRL_FORM_NAME, cursor_state{ cursor_action::add, CTRL_MAINFORM }).icon(CTRL_FORM);
+	set.append("widgets/panel", CTRL_PANEL_NAME, cursor_state{ cursor_action::add, CTRL_MAINPANEL }).icon(CTRL_PANEL);
 	set.expand(true);
 	//
 	set = _assets.insert("layouts", "Layouts").value(cursor_state{ cursor_action::select });

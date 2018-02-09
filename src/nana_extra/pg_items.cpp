@@ -7,10 +7,9 @@
 
 #include <iostream>
 #include <algorithm>
-#include <nana/gui/wvl.hpp> // used to create the form -> choises
 #include "pg_items.h"
 #include "lock_guard.h"
-#include "choises.h"
+#include "items_dialog.h"
 
 
 #define PG_BORDER_X		1
@@ -566,16 +565,15 @@ namespace nana
 
 		btn_.events().click.connect_front([this](const nana::arg_click& arg)
 		{
-			//choises dialog
-			choises_dialog choises(arg.window_handle, nana::size(300, 400), appear::decorate<appear::taskbar>());
-			choises.caption("Choises");
+			//items dialog
+			items_dialog items(arg.window_handle);
 
-			choises.choises.value(txt_.caption());
-			choises.modality();
+			items.value(txt_.caption());
+			items.modality();
 
-			if(choises.choises.return_val() == nana::msgbox::pick_ok)
+			if(items.return_val() == nana::msgbox::pick_ok)
 			{
-				txt_.caption(choises.choises.value());
+				txt_.caption(items.value());
 				value_ = txt_.caption();
 				emit_event();
 			}

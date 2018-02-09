@@ -16,6 +16,7 @@
 #include "ctrls/checkbox.h"
 #include "ctrls/date_chooser.h"
 #include "ctrls/toolbar.h"
+#include "ctrls/form.h"
 #include "guimanager.h"
 #include "style.h"
 
@@ -43,16 +44,90 @@ void guimanager::clear()
 
 void guimanager::cursor(cursor_state state)
 {
-	if(state.action == cursor_action::add && state.type == CTRL_WIDGET)
+	if(state.action == cursor_action::add)
 	{
-		//add main panel
-		addmainpanel();
+		if(state.type == CTRL_MAINFORM)
+		{
+			addmainform();
+			// reset mouse cursor
+			state = cursor_state{ cursor_action::select };
+		}
+		else if(state.type == CTRL_MAINPANEL)
+		{
+			addmainpanel();
+			// reset mouse cursor
+			state = cursor_state{ cursor_action::select };
+		}
+		else if(!_main_wd->haschild())
+		{
+			nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
+			m.icon(m.icon_warning);
+			m << "Create a main widget!";
+			m();
 
-		// reset mouse cursor
-		state = cursor_state{ cursor_action::select };
+			// reset mouse cursor
+			state = cursor_state{ cursor_action::select };
+		}
 	}
 
 	_cursor_state = state;
+}
+
+
+tree_node<control_struct>* guimanager::addmainform(const std::string& name)
+{
+	if(_main_wd->haschild())
+	{
+		nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
+		m.icon(m.icon_warning);
+		m << "Widget already exists. Try to add a layout/control!";
+		m();
+		return 0;
+	}
+
+	control_struct ctrl = control_struct(new ctrls::ctrl_struct());
+	// attibutes
+	ctrl->properties.append("mainclass") = true;
+	// nana::widget + properties
+	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::form(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name));
+
+	//TEMP
+	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
+	//
+	_main_wd->add(*ctrl->nanawdg);
+
+
+	// events
+	control_struct_ptr pctrl = ctrl;
+	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+	{
+		auto pform = static_cast<ctrls::form*>(pctrl.lock()->nanawdg.get());
+		if(pform->haschild())
+			return; // already has a child
+
+		if(!pctrl.lock()->ishighlighted && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
+		{
+			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+		}
+	});
+
+	ctrl->nanawdg->events().mouse_leave([this, pctrl]()
+	{
+		if(pctrl.lock()->ishighlighted)
+		{
+			pctrl.lock()->reset_highlight();
+		}
+	});
+
+	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
+	{
+		clickctrl(pctrl.lock());
+	});
+
+
+	return _registerobject(ctrl, 0);
+
+	return 0;
 }
 
 
@@ -81,10 +156,31 @@ tree_node<control_struct>* guimanager::addmainpanel(const std::string& name)
 
 	// events
 	control_struct_ptr pctrl = ctrl;
+	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+	{
+		auto ppanel = static_cast<ctrls::panel*>(pctrl.lock()->nanawdg.get());
+		if(ppanel->haschild())
+			return; // already has a child
+
+		if(!pctrl.lock()->ishighlighted && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
+		{
+			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+		}
+	});
+
+	ctrl->nanawdg->events().mouse_leave([this, pctrl]()
+	{
+		if(pctrl.lock()->ishighlighted)
+		{
+			pctrl.lock()->reset_highlight();
+		}
+	});
+
 	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
 	{
 		clickctrl(pctrl.lock());
 	});
+
 
 	return _registerobject(ctrl, 0);
 }
@@ -103,16 +199,38 @@ tree_node<control_struct>* guimanager::addlayout(tree_node<control_struct>* pare
 	// 
 	if(parent_->properties.property("type").as_string() == CTRL_PANEL)
 	{
-		ctrls::panel* ppanel = static_cast<ctrls::panel*>(parent_->nanawdg.get());
+		auto ppanel = static_cast<ctrls::panel*>(parent_->nanawdg.get());
 		ppanel->append(*ctrl->nanawdg);
+	}
+	else if(parent_->properties.property("type").as_string() == CTRL_FORM)
+	{
+		auto pform = static_cast<ctrls::form*>(parent_->nanawdg.get());
+		pform->append(*ctrl->nanawdg);
 	}
 	else
 	{
-		ctrls::layout* playout = static_cast<ctrls::layout*>(parent_->nanawdg.get());
+		auto playout = static_cast<ctrls::layout*>(parent_->nanawdg.get());
 		playout->append(*ctrl->nanawdg);
 	}
+
 	// events
 	control_struct_ptr pctrl = ctrl;
+	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+	{
+		if(!pctrl.lock()->ishighlighted && cursor().action != cursor_action::select)
+		{
+			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+		}
+	});
+
+	ctrl->nanawdg->events().mouse_leave([this, pctrl]()
+	{
+		if(pctrl.lock()->ishighlighted)
+		{
+			pctrl.lock()->reset_highlight();
+		}
+	});
+
 	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
 	{
 		clickctrl(pctrl.lock());
@@ -179,13 +297,35 @@ tree_node<control_struct>* guimanager::addcommonctrl(tree_node<control_struct>* 
 
 	// events
 	control_struct_ptr pctrl = ctrl;
+	if(type == CTRL_PANEL)
+	{
+		ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+		{
+			auto ppanel = static_cast<ctrls::panel*>(pctrl.lock()->nanawdg.get());
+			if(ppanel->haschild())
+				return; // already has a child
+
+			if(!pctrl.lock()->ishighlighted && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
+			{
+				pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+			}
+		});
+
+		ctrl->nanawdg->events().mouse_leave([this, pctrl]()
+		{
+			if(pctrl.lock()->ishighlighted)
+			{
+				pctrl.lock()->reset_highlight();
+			}
+		});
+	}
+
 	ctrl->nanawdg->events().click.connect_front([this, pctrl](const nana::arg_click & arg)
 	{
 		clickctrl(pctrl.lock());
 	});
 
 	return _registerobject(ctrl, parent);
-
 }
 
 
@@ -219,8 +359,13 @@ void guimanager::deleteselected()
 		{
 			if(parent_->properties.property("type").as_string() == CTRL_PANEL)
 			{
-				ctrls::panel* ppanel = static_cast<ctrls::panel*>(parent_->nanawdg.get());
+				auto ppanel = static_cast<ctrls::panel*>(parent_->nanawdg.get());
 				ppanel->remove(*toremove->value->nanawdg);
+			}
+			else if(parent_->properties.property("type").as_string() == CTRL_FORM)
+			{
+				auto pform = static_cast<ctrls::form*>(parent_->nanawdg.get());
+				pform->remove(*toremove->value->nanawdg);
 			}
 			else
 			{
@@ -240,6 +385,15 @@ void guimanager::deleteselected()
 	}
 
 	_ctrls.remove(toremove);
+
+	printf("\nREMOVED:\n");
+	// delete ctrl name
+	_ctrls.for_each([this](tree_node<control_struct>* node) -> bool
+	{
+		printf("- %s\n", node->value->properties.property("name").as_string().c_str());
+		return true;
+	});
+
 
 	if(parent)
 	{
@@ -312,19 +466,29 @@ void guimanager::clickctrl(control_struct ctrl)
 	_ap->deselect();
 
 	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_PANEL)
+	if(type == CTRL_PANEL || type == CTRL_FORM)
 	{
 		if(cursor().type == CTRL_LAYOUT)
 		{
-			ctrls::panel* ppanel = static_cast<ctrls::panel*>(ctrl->nanawdg.get());
-			if(ppanel->haschild())
-				return; // already has a child
-
-			ppanel->prepareforinsert();
-
-			_ctrls.for_each([this, ctrl](tree_node<control_struct>* node) -> bool
+			if(type == CTRL_PANEL)
 			{
-				if(node->value == ctrl)
+				auto ppanel = static_cast<ctrls::panel*>(ctrl->nanawdg.get());
+				if(ppanel->haschild())
+					return; // already has a child
+			}
+			else if(type == CTRL_FORM)
+			{
+				auto pform = static_cast<ctrls::form*>(ctrl->nanawdg.get());
+				if(pform->haschild())
+					return; // already has a child
+			}
+
+			ctrl->reset_highlight();
+
+			control_struct_ptr pctrl = ctrl;
+			_ctrls.for_each([this, pctrl](tree_node<control_struct>* node) -> bool
+			{
+				if(node->value == pctrl.lock())
 				{
 					addlayout(node, ctrls::layout_orientation::horizontal);
 					return false;
@@ -337,7 +501,7 @@ void guimanager::clickctrl(control_struct ctrl)
 		{
 			nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
 			m.icon(m.icon_warning);
-			m << "Impossible to create the widget. Did you forget to add a layout?";
+			m << "Impossible to create the control. Did you forget to add a layout?";
 			m();
 		}
 		return;
@@ -345,13 +509,14 @@ void guimanager::clickctrl(control_struct ctrl)
 	
 	if(type == CTRL_LAYOUT)
 	{
-		ctrls::layout* playout = static_cast<ctrls::layout*>(ctrl->nanawdg.get());
+		auto playout = static_cast<ctrls::layout*>(ctrl->nanawdg.get());
 
-		playout->prepareforinsert();
+		ctrl->reset_highlight();
 
-		_ctrls.for_each([this, ctrl](tree_node<control_struct>* node) -> bool
+		control_struct_ptr pctrl = ctrl;
+		_ctrls.for_each([this, pctrl](tree_node<control_struct>* node) -> bool
 		{
-			if(node->value == ctrl)
+			if(node->value == pctrl.lock())
 			{
 				if(cursor().type == CTRL_LAYOUT)
 					addlayout(node, ctrls::layout_orientation::horizontal);
@@ -447,6 +612,8 @@ bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* 
 
 		if(node_name == NODE_LAYOUT)
 			node = addlayout(parent, static_cast<ctrls::layout_orientation>(xml_node.attribute("layout").as_int()), ctrl_name);
+		else if(node_name == NODE_FORM && xml_node.attribute("mainclass").as_bool())
+			node = addmainform(ctrl_name);
 		else if(node_name == NODE_PANEL && xml_node.attribute("mainclass").as_bool())
 			node = addmainpanel(ctrl_name);
 		else
@@ -470,7 +637,7 @@ bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* 
 
 
 		// deserialize children
-		if(node_name == NODE_LAYOUT || node_name == NODE_PANEL)
+		if(node_name == NODE_LAYOUT || node_name == NODE_PANEL || node_name == NODE_FORM)
 		{
 			if(!deserialize(node, &xml_node))
 				return false;
@@ -485,7 +652,8 @@ bool guimanager::_checksonship(const std::string& child, const std::string& pare
 {
 	if(parent == CTRL_LAYOUT)
 		return true;
-
+	if(parent == CTRL_FORM && child == CTRL_LAYOUT)
+		return true;
 	if(parent == CTRL_PANEL && child == CTRL_LAYOUT)
 		return true;
 
@@ -565,6 +733,13 @@ void guimanager::_updatectrl(tree_node<control_struct>* node, bool update_owner,
 	if(type == CTRL_LAYOUT)
 	{
 		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+		// update children ctrls
+		if(update_children)
+			_updatechildrenctrls(node);
+	}
+	else if(type == CTRL_FORM)
+	{
+		static_cast<ctrls::form*>(ctrl->nanawdg.get())->update(&ctrl->properties);
 		// update children ctrls
 		if(update_children)
 			_updatechildrenctrls(node);

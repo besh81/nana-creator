@@ -19,8 +19,26 @@ namespace ctrls
 
 	struct ctrl_struct
 	{
-		properties_collection		properties;
+		properties_collection			properties;
 		std::unique_ptr<nana::widget>	nanawdg;
+
+		bool			ishighlighted{ false };
+		nana::color		bgcolor;
+
+		void set_highlight(nana::color color)
+		{
+			// reset bgcolor highlight
+			ishighlighted = true;
+			bgcolor = nanawdg->bgcolor();
+			nanawdg->bgcolor(color);
+		}
+
+		void reset_highlight()
+		{
+			// reset bgcolor highlight
+			ishighlighted = false;
+			nanawdg->bgcolor(bgcolor);
+		}
 	};
 
 }//end namespace ctrls

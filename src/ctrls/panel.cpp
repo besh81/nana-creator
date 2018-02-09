@@ -8,12 +8,9 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/panel.h"
-#include "guimanager.h"
 #include "nana_extra/pg_items.h" // to_color
 #include "style.h"
 
-
-extern guimanager	g_gui_mgr;
 
 
 namespace ctrls
@@ -33,33 +30,6 @@ namespace ctrls
 
 
 		_initproperties(properties, name);
-
-
-		//TODO - spostare in guimanager
-		events().mouse_enter([this]()
-		{
-			if(_child)
-				return; // already has a child
-
-			if(!_is_highlighted && g_gui_mgr.cursor().action != cursor_action::select)
-			{
-				if(g_gui_mgr.cursor().type == CTRL_LAYOUT)
-				{
-					_is_highlighted = true;
-					_bgcolor = bgcolor();
-					bgcolor(HIGHLIGHT_ON_PLACE);
-				}
-			}
-		});
-
-		events().mouse_leave([this]()
-		{
-			if(_is_highlighted)
-			{
-				_is_highlighted = false;
-				bgcolor(_bgcolor);
-			}
-		});
 	}
 
 
@@ -188,14 +158,6 @@ namespace ctrls
 			properties->append("width").label("Width").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_W;
 			properties->append("height").label("Height").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_H;
 		}
-	}
-
-
-	void panel::prepareforinsert()
-	{
-		// reset bg color highlight
-		_is_highlighted = false;
-		bgcolor(_bgcolor);
 	}
 
 

@@ -23,6 +23,7 @@
 #include "ctrls/checkbox.h"
 #include "ctrls/date_chooser.h"
 #include "ctrls/toolbar.h"
+#include "ctrls/form.h"
 
 
 #define BEGIN_TAG			"//<*"
@@ -368,6 +369,10 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 	else if(type == CTRL_TOOLBAR)
 	{
 		static_cast<ctrls::toolbar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_FORM)
+	{
+		static_cast<ctrls::form*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
 
 	// children

@@ -34,7 +34,6 @@ namespace ctrls
 		nana::color col;
 
 		//
-		//caption(properties->property("caption").as_string());
 		enabled(properties->property("enabled").as_bool());
 
 		//
@@ -43,6 +42,7 @@ namespace ctrls
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
 		//
+		scale(properties->property("fgcolor").as_uint());
 	}
 
 
@@ -59,7 +59,6 @@ namespace ctrls
 		// init
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
-		//cd->init.push_back(name + ".caption(\"" + properties->property("caption").as_string() + "\");");
 		cd->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
 
 		// color
@@ -76,6 +75,7 @@ namespace ctrls
 		if(!inherited)
 			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
 		//
+		cd->init.push_back(name + ".scale(" + properties->property("scale").as_string() + ");");
 
 
 		// placement
@@ -89,12 +89,12 @@ namespace ctrls
 		properties->append("type") = CTRL_TOOLBAR;
 		properties->append("name") = name;
 		// common
-		//properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);
 		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), false);
+		properties->append("scale").label("Scale").category(CAT_APPEARANCE).type(pg_type::string_uint) = 16; // get from nana source
 		// layout
 		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;

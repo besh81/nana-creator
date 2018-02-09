@@ -75,7 +75,6 @@ bool namemanager::remove(const std::string& name)
 
 	// not found
 	return false;
-
 }
 
 void namemanager::print(std::basic_ostream<char, std::char_traits<char> >& stream) const

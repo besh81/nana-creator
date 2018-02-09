@@ -119,14 +119,13 @@ namespace ctrls
 		properties->append("name") = name;
 		// common
 		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
+		properties->append("check").label("Checked").category(CAT_COMMON).type(pg_type::check) = checked();
+		properties->append("group").label("Group name").category(CAT_COMMON).type(pg_type::string) = "";
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
-
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);
 		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), false);
-		properties->append("check").label("Checked").category(CAT_APPEARANCE).type(pg_type::check) = checked();
 		properties->append("radio").label("Radio").category(CAT_APPEARANCE).type(pg_type::check) = false;
-		properties->append("group").label("Group name").category(CAT_APPEARANCE).type(pg_type::string) = "";
 		// layout
 		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;

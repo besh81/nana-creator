@@ -10,6 +10,7 @@
 #include "ctrls/listbox.h"
 #include "nana_extra/pg_items.h" // to_color
 #include "style.h"
+#include "tokenizer/Tokenizer.h"
 
 
 namespace ctrls
@@ -36,6 +37,21 @@ namespace ctrls
 
 		//
 		enabled(properties->property("enabled").as_bool());
+		// columns
+		/* //TODO: erase columns
+		std::string options = properties->property("columns").as_string();
+		if(!options.empty())
+		{
+			// columns: string with this format  ->  "item1" "item2" "item3" ...
+			Tokenizer strtkn(options);
+			strtkn.setDelimiter("\"");
+			std::string item;
+			while((item = strtkn.next()) != "")
+			{
+				if(item != " ")
+					append_header(item);
+			}
+		}*/
 		//
 		col = nana::to_color(properties->property("bgcolor").as_string(), inherited);
 		bgcolor(inherited ? pw->bgcolor() : col);
@@ -59,7 +75,27 @@ namespace ctrls
 		// init
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
+
+		// columns
+		std::string options = properties->property("columns").as_string();
+		if(!options.empty())
+		{
+			// columns: string with this format  ->  "item1" "item2" "item3" ...
+			Tokenizer strtkn(options);
+			strtkn.setDelimiter("\"");
+			std::string item;
+			while((item = strtkn.next()) != "")
+			{
+				if(item != " ")
+					cd->init.push_back(name + ".append_header(\"" + item + "\");");
+			}
+		}
+
+		cd->init.push_back(name + ".checkable(" + properties->property("checkable").as_string() + ");");
+		if(properties->property("single_selection").as_bool())
+			cd->init.push_back(name + ".enable_single(true, true);");
 		cd->init.push_back(name + ".enabled(" + properties->property("enabled").as_string() + ");");
+
 		// color
 		bool inherited;
 		std::string col;
@@ -87,6 +123,9 @@ namespace ctrls
 		properties->append("type") = CTRL_LISTBOX;
 		properties->append("name") = name;
 		// common
+		properties->append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection) = "";
+		properties->append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
+		properties->append("single_selection").label("Single selection").category(CAT_COMMON).type(pg_type::check) = false;
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);

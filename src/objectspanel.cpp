@@ -64,6 +64,9 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	auto & img_tlb = _objects.icon(CTRL_TOOLBAR);
 	img_tlb.normal.open("icons/toolbar_dark.png");
 
+	auto & img_frm = _objects.icon(CTRL_FORM);
+	img_frm.normal.open("icons/form_dark.png");
+
 
 	// context menu
 	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)
@@ -115,6 +118,9 @@ bool objectspanel::append(const std::string& parent, const std::string& name, co
 		nana::treebox::item_proxy pnode;
 		std::string objparent = parent + " :";
 
+		if(_roots.empty())
+			return false; // error
+
 		auto item = _roots[0];
 		if(item.empty())
 			return false;
@@ -146,6 +152,9 @@ bool objectspanel::append(const std::string& parent, const std::string& name, co
 
 bool objectspanel::remove(const std::string& name)
 {
+	if(_roots.empty())
+		return false; // error
+
 	bool ret = false;
 	std::string objname = name + " : ";
 
@@ -178,6 +187,9 @@ bool objectspanel::remove(const std::string& name)
 
 bool objectspanel::move_before_sibling(const std::string& name)
 {
+	if(_roots.empty())
+		return false; // error
+
 	bool ret = false;
 	std::string objname = name + " : ";
 
@@ -232,6 +244,9 @@ bool objectspanel::move_before_sibling(const std::string& name)
 
 bool objectspanel::move_after_sibling(const std::string& name)
 {
+	if(_roots.empty())
+		return false; // error
+
 	bool ret = false;
 	std::string objname = name + " : ";
 
@@ -297,6 +312,9 @@ bool objectspanel::clear()
 
 bool objectspanel::select(const std::string& name)
 {
+	if(_roots.empty())
+		return false; // error
+
 	bool ret = false;
 	std::string objname = name + " : ";
 
@@ -322,6 +340,9 @@ bool objectspanel::select(const std::string& name)
 
 bool objectspanel::change_name(const std::string& old_name, const std::string& new_name, const std::string& new_type)
 {
+	if(_roots.empty())
+		return false; // error
+
 	bool ret = false;
 	std::string objname = old_name + " : ";
 

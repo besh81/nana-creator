@@ -1,27 +1,21 @@
 /*
- *		nana::propertygrid Implementation
+ *		nana::items_dialog Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
 #include <nana/gui.hpp>
-#include "choises.h"
+#include "items_dialog.h"
 #include "config.h"
 #include "tokenizer/Tokenizer.h"
 
 
-void choises_panel::init()
+void items_dialog::init()
 {
 	ret_val = nana::msgbox::pick_cancel;
 
-	// init list
-	_list.append_header("items");
-	_list.enable_single(true, true);
-
-
 	// populate toolbar
-	_toolbar.scale(21);
 	nana::paint::image _img_edit;
 	_img_edit.open("icons/item_edit_dark.png");
 	_toolbar.append("Edit item", _img_edit);
@@ -118,14 +112,14 @@ void choises_panel::init()
 	ok_btn.events().click([this]()
 	{
 		ret_val = nana::msgbox::pick_ok;
-		nana::API::close_window(parent());
+		nana::API::close_window(handle());
 	});
 
 	// cancel button
 	canc_btn.events().click([this]()
 	{
 		ret_val = nana::msgbox::pick_cancel;
-		nana::API::close_window(parent());
+		nana::API::close_window(handle());
 	});
 }
 
@@ -133,7 +127,7 @@ void choises_panel::init()
 //----------------------------------------------------------------------------------
 // items: string with this format  ->  "item1" "item2" "item3" ...
 //----------------------------------------------------------------------------------
-void choises_panel::value(const std::string& items)
+void items_dialog::value(const std::string& items)
 {
 	auto cat = _list.at(0);
 
@@ -147,7 +141,7 @@ void choises_panel::value(const std::string& items)
 	}
 }
 
-std::string choises_panel::value()
+std::string items_dialog::value()
 {
 	auto cat = _list.at(0);
 	std::string items;

@@ -124,6 +124,10 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	{
 		_img.open("icons/horizontal_layout_dark.png");
 	}
+	else if(type == CTRL_FORM)
+	{
+		_img.open("icons/form_dark.png");
+	}
 	else if(type == CTRL_PANEL)
 	{
 		_img.open("icons/panel_dark.png");

@@ -1,12 +1,12 @@
 /*
- *		ctrls::panel Implementation
+ *		ctrls::form Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_PANEL_H
-#define NANA_CREATOR_PANEL_H
+#ifndef NANA_CREATOR_FORM_H
+#define NANA_CREATOR_FORM_H
 
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/place.hpp>
@@ -17,11 +17,11 @@
 namespace ctrls
 {
 
-	class panel
+	class form
 		: public nana::panel<true>
 	{
 	public:
-		panel(nana::window wd, properties_collection* properties, const std::string& name);
+		form(nana::window wd, properties_collection* properties, const std::string& name);
 
 		void update(properties_collection* properties);
 
@@ -43,4 +43,4 @@ namespace ctrls
 
 }//end namespace ctrls
 
-#endif //NANA_CREATOR_PANEL_H
+#endif //NANA_CREATOR_FORM_H

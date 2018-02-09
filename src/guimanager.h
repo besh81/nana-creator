@@ -59,6 +59,7 @@ public:
 	cursor_state cursor() { return _cursor_state; }
 
 
+	tree_node<control_struct>* addmainform(const std::string& name = "");
 	tree_node<control_struct>* addmainpanel(const std::string& name = "");
 	tree_node<control_struct>* addlayout(tree_node<control_struct>* parent, ctrls::layout_orientation layout, const std::string& name = "");
 	tree_node<control_struct>* addcommonctrl(tree_node<control_struct>* parent, const std::string& type, const std::string& name = "");

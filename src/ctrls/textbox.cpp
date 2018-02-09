@@ -97,13 +97,13 @@ namespace ctrls
 		// common
 		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties->append("tip_string").label("Tip").category(CAT_COMMON).type(pg_type::string) = "";
+		properties->append("line_wrapped").label("Line Wrapped").category(CAT_COMMON).type(pg_type::check) = line_wrapped();
+		properties->append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = multi_lines();
 		properties->append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = editable();
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);
 		properties->append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(fgcolor(), false);
-		properties->append("line_wrapped").label("Line Wrapped").category(CAT_APPEARANCE).type(pg_type::check) = line_wrapped();
-		properties->append("multi_lines").label("Multiple Lines").category(CAT_APPEARANCE).type(pg_type::check) = multi_lines();
 		// layout
 		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
