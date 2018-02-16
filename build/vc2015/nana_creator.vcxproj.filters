@@ -117,6 +117,30 @@
     <ClCompile Include="..\..\libs\tokenizer\Tokenizer.cpp">
       <Filter>libs\tokenizer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\categorize.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\group.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\menubar.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\picture.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\progress.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\tabbar.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\slider.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\imagemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -214,6 +238,30 @@
     </ClInclude>
     <ClInclude Include="..\..\libs\tokenizer\Tokenizer.h">
       <Filter>libs\tokenizer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\categorize.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\group.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\menubar.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\picture.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\progress.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\slider.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\tabbar.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\imagemanager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

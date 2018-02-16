@@ -17,8 +17,8 @@ namespace ctrls
 {
 
 	//panel
-	panel::panel(nana::window wd, properties_collection* properties, const std::string& name)
-		: nana::panel<true>(wd)
+	panel::panel(nana::window wd, properties_collection* properties, const std::string& name, bool visible)
+		: nana::panel<true>(wd, visible)
 	{
 		_place.div("abc");
 		_place.collocate();

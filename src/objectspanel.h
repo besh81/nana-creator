@@ -34,6 +34,15 @@ public:
 
 	bool change_name(const std::string& old_name, const std::string& new_name, const std::string& new_type);
 
+	void emit_events(bool state)
+	{
+		_evt_emit = state;
+	}
+
+	void auto_draw(bool state)
+	{
+		_objects.auto_draw(state);
+	}
 
 private:
 	nana::place		_place{ *this };
@@ -44,6 +53,8 @@ private:
 	nana::menu		_ctxmenu;
 
 	std::vector<nana::treebox::item_proxy> _roots;
+
+	bool			_evt_emit{ true };
 };
 
 #endif //NANA_CREATOR_OBJECTSPANEL_H

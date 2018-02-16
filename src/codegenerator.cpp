@@ -24,15 +24,23 @@
 #include "ctrls/date_chooser.h"
 #include "ctrls/toolbar.h"
 #include "ctrls/form.h"
+#include "ctrls/categorize.h"
+#include "ctrls/group.h"
+#include "ctrls/menubar.h"
+#include "ctrls/picture.h"
+#include "ctrls/progress.h"
+#include "ctrls/slider.h"
+#include "ctrls/tabbar.h"
 
 
 #define BEGIN_TAG			"//<*"
 #define END_TAG				"//*>"
 
-#define HEADERS_TAG			"Headers()"
-#define INIT_TAG			"Initialize()"
-#define INITFUNC_TAG		"InitFunction()"
-#define DECLARATIONS_TAG	"Declarations()"
+#define INFO_TAG			"tag"
+#define INCLUDES_TAG		"includes"
+#define CTOR_TAG			"ctor"
+#define DTOR_TAG			"dtor"
+#define DECLARATIONS_TAG	"declarations"
 
 
 extern guimanager	g_gui_mgr;
@@ -53,11 +61,14 @@ bool codegenerator::generate(nana::window wd, const std::string& path)
 	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
 
 
-	_filename = path;
-	if(_filename.empty())
+	if(path.empty())
 	{
-		// use name file in panel - mainclass
+		// use current working dir
 		_filename = GetCurrentWorkingDir() + "\\" + _code_data.filename + ".h";
+	}
+	else
+	{
+		_filename = path + "\\" + _code_data.filename + ".h";
 	}
 
 	// check file
@@ -95,9 +106,8 @@ bool codegenerator::generate(nana::window wd, const std::string& path)
 	}
 
 	if(create_file)
-		_write_new_file();
-	else
-		_write_existing_file();
+		_reset_tags();
+	_write_file();
 
 	// write buffer into file
 	std::ofstream out_file(_filename.c_str());
@@ -117,10 +127,11 @@ void codegenerator::_reset_tags()
 {
 	_tags.clear();
 
-	_tags.push_back(tag{ HEADERS_TAG, 0, 0, 0 });
-	_tags.push_back(tag{ INIT_TAG, 0, 0, 0 });
-	_tags.push_back(tag{ INITFUNC_TAG, 0, 0, 0 });
-	_tags.push_back(tag{ DECLARATIONS_TAG, 0, 0, 0 });
+	_tags.push_back(tag{ INFO_TAG, 0, 0 });
+	_tags.push_back(tag{ INCLUDES_TAG, 0, 0 });
+	_tags.push_back(tag{ CTOR_TAG, 0, 0 });
+	_tags.push_back(tag{ DTOR_TAG, 0, 0 });
+	_tags.push_back(tag{ DECLARATIONS_TAG, 0, 0 });
 }
 
 
@@ -178,16 +189,6 @@ bool codegenerator::_parse()
 			return false;
 		}
 
-
-		// indent
-		if(_buffer[_tags[i].begin] == '\n')
-		{
-			_tags[i].indent = 0;
-			while(_buffer[_tags[i].begin + 1 + _tags[i].indent] == '\t')
-				++_tags[i].indent;
-		}
-
-
 		begin = _tags[i].end;
 	}
 
@@ -226,86 +227,23 @@ void codegenerator::_write_line(const std::string& line, bool endl)
 }
 
 
-void codegenerator::_write_headers_tag()
+void codegenerator::_append_tag(const std::string& tag)
 {
-	_code.clear();
-
 	for(auto& i : _tags)
-		if(i.name == HEADERS_TAG)
+		if(i.name == tag)
 		{
-			_indent = i.indent;
-
-			_write_line();
-			std::vector<std::string> hpps = _code_data.hpps.getlist();
-			for(auto it = hpps.begin(); it != hpps.end(); ++it)
-				_write_line(*it);
-			_write_line("", false);
-
-			_buffer.replace(i.begin, i.end - i.begin, _code);
-			break;
-		}
-}
-
-void codegenerator::_write_init_tag()
-{
-	_code.clear();
-
-	for(auto& i : _tags)
-		if(i.name == INIT_TAG)
-		{
-			_indent = i.indent;
-
-			_write_line();
-			_write_line("init_();");
-			_write_line("", false);
-
-			_buffer.replace(i.begin, i.end - i.begin, _code);
-			break;
-		}
-}
-
-void codegenerator::_write_initfunc_tag()
-{
-	_code.clear();
-
-	for(auto& i : _tags)
-		if(i.name == INITFUNC_TAG)
-		{
-			_indent = i.indent;
-
-			_write_line();
-			_write_line("void init_()");
-			_write_line("{");
-			++_indent;
-			for(auto it = _code_data.init.begin(); it != _code_data.init.end(); ++it)
-				_write_line(*it);
-			_write_line();
-			for(auto it = _code_data.init_post.begin(); it != _code_data.init_post.end(); ++it)
-				_write_line(*it);
-			--_indent;
-			_write_line("}");
-			_write_line("", false);
-
-			_buffer.replace(i.begin, i.end - i.begin, _code);
-			break;
-		}
-}
-
-void codegenerator::_write_declarations_tag()
-{
-	_code.clear();
-
-	for(auto& i : _tags)
-		if(i.name == DECLARATIONS_TAG)
-		{
-			_indent = i.indent;
-
-			_write_line();
-			for(auto it = _code_data.decl.begin(); it != _code_data.decl.end(); ++it)
-				_write_line(*it);
-			_write_line("", false);
-
-			_buffer.replace(i.begin, i.end - i.begin, _code);
+			if(i.begin == i.end)
+			{
+				_write_line(BEGIN_TAG + tag);
+				_write_line();
+				_write_line(END_TAG);
+			}
+			else
+			{
+				_write_line(BEGIN_TAG + tag, false);
+				_code.append(_buffer.substr(i.begin, i.end - i.begin));
+				_code.append(END_TAG "\n");
+			}
 			break;
 		}
 }
@@ -374,6 +312,34 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 	{
 		static_cast<ctrls::form*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
 	}
+	else if(type == CTRL_CATEGORIZE)
+	{
+		static_cast<ctrls::categorize*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_GROUP)
+	{
+		static_cast<ctrls::group*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_MENUBAR)
+	{
+		static_cast<ctrls::menubar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_PICTURE)
+	{
+		static_cast<ctrls::picture*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_PROGRESS)
+	{
+		static_cast<ctrls::progress*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_SLIDER)
+	{
+		static_cast<ctrls::slider*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
+	else if(type == CTRL_TABBAR)
+	{
+		static_cast<ctrls::tabbar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
+	}
 
 	// children
 	_generate(node->child, ci.create, ci.place, 1);
@@ -382,7 +348,7 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 }
 
 
-bool codegenerator::_write_new_file()
+bool codegenerator::_write_file()
 {
 	_code.clear();
 	_indent = 0;
@@ -391,7 +357,12 @@ bool codegenerator::_write_new_file()
 	const char* header =
 		"/*****************************************************\n"
 		" *\tC++ code generated with " CREATOR_NAME " (" CREATOR_VERSION ")\n"
-		" *\tGitHub repo:\n"
+		" *\tGitHub repo: https://github.com/besh81/nana-creator\n"
+		" *\n"
+		" * PLEASE EDIT ONLY INSIDE THE TAGS:\n"
+		" *		//<*" INFO_TAG "\n"
+		" *			user code\n"
+		" *		//*>\n"
 		"*****************************************************/\n";
 	_write_line(header);
 	//---- file header - END
@@ -399,13 +370,14 @@ bool codegenerator::_write_new_file()
 	_write_line();
 
 	//---- c++ headers - START
-	_write_line(BEGIN_TAG HEADERS_TAG);
 	std::vector<std::string> hpps = _code_data.hpps.getlist();
 	for(auto it = hpps.begin(); it != hpps.end(); ++it)
 		_write_line(*it);
-	_write_line(END_TAG);
 	//---- c++ headers - END
 
+	_write_line();
+	_append_tag(INCLUDES_TAG);
+	_write_line();
 	_write_line();
 
 	//---- class declaration - START
@@ -427,14 +399,27 @@ bool codegenerator::_write_new_file()
 	_write_line("{");
 	_indent++;
 
-	_write_line(BEGIN_TAG INIT_TAG);
 	_write_line("init_();");
-	_write_line(END_TAG);
+
+	_write_line();
+	_append_tag(CTOR_TAG);
 
 	_indent--;
 	_write_line("}");
 	//---- ctor - END
 
+	_write_line();
+
+	//---- dtor - START
+	_write_line("~" + _code_data.mainclass + "()");
+	_write_line("{");
+	_indent++;
+
+	_append_tag(DTOR_TAG);
+
+	_indent--;
+	_write_line("}");
+	//---- dtor - END
 	//---- public - END
 
 	_write_line();
@@ -445,8 +430,7 @@ bool codegenerator::_write_new_file()
 	_write_line("private:");
 	_indent++;
 
-
-	_write_line(BEGIN_TAG INITFUNC_TAG);
+	//---- init function - START
 	_write_line("void init_()");
 	_write_line("{");
 	_indent++;
@@ -459,7 +443,7 @@ bool codegenerator::_write_new_file()
 
 	_indent--;
 	_write_line("}");
-	_write_line(END_TAG);
+	//---- init function - END
 	//---- private - END
 
 	_write_line();
@@ -470,58 +454,22 @@ bool codegenerator::_write_new_file()
 	_write_line("protected:");
 	_indent++;
 
-
-	_write_line(BEGIN_TAG DECLARATIONS_TAG);
-
+	//---- ctrls declarations - STAT
 	for(auto it = _code_data.decl.begin(); it != _code_data.decl.end(); ++it)
 		_write_line(*it);
-
-	_write_line(END_TAG);
+	//---- ctrls declarations - END
 	//---- protected - END
 
+	_write_line();
+
+	_write_line();
+	_append_tag(DECLARATIONS_TAG);
 
 	_indent--;
 	_write_line("};");
 	_write_line();
 
 	_buffer = _code;
-
-	return true;
-}
-
-
-bool codegenerator::_write_existing_file()
-{
-	// replace code between tags
-	_indent = 0;
-	while(1)
-	{
-		size_t imax = 0;
-		size_t vmax = 0;
-		for(size_t i = 0; i < _tags.size(); ++i)
-		{
-			if(_tags[i].begin > vmax)
-			{
-				vmax = _tags[i].begin;
-				imax = i;
-			}
-		}
-
-		if(vmax == 0)
-			break;
-
-		if(_tags[imax].name == HEADERS_TAG)
-			_write_headers_tag();
-		else if(_tags[imax].name == INIT_TAG)
-			_write_init_tag();
-		else if(_tags[imax].name == INITFUNC_TAG)
-			_write_initfunc_tag();
-		else if(_tags[imax].name == DECLARATIONS_TAG)
-			_write_declarations_tag();
-
-		// set as done
-		_tags[imax].begin = 0;
-	}
 
 	return true;
 }

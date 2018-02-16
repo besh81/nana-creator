@@ -65,8 +65,14 @@ namespace nana
 		virtual void value(int value);
 		virtual int to_int() const;
 
+		virtual void range(int min, int max);
+
 	protected:
 		virtual void create(window wd) override;
+
+		bool	range_{ false };
+		int		min_;
+		int		max_;
 	};
 
 
@@ -84,8 +90,14 @@ namespace nana
 		virtual void value(unsigned value);
 		virtual unsigned to_uint() const;
 
+		virtual void range(unsigned min, unsigned max);
+
 	protected:
 		virtual void create(window wd) override;
+
+		bool		range_{ false };
+		unsigned	min_;
+		unsigned	max_;
 	};
 
 
@@ -162,7 +174,7 @@ namespace nana
 		virtual void value(int value);
 		virtual int to_int() const;
 
-		virtual void range(int begin, int last, int step);
+		virtual void range(int min, int max, int step);
 
 	protected:
 		virtual void create(window wd) override;

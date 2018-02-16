@@ -85,9 +85,6 @@ namespace ctrls
 
 				_place.div(getdiv().c_str());
 				_place.collocate();
-
-				//debug
-				std::cout << "update: " << getdiv() << "\n";
 				return;
 			}
 		}
@@ -176,9 +173,6 @@ namespace ctrls
 
 		_place.div(getdiv().c_str());
 		_place.field(f.name.c_str()) << child;
-		//debug
-		std::cout << "append: " << getdiv() << "\n";
-
 		return true;
 	}
 
@@ -196,9 +190,6 @@ namespace ctrls
 
 				_place.div(getdiv().c_str());
 				_place.collocate();
-
-				//debug
-				std::cout << "remove: " << getdiv() << "\n";
 				return false;
 			}
 		}
@@ -220,9 +211,6 @@ namespace ctrls
 
 				_place.div(getdiv().c_str());
 				_place.collocate();
-
-				//debug
-				std::cout << "moveup: " << getdiv() << "\n";
 				return false;
 			}
 		}
@@ -243,9 +231,6 @@ namespace ctrls
 
 				_place.div(getdiv().c_str());
 				_place.collocate();
-
-				//debug
-				std::cout << "movedown: " << getdiv() << "\n";
 				return false;
 			}
 		}

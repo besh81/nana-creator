@@ -238,5 +238,6 @@ _Pvt_Extensions
 # FAKE - F# Make
 .fake/
 nana_creator.VC.db
-icons/Thumbs.db
-icons/Thumbs.db
+wdir/*.h
+wdir/*.ncp
+wdir/icons/*.db

@@ -17,8 +17,8 @@ namespace ctrls
 {
 
 	//form
-	form::form(nana::window wd, properties_collection* properties, const std::string& name)
-		: nana::panel<true>(wd)
+	form::form(nana::window wd, properties_collection* properties, const std::string& name, bool visible)
+		: nana::panel<true>(wd, visible)
 	{
 		_place.div("abc");
 		_place.collocate();
@@ -72,8 +72,12 @@ namespace ctrls
 
 		cd->mainclass = name;
 		cd->mainclass_base = "nana::form";
+		/*
 		cd->mainclass_ctor = "(nana::window wd, const ::nana::size& sz = {" + sz + "}, const nana::appearance& apr = {" + apr + "})";
 		cd->mainclass_base_ctor = "(wd, sz, apr)";
+		*/
+		cd->mainclass_ctor = "(const nana::rectangle& rect = nana::API::make_center(" + sz + "), const nana::appearance& apr = {" + apr + "})";
+		cd->mainclass_base_ctor = "(rect, apr)";
 
 		// filename
 		cd->filename = properties->property("filename").as_string();

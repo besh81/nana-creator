@@ -21,7 +21,7 @@ namespace ctrls
 		: public nana::panel<true>
 	{
 	public:
-		form(nana::window wd, properties_collection* properties, const std::string& name);
+		form(nana::window wd, properties_collection* properties, const std::string& name, bool visible = true);
 
 		void update(properties_collection* properties);
 

@@ -17,7 +17,7 @@ namespace ctrls
 
 	//button
 	button::button(nana::window wd, properties_collection* properties, const std::string& name)
-		: nana::button(wd, CTRL_BUTTON_NAME)
+		: nana::button(wd, CTRL_BUTTON)
 	{
 		nana::API::ignore_mouse_focus(*this, false);
 		nana::API::effects_edge_nimbus(*this, nana::effects::edge_nimbus::none);
@@ -75,8 +75,8 @@ namespace ctrls
 		nana::to_color(col, inherited);
 		if(!inherited)
 			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
-		// transparent
-		cd->init.push_back(name + ".transparent(" + properties->property("transparent").as_string("false") + ");");
+		//
+		cd->init.push_back(name + ".transparent(" + properties->property("transparent").as_string() + ");");
 
 		// placement
 		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
@@ -89,7 +89,7 @@ namespace ctrls
 		properties->append("type") = CTRL_BUTTON;
 		properties->append("name") = name;
 		// common
-		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = CTRL_BUTTON_NAME;
+		properties->append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = CTRL_BUTTON;
 		properties->append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = enabled();
 		// appearance
 		properties->append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(bgcolor(), false);

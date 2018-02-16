@@ -17,7 +17,15 @@
 #include "ctrls/date_chooser.h"
 #include "ctrls/toolbar.h"
 #include "ctrls/form.h"
+#include "ctrls/categorize.h"
+#include "ctrls/group.h"
+#include "ctrls/menubar.h"
+#include "ctrls/picture.h"
+#include "ctrls/progress.h"
+#include "ctrls/slider.h"
+#include "ctrls/tabbar.h"
 #include "guimanager.h"
+#include "lock_guard.h"
 #include "style.h"
 
 
@@ -89,7 +97,7 @@ tree_node<control_struct>* guimanager::addmainform(const std::string& name)
 	// attibutes
 	ctrl->properties.append("mainclass") = true;
 	// nana::widget + properties
-	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::form(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name));
+	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::form(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, _deserializing ? false : true));
 
 	//TEMP
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
@@ -126,8 +134,6 @@ tree_node<control_struct>* guimanager::addmainform(const std::string& name)
 
 
 	return _registerobject(ctrl, 0);
-
-	return 0;
 }
 
 
@@ -146,7 +152,7 @@ tree_node<control_struct>* guimanager::addmainpanel(const std::string& name)
 	// attibutes
 	ctrl->properties.append("mainclass") = true;
 	// nana::widget + properties
-	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name));
+	ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*_main_wd, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, _deserializing ? false : true));
 	
 	//TEMP
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
@@ -247,47 +253,76 @@ tree_node<control_struct>* guimanager::addcommonctrl(tree_node<control_struct>* 
 		return 0;
 
 	control_struct ctrl = control_struct(new ctrls::ctrl_struct());
+	std::string name_ = name.empty() ? _name_mgr.add_numbered(type) : name;
 
 	// nana::widget + properties
 	if(type == CTRL_PANEL)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::panel(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_BUTTON)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::button(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_BUTTON) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::button(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_LABEL)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::label(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_LABEL) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::label(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_TEXTBOX)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::textbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_TEXTBOX) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::textbox(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_COMBOX)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::combox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_COMBOX) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::combox(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_SPINBOX)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::spinbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_SPINBOX) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::spinbox(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_LISTBOX)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::listbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_LISTBOX) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::listbox(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_CHECKBOX)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::checkbox(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_CHECKBOX) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::checkbox(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_DATECHOOSER)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::date_chooser(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_DATECHOOSER) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::date_chooser(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else if(type == CTRL_TOOLBAR)
 	{
-		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::toolbar(*parent_->nanawdg, &ctrl->properties, name.empty() ? _name_mgr.add_numbered(CTRL_TOOLBAR) : name));
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::toolbar(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_CATEGORIZE)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::categorize(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_GROUP)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::group(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_MENUBAR)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::menubar(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_PICTURE)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::picture(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_PROGRESS)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::progress(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_SLIDER)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::slider(*parent_->nanawdg, &ctrl->properties, name_));
+	}
+	else if(type == CTRL_TABBAR)
+	{
+		ctrl->nanawdg = std::unique_ptr<nana::widget>(new ctrls::tabbar(*parent_->nanawdg, &ctrl->properties, name_));
 	}
 	else
 		return 0;
@@ -586,20 +621,32 @@ void guimanager::serialize(tree_node<control_struct>* node, pugi::xml_node* xml_
 
 bool guimanager::deserialize(pugi::xml_node* xml_parent)
 {
-	//ATTENTION: No check on deserialize
-	//return deserialize(0, xml_parent);
-	if(!deserialize(0, xml_parent))
+	lock_guard des_lock(&_deserializing, true);
+	
+	_op->emit_events(false);
+	_op->auto_draw(false);
+	bool ret_val = deserialize(0, xml_parent);
+	_op->auto_draw(true);
+	_op->emit_events(true);
+
+	if(!ret_val)
 		return false;
 
-	// select main panel
 	if(_ctrls.get_root()->child)
+	{
+		// show main panel
+		_ctrls.get_root()->child->value->nanawdg->show();
+
+		// select main panel
 		clickctrl(_ctrls.get_root()->child->value);
+	}
 	return true;
 }
 
 bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* xml_parent)
 {
 	//ATTENTION: No check on deserialize
+
 
 	// read children
 	for(pugi::xml_node xml_node = xml_parent->first_child(); xml_node; xml_node = xml_node.next_sibling())
@@ -610,12 +657,15 @@ bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* 
 		std::string ctrl_name = xml_node.attribute("name").as_string();
 
 
-		if(node_name == NODE_LAYOUT)
+		if(node_name == CTRL_LAYOUT)
 			node = addlayout(parent, static_cast<ctrls::layout_orientation>(xml_node.attribute("layout").as_int()), ctrl_name);
-		else if(node_name == NODE_FORM && xml_node.attribute("mainclass").as_bool())
-			node = addmainform(ctrl_name);
-		else if(node_name == NODE_PANEL && xml_node.attribute("mainclass").as_bool())
-			node = addmainpanel(ctrl_name);
+		else if(xml_node.attribute("mainclass").as_bool())
+		{
+			if(node_name == CTRL_FORM)
+				node = addmainform(ctrl_name);
+			else if(node_name == CTRL_PANEL)
+				node = addmainpanel(ctrl_name);
+		}
 		else
 			node = addcommonctrl(parent, node_name, ctrl_name);
 
@@ -637,7 +687,7 @@ bool guimanager::deserialize(tree_node<control_struct>* parent, pugi::xml_node* 
 
 
 		// deserialize children
-		if(node_name == NODE_LAYOUT || node_name == NODE_PANEL || node_name == NODE_FORM)
+		if(node_name == CTRL_LAYOUT || node_name == CTRL_PANEL || node_name == CTRL_FORM)
 		{
 			if(!deserialize(node, &xml_node))
 				return false;
@@ -679,11 +729,14 @@ tree_node<control_struct>* guimanager::_registerobject(control_struct ctrl, tree
 		_op->append("", ctrl->properties.property("name").as_string(), type);
 
 
-	// set properties panel
-	_pp->set(&ctrl->properties);
+	if(!_deserializing)
+	{
+		// set properties panel
+		_pp->set(&ctrl->properties);
 
-	// set focus to new object
-	ctrl->nanawdg->focus();
+		// set focus to new object
+		ctrl->nanawdg->focus();
+	}
 
 	// select new control
 	_selected = child;
@@ -726,8 +779,6 @@ bool guimanager::_updatectrlname(ctrls::properties_collection* properties, const
 void guimanager::_updatectrl(tree_node<control_struct>* node, bool update_owner, bool update_children)
 {
 	auto ctrl = node->value;
-
-	std::cout << "update control: " << ctrl->properties.property("name").as_string().c_str() << "\n";
 
 	std::string type = ctrl->properties.property("type").as_string();
 	if(type == CTRL_LAYOUT)
@@ -787,7 +838,35 @@ void guimanager::_updatectrl(tree_node<control_struct>* node, bool update_owner,
 	{
 		static_cast<ctrls::toolbar*>(ctrl->nanawdg.get())->update(&ctrl->properties);
 	}
-
+	else if(type == CTRL_CATEGORIZE)
+	{
+		static_cast<ctrls::categorize*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_GROUP)
+	{
+		static_cast<ctrls::group*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_MENUBAR)
+	{
+		static_cast<ctrls::menubar*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_PICTURE)
+	{
+		static_cast<ctrls::picture*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_PROGRESS)
+	{
+		static_cast<ctrls::progress*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_SLIDER)
+	{
+		static_cast<ctrls::slider*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	else if(type == CTRL_TABBAR)
+	{
+		static_cast<ctrls::tabbar*>(ctrl->nanawdg.get())->update(&ctrl->properties);
+	}
+	
 	// update parent ctrl
 	if(node->owner && update_owner)
 		_updateparentctrl(node);
@@ -806,9 +885,6 @@ void guimanager::_updateparentctrl(tree_node<control_struct>* node)
 	std::string type = parent->properties.property("type").as_string();
 	if(type == CTRL_LAYOUT)
 	{
-		//debug
-		std::cout << "update parent2: " << ctrl->properties.property("name").as_string().c_str() << "\n";
-
 		std::string weight = ctrl->properties.property("weight").as_string();
 		if(weight[0] == '-')
 			weight = "";
@@ -827,7 +903,6 @@ void guimanager::_updatechildrenctrls(tree_node<control_struct>* node)
 		if(this_node == node)
 			return true;
 
-		std::cout << node->value->properties.property("name").as_string().c_str() << "\n";
 		_updatectrl(node, false, false);
 		return true;
 	});

@@ -34,7 +34,7 @@ void items_dialog::init()
 	_img_down.open("icons/down_dark.png");
 	_toolbar.append("Move down", _img_down);
 
-
+	// events
 	_toolbar.events().selected([this](const nana::arg_toolbar & arg)
 	{
 		auto cat = _list.at(0); //access the default category

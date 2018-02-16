@@ -15,6 +15,7 @@
 #include <vector>
 #include "pugixml/pugixml.hpp"
 #include "guimanager.h"
+#include "imagemanager.h"
 #include "codegenerator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
@@ -22,21 +23,20 @@
 #include "resizablecanvas.h"
 #include "style.h"
 
-//TEMP
-#include<fstream>
-
 
 using namespace nana;
 
 
 guimanager		g_gui_mgr;	// manage all the gui elements
+imagemanager	g_img_mgr;
+std::string		prj_name;
 
 
 class nana_creator : public form
 {
 public:
 	nana_creator()
-		: form(API::make_center(1000, 600), appear::decorate<appear::sizable, appear::minimize, appear::maximize>())
+		: form(API::make_center(1200, 700), appear::decorate<appear::sizable, appear::minimize, appear::maximize>())
 	{
 		caption(CREATOR_NAME " " CREATOR_VERSION);
 
@@ -73,9 +73,8 @@ public:
 			std::cout << "Error missing root node: " << NODE_ROOT << "\n";
 			return false;
 		}
-		// check version //TODO
-		// ...
 
+		// deserialize the XML structure
 		return g_gui_mgr.deserialize(&root);
 	}
 
@@ -97,8 +96,13 @@ public:
 
 	bool generate_cpp()
 	{
+		std::string path;
+		auto tpos = prj_name.find_last_of("\\/");
+		if(tpos != prj_name.npos)
+			path = prj_name.substr(0, tpos);
+
 		codegenerator cpp;
-		cpp.generate(handle());
+		cpp.generate(handle(), path);
 		cpp.print(std::cout);
 		return true;
 	}
@@ -155,6 +159,7 @@ private:
 
 					std::cout << "Load file: " << fb.file() << std::endl;
 					load_xml(fb.file());
+					prj_name = fb.file();
 				}
 			}
 			else if(arg.button == 2)
@@ -162,6 +167,7 @@ private:
 				filebox fb(*this, false);
 				std::string ext("*." PROJECT_EXT);
 				fb.add_filter("Nana Creator Project", ext);
+				fb.init_file(prj_name);
 
 				if(fb())
 				{
@@ -231,6 +237,28 @@ private:
 
 void main()
 {
+	// init ctrls images
+	g_img_mgr.add(CTRL_LAYOUT, "icons/horizontal_layout_dark.png");
+	g_img_mgr.add(CTRL_BUTTON, "icons/button_dark.png");
+	g_img_mgr.add(CTRL_LABEL, "icons/label_dark.png");
+	g_img_mgr.add(CTRL_TEXTBOX, "icons/textbox_dark.png");
+	g_img_mgr.add(CTRL_LISTBOX, "icons/listbox_dark.png");
+	g_img_mgr.add(CTRL_PANEL, "icons/panel_dark.png");
+	g_img_mgr.add(CTRL_COMBOX, "icons/combox_dark.png");
+	g_img_mgr.add(CTRL_SPINBOX, "icons/spinbox_dark.png");
+	g_img_mgr.add(CTRL_CHECKBOX, "icons/checkbox_dark.png");
+	g_img_mgr.add(CTRL_DATECHOOSER, "icons/datechooser_dark.png");
+	g_img_mgr.add(CTRL_TOOLBAR, "icons/toolbar_dark.png");
+	g_img_mgr.add(CTRL_FORM, "icons/form_dark.png");
+	g_img_mgr.add(CTRL_CATEGORIZE, "icons/categorize_dark.png");
+	g_img_mgr.add(CTRL_GROUP, "icons/group_dark.png");
+	g_img_mgr.add(CTRL_MENUBAR, "icons/menubar_dark.png");
+	g_img_mgr.add(CTRL_PICTURE, "icons/picture_dark.png");
+	g_img_mgr.add(CTRL_PROGRESS, "icons/progress_dark.png");
+	g_img_mgr.add(CTRL_SLIDER, "icons/slider_dark.png");
+	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar_dark.png");
+
+
 	nana_creator fm;
 	//fm.zoom(true);
 	fm.show();

@@ -11,11 +11,13 @@
 #include "ctrls/panel.h"
 #include "nana_extra/pg_items.h"
 #include "guimanager.h"
+#include "imagemanager.h"
 #include "lock_guard.h"
 #include "style.h"
 
 
-extern guimanager	g_gui_mgr;
+extern guimanager		g_gui_mgr;
+extern imagemanager		g_img_mgr;
 
 
 //propertiespanel
@@ -64,8 +66,6 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 	{
 		if(_grid_setup)
 			return;
-
-		std::cout << "Changed [" << arg.item.label().c_str() << "] " << arg.item.value().c_str() << "\n";
 
 		for(size_t i = 0; i < _properties->count(); ++i)
 		{
@@ -117,63 +117,6 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	}
 
 
-	std::string type = _properties->property("type").as_string();
-
-	
-	if(type == CTRL_LAYOUT)
-	{
-		_img.open("icons/horizontal_layout_dark.png");
-	}
-	else if(type == CTRL_FORM)
-	{
-		_img.open("icons/form_dark.png");
-	}
-	else if(type == CTRL_PANEL)
-	{
-		_img.open("icons/panel_dark.png");
-	}
-	else if(type == CTRL_BUTTON)
-	{
-		_img.open("icons/button_dark.png");
-	}
-	else if(type == CTRL_LABEL)
-	{
-		_img.open("icons/label_dark.png");
-	}
-	else if(type == CTRL_TEXTBOX)
-	{
-		_img.open("icons/textbox_dark.png");
-	}
-	else if(type == CTRL_COMBOX)
-	{
-		_img.open("icons/combox_dark.png");
-	}
-	else if(type == CTRL_SPINBOX)
-	{
-		_img.open("icons/spinbox_dark.png");
-	}
-	else if(type == CTRL_LISTBOX)
-	{
-		_img.open("icons/listbox_dark.png");
-	}
-	else if(type == CTRL_CHECKBOX)
-	{
-		_img.open("icons/checkbox_dark.png");
-	}
-	else if(type == CTRL_DATECHOOSER)
-	{
-		_img.open("icons/datechooser_dark.png");
-	}
-	else if(type == CTRL_TOOLBAR)
-	{
-		_img.open("icons/toolbar_dark.png");
-	}
-	else
-	{
-		type = "UNKNOWN !!!";
-	}
-
-
 	// add properties
 	for(size_t i = 0; i < _properties->count(); ++i)
 	{
@@ -186,20 +129,37 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 
 		if(prop.type() == ctrls::pg_type::string_int)
 		{
-			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
+			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
+			auto psi = static_cast<nana::pg_string_int*>(item._m_pgitem());
+
+			if(!prop._m_prop()->type_hints.empty())
+			{
+				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
+				psi->range(range[0], range[1]);
+			}
 		}
 		else if(prop.type() == ctrls::pg_type::string_uint)
 		{
-			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
+			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
+			auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
+
+			if(!prop._m_prop()->type_hints.empty())
+			{
+				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
+				psui->range(range[0], range[1]);
+			}
 		}
 		else if(prop.type() == ctrls::pg_type::choice)
 		{
 			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
 			auto pgc = static_cast<nana::pg_choice*>(item._m_pgitem());
 
-			auto& entries = nana::any_cast<std::vector<std::string>>(prop._m_prop()->type_hints);
-			for(auto s : entries)
-				pgc->push_back(s);
+			if(!prop._m_prop()->type_hints.empty())
+			{
+				auto& entries = nana::any_cast<std::vector<std::string>>(prop._m_prop()->type_hints);
+				for(auto s : entries)
+					pgc->push_back(s);
+			}
 			
 			pgc->option(std::atoi(prop.value().c_str()));
 		}
@@ -211,9 +171,12 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		{
 			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label())));
 			auto psp = static_cast<nana::pg_spin*>(item._m_pgitem());
-
-			auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
-			psp->range(range[0], range[1], range[2]);
+			
+			if(!prop._m_prop()->type_hints.empty())
+			{
+				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
+				psp->range(range[0], range[1], range[2]);
+			}
 
 			psp->value(prop.value());
 		}
@@ -236,8 +199,9 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	}
 
 	// set image, type and name
+	_img.open(g_img_mgr.path(_properties->property("type").as_string()));
 	_pic.load(_img);
-	_type_txt.caption(type);
+	_type_txt.caption(_properties->property("type").as_string());
 	_name_txt.editable(true);
 	_name_txt.caption(_properties->property("name").as_string());
 

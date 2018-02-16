@@ -88,7 +88,7 @@ namespace nana
 				pgitem() = default;
 
 				pgitem(const std::string& label, const std::string& value = "")
-					: label_(label), value_(value), evt_emit_(true)
+					: label_(label), value_(value)
 				{
 				}
 
@@ -134,7 +134,7 @@ namespace nana
 				std::string		value_;
 				unsigned		size_{ 24 };
 
-				bool			evt_emit_;
+				bool			evt_emit_{ true };
 				essence_t*		ess_;
 				index_pair		idx_;
 			};

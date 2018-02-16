@@ -140,28 +140,6 @@ namespace ctrls
 		property_proxy operator[](size_t index);
 
 
-
-		// Get property list
-		/*property_proxy	first() const;
-		/*property_handle last() const;
-
-		// Add property with specified name. Returns added property, or empty property on errors.
-		property_handle append(const std::string& name);
-		property_handle prepend(const std::string& name);
-		property_handle insert_after(const std::string& name, const property_handle& attr);
-		property_handle insert_before(const std::string& name, const property_handle& attr);
-
-		// Add a copy of the specified property. Returns added property, or empty property on errors.
-		property_handle append_copy(const property_handle& proto);
-		property_handle prepend_copy(const property_handle& proto);
-		property_handle insert_copy_after(const property_handle& proto, const property_handle& attr);
-		property_handle insert_copy_before(const property_handle& proto, const property_handle& attr);
-
-		// Remove specified property
-		bool remove(const property_handle& a);
-		bool remove(const std::string& name);
-		*/
-
 	protected:
 		std::vector<property_t>		_props;
 	};

@@ -9,10 +9,12 @@
 #include "ctrls/panel.h"
 #include "objectspanel.h"
 #include "guimanager.h"
+#include "imagemanager.h"
 #include "style.h"
 
 
 extern guimanager	g_gui_mgr;
+extern imagemanager		g_img_mgr;
 
 
 //objectspanel
@@ -28,44 +30,6 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
 	_caption.caption("Objects");
 	_place.field("caption") << _caption;
-
-
-	// sets the images
-	auto & img_h_layout = _objects.icon(CTRL_LAYOUT);
-	img_h_layout.normal.open("icons/horizontal_layout_dark.png");
-
-	auto & img_pnl = _objects.icon(CTRL_PANEL);
-	img_pnl.normal.open("icons/panel_dark.png");
-
-	auto & img_btn = _objects.icon(CTRL_BUTTON);
-	img_btn.normal.open("icons/button_dark.png");
-
-	auto & img_lbl = _objects.icon(CTRL_LABEL);
-	img_lbl.normal.open("icons/label_dark.png");
-
-	auto & img_txt = _objects.icon(CTRL_TEXTBOX);
-	img_txt.normal.open("icons/textbox_dark.png");
-
-	auto & img_com = _objects.icon(CTRL_COMBOX);
-	img_com.normal.open("icons/combox_dark.png");
-
-	auto & img_spn = _objects.icon(CTRL_SPINBOX);
-	img_spn.normal.open("icons/spinbox_dark.png");
-
-	auto & img_lst = _objects.icon(CTRL_LISTBOX);
-	img_lst.normal.open("icons/listbox_dark.png");
-
-	auto & img_chk = _objects.icon(CTRL_CHECKBOX);
-	img_chk.normal.open("icons/checkbox_dark.png");
-
-	auto & img_dtc = _objects.icon(CTRL_DATECHOOSER);
-	img_dtc.normal.open("icons/datechooser_dark.png");
-
-	auto & img_tlb = _objects.icon(CTRL_TOOLBAR);
-	img_tlb.normal.open("icons/toolbar_dark.png");
-
-	auto & img_frm = _objects.icon(CTRL_FORM);
-	img_frm.normal.open("icons/form_dark.png");
 
 
 	// context menu
@@ -87,6 +51,9 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	// events
 	_objects.events().selected([this](const nana::arg_treebox& arg)
 	{
+		if(!_evt_emit)
+			return;
+
 		if(arg.operated)
 		{
 			g_gui_mgr.clickobjectspanel(arg.item.key());
@@ -111,6 +78,14 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 
 bool objectspanel::append(const std::string& parent, const std::string& name, const std::string& type)
 {
+	// load icon
+	auto & icon_ = _objects.icon(type);
+	if(icon_.normal.empty())
+	{
+		icon_.normal.open(g_img_mgr.path(type));
+	}
+
+	//
 	std::string objname = name + " : " + type;
 
 	if(!parent.empty())

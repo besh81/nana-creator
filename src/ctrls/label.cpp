@@ -17,7 +17,7 @@ namespace ctrls
 
 	//label
 	label::label(nana::window wd, properties_collection* properties, const std::string& name)
-		: nana::label(wd, CTRL_LABEL_NAME)
+		: nana::label(wd, CTRL_LABEL)
 	{
 		nana::API::ignore_mouse_focus(*this, false);
 		nana::API::effects_edge_nimbus(*this, nana::effects::edge_nimbus::none);
@@ -66,7 +66,6 @@ namespace ctrls
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
 		transparent(properties->property("transparent").as_bool());
-		//
 		text_align(static_cast<nana::align>(properties->property("halign").as_int()),
 			static_cast<nana::align_v>(properties->property("valign").as_int()));
 	}
@@ -101,9 +100,8 @@ namespace ctrls
 		nana::to_color(col, inherited);
 		if(!inherited)
 			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
-		// transparent
-		cd->init.push_back(name + ".transparent(" + properties->property("transparent").as_string("false") + ");");
-		// text align
+		//
+		cd->init.push_back(name + ".transparent(" + properties->property("transparent").as_string() + ");");
 		cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties->property("halign").as_string() + "), static_cast<nana::align_v>(" + properties->property("valign").as_string() + "));");
 
 		// placement

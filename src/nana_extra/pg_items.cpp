@@ -131,6 +131,21 @@ namespace nana
 		return int_val;
 	}
 
+	void pg_string_int::range(int min, int max)
+	{
+		if(min >= max)
+		{
+			range_ = false;
+			return;
+		}
+
+		range_ = true;
+		min_ = min;
+		max_ = max;
+
+		value(std::clamp(to_int(), min_, max_));
+	}
+
 	void pg_string_int::create(window wd)
 	{
 		pg_string::create(wd);
@@ -143,6 +158,8 @@ namespace nana
 				try
 				{
 					int_val = std::stoi(txt_.caption());
+					if(range_)
+						int_val = std::clamp(int_val, min_, max_);
 				}
 				catch(...)
 				{
@@ -161,7 +178,7 @@ namespace nana
 
 		txt_.set_accept([](wchar_t c) -> bool
 		{
-			return (isdigit(c) || c == '-' || c == nana::keyboard::backspace) ? true : false;
+			return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
 		});
 	}
 	/// class pg_string_int end
@@ -185,13 +202,54 @@ namespace nana
 		return u_val;
 	}
 
+	void pg_string_uint::range(unsigned min, unsigned max)
+	{
+		if(min >= max)
+		{
+			range_ = false;
+			return;
+		}
+
+		range_ = true;
+		min_ = min;
+		max_ = max;
+
+		value(std::clamp(to_uint(), min_, max_));
+	}
+
 	void pg_string_uint::create(window wd)
 	{
 		pg_string::create(wd);
 
+		txt_.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
+		{
+			if(arg.key == nana::keyboard::enter)
+			{
+				unsigned u_val = -1;
+				try
+				{
+					u_val = std::stoul(txt_.caption());
+					if(range_)
+						u_val = std::clamp(u_val, min_, max_);
+				}
+				catch(...)
+				{
+					txt_.caption(value_);
+					arg.stop_propagation();
+					return;
+				}
+
+				value_ = std::to_string(u_val);
+				txt_.caption(value_);
+
+				emit_event();
+				arg.stop_propagation();
+			}
+		});
+
 		txt_.set_accept([](wchar_t c) -> bool
 		{
-			return isdigit(c) || c == nana::keyboard::backspace ? true : false;
+			return isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace ? true : false;
 		});
 	}
 	/// class pg_string_uint end
@@ -314,11 +372,6 @@ namespace nana
 	{
 		return value_;
 	}
-	void pg_spin::range(int begin, int last, int step)
-	{
-		lock_guard evt_lock(&evt_emit_, false);
-		spn_.range(begin, last, step);
-	}
 
 	void pg_spin::value(int value)
 	{
@@ -327,6 +380,12 @@ namespace nana
 	int pg_spin::to_int() const
 	{
 		return spn_.to_int();
+	}
+
+	void pg_spin::range(int min, int max, int step)
+	{
+		lock_guard evt_lock(&evt_emit_, false);
+		spn_.range(min, max, step);
 	}
 
 	void pg_spin::create(window wd)

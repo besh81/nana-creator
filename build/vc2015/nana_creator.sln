@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nana_creator", "nana_creator.vcxproj", "{CF9D40B4-28C8-4984-9F94-9E20EF008CB4}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_ctrls", "test_ctrls.vcxproj", "{35CD820D-D8E3-4252-90C2-EFD523398A4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{CF9D40B4-28C8-4984-9F94-9E20EF008CB4}.Release|x64.Build.0 = Release|x64
 		{CF9D40B4-28C8-4984-9F94-9E20EF008CB4}.Release|x86.ActiveCfg = Release|Win32
 		{CF9D40B4-28C8-4984-9F94-9E20EF008CB4}.Release|x86.Build.0 = Release|Win32
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Debug|x64.ActiveCfg = Debug|x64
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Debug|x64.Build.0 = Debug|x64
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Debug|x86.ActiveCfg = Debug|Win32
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Debug|x86.Build.0 = Debug|Win32
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Release|x64.ActiveCfg = Release|x64
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Release|x64.Build.0 = Release|x64
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Release|x86.ActiveCfg = Release|Win32
+		{35CD820D-D8E3-4252-90C2-EFD523398A4E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

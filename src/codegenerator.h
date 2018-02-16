@@ -67,13 +67,9 @@ protected:
 
 	void _write_line(const std::string& line = "", bool endl = true);
 
-	void _write_headers_tag();
-	void _write_init_tag();
-	void _write_initfunc_tag();
-	void _write_declarations_tag();
+	void _append_tag(const std::string& tag);
 
-	bool _write_new_file();
-	bool _write_existing_file();
+	bool _write_file();
 
 	void _generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field);
 
@@ -82,7 +78,6 @@ protected:
 	struct tag
 	{
 		std::string		name;
-		size_t			indent;
 		size_t			begin;
 		size_t			end;
 	};

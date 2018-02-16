@@ -38,7 +38,7 @@ namespace ctrls
 		//
 		enabled(properties->property("enabled").as_bool());
 		// columns
-		/* //TODO: erase columns
+		clear_headers(); // added in my fork -> not present in 1.5.6
 		std::string options = properties->property("columns").as_string();
 		if(!options.empty())
 		{
@@ -51,7 +51,7 @@ namespace ctrls
 				if(item != " ")
 					append_header(item);
 			}
-		}*/
+		}
 		//
 		col = nana::to_color(properties->property("bgcolor").as_string(), inherited);
 		bgcolor(inherited ? pw->bgcolor() : col);

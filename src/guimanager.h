@@ -115,6 +115,8 @@ private:
 	resizablecanvas*		_main_wd{ 0 };
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator
+
+	bool					_deserializing{ false };
 };
 
 #endif //NANA_CREATOR_GUIMANAGER_H

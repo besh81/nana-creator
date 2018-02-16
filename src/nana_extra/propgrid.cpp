@@ -874,7 +874,8 @@ namespace nana
 							{
 								// draw category
 								bool highlighted = tracker.is_category() && (cat == tracker.cat) ? true : false;
-								_m_draw_categ(*i_categ, rectangle{ rect.x, rect.y + y, rect.width, essence_->cat_size }, txtoff, bgcolor, highlighted);
+								//_m_draw_categ(*i_categ, rectangle{ rect.x, rect.y + y, rect.width, essence_->cat_size }, txtoff, bgcolor, highlighted);
+								_m_draw_categ(*i_categ, rectangle{ rect.x, rect.y + y, rect.width, essence_->cat_size }, txtoff, nana::color(240, 240, 245), highlighted);
 							}
 
 							y += essence_->cat_size;

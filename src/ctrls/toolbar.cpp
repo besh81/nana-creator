@@ -42,7 +42,7 @@ namespace ctrls
 		col = nana::to_color(properties->property("fgcolor").as_string(), inherited);
 		fgcolor(inherited ? pw->fgcolor() : col);
 		//
-		scale(properties->property("fgcolor").as_uint());
+		scale(properties->property("scale").as_uint());
 	}
 
 

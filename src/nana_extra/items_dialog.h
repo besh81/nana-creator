@@ -1,40 +1,49 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.4.0)
- *	GitHub repo:
+ *	C++ code generated with Nana Creator (0.5.0)
+ *	GitHub repo: https://github.com/besh81/nana-creator
+ *
+ * PLEASE EDIT ONLY INSIDE THE TAGS:
+ *		//<*tag
+ *			user code
+ *		//*>
 *****************************************************/
 
 
-//<*Headers()
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
 #include <nana/gui/widgets/toolbar.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/button.hpp>
+
+//<*includes
+
 //*>
+
 
 class items_dialog
 	: public nana::form
 {
 public:
-	items_dialog(nana::window wd, const ::nana::size& sz = {300, 400}, const nana::appearance& apr = {true, true, false, false, false, false, false})
-		: nana::form(wd, sz, apr)
+	items_dialog(const nana::rectangle& rect = nana::API::make_center(300, 400), const nana::appearance& apr = {true, true, false, false, false, false, false})
+		: nana::form(rect, apr)
 	{
-		//<*Initialize()
 		init_();
-		//*>
 
+		//<*ctor
 		init();
+		//*>
+	}
+
+	~items_dialog()
+	{
+		//<*dtor
+
+		//*>
 	}
 
 
-	void value(const std::string& items);
-	std::string value();
-	nana::msgbox::pick_t return_val() { return ret_val; }
-
-
 private:
-	//<*InitFunction()
 	void init_()
 	{
 		caption("Items");
@@ -88,13 +97,9 @@ private:
 
 		main_lyt_place.collocate();
 	}
-	//*>
-
-	void init();
 
 
 protected:
-	//<*Declarations()
 	nana::place main_lyt_place;
 	nana::toolbar _toolbar;
 	nana::listbox _list;
@@ -104,8 +109,26 @@ protected:
 	nana::place layout1_place;
 	nana::button ok_btn;
 	nana::button canc_btn;
-	//*>
+
+
+	//<*declarations
+public:
+	items_dialog(nana::window wd, const ::nana::size& sz = { 300, 400 }, const nana::appearance& apr = { true, true, false, false, false, false, false })
+		: nana::form(wd, sz, apr)
+	{
+		init_();
+		init();
+	}
+
+	void value(const std::string& items);
+	std::string value();
+	nana::msgbox::pick_t return_val() { return ret_val; }
+
+
+protected:
+	void init();
 
 	nana::msgbox::pick_t ret_val;
+	//*>
 };
 
