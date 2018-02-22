@@ -11,26 +11,7 @@
 #include "codegenerator.h"
 #include "guimanager.h"
 #include "wdir.h"
-////////////////////////////////
-#include "ctrls/layout.h"
-#include "ctrls/panel.h"
-#include "ctrls/button.h"
-#include "ctrls/label.h"
-#include "ctrls/textbox.h"
-#include "ctrls/combox.h"
-#include "ctrls/spinbox.h"
-#include "ctrls/listbox.h"
-#include "ctrls/checkbox.h"
-#include "ctrls/date_chooser.h"
-#include "ctrls/toolbar.h"
-#include "ctrls/form.h"
-#include "ctrls/categorize.h"
-#include "ctrls/group.h"
-#include "ctrls/menubar.h"
-#include "ctrls/picture.h"
-#include "ctrls/progress.h"
-#include "ctrls/slider.h"
-#include "ctrls/tabbar.h"
+#include "ctrls/ctrl.h"
 
 
 #define BEGIN_TAG			"//<*"
@@ -52,13 +33,13 @@ codegenerator::codegenerator()
 }
 
 
-bool codegenerator::generate(nana::window wd, const std::string& path)
+bool codegenerator::generate(nana::window wd, tree_node<control_obj>* node, const std::string& path)
 {
 	bool create_file = false;
 
 	// generate code from controls
 	_code_data.clear();
-	_generate(g_gui_mgr._ctrls.get_root()->child, "*this", "", 1);
+	_generate(node, "*this", "", 1);
 
 
 	if(path.empty())
@@ -249,7 +230,7 @@ void codegenerator::_append_tag(const std::string& tag)
 }
 
 
-void codegenerator::_generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field)
+void codegenerator::_generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, int field)
 {
 	if(!node)
 		return;
@@ -261,85 +242,7 @@ void codegenerator::_generate(tree_node<control_struct>* node, const std::string
 	ci.place = place;
 	ci.field = field;
 
-	auto ctrl = node->value;
-
-	auto type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT)
-	{
-		static_cast<ctrls::layout*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_PANEL)
-	{
-		static_cast<ctrls::panel*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_BUTTON)
-	{
-		static_cast<ctrls::button*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_LABEL)
-	{
-		static_cast<ctrls::label*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_TEXTBOX)
-	{
-		static_cast<ctrls::textbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_COMBOX)
-	{
-		static_cast<ctrls::combox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_SPINBOX)
-	{
-		static_cast<ctrls::spinbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_LISTBOX)
-	{
-		static_cast<ctrls::listbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_CHECKBOX)
-	{
-		static_cast<ctrls::checkbox*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_DATECHOOSER)
-	{
-		static_cast<ctrls::date_chooser*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_TOOLBAR)
-	{
-		static_cast<ctrls::toolbar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_FORM)
-	{
-		static_cast<ctrls::form*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_CATEGORIZE)
-	{
-		static_cast<ctrls::categorize*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_GROUP)
-	{
-		static_cast<ctrls::group*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_MENUBAR)
-	{
-		static_cast<ctrls::menubar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_PICTURE)
-	{
-		static_cast<ctrls::picture*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_PROGRESS)
-	{
-		static_cast<ctrls::progress*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_SLIDER)
-	{
-		static_cast<ctrls::slider*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
-	else if(type == CTRL_TABBAR)
-	{
-		static_cast<ctrls::tabbar*>(ctrl->nanawdg.get())->generatecode(&ctrl->properties, &_code_data, &ci);
-	}
+	node->value->generatecode(&_code_data, &ci);
 
 	// children
 	_generate(node->child, ci.create, ci.place, 1);

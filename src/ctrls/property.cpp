@@ -233,6 +233,21 @@ namespace ctrls
 		return property_proxy{ &_props.back() };
 	}
 
+	void properties_collection::remove(const std::string& name)
+	{
+		for (auto i = _props.begin(); i < _props.end(); ++i)
+			if(i->name == name)
+			{
+				_props.erase(i);
+				return;
+			}
+	}
+
+	void properties_collection::clear()
+	{
+		_props.clear();
+	}
+
 	property_proxy properties_collection::property(const std::string& name)
 	{
 		for(auto i = _props.begin(); i < _props.end(); ++i)

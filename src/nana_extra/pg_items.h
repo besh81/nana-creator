@@ -21,11 +21,6 @@ namespace nana
 	using pgitem = drawerbase::propertygrid::pgitem;
 
 
-	/// helper functions
-	nana::color to_color(const std::string& s, bool& inherited);
-	std::string to_string(const nana::color& c, bool inherited);
-
-
 	/// class pg_string
 	class pg_string
 		: public pgitem

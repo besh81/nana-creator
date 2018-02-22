@@ -9,7 +9,7 @@
 #define NANA_CREATOR_BUTTON_H
 
 #include <nana/gui/widgets/button.hpp>
-#include "ctrls/property.h"
+#include "ctrls/ctrl.h"
 #include "codegenerator.h"
 
 
@@ -17,18 +17,18 @@ namespace ctrls
 {
 
 	class button
-		: public nana::button
+		: public ctrl
 	{
 	public:
-		button(nana::window wd, properties_collection* properties, const std::string& name);
+		button(nana::window wd, const std::string& name);
 
-		void update(properties_collection* properties);
+		void update() override;
 
-		void generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci);
+		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
 
 	protected:
-		void _initproperties(properties_collection* properties, const std::string& name);
+		nana::button btn;
 	};
 
 }//end namespace ctrls

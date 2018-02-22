@@ -128,6 +128,11 @@ namespace ctrls
 		property_proxy append(const std::string& name);
 		property_proxy append(const property_t& prop);
 
+		// Remove property with specified name
+		void remove(const std::string& name);
+
+		// Remove all the properties
+		void clear();
 
 		// Get property with the specified name
 		property_proxy property(const std::string& name);

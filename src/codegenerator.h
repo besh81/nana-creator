@@ -12,43 +12,9 @@
 #include <vector>
 #include <string>
 #include "tree.h"
+#include "codegenerator_data.h"
 #include "ctrls/ctrl.h"
-#include "namemanager.h"
 
-
-
-struct code_data_struct
-{
-	namemanager					hpps;	// necessary headers
-	std::vector<std::string>	decl;	// members declarations
-	std::vector<std::string>	init;
-	std::vector<std::string>	init_post;
-
-	std::string					mainclass;
-	std::string					mainclass_ctor;
-	std::string					mainclass_base;
-	std::string					mainclass_base_ctor;
-	std::string					filename;
-
-	void clear()
-	{
-		hpps.clear();
-		decl.clear();
-		init.clear();
-		init_post.clear();
-
-		mainclass.clear();
-		filename = "";
-	}
-};
-
-struct code_info_struct
-{
-	std::string create;
-	std::string place;
-
-	int field;
-};
 
 
 class codegenerator
@@ -56,7 +22,7 @@ class codegenerator
 public:
 	codegenerator();
 
-	bool generate(nana::window wd, const std::string& path = "");
+	bool generate(nana::window wd, tree_node<control_obj>* node, const std::string& path = "");
 
 	const std::string& getcode() const { return _code; }
 	void print(std::basic_ostream<char, std::char_traits<char> >& stream) const;
@@ -71,7 +37,7 @@ protected:
 
 	bool _write_file();
 
-	void _generate(tree_node<control_struct>* node, const std::string& create, const std::string& place, int field);
+	void _generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, int field);
 
 
 	//

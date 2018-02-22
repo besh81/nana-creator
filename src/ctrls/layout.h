@@ -10,12 +10,12 @@
 
 #include <nana/gui/widgets/widget.hpp>
 #include <nana/gui/place.hpp>
-#include "ctrls/property.h"
+#include "ctrls/ctrl.h"
 #include "namemanager.h"
 #include "codegenerator.h"
 
 
-namespace ctrls
+namespace nana
 {
 
 	enum class layout_orientation
@@ -45,12 +45,16 @@ namespace ctrls
 		: public nana::widget_object<typename nana::category::widget_tag, drawerbase::layout::drawer>
 	{
 	public:
-		layout(nana::window wd, properties_collection* properties, const std::string& name, layout_orientation lo);
+		layout() = default;
+		layout(nana::window wd, const nana::rectangle& r = {}, bool visible = true);
 
-		void update(properties_collection* properties);
+		bool create(nana::window wd, const nana::rectangle& r = {}, bool visible = true);
+
+		void update();
+		void orientation(layout_orientation orientation);
+		void padding(int pixels);
+
 		void updatefield(nana::window child, const std::string& weight, const std::string& margin);
-
-		void generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci);
 
 		std::string getdiv();
 
@@ -61,11 +65,6 @@ namespace ctrls
 
 
 	protected:
-		void _orientation(layout_orientation orientation);
-		void _padding(int pixels);
-
-		void _initproperties(properties_collection* properties, const std::string& name);
-
 		std::string		_orientation_str;
 		std::string		_padding_str;
 
@@ -79,6 +78,35 @@ namespace ctrls
 		std::vector<std::pair<field, nana::window>>	_children;
 
 		nana::place		_place;
+	};
+
+}//end namespace nana
+
+
+namespace ctrls
+{
+
+	class layout
+		: public ctrl
+	{
+	public:
+		layout(nana::window wd, const std::string& name);
+
+		void update() override;
+
+		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
+		
+		void updatefield(nana::window child, const std::string& weight, const std::string& margin);
+
+		bool append(nana::window child);
+		bool remove(nana::window child);
+
+		bool moveup(nana::window child);
+		bool movedown(nana::window child);
+
+
+	protected:
+		nana::layout	lyt;
 	};
 
 }//end namespace ctrls

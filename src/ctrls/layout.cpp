@@ -8,12 +8,10 @@
 #include <iostream>
 #include <algorithm>
 #include "ctrls/layout.h"
-#include "ctrls/panel.h"
-#include "style.h"
 
 
 
-namespace ctrls
+namespace nana
 {
 	namespace drawerbase
 	{
@@ -43,36 +41,47 @@ namespace ctrls
 
 
 	//layout
-	layout::layout(nana::window wd, properties_collection* properties, const std::string& name, layout_orientation lo)
+	layout::layout(nana::window wd, const nana::rectangle& r, bool visible)
 	{
-		create(wd, nana::rectangle());
-		bgcolor(nana::API::bgcolor(wd));
-
-		_place.bind(*this);
-
-
-		nana::API::ignore_mouse_focus(*this, false);
-		nana::API::effects_edge_nimbus(*this, nana::effects::edge_nimbus::none);
-		nana::API::effects_edge_nimbus(*this, nana::effects::edge_nimbus::active);
-
-
-		_initproperties(properties, name);
-		update(properties);
+		create(wd, r, visible);
 	}
 
 
-	void layout::update(properties_collection* properties)
+	bool layout::create(nana::window wd, const nana::rectangle& r, bool visible)
+	{
+		if(!nana::widget_object<typename nana::category::widget_tag, drawerbase::layout::drawer>::create(wd, r, visible))
+			return false;
+		bgcolor(nana::API::bgcolor(wd));
+
+		_place.bind(*this);
+		_place.collocate();
+		return true;
+	}
+
+
+	void layout::update()
 	{
 		auto pw = nana::API::get_widget(parent());
 		bgcolor(pw->bgcolor());
 		fgcolor(pw->fgcolor());
-		//
-		_orientation(static_cast<layout_orientation>(properties->property("layout").as_int()));
-		//
-		_padding(properties->property("padding").as_int());
+
 		_place.div(getdiv().c_str());
 		_place.collocate();
 	}
+
+
+	void layout::orientation(layout_orientation orientation)
+	{
+		_orientation_str = (orientation == layout_orientation::vertical) ? "vert " : "";
+	}
+
+
+	void layout::padding(int pixels)
+	{
+		// [css boxmodel]padding -> [nana]margin
+		_padding_str = "margin=" + std::to_string(pixels) + " ";
+	}
+
 
 	void layout::updatefield(nana::window child, const std::string& weight, const std::string& margin)
 	{
@@ -88,79 +97,6 @@ namespace ctrls
 				return;
 			}
 		}
-	}
-
-
-	void layout::generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci)
-	{
-		// headers
-		cd->hpps.add("#include <nana/gui/place.hpp>");
-		if(!ci->place.empty())
-			cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
-
-		auto name = properties->property("name").as_string();
-		
-		// declaration
-		if(!ci->place.empty())
-		{
-			//if parent is not a panel panel (only panel has empty place) add a transparent panel
-			cd->decl.push_back("nana::panel<false> " + name + "_panel;");
-		}
-
-		cd->decl.push_back("nana::place " + name + "_place;");
-
-		// init
-		cd->init.push_back("// " + name);
-		if(!ci->place.empty())
-		{
-			cd->init.push_back(name + "_panel.create(" + ci->create + ");");
-			cd->init.push_back(name + "_place.bind(" + name + "_panel);");
-		}
-		else
-		{
-			cd->init.push_back(name + "_place.bind(" + ci->create + ");");
-		}
-		cd->init.push_back(name + "_place.div(\"" + getdiv() + "\");");
-
-		// placement
-		if(!ci->place.empty())
-			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + "_panel;");
-
-		// collocate
-		if(ci->place.empty())
-			cd->init_post.push_back(name + "_place.collocate();");
-
-		// children
-		if(!ci->place.empty())
-			ci->create = name + "_panel";
-		ci->place = name + "_place";
-	}
-
-
-	void layout::_initproperties(properties_collection* properties, const std::string& name)
-	{
-		// properties - main
-		properties->append("type") = CTRL_LAYOUT;
-		properties->append("name") = name;
-		// common
-		properties->append("layout").label("Layout").category(CAT_COMMON).type(pg_type::choice).type_hints(std::vector<std::string>{ CITEM_HLAYOUT, CITEM_VLAYOUT }) = static_cast<int>(layout_orientation::horizontal);
-		// layout
-		properties->append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
-		properties->append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
-		properties->append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
-	}
-
-
-	void layout::_orientation(layout_orientation orientation)
-	{
-		_orientation_str = (orientation == layout_orientation::vertical) ? "vert " : "";
-	}
-
-
-	void layout::_padding(int pixels)
-	{
-		// [css boxmodel]padding -> [nana]margin
-		_padding_str = "margin=" + std::to_string(pixels) + " ";
 	}
 
 
@@ -257,6 +193,116 @@ namespace ctrls
 		}
 
 		return div;
+	}
+
+}//end namespace nana
+
+
+namespace ctrls
+{
+
+	//layout
+	layout::layout(nana::window wd, const std::string& name)
+		: ctrl()
+	{
+		lyt.create(wd);
+		ctrl::init(&lyt, CTRL_LAYOUT, name);
+
+		properties.clear();
+
+		// properties - main
+		properties.append("type") = CTRL_LAYOUT;
+		properties.append("name") = name;
+		// common
+		properties.append("layout").label("Layout").category(CAT_COMMON).type(pg_type::choice).type_hints(std::vector<std::string>{ CITEM_HLAYOUT, CITEM_VLAYOUT }) = static_cast<int>(nana::layout_orientation::horizontal);
+		// appearance
+		// ...
+		// layout
+		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
+		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
+		properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+	}
+
+
+	void layout::update()
+	{
+		//ctrl::update();
+
+		lyt.orientation(static_cast<nana::layout_orientation>(properties.property("layout").as_int()));
+		lyt.padding(properties.property("padding").as_int());
+		lyt.update();
+	}
+
+
+	void layout::generatecode(code_data_struct* cd, code_info_struct* ci)
+	{
+		//ctrl::generatecode(cd, ci);
+
+		auto name = properties.property("name").as_string();
+
+		// headers
+		cd->hpps.add("#include <nana/gui/place.hpp>");
+		if (!ci->place.empty())
+			cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
+		// declaration
+		if(!ci->place.empty())
+		{
+			//if parent is not a panel panel (only panel has empty place) add a transparent panel
+			cd->decl.push_back("nana::panel<false> " + name + "_panel;");
+		}
+		cd->decl.push_back("nana::place " + name + "_place;");
+		// init
+		cd->init.push_back("// " + name);
+		if(!ci->place.empty())
+		{
+			cd->init.push_back(name + "_panel.create(" + ci->create + ");");
+			cd->init.push_back(name + "_place.bind(" + name + "_panel);");
+		}
+		else
+		{
+			cd->init.push_back(name + "_place.bind(" + ci->create + ");");
+		}
+		cd->init.push_back(name + "_place.div(\"" + lyt.getdiv() + "\");");
+		// placement
+		if (!ci->place.empty())
+			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + "_panel;");
+		// collocate
+		if (ci->place.empty())
+			cd->init_post.push_back(name + "_place.collocate();");
+		// children
+		if (!ci->place.empty())
+			ci->create = name + "_panel";
+		ci->place = name + "_place";
+	}
+
+
+	void layout::updatefield(nana::window child, const std::string& weight, const std::string& margin)
+	{
+		lyt.updatefield(child, weight, margin);
+	}
+
+
+	bool layout::append(nana::window child)
+	{
+		return lyt.append(child);
+	}
+
+
+	bool layout::remove(nana::window child)
+	{
+		return lyt.remove(child);
+	}
+
+
+	bool layout::moveup(nana::window child)
+	{
+		return lyt.moveup(child);
+	}
+
+
+	bool layout::movedown(nana::window child)
+	{
+		return lyt.movedown(child);
 	}
 
 }//end namespace ctrls

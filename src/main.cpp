@@ -102,7 +102,7 @@ public:
 			path = prj_name.substr(0, tpos);
 
 		codegenerator cpp;
-		cpp.generate(handle(), path);
+		cpp.generate(handle(), g_gui_mgr.get_root()->child, path);
 		cpp.print(std::cout);
 		return true;
 	}

@@ -144,6 +144,7 @@
     <ClCompile Include="..\..\src\ctrls\categorize.cpp" />
     <ClCompile Include="..\..\src\ctrls\checkbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\combox.cpp" />
+    <ClCompile Include="..\..\src\ctrls\ctrl.cpp" />
     <ClCompile Include="..\..\src\ctrls\date_chooser.cpp" />
     <ClCompile Include="..\..\src\ctrls\form.cpp" />
     <ClCompile Include="..\..\src\ctrls\group.cpp" />
@@ -164,6 +165,7 @@
     <ClCompile Include="..\..\src\imagemanager.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\namemanager.cpp" />
+    <ClCompile Include="..\..\src\nana_extra\color_helper.cpp" />
     <ClCompile Include="..\..\src\nana_extra\items_dialog.cpp" />
     <ClCompile Include="..\..\src\nana_extra\pg_items.cpp" />
     <ClCompile Include="..\..\src\nana_extra\propgrid.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="..\..\libs\pugixml\pugixml.hpp" />
     <ClInclude Include="..\..\libs\tokenizer\Tokenizer.h" />
     <ClInclude Include="..\..\src\assetspanel.h" />
+    <ClInclude Include="..\..\src\codegenerator_data.h" />
     <ClInclude Include="..\..\src\codegenerator.h" />
     <ClInclude Include="..\..\src\config.h" />
     <ClInclude Include="..\..\src\ctrls\button.h" />
@@ -204,6 +207,7 @@
     <ClInclude Include="..\..\src\imagemanager.h" />
     <ClInclude Include="..\..\src\lock_guard.h" />
     <ClInclude Include="..\..\src\namemanager.h" />
+    <ClInclude Include="..\..\src\nana_extra\color_helper.h" />
     <ClInclude Include="..\..\src\nana_extra\items_dialog.h" />
     <ClInclude Include="..\..\src\nana_extra\pg_items.h" />
     <ClInclude Include="..\..\src\nana_extra\propgrid.h" />

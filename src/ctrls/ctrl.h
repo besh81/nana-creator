@@ -12,40 +12,57 @@
 #include <memory>
 #include <nana/gui/wvl.hpp>
 #include "ctrls/property.h"
+#include "codegenerator_data.h"
 
 
 namespace ctrls
 {
 
-	struct ctrl_struct
+	class ctrl
 	{
-		properties_collection			properties;
-		std::unique_ptr<nana::widget>	nanawdg;
+	public:
+		properties_collection	properties;
+		nana::widget*			nanawdg;
 
-		bool			ishighlighted{ false };
-		nana::color		bgcolor;
 
-		void set_highlight(nana::color color)
+		ctrl() = default;
+
+		virtual void update();
+
+		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
+		
+		bool highlighted() { return _ishighlighted; }
+
+		void set_highlight(const nana::color& color)
 		{
 			// reset bgcolor highlight
-			ishighlighted = true;
-			bgcolor = nanawdg->bgcolor();
+			_ishighlighted = true;
+			_bgcolor = nanawdg->bgcolor();
 			nanawdg->bgcolor(color);
 		}
 
 		void reset_highlight()
 		{
 			// reset bgcolor highlight
-			ishighlighted = false;
-			nanawdg->bgcolor(bgcolor);
+			_ishighlighted = false;
+			nanawdg->bgcolor(_bgcolor);
 		}
+
+
+	protected:
+		void init(nana::widget* wdg, const std::string& type, const std::string& name);
+
+
+	private:
+		nana::color		_bgcolor;
+		bool			_ishighlighted{ false };
 	};
 
 }//end namespace ctrls
 
 
-typedef std::shared_ptr<ctrls::ctrl_struct>	control_struct;
-typedef std::weak_ptr<ctrls::ctrl_struct>	control_struct_ptr;
+typedef std::shared_ptr<ctrls::ctrl>	control_obj;
+typedef std::weak_ptr<ctrls::ctrl>		control_obj_ptr;
 
 
 #endif //NANA_CREATOR_CTRL_H

@@ -9,26 +9,26 @@
 #define NANA_CREATOR_MENUBAR_H
 
 #include <nana/gui/widgets/menubar.hpp>
-#include "ctrls/property.h"
-#include "codegenerator.h"
+#include "ctrls/ctrl.h"
+#include "codegenerator_data.h"
 
 
 namespace ctrls
 {
 
 	class menubar
-		: public nana::menubar
+		: public ctrl
 	{
 	public:
-		menubar(nana::window wd, properties_collection* properties, const std::string& name);
+		menubar(nana::window wd, const std::string& name);
 
-		void update(properties_collection* properties);
+		void update() override;
 
-		void generatecode(properties_collection* properties, code_data_struct* cd, code_info_struct* ci);
+		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
 
 	protected:
-		void _initproperties(properties_collection* properties, const std::string& name);
+		nana::menubar mnb;
 	};
 
 }//end namespace ctrls

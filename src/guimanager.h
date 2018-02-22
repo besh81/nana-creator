@@ -14,7 +14,6 @@
 #include "ctrls/ctrl.h"
 #include "ctrls/layout.h"
 #include "namemanager.h"
-#include "codegenerator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
@@ -38,8 +37,6 @@ struct cursor_state
 
 class guimanager
 {
-	friend class codegenerator;
-
 public:
 	guimanager() = default;
 
@@ -59,14 +56,20 @@ public:
 	cursor_state cursor() { return _cursor_state; }
 
 
-	tree_node<control_struct>* addmainform(const std::string& name = "");
-	tree_node<control_struct>* addmainpanel(const std::string& name = "");
-	tree_node<control_struct>* addlayout(tree_node<control_struct>* parent, ctrls::layout_orientation layout, const std::string& name = "");
-	tree_node<control_struct>* addcommonctrl(tree_node<control_struct>* parent, const std::string& type, const std::string& name = "");
+	tree_node<control_obj>* addmainform(const std::string& name = "");
+	tree_node<control_obj>* addmainpanel(const std::string& name = "");
+	tree_node<control_obj>* addlayout(tree_node<control_obj>* parent, nana::layout_orientation layout, const std::string& name = "");
+	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* parent, const std::string& type, const std::string& name = "");
 
 	void deleteselected();
 	void moveupselected();
 	void movedownselected();
+
+
+	tree_node<control_obj>* get_root()
+	{
+		return _ctrls.get_root();
+	}
 
 
 	void updateselectedname(const std::string& name)
@@ -79,33 +82,33 @@ public:
 	}
 
 
-	void clickctrl(control_struct ctrl);
+	void clickctrl(control_obj ctrl);
 	void clickobjectspanel(const std::string& name);
 
 
 	void serialize(pugi::xml_node* xml_parent);
-	void serialize(tree_node<control_struct>* node, pugi::xml_node* xml_parent);
+	void serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
 
 	bool deserialize(pugi::xml_node* xml_parent);
-	bool deserialize(tree_node<control_struct>* node, pugi::xml_node* xml_parent);
+	bool deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
 
 private:
 	bool _checksonship(const std::string& child, const std::string& parent);
 
-	tree_node<control_struct>* _registerobject(control_struct ctrl, tree_node<control_struct>* parent);
+	tree_node<control_obj>* _registerobject(control_obj ctrl, tree_node<control_obj>* parent);
 
 	void _deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node);
 
 	bool _updatectrlname(ctrls::properties_collection* properties, const std::string& new_name);
-	void _updatectrl(tree_node<control_struct>* node, bool update_owner = true, bool update_children = true);
-	void _updateparentctrl(tree_node<control_struct>* node);
-	void _updatechildrenctrls(tree_node<control_struct>* node);
+	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
+	void _updateparentctrl(tree_node<control_obj>* node);
+	void _updatechildrenctrls(tree_node<control_obj>* node);
 
 
 	nana::window			_root_wd;
 
-	tree<control_struct>		_ctrls;
-	tree_node<control_struct>*	_selected;
+	tree<control_obj>		_ctrls;
+	tree_node<control_obj>*	_selected;
 
 	cursor_state			_cursor_state{ cursor_action::select };
 
