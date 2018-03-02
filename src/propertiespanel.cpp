@@ -9,7 +9,7 @@
 #include "propertiespanel.h"
 #include "ctrls/layout.h"
 #include "ctrls/panel.h"
-#include "nana_extra/pg_items.h"
+#include "pg_items.h"
 #include "guimanager.h"
 #include "imagemanager.h"
 #include "lock_guard.h"
@@ -69,20 +69,13 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 
 		for(size_t i = 0; i < _properties->count(); ++i)
 		{
-			if(arg.item.label() == (*_properties)[i].label())
+			auto pi = (*_properties)[i];
+			if(arg.item.label() == pi.label())
 			{
-				if((*_properties)[i].type() == ctrls::pg_type::choice)
-				{
-					auto& entries = nana::any_cast<std::vector<std::string>>((*_properties)[i]._m_prop()->type_hints);
-					for(unsigned e = 0; e < entries.size(); ++e)
-						if(entries[e] == arg.item.value())
-						{
-							(*_properties)[i].value(e);
-							break;
-						}
-				}
-				else
-					(*_properties)[i].value(arg.item.value());
+				pi.value(arg.item.value());
+
+				// look for properties bonds
+				enabled_bonds(pi.name(), pi.as_bool());
 
 				g_gui_mgr.updateselected();
 				break;
@@ -129,39 +122,17 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 
 		if(prop.type() == ctrls::pg_type::string_int)
 		{
-			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
-			auto psi = static_cast<nana::pg_string_int*>(item._m_pgitem());
-
-			if(!prop._m_prop()->type_hints.empty())
-			{
-				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
-				psi->range(range[0], range[1]);
-			}
+			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
 		}
-		else if(prop.type() == ctrls::pg_type::string_uint)
+		else if(prop.type() == ctrls::pg_type::string_uint || prop.type() == ctrls::pg_type::string_uint_0_100)
 		{
 			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
-			auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
 
-			if(!prop._m_prop()->type_hints.empty())
+			if(prop.type() == ctrls::pg_type::string_uint_0_100)
 			{
-				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
-				psui->range(range[0], range[1]);
+				auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
+				psui->range(0, 100);
 			}
-		}
-		else if(prop.type() == ctrls::pg_type::choice)
-		{
-			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
-			auto pgc = static_cast<nana::pg_choice*>(item._m_pgitem());
-
-			if(!prop._m_prop()->type_hints.empty())
-			{
-				auto& entries = nana::any_cast<std::vector<std::string>>(prop._m_prop()->type_hints);
-				for(auto s : entries)
-					pgc->push_back(s);
-			}
-			
-			pgc->option(std::atoi(prop.value().c_str()));
 		}
 		else if(prop.type() == ctrls::pg_type::check)
 		{
@@ -169,16 +140,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		}
 		else if(prop.type() == ctrls::pg_type::spin)
 		{
-			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label())));
-			auto psp = static_cast<nana::pg_spin*>(item._m_pgitem());
-			
-			if(!prop._m_prop()->type_hints.empty())
-			{
-				auto& range = nana::any_cast<std::vector<int>>(prop._m_prop()->type_hints);
-				psp->range(range[0], range[1], range[2]);
-			}
-
-			psp->value(prop.value());
+			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label(), prop.value())));
 		}
 		else if(prop.type() == ctrls::pg_type::color)
 		{
@@ -188,14 +150,67 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
 		}
+		else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
+			prop.type() == ctrls::pg_type::seekdir)
+		{
+			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
+			auto pgc = static_cast<nana::pg_choice*>(item._m_pgitem());
+
+			if(prop.type() == ctrls::pg_type::halign)
+			{
+				pgc->push_back(CITEM_LEFT);
+				pgc->push_back(CITEM_CENTER);
+				pgc->push_back(CITEM_RIGHT);
+			}
+			else if(prop.type() == ctrls::pg_type::valign)
+			{
+				pgc->push_back(CITEM_TOP);
+				pgc->push_back(CITEM_CENTER);
+				pgc->push_back(CITEM_BOTTOM);
+			}
+			else if(prop.type() == ctrls::pg_type::layout)
+			{
+				pgc->push_back(CITEM_HLAYOUT);
+				pgc->push_back(CITEM_VLAYOUT);
+			}
+			else if(prop.type() == ctrls::pg_type::seekdir)
+			{
+				pgc->push_back(CITEM_BILATERAL);
+				pgc->push_back(CITEM_FORWD);
+				pgc->push_back(CITEM_BACKWD);
+			}
+
+			pgc->option(std::atoi(prop.value().c_str()));
+		}
+		else if(prop.type() == ctrls::pg_type::filename || prop.type() == ctrls::pg_type::filename_img)
+		{
+			auto item = cat.append(nana::propertygrid::pgitem_ptr(new pg_filename(prop.label(), prop.value())));
+			auto pgc = static_cast<pg_filename*>(item._m_pgitem());
+
+			if(prop.type() == ctrls::pg_type::filename_img)
+			{
+				pgc->add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+			}
+		}
+		else if(prop.type() == ctrls::pg_type::folder)
+		{
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_folder(prop.label(), prop.value())));
+		}
 		else if(prop.type() == ctrls::pg_type::collection)
 		{
-			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_collection(prop.label(), prop.value())));
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value())));
 		}
 		else //nana::pg_type::string
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string(prop.label(), prop.value())));
 		}
+	}
+
+	// look for properties bonds
+	for(size_t i = 0; i < _properties->count(); ++i)
+	{
+		auto pi = (*_properties)[i];
+		enabled_bonds(pi.name(), pi.as_bool());
 	}
 
 	// set image, type and name
@@ -206,4 +221,28 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	_name_txt.caption(_properties->property("name").as_string());
 
 	_place.collocate();
+}
+
+void propertiespanel::enabled_bonds(const std::string& name, bool value)
+{
+	for(size_t i = 0; i < _properties->count(); ++i)
+	{
+		auto prop = (*_properties)[i];
+		if(name == prop.enabled())
+		{
+			auto cat_idx = _propgrid.find(prop.category());
+			if(cat_idx == nana::npos)
+				continue;
+
+			auto cat = _propgrid.at(cat_idx);
+			for(auto c : cat)
+			{
+				if(c.label() == prop.label())
+				{
+					c._m_pgitem()->enabled(value == prop.enabled_value());
+					break;
+				}
+			}
+		}
+	}
 }

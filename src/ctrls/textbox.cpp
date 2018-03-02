@@ -29,7 +29,6 @@ namespace ctrls
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = txt.editable();
 		// appearance
 		properties.property("bgcolor") = nana::to_string(txt.bgcolor(), false);
-		properties.property("fgcolor") = nana::to_string(txt.fgcolor(), false);
 		// ...
 		// layout
 		// ...

@@ -8,6 +8,7 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/spinbox.h"
+#include "nana_extra/color_helper.h"
 
 
 namespace ctrls
@@ -23,6 +24,7 @@ namespace ctrls
 		// common
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = spn.editable();
 		// appearance
+		properties.property("bgcolor") = nana::to_string(spn.bgcolor(), false);
 		// ...
 		// layout
 		// ...

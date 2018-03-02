@@ -1,5 +1,5 @@
 /*
- *		nana::pg_items Implementation
+ *		nana::propgrid_items Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
@@ -7,10 +7,9 @@
 
 #include <iostream>
 #include <algorithm>
-#include "pg_items.h"
+#include "propgrid_items.h"
 #include "color_helper.h"
 #include "lock_guard.h"
-#include "items_dialog.h"
 
 
 #define PG_BORDER_X		1
@@ -32,9 +31,23 @@ namespace nana
 		return value_;
 	}
 
+	void pg_string::enabled(bool state)
+	{
+		txt_.enabled(en_ = state);
+	}
+
 	void pg_string::set_accept(std::function<bool(wchar_t)> f)
 	{
 		txt_.set_accept(f);
+	}
+
+	void pg_string::editable(bool editable)
+	{
+		txt_.editable(editable);
+	}
+	bool pg_string::editable()
+	{
+		return txt_.editable();
 	}
 
 	void pg_string::create(window wd)
@@ -212,6 +225,80 @@ namespace nana
 	/// class pg_string_uint end
 
 
+	/// class pg_string_button
+#define STRING_BUTTON_SIZE		30
+
+	void pg_string_button::value(const std::string& value)
+	{
+		value_ = value;
+
+		lock_guard evt_lock(&evt_emit_, false);
+		txt_.caption(value);
+	}
+	std::string pg_string_button::value() const
+	{
+		return value_;
+	}
+
+	void pg_string_button::enabled(bool state)
+	{
+		txt_.enabled(en_ = state);
+		btn_.enabled(en_);
+	}
+
+	void pg_string_button::set_accept(std::function<bool(wchar_t)> f)
+	{
+		txt_.set_accept(f);
+	}
+
+	void pg_string_button::set_button_click(std::function<void(const nana::arg_click&)> f)
+	{
+		btn_.events().click.connect_front(f);
+	}
+
+	void pg_string_button::editable(bool editable)
+	{
+		txt_.editable(editable);
+	}
+	bool pg_string_button::editable()
+	{
+		return txt_.editable();
+	}
+
+	void pg_string_button::create(window wd)
+	{
+		txt_.create(wd);
+		txt_.multi_lines(false);
+		txt_.caption(value_);
+		txt_.editable(false);
+
+		txt_.events().click.connect_front([this](const nana::arg_click& arg)
+		{
+			scroll();
+		});
+		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
+		{
+			txt_.select(true);
+		});
+
+
+		//button
+		btn_.create(wd);
+		btn_.caption(btn_label_);
+	}
+
+	bool pg_string_button::draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
+	{
+		txt_.move(PG_BORDER_X, PG_BORDER_Y);
+		txt_.size(nana::size(rect.width - 2 * PG_BORDER_X - STRING_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
+
+		btn_.move(PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
+		btn_.size(nana::size(STRING_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
+		return false;
+	}
+	/// class pg_string_button end
+
+
 	/// class pg_choice
 	void pg_choice::value(const std::string& value_)
 	{
@@ -225,8 +312,14 @@ namespace nana
 	}
 	std::string pg_choice::value() const
 	{
-		return (cmb_.option() != ::nana::npos) ? cmb_.text(cmb_.option()) : "";
+		return (cmb_.option() != ::nana::npos) ? std::to_string(cmb_.option()) : "";
 	}
+
+	void pg_choice::enabled(bool state)
+	{
+		cmb_.enabled(en_ = state);
+	}
+
 	void pg_choice::option(std::size_t value_)
 	{
 		lock_guard evt_lock(&evt_emit_, false);
@@ -253,7 +346,7 @@ namespace nana
 		});
 		cmb_.events().selected([this](const nana::arg_combox& arg)
 		{
-			value_ = std::to_string(arg.widget.option());
+			value_ = "1";// std::to_string(arg.widget.option());
 			emit_event();
 		});
 	}
@@ -279,6 +372,11 @@ namespace nana
 	std::string pg_check::value() const
 	{
 		return chk_.checked() ? "true" : "false";
+	}
+
+	void pg_check::enabled(bool state)
+	{
+		chk_.enabled(en_ = state);
 	}
 
 	void pg_check::check(bool value)
@@ -330,6 +428,11 @@ namespace nana
 		return value_;
 	}
 
+	void pg_spin::enabled(bool state)
+	{
+		spn_.enabled(en_ = state);
+	}
+
 	void pg_spin::value(int value)
 	{
 		pg_spin::value(std::to_string(value));
@@ -348,6 +451,8 @@ namespace nana
 	void pg_spin::create(window wd)
 	{
 		spn_.create(wd);
+
+		value(value_);
 
 		spn_.events().click.connect_front([this](const nana::arg_click& arg)
 		{
@@ -393,6 +498,13 @@ namespace nana
 	std::string pg_color::value() const
 	{
 		return to_string(color_, inherited_value_);
+	}
+
+	void pg_color::enabled(bool state)
+	{
+		en_ = state;
+		txt_.enabled(en_ && !inherited_value_);
+		chk_.enabled(en_);
 	}
 
 	void pg_color::value(::nana::color value)
@@ -536,74 +648,4 @@ namespace nana
 	}
 	/// class pg_color end
 
-
-
-	/// class pg_collection
-#define CHOISES_BUTTON_SIZE		30
-
-	void pg_collection::value(const std::string& value)
-	{
-		value_ = value;
-
-		lock_guard evt_lock(&evt_emit_, false);
-		txt_.caption(value);
-	}
-	std::string pg_collection::value() const
-	{
-		return value_;
-	}
-
-	void pg_collection::set_accept(std::function<bool(wchar_t)> f)
-	{
-		txt_.set_accept(f);
-	}
-
-	void pg_collection::create(window wd)
-	{
-		txt_.create(wd);
-		txt_.multi_lines(false);
-		txt_.caption(value_);
-		txt_.editable(false);
-
-		txt_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
-		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			txt_.select(true);
-		});
-
-
-		//button
-		btn_.create(wd);
-		btn_.caption("...");
-
-		btn_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			//items dialog
-			items_dialog items(arg.window_handle);
-
-			items.value(txt_.caption());
-			items.modality();
-
-			if(items.return_val() == nana::msgbox::pick_ok)
-			{
-				txt_.caption(items.value());
-				value_ = txt_.caption();
-				emit_event();
-			}
-		});
-	}
-
-	bool pg_collection::draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
-	{
-		txt_.move(PG_BORDER_X, PG_BORDER_Y);
-		txt_.size(nana::size(rect.width - 2 * PG_BORDER_X - CHOISES_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
-
-		btn_.move(PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
-		btn_.size(nana::size(CHOISES_BUTTON_SIZE, size_ - 2 * PG_BORDER_Y));
-		return false;
-	}
-	/// class pg_collection end
 }//end namespace nana

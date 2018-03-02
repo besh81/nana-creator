@@ -30,6 +30,8 @@ public:
 
 
 private:
+	void enabled_bonds(const std::string& name, bool value);
+
 	bool					_grid_setup{ false };
 
 	ctrls::properties_collection*	_properties;

@@ -9,7 +9,10 @@
 #include <iostream>
 #include "ctrls/form.h"
 #include "nana_extra/color_helper.h"
+#include "filemanager.h"
 
+
+extern filemanager		g_file_mgr;
 
 
 namespace ctrls
@@ -28,6 +31,8 @@ namespace ctrls
 		properties.append("mainclass") = true;
 		// project
 		properties.append("filename").label("File Name").category(CAT_CPPCODE).type(pg_type::string) = DEFAULT_FILENAME;
+		properties.append("rel_path").label("Relative Path").category(CAT_CPPCODE).type(pg_type::check) = true;
+		properties.append("work_dir").label("Working Dir").category(CAT_CPPCODE).type(pg_type::folder).enabled("rel_path", true) = "";
 
 		ctrl::init(&frm, CTRL_FORM, name);
 
@@ -52,6 +57,10 @@ namespace ctrls
 	void form::update()
 	{
 		//ctrl::update();
+
+		// manage absolute/relative path
+		g_file_mgr.enable_relative(properties.property("rel_path").as_bool());
+		g_file_mgr.basedir(properties.property("work_dir").as_string());
 
 		auto pw = nana::API::get_widget(nanawdg->parent());
 		pw = nana::API::get_widget(pw->parent());

@@ -24,6 +24,7 @@
 #include "ctrls/progress.h"
 #include "ctrls/slider.h"
 #include "ctrls/tabbar.h"
+#include "ctrls/treebox.h"
 #include "guimanager.h"
 #include "lock_guard.h"
 #include "style.h"
@@ -46,6 +47,7 @@ void guimanager::clear()
 	
 	_ctrls.clear();
 	_op->clear();
+	_pp->set(0);
 	_name_mgr.clear();
 }
 
@@ -313,6 +315,10 @@ tree_node<control_obj>* guimanager::addcommonctrl(tree_node<control_obj>* parent
 	else if(type == CTRL_TABBAR)
 	{
 		ctrl = control_obj(new ctrls::tabbar(*parent_->nanawdg, name_));
+	}
+	else if(type == CTRL_TREEBOX)
+	{
+		ctrl = control_obj(new ctrls::treebox(*parent_->nanawdg, name_));
 	}
 	else
 		return 0;

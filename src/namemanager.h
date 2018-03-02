@@ -15,7 +15,7 @@
 class namemanager
 {
 public:
-	namemanager() {}
+	namemanager() = default;
 	~namemanager();
 
 	bool add(const std::string& name);

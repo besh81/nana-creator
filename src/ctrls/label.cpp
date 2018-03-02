@@ -25,10 +25,8 @@ namespace ctrls
 		properties.append("format").label("Format").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = lbl.transparent();
-		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::choice).type_hints(
-			std::vector<std::string>{ CITEM_LEFT, CITEM_CENTER, CITEM_RIGHT }) = static_cast<int>(nana::align::left);
-		properties.append("valign").label("Vertical Alignment").category(CAT_APPEARANCE).type(pg_type::choice).type_hints(
-			std::vector<std::string>{ CITEM_TOP, CITEM_CENTER, CITEM_BOTTOM }) = static_cast<int>(nana::align_v::top);
+		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
+		properties.append("valign").label("Vertical Alignment").category(CAT_APPEARANCE).type(pg_type::valign) = static_cast<int>(nana::align_v::top);
 		// layout
 		// ...
 	}

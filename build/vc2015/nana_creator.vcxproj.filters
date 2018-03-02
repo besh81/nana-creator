@@ -36,12 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\nana_extra\items_dialog.cpp">
-      <Filter>Source Files\nana_extra</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\nana_extra\pg_items.cpp">
-      <Filter>Source Files\nana_extra</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\nana_extra\propgrid.cpp">
       <Filter>Source Files\nana_extra</Filter>
     </ClCompile>
@@ -147,6 +141,27 @@
     <ClCompile Include="..\..\src\nana_extra\color_helper.cpp">
       <Filter>Source Files\nana_extra</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\treebox.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\nana_extra\propgrid_items.cpp">
+      <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pg_items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\items_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\nana_extra\folderbox.cpp">
+      <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\relativepath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\filemanager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -190,12 +205,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\toolbar.h">
       <Filter>Header Files\ctrls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\nana_extra\items_dialog.h">
-      <Filter>Header Files\nana_extra</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\nana_extra\pg_items.h">
-      <Filter>Header Files\nana_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\nana_extra\propgrid.h">
       <Filter>Header Files\nana_extra</Filter>
@@ -274,6 +283,27 @@
     </ClInclude>
     <ClInclude Include="..\..\src\nana_extra\color_helper.h">
       <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\treebox.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\nana_extra\propgrid_items.h">
+      <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pg_items.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\items_dialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\nana_extra\folderbox.h">
+      <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\relativepath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\filemanager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

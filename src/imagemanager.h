@@ -15,7 +15,7 @@
 class imagemanager
 {
 public:
-	imagemanager() {}
+	imagemanager() = default;
 	~imagemanager();
 
 	bool add(const std::string& name, const std::string& path);

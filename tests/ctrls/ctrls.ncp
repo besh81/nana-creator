@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<nana-creator version="0.5.0">
-	<form mainclass="true" filename="ctrls" type="form" name="form1" enabled="true" bgcolor="[inherited],128,128,128" fgcolor="[inherited],0,0,0" caption="Nana-Creator Test" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" width="650" height="550">
+<nana-creator version="0.6.0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" bgcolor="[inherited],128,128,128" fgcolor="[inherited],0,0,0" caption="Nana-Creator Test" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" width="650" height="550">
 		<layout type="layout" name="layout1" layout="0" weight="-1" margin="0" padding="5">
 			<layout type="layout" name="layout2" layout="1" weight="-1" margin="0" padding="5">
 				<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" caption="Nana-Creator test controls" format="false" transparent="false" halign="1" valign="1" />
@@ -15,7 +15,7 @@
 				</panel>
 				<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" options="&quot;A&quot; &quot;B&quot; &quot;C&quot; " editable="false" />
 				<group type="group" name="group1" enabled="true" bgcolor="201,197,190" fgcolor="0,0,0" weight="-1" margin="0" caption="Group" />
-				<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="0" transparent="false" halign="0" valign="0" stretchable="false" />
+				<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="0" source="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\delete_dark.png" transparent="false" halign="0" valign="0" stretchable="false" />
 				<progress type="progress" name="progress1" enabled="true" bgcolor="212,208,200" fgcolor="16,117,21" weight="30" margin="3" value="60" unknown="false" />
 				<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" value="2" maximum="10" seek="0" vertical="false" transparent="false" />
 				<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" editable="true" />

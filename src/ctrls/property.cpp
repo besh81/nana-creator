@@ -85,6 +85,22 @@ namespace ctrls
 	}
 
 
+	property_proxy& property_proxy::enabled(const std::string& property, bool value)
+	{
+		_prop->enabled_prop = property;
+		_prop->enabled_value = value;
+		return *this;
+	}
+	std::string property_proxy::enabled()
+	{
+		return _prop->enabled_prop;
+	}
+	bool property_proxy::enabled_value()
+	{
+		return _prop->enabled_value;
+	}
+
+
 
 	bool property_proxy::operator==(const property_proxy& r) const
 	{

@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.5.1"
+#define CREATOR_VERSION			"0.6.0"
 
 
 
@@ -43,14 +43,15 @@
 #define CTRL_PROGRESS			"progress"
 #define CTRL_SLIDER				"slider"
 #define CTRL_TABBAR				"tabbar"
+#define CTRL_TREEBOX			"treebox"
 
 
 
 // project file
 //--------------------------------------------------------
-// nodes name
 #define PROJECT_EXT				"ncp"
 
+// nodes name
 #define NODE_ROOT				"nana-creator"
 
 
@@ -83,6 +84,8 @@
 #define CTRL_NAMESPACE			"nana::"
 #define DEFAULT_FILENAME		"code"
 
+
+#define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
 
 
 // UI

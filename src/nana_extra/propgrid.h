@@ -129,10 +129,16 @@ namespace nana
 				//it should return false to avoid property useless drawing
 				virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const = 0;
 
+				virtual void enabled(bool state)
+				{
+					en_ = state;
+				}
+
 			protected:
 				std::string		label_;
 				std::string		value_;
 				unsigned		size_{ 24 };
+				bool			en_{ true };
 
 				bool			evt_emit_{ true };
 				essence_t*		ess_;
@@ -351,10 +357,9 @@ namespace nana
 		propertygrid(window, bool visible);
 		propertygrid(window, const rectangle& = {}, bool visible = true);
 
-		void auto_draw(bool);                                ///< Set state: Redraw automatically after an operation
+		void auto_draw(bool);										///< Set state: Redraw automatically after an operation
 
-															 /// Scrolls the view to the selected item
-		void scroll(const index_pair& pos, bool as_first = false);
+		void scroll(const index_pair& pos, bool as_first = false);	/// Scrolls the view to the selected item
 
 
 		propertygrid& labels_width(unsigned pixels);
@@ -365,24 +370,22 @@ namespace nana
 		unsigned values_auto_width(unsigned max = 3000);
 
 
-		cat_proxy append(std::string);			///< Appends a new category to the end
+		cat_proxy append(std::string);					///< Appends a new category to the end
 		cat_proxy insert(cat_proxy, ::std::string);
 
 		cat_proxy at(std::size_t pos) const;
-		std::size_t find(std::string) const;		///< Finds category with given name, returns npos if not found
+		std::size_t find(std::string) const;			///< Finds category with given name, returns npos if not found
 
+		item_proxy at(const index_pair& idx) const;		/// Returns an item by the specified absolute position
 
-		/// Returns an item by the specified absolute position
-		item_proxy at(const index_pair& idx) const;
-
-		void clear(std::size_t cat);                         ///<Removes all the items from the specified category
-		void clear();                                      ///<Removes all the items from all categories
-		void erase(std::size_t cat);                         ///<Erases a category
-		void erase();                                      ///<Erases all categories.
+		void clear(std::size_t cat);					///<Removes all the items from the specified category
+		void clear();									///<Removes all the items from all categories
+		void erase(std::size_t cat);					///<Erases a category
+		void erase();									///<Erases all categories.
 		void erase(item_proxy);
 
-		std::size_t size_categ() const;                   ///<Get the number of categories
-		std::size_t size_item(std::size_t cat) const;       ///<The number of items in category "cat"
+		std::size_t size_categ() const;					///<Get the number of categories
+		std::size_t size_item(std::size_t cat) const;	///<The number of items in category "cat"
 
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;

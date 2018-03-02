@@ -80,6 +80,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.append("controls/tabbar", CTRL_TABBAR, cursor_state{ cursor_action::add, CTRL_TABBAR }).icon(CTRL_TABBAR);
 	set.append("controls/textbox", CTRL_TEXTBOX, cursor_state{ cursor_action::add, CTRL_TEXTBOX }).icon(CTRL_TEXTBOX);
 	set.append("controls/toolbar", CTRL_TOOLBAR, cursor_state{ cursor_action::add, CTRL_TOOLBAR }).icon(CTRL_TOOLBAR);
+	set.append("controls/treebox", CTRL_TREEBOX, cursor_state{ cursor_action::add, CTRL_TREEBOX }).icon(CTRL_TREEBOX);
 	set.expand(true);
 
 

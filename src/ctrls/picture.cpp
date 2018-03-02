@@ -8,6 +8,10 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/picture.h"
+#include "filemanager.h"
+
+
+extern filemanager		g_file_mgr;
 
 
 namespace ctrls
@@ -21,13 +25,11 @@ namespace ctrls
 		ctrl::init(&pct, CTRL_PICTURE, name);
 
 		// common
-		// ...
+		properties.append("source").label("Source").category(CAT_COMMON).type(pg_type::filename_img) = "";
 		// appearance
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = pct.transparent();
-		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::choice).type_hints(
-			std::vector<std::string>{ CITEM_LEFT, CITEM_CENTER, CITEM_RIGHT }) = static_cast<int>(nana::align::left);
-		properties.append("valign").label("Vertical Alignment").category(CAT_APPEARANCE).type(pg_type::choice).type_hints(
-			std::vector<std::string>{ CITEM_TOP, CITEM_CENTER, CITEM_BOTTOM }) = static_cast<int>(nana::align_v::top);
+		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
+		properties.append("valign").label("Vertical Alignment").category(CAT_APPEARANCE).type(pg_type::valign) = static_cast<int>(nana::align_v::top);
 		properties.append("stretchable").label("Stretchable").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		// layout
 		// ...
@@ -38,6 +40,7 @@ namespace ctrls
 	{
 		ctrl::update();
 
+		pct.load(nana::paint::image(properties.property("source").as_string()));
 		pct.transparent(properties.property("transparent").as_bool());
 		pct.align(static_cast<nana::align>(properties.property("halign").as_int()), static_cast<nana::align_v>(properties.property("valign").as_int()));
 		pct.stretchable(properties.property("stretchable").as_bool());
@@ -55,6 +58,7 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::picture " + name + ";");
 		// init
+		cd->init.push_back(name + ".load(nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("source").as_string()) + "\"));");
 		cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
 		cd->init.push_back(name + ".align(static_cast<nana::align>(" + properties.property("halign").as_string() + "), static_cast<nana::align_v>(" + properties.property("valign").as_string() + "));");
 		cd->init.push_back(name + ".stretchable(" + properties.property("stretchable").as_string() + ");");

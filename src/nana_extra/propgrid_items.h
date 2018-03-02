@@ -1,12 +1,12 @@
 /*
- *		nana::pg_items Implementation
+ *		nana::propgrid_items Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_PG_ITEMS_H
-#define NANA_CREATOR_PG_ITEMS_H
+#ifndef NANA_CREATOR_PROPGRID_ITEMS_H
+#define NANA_CREATOR_PROPGRID_ITEMS_H
 
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>
@@ -35,7 +35,12 @@ namespace nana
 		virtual void value(const std::string& value) override;
 		virtual std::string value() const override;
 
+		virtual void enabled(bool state) override;
+
 		virtual void set_accept(std::function<bool(wchar_t)> f);
+
+		virtual void editable(bool editable);
+		virtual bool editable();
 
 	protected:
 		virtual void create(window wd) override;
@@ -96,6 +101,39 @@ namespace nana
 	};
 
 
+	/// class pg_string_button
+	class pg_string_button
+		: public pgitem
+	{
+	public:
+		pg_string_button() = default;
+
+		pg_string_button(const std::string& label, const std::string& value, const std::string& button_label = "...")
+			: pgitem(label, value), btn_label_(button_label)
+		{}
+
+		virtual void value(const std::string& value) override;
+		virtual std::string value() const override;
+
+		virtual void enabled(bool state) override;
+
+		virtual void set_accept(std::function<bool(wchar_t)> f);
+		virtual void set_button_click(std::function<void(const nana::arg_click&)> f);
+
+		virtual void editable(bool editable);
+		virtual bool editable();
+
+	protected:
+		virtual void create(window wd) override;
+
+		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+
+		std::string				btn_label_;
+		mutable ::nana::textbox	txt_;
+		mutable ::nana::button	btn_;
+	};
+
+
 	/// class pg_choice
 	class pg_choice
 		: public pgitem
@@ -109,6 +147,8 @@ namespace nana
 
 		virtual void value(const std::string& value) override;
 		virtual std::string value() const override;
+
+		virtual void enabled(bool state) override;
 
 		virtual void option(std::size_t value);
 		virtual std::size_t option() const;
@@ -140,6 +180,8 @@ namespace nana
 		virtual void value(const std::string& value) override;
 		virtual std::string value() const override;
 
+		virtual void enabled(bool state) override;
+
 		virtual void check(bool value);
 		virtual bool checked() const;
 
@@ -159,12 +201,14 @@ namespace nana
 	public:
 		pg_spin() = default;
 
-		pg_spin(const std::string& label)
-			: pgitem(label)
+		pg_spin(const std::string& label, const std::string& value)
+			: pgitem(label, value)
 		{}
 
 		virtual void value(const std::string& value) override;
 		virtual std::string value() const override;
+
+		virtual void enabled(bool state) override;
 
 		virtual void value(int value);
 		virtual int to_int() const;
@@ -192,6 +236,8 @@ namespace nana
 		virtual void value(const std::string& value) override;
 		virtual std::string value() const override;
 
+		virtual void enabled(bool state) override;
+
 		virtual void value(::nana::color value);
 		virtual ::nana::color to_color() const;
 
@@ -212,32 +258,6 @@ namespace nana
 		bool			inherited_value_{ false };
 	};
 
-
-	/// class pg_collection
-	class pg_collection
-		: public pgitem
-	{
-	public:
-		pg_collection() = default;
-
-		pg_collection(const std::string& label, const std::string& value)
-			: pgitem(label, value)
-		{}
-
-		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
-
-		virtual void set_accept(std::function<bool(wchar_t)> f);
-
-	protected:
-		virtual void create(window wd) override;
-
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
-
-		mutable ::nana::textbox	txt_;
-		mutable ::nana::button	btn_;
-	};
-
 }//end namespace nana
 
-#endif //NANA_CREATOR_PG_ITEMS_H
+#endif //NANA_CREATOR_PROPGRID_ITEMS_H

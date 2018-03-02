@@ -22,8 +22,7 @@ namespace ctrls
 		ctrl::init(&prg, CTRL_PROGRESS, name);
 
 		// common
-		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint).type_hints(
-			std::vector<int>{ 0, 100 }) = prg.value();
+		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint_0_100).enabled("unknown", false) = prg.value();
 		properties.append("unknown").label("Unknown").category(CAT_COMMON).type(pg_type::check) = prg.unknown();
 		// appearance
 		properties.property("fgcolor") = nana::to_string(prg.fgcolor(), false);

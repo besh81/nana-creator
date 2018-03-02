@@ -453,6 +453,8 @@ namespace nana
 					::nana::internal_scope_guard lock;
 
 					window wd = lister.wd_ptr()->handle();
+					if(!wd)
+						return;
 
 					//The area of the widget
 					const auto wd_sz = items_area();

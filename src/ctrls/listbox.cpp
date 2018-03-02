@@ -9,6 +9,7 @@
 #include <iostream>
 #include "ctrls/listbox.h"
 #include "tokenizer/Tokenizer.h"
+#include "nana_extra/color_helper.h"
 
 
 namespace ctrls
@@ -26,6 +27,7 @@ namespace ctrls
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
 		properties.append("single_selection").label("Single selection").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
+		properties.property("bgcolor") = nana::to_string(lst.bgcolor(), false);
 		properties.append("show_header").label("Show header").category(CAT_APPEARANCE).type(pg_type::check) = lst.visible_header();
 		// layout
 		// ...

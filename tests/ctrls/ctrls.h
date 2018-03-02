@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.5.0)
+ *	C++ code generated with Nana Creator (0.6.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -150,6 +150,7 @@ private:
 		picture1.enabled(true);
 		picture1.bgcolor(nana::color(212,208,200));
 		picture1.fgcolor(nana::color(0,0,0));
+		picture1.load(nana::paint::image("icons/delete_dark.png"));
 		picture1.transparent(false);
 		picture1.align(static_cast<nana::align>(0), static_cast<nana::align_v>(0));
 		picture1.stretchable(false);

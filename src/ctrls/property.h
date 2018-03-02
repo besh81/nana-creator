@@ -20,11 +20,18 @@ namespace ctrls
 		string,
 		string_int,
 		string_uint,
-		choice,
 		check,
 		spin,
 		color,
 		color_inherited,
+		halign,
+		valign,
+		layout,
+		seekdir,
+		string_uint_0_100,
+		filename,
+		filename_img,
+		folder,
 		collection
 	};
 
@@ -38,6 +45,9 @@ namespace ctrls
 		std::string		category;
 		pg_type			type;
 		nana::any		type_hints;
+
+		std::string		enabled_prop;
+		bool			enabled_value;
 	};
 
 
@@ -69,6 +79,10 @@ namespace ctrls
 
 		property_proxy& type_hints(const nana::any type);
 		nana::any type_hints() const;
+
+		property_proxy& enabled(const std::string& property, bool value);
+		std::string enabled();
+		bool enabled_value();
 
 
 		// Comparison operators (compares wrapped property pointers)

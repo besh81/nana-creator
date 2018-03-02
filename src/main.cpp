@@ -16,6 +16,7 @@
 #include "pugixml/pugixml.hpp"
 #include "guimanager.h"
 #include "imagemanager.h"
+#include "filemanager.h"
 #include "codegenerator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
@@ -29,6 +30,7 @@ using namespace nana;
 
 guimanager		g_gui_mgr;	// manage all the gui elements
 imagemanager	g_img_mgr;
+filemanager		g_file_mgr;	// manage absolute and relative path
 std::string		prj_name;
 
 
@@ -148,9 +150,8 @@ private:
 			else if(arg.button == 1)
 			{
 				filebox fb(*this, true);
-				std::string ext("*."); ext.append(PROJECT_EXT);
-				fb.add_filter("Nana Creator Project", ext);
-				fb.add_filter("All Files", "*.*");
+				fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
+				fb.add_filter("All Files (*.*)", "*.*");
 
 				if(fb())
 				{
@@ -165,8 +166,7 @@ private:
 			else if(arg.button == 2)
 			{
 				filebox fb(*this, false);
-				std::string ext("*." PROJECT_EXT);
-				fb.add_filter("Nana Creator Project", ext);
+				fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 				fb.init_file(prj_name);
 
 				if(fb())
@@ -257,6 +257,7 @@ void main()
 	g_img_mgr.add(CTRL_PROGRESS, "icons/progress_dark.png");
 	g_img_mgr.add(CTRL_SLIDER, "icons/slider_dark.png");
 	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar_dark.png");
+	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox_dark.png");
 
 
 	nana_creator fm;

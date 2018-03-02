@@ -214,7 +214,7 @@ namespace ctrls
 		properties.append("type") = CTRL_LAYOUT;
 		properties.append("name") = name;
 		// common
-		properties.append("layout").label("Layout").category(CAT_COMMON).type(pg_type::choice).type_hints(std::vector<std::string>{ CITEM_HLAYOUT, CITEM_VLAYOUT }) = static_cast<int>(nana::layout_orientation::horizontal);
+		properties.append("layout").label("Layout").category(CAT_COMMON).type(pg_type::layout) = static_cast<int>(nana::layout_orientation::horizontal);
 		// appearance
 		// ...
 		// layout

@@ -23,8 +23,7 @@ namespace ctrls
 		// common
 		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint) = sld.value();
 		properties.append("maximum").label("Maximum").category(CAT_COMMON).type(pg_type::string_uint) = sld.maximum();
-		properties.append("seek").label("Seek").category(CAT_COMMON).type(pg_type::choice).type_hints(
-			std::vector<std::string>{ CITEM_BILATERAL, CITEM_FORWD, CITEM_BACKWD }) = static_cast<int>(nana::drawerbase::slider::seekdir::bilateral);
+		properties.append("seek").label("Seek").category(CAT_COMMON).type(pg_type::seekdir) = static_cast<int>(nana::drawerbase::slider::seekdir::bilateral);
 		// appearance
 		properties.append("vertical").label("Vertical").category(CAT_APPEARANCE).type(pg_type::check) = sld.vertical();
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = sld.transparent();
