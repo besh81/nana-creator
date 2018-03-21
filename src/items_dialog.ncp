@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<nana-creator version="0.7.0">
+	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Form" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" width="640" height="480">
+		<layout type="layout" name="main_lyt" layout="1" weight="-1" margin="0" padding="0">
+			<layout type="layout" name="body_lyt" layout="0" weight="-1" margin="0" padding="5">
+				<layout type="layout" name="left_lyt" layout="1" weight="-1" margin="0" padding="0">
+					<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="0" />
+					<toolbar type="toolbar" name="toolbar" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" buttons="Add item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_add_dark.png&#10;Delete item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_delete_dark.png&#10;{sep}&#13;{sep}&#10;Move up&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up_dark.png&#10;Move down&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down_dark.png" scale="21" />
+				</layout>
+				<group type="group" name="prop_grp" enabled="true" bgcolor="[inherited],201,197,190" fgcolor="[inherited],0,0,0" weight="-1" margin="0" caption="Properties">
+					<layout type="layout" name="prop_lyt" layout="1" weight="-1" margin="0" padding="5">
+						<layout type="layout" name="type_lyt" layout="0" weight="35" margin="0" padding="5">
+							<checkbox type="checkbox" name="normal_chk" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" margin="0" caption="Normal" check="true" group="type" radio="true" />
+							<checkbox type="checkbox" name="separator_chk" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" margin="0" caption="Separator" check="false" group="type" radio="true" />
+						</layout>
+						<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="25" margin="0" caption="Text:" format="false" transparent="false" halign="0" valign="1" />
+						<textbox type="textbox" name="item_txt" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="25" margin="0" caption="" tip_string="" line_wrapped="false" multi_lines="false" editable="true" />
+						<label type="label" name="label2" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="25" margin="0" caption="Image:" format="false" transparent="false" halign="0" valign="1" />
+						<layout type="layout" name="layout1" layout="0" weight="25" margin="0" padding="0">
+							<textbox type="textbox" name="img_txt" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="0" caption="" tip_string="" line_wrapped="false" multi_lines="false" editable="true" />
+							<button type="button" name="img_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" caption="..." transparent="false" />
+						</layout>
+						<combox type="combox" name="combox1" enabled="true" bgcolor="[inherited],255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="5" options="UNO &#13;&#10;due&#13;&#10;Tre &#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\toolbar_dark.png" option="1" editable="false" />
+						<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" margin="5" buttons="New item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\combox_dark.png" scale="16" />
+					</layout>
+				</group>
+			</layout>
+			<layout type="layout" name="footer_lyt" layout="0" weight="40" margin="0" padding="2">
+				<layout type="layout" name="spacer" layout="0" weight="-1" margin="0" padding="5" />
+				<button type="button" name="ok_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="OK" transparent="false" />
+				<button type="button" name="canc_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="Cancel" transparent="false" />
+			</layout>
+		</layout>
+	</form>
+</nana-creator>

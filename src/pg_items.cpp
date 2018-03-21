@@ -99,26 +99,31 @@ void pg_folder::create(nana::window wd)
 
 
 /// class pg_collection
+void pg_collection::value(const std::string& value)
+{
+	value_ = value;
+
+	lock_guard evt_lock(&evt_emit_, false);
+	txt_.caption("(Collection)");
+}
+
 void pg_collection::create(nana::window wd)
 {
 	pg_string_button::create(wd);
-
-	//textbox
-	txt_.editable(false);
+	txt_.caption("(Collection)");
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
 		//items dialog
-		items_dialog items(arg.window_handle);
+		items_dialog dlg(arg.window_handle);
 
-		items.value(txt_.caption());
-		items.modality();
+		dlg.value(type_, value_);
+		dlg.modality();
 
-		if(items.return_val() == nana::msgbox::pick_ok)
+		if(dlg.return_val() == nana::msgbox::pick_ok)
 		{
-			txt_.caption(items.value());
-			value_ = txt_.caption();
+			value_ = dlg.value();
 			emit_event();
 		}
 	});

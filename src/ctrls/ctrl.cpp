@@ -58,6 +58,22 @@ namespace ctrls
 	}
 
 
+	void ctrl::set_highlight(const nana::color& color)
+	{
+		// reset bgcolor highlight
+		_ishighlighted = true;
+		_bgcolor = nanawdg->bgcolor();
+		nanawdg->bgcolor(color);
+	}
+
+	void ctrl::reset_highlight()
+	{
+		// reset bgcolor highlight
+		_ishighlighted = false;
+		nanawdg->bgcolor(_bgcolor);
+	}
+
+
 	void ctrl::init(nana::widget* wdg, const std::string& type, const std::string& name)
 	{
 		nanawdg = wdg;

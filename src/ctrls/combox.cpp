@@ -22,7 +22,8 @@ namespace ctrls
 		ctrl::init(&cmb, CTRL_COMBOX, name);
 
 		// common
-		properties.append("options").label("Options").category(CAT_COMMON).type(pg_type::collection) = "";
+		properties.append("options").label("Options").category(CAT_COMMON).type(pg_type::collection_combox) = "";
+		properties.append("option").label("Option").category(CAT_COMMON).type(pg_type::string_uint) = cmb.option();
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = cmb.editable();
 		// appearance
 		// ...
@@ -35,24 +36,9 @@ namespace ctrls
 	{
 		ctrl::update();
 
+		//options: I don't think it's usefull to add options here
+
 		cmb.editable(properties.property("editable").as_bool());
-		/* not usefull in the gui creation process
-		// options
-		cmb.clear();
-		std::string options = properties.property("options").as_string();
-		if(!options.empty())
-		{
-			// options: string with this format  ->  "item1" "item2" "item3" ...
-			Tokenizer strtkn(options);
-			strtkn.setDelimiter("\"");
-			std::string item;
-			while((item = strtkn.next()) != "")
-			{
-				if(item != " ")
-					cmb.push_back(item);
-			}
-		}
-		*/
 	}
 
 
@@ -67,21 +53,27 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::combox " + name + ";");
 		// init
-		cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
+		
+		// options - START
+		// split options into item (delimiter = CITEM_TKN)
+		Tokenizer items_tkn(properties.property("options").as_string());
+		items_tkn.setDelimiter(CITEM_TKN);
 
-		std::string options = properties.property("options").as_string();
-		if(!options.empty())
+		std::string item;
+		while((item = items_tkn.next()) != "")
 		{
-			// options: string with this format  ->  "item1" "item2" "item3" ...
-			Tokenizer strtkn(options);
-			strtkn.setDelimiter("\"");
-			std::string item;
-			while((item = strtkn.next()) != "")
-			{
-				if(item != " ")
-					cd->init.push_back(name + ".push_back(\"" + item + "\");");
-			}
+			// split item into properties (delimiter = CITEM_INNER_TKN)
+			Tokenizer item_tkn(item);
+			item_tkn.setDelimiter(CITEM_INNER_TKN);
+
+			cd->init.push_back(name + ".push_back(\"" + item_tkn.next() + "\");");
+
+			//TODO aggiungere immagine
 		}
+		// options - END
+
+		cd->init.push_back(name + ".option(" + properties.property("option").as_string() + ");");
+		cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
 	}
 
 }//end namespace ctrls

@@ -9,6 +9,7 @@
 #define NANA_CREATOR_PG_ITEMS_H
 
 #include "nana_extra/propgrid_items.h"
+#include "ctrls/property.h"
 
 
 using pgitem = nana::drawerbase::propertygrid::pgitem;
@@ -64,12 +65,16 @@ class pg_collection
 public:
 	pg_collection() = default;
 
-	pg_collection(const std::string& label, const std::string& value)
-		: pg_string_button(label, value)
+	pg_collection(const std::string& label, const std::string& value, ctrls::pg_type type)
+		: pg_string_button(label, value), type_(type)
 	{}
+
+	virtual void value(const std::string& value) override;
 
 protected:
 	virtual void create(nana::window wd) override;
+
+	ctrls::pg_type type_;
 };
 
 #endif //NANA_CREATOR_PG_ITEMS_H

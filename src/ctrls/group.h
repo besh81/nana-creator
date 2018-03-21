@@ -26,9 +26,16 @@ namespace ctrls
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
+		bool append(nana::window child);
+		bool remove(nana::window child);
+
+		bool haschild() { return _child; }
+
 
 	protected:
-		nana::group grp;
+		nana::group			grp;
+
+		bool				_child{ false };
 	};
 
 }//end namespace ctrls

@@ -32,7 +32,8 @@ namespace ctrls
 		filename,
 		filename_img,
 		folder,
-		collection
+		collection_combox,
+		collection_toolbar
 	};
 
 	struct property_t

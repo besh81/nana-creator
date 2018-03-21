@@ -96,10 +96,8 @@ namespace ctrls
 
 		cd->mainclass = name;
 		cd->mainclass_base = "nana::form";
-		//cd->mainclass_ctor = "(nana::window wd, const ::nana::size& sz = {" + sz + "}, const nana::appearance& apr = {" + apr + "})";
-		//cd->mainclass_base_ctor = "(wd, sz, apr)";
-		cd->mainclass_ctor = "(const nana::rectangle& rect = nana::API::make_center(" + sz + "), const nana::appearance& apr = {" + apr + "})";
-		cd->mainclass_base_ctor = "(rect, apr)";
+		cd->mainclass_ctor = "(nana::window wd, const ::nana::size& sz = {" + sz + "}, const nana::appearance& apr = {" + apr + "})";
+		cd->mainclass_base_ctor = "(wd, sz, apr)";
 
 		// filename
 		cd->filename = properties.property("filename").as_string();

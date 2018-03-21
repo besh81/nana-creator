@@ -197,18 +197,19 @@ tree_node<control_obj>* guimanager::addlayout(tree_node<control_obj>* parent, na
 	// 
 	if(parent_->properties.property("type").as_string() == CTRL_PANEL)
 	{
-		auto ppanel = static_cast<ctrls::panel*>(parent_.get());
-		ppanel->append(*ctrl->nanawdg);
+		(static_cast<ctrls::panel*>(parent_.get()))->append(*ctrl->nanawdg);
+	}
+	else if(parent_->properties.property("type").as_string() == CTRL_GROUP)
+	{
+		(static_cast<ctrls::group*>(parent_.get()))->append(*ctrl->nanawdg);
 	}
 	else if(parent_->properties.property("type").as_string() == CTRL_FORM)
 	{
-		auto pform = static_cast<ctrls::form*>(parent_.get());
-		pform->append(*ctrl->nanawdg);
+		(static_cast<ctrls::form*>(parent_.get()))->append(*ctrl->nanawdg);
 	}
 	else
 	{
-		auto playout = static_cast<ctrls::layout*>(parent_.get());
-		playout->append(*ctrl->nanawdg);
+		(static_cast<ctrls::layout*>(parent_.get()))->append(*ctrl->nanawdg);
 	}
 
 	// events
@@ -328,13 +329,20 @@ tree_node<control_obj>* guimanager::addcommonctrl(tree_node<control_obj>* parent
 
 	// events
 	control_obj_ptr pctrl = ctrl;
-	if(type == CTRL_PANEL)
+	if(type == CTRL_PANEL || type == CTRL_GROUP)
 	{
-		ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+		ctrl->nanawdg->events().mouse_enter([this, pctrl, type]()
 		{
-			auto ppanel = static_cast<ctrls::panel*>(pctrl.lock().get());
-			if(ppanel->haschild())
-				return; // already has a child
+			if(type == CTRL_PANEL)
+			{
+				if((static_cast<ctrls::panel*>(pctrl.lock().get()))->haschild())
+					return; // already has a child
+			}
+			else
+			{
+				if((static_cast<ctrls::group*>(pctrl.lock().get()))->haschild())
+					return; // already has a child
+			}
 
 			if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
 			{
@@ -390,18 +398,19 @@ void guimanager::deleteselected()
 		{
 			if(parent_->properties.property("type").as_string() == CTRL_PANEL)
 			{
-				auto ppanel = static_cast<ctrls::panel*>(parent_.get());
-				ppanel->remove(*toremove->value->nanawdg);
+				(static_cast<ctrls::panel*>(parent_.get()))->remove(*toremove->value->nanawdg);
+			}
+			else if(parent_->properties.property("type").as_string() == CTRL_GROUP)
+			{
+				(static_cast<ctrls::group*>(parent_.get()))->remove(*toremove->value->nanawdg);
 			}
 			else if(parent_->properties.property("type").as_string() == CTRL_FORM)
 			{
-				auto pform = static_cast<ctrls::form*>(parent_.get());
-				pform->remove(*toremove->value->nanawdg);
+				(static_cast<ctrls::form*>(parent_.get()))->remove(*toremove->value->nanawdg);
 			}
 			else
 			{
-				auto playout = static_cast<ctrls::layout*>(parent_.get());
-				playout->remove(*toremove->value->nanawdg);
+				(static_cast<ctrls::layout*>(parent_.get()))->remove(*toremove->value->nanawdg);
 			}
 		}
 	}
@@ -497,20 +506,23 @@ void guimanager::clickctrl(control_obj ctrl)
 	_ap->deselect();
 
 	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_PANEL || type == CTRL_FORM)
+	if(type == CTRL_PANEL || type == CTRL_GROUP || type == CTRL_FORM)
 	{
 		if(cursor().type == CTRL_LAYOUT)
 		{
 			if(type == CTRL_PANEL)
 			{
-				auto ppanel = static_cast<ctrls::panel*>(ctrl.get());
-				if(ppanel->haschild())
+				if((static_cast<ctrls::panel*>(ctrl.get()))->haschild())
+					return; // already has a child
+			}
+			else if(type == CTRL_GROUP)
+			{
+				if((static_cast<ctrls::group*>(ctrl.get()))->haschild())
 					return; // already has a child
 			}
 			else if(type == CTRL_FORM)
 			{
-				auto pform = static_cast<ctrls::form*>(ctrl.get());
-				if(pform->haschild())
+				if((static_cast<ctrls::form*>(ctrl.get()))->haschild())
 					return; // already has a child
 			}
 
@@ -681,7 +693,7 @@ bool guimanager::deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml
 
 
 		// deserialize children
-		if(node_name == CTRL_LAYOUT || node_name == CTRL_PANEL || node_name == CTRL_FORM)
+		if(node_name == CTRL_LAYOUT || node_name == CTRL_PANEL || node_name == CTRL_GROUP || node_name == CTRL_FORM)
 		{
 			if(!deserialize(node, &xml_node))
 				return false;
@@ -696,9 +708,11 @@ bool guimanager::_checksonship(const std::string& child, const std::string& pare
 {
 	if(parent == CTRL_LAYOUT)
 		return true;
-	if(parent == CTRL_FORM && child == CTRL_LAYOUT)
-		return true;
 	if(parent == CTRL_PANEL && child == CTRL_LAYOUT)
+		return true;
+	if(parent == CTRL_GROUP && child == CTRL_LAYOUT)
+		return true;
+	if(parent == CTRL_FORM && child == CTRL_LAYOUT)
 		return true;
 
 	return false;
@@ -745,7 +759,13 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<
 void guimanager::_deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node)
 {
 	for(auto i = xml_node->attributes_begin(); i != xml_node->attributes_end(); ++i)
-		properties->property(i->name()) = i->value();
+	{
+		std::string name(i->name());
+		if(name.find("item") == 0)
+			properties->append(name) = i->value();
+		else
+			properties->property(name) = i->value();
+	}
 }
 
 
@@ -776,7 +796,7 @@ void guimanager::_updatectrl(tree_node<control_obj>* node, bool update_owner, bo
 	ctrl->update();
 
 	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_FORM)
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_FORM || type == CTRL_GROUP)
 	{
 		// update children ctrls
 		if(update_children)

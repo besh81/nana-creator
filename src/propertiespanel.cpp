@@ -37,8 +37,6 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 
 
 	_pic.bgcolor(CREATOR_WINDOW_BG);
-	//_pic.align(align::center, align_v::center);
-	//_pic.stretchable(true);
 	_place.field("icon") << _pic;
 
 	_type_lbl.bgcolor(CREATOR_WINDOW_BG);
@@ -196,9 +194,9 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new pg_folder(prop.label(), prop.value())));
 		}
-		else if(prop.type() == ctrls::pg_type::collection)
+		else if(prop.type() == ctrls::pg_type::collection_combox || prop.type() == ctrls::pg_type::collection_toolbar)
 		{
-			cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value())));
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value(), prop.type())));
 		}
 		else //nana::pg_type::string
 		{

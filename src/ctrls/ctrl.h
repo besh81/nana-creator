@@ -33,27 +33,13 @@ namespace ctrls
 		
 		bool highlighted() { return _ishighlighted; }
 
-		void set_highlight(const nana::color& color)
-		{
-			// reset bgcolor highlight
-			_ishighlighted = true;
-			_bgcolor = nanawdg->bgcolor();
-			nanawdg->bgcolor(color);
-		}
-
-		void reset_highlight()
-		{
-			// reset bgcolor highlight
-			_ishighlighted = false;
-			nanawdg->bgcolor(_bgcolor);
-		}
+		virtual void set_highlight(const nana::color& color);
+		virtual void reset_highlight();
 
 
 	protected:
 		void init(nana::widget* wdg, const std::string& type, const std::string& name);
 
-
-	private:
 		nana::color		_bgcolor;
 		bool			_ishighlighted{ false };
 	};

@@ -79,7 +79,10 @@ namespace nana
 	void layout::padding(int pixels)
 	{
 		// [css boxmodel]padding -> [nana]margin
-		_padding_str = "margin=" + std::to_string(pixels) + " ";
+		if(pixels > 0)
+			_padding_str = "margin=" + std::to_string(pixels) + " ";
+		else
+			_padding_str = "";
 	}
 
 
@@ -187,7 +190,8 @@ namespace nana
 			if(!f.first.weight.empty())
 				div.append("weight=" + f.first.weight + " ");
 			if(!f.first.margin.empty())
-				div.append("margin=" + f.first.margin + " ");
+				if(f.first.margin != "0")
+					div.append("margin=" + f.first.margin + " ");
 			div.append(f.first.name);
 			div.append(">");
 		}

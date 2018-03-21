@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.6.0"
+#define CREATOR_VERSION			"0.7.0"
 
 
 
@@ -23,6 +23,7 @@
 // controls with child/children
 #define CTRL_PANEL				"panel"
 #define CTRL_FORM				"form"
+#define CTRL_GROUP				"group"
 //
 #define CTRL_LAYOUT				"layout"
 
@@ -37,7 +38,6 @@
 #define CTRL_DATECHOOSER		"datechooser"
 #define CTRL_TOOLBAR			"toolbar"
 #define CTRL_CATEGORIZE			"categorize"
-#define CTRL_GROUP				"group"
 #define CTRL_MENUBAR			"menubar"
 #define CTRL_PICTURE			"picture"
 #define CTRL_PROGRESS			"progress"
@@ -86,6 +86,11 @@
 
 
 #define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
+#define CITEM_INNER_TKN			"\r"
+#define CITEM_TKN				"\n"
+#define CITEM_SEPARATOR			"{sep}"
+// toolbar separator
+#define CITEM_TLB_SEPARATOR		CITEM_SEPARATOR CITEM_INNER_TKN CITEM_SEPARATOR
 
 
 // UI

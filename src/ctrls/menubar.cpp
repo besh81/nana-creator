@@ -22,7 +22,7 @@ namespace ctrls
 		ctrl::init(&mnb, CTRL_MENUBAR, name);
 
 		// common
-		properties.append("menus").label("Menus").category(CAT_COMMON).type(pg_type::collection) = "";
+		properties.append("menus").label("Menus").category(CAT_COMMON).type(pg_type::collection_combox) = "";
 		// appearance
 		// ...
 		// layout
@@ -35,9 +35,7 @@ namespace ctrls
 		ctrl::update();
 
 		// menus
-#ifdef NANA_1_5_6_FORK
-		mnb.clear(); // added in my fork -> not present in 1.5.6
-#endif
+		mnb.clear();
 		std::string menus = properties.property("menus").as_string();
 		if(!menus.empty())
 		{

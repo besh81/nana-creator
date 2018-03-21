@@ -61,13 +61,6 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	});
 	//
 	_objects.events().mouse_down(nana::menu_popuper(_ctxmenu));
-	//
-	/*_objects.events().mouse_down([this](const nana::arg_mouse& arg)
-	{
-		if(arg.right_button)
-			std::cout << "right click: " << _objects.selected().text() << "\n";
-	});
-	*/
 
 
 	_objects.bgcolor(CREATOR_WINDOW_BG);

@@ -23,7 +23,7 @@ namespace ctrls
 		ctrl::init(&lst, CTRL_LISTBOX, name);
 
 		// common
-		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection) = "";
+		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection_combox) = "";
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
 		properties.append("single_selection").label("Single selection").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
@@ -39,9 +39,7 @@ namespace ctrls
 		ctrl::update();
 
 		// columns
-#ifdef NANA_1_5_6_FORK
-		lst.clear_headers(); // added in my fork -> not present in 1.5.6
-#endif
+		lst.clear_headers();
 		std::string options = properties.property("columns").as_string();
 		if(!options.empty())
 		{
