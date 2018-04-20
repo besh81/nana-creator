@@ -22,7 +22,8 @@ namespace ctrls
 		ctrl::init(&ctg, CTRL_CATEGORIZE, name);
 
 		// common
-		// ...
+		//properties.append("categories").label("Categories").category(CAT_COMMON).type(pg_type::collection_categorize) = "";
+		properties.append("splitter").label("Splitter").category(CAT_COMMON).type(pg_type::string) = ctg.splitstr();
 		// appearance
 		properties.property("bgcolor") = nana::to_string(ctg.bgcolor(), false);
 		// layout
@@ -33,6 +34,8 @@ namespace ctrls
 	void categorize::update()
 	{
 		ctrl::update();
+
+		ctg.splitstr(properties.property("splitter").as_string());
 	}
 
 

@@ -95,7 +95,7 @@ tree_node<control_obj>* guimanager::addmainform(const std::string& name)
 		return 0;
 	}
 
-	control_obj ctrl = control_obj(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, _deserializing ? false : true));
+	control_obj ctrl(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, _deserializing ? false : true));
 
 	//TEMP
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
@@ -146,7 +146,7 @@ tree_node<control_obj>* guimanager::addmainpanel(const std::string& name)
 		return 0;
 	}
 
-	control_obj ctrl = control_obj(new ctrls::panel(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
+	control_obj ctrl(new ctrls::panel(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
 	
 	//TEMP
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
@@ -192,7 +192,7 @@ tree_node<control_obj>* guimanager::addlayout(tree_node<control_obj>* parent, na
 	if(!_checksonship(CTRL_LAYOUT, parent_->properties.property("type").as_string()))
 		return 0;
 
-	control_obj ctrl = control_obj(new ctrls::layout(*parent_->nanawdg, name.empty() ? _name_mgr.add_numbered(CTRL_LAYOUT) : name));
+	control_obj ctrl(new ctrls::layout(*parent_->nanawdg, name.empty() ? _name_mgr.add_numbered(CTRL_LAYOUT) : name));
 
 	// 
 	if(parent_->properties.property("type").as_string() == CTRL_PANEL)

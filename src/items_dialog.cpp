@@ -23,18 +23,170 @@ extern filemanager		g_file_mgr;
 //items_dialog
 void items_dialog::init()
 {
+	//ctrls - START
+	if(_type == ctrls::pg_type::collection_combox)
+	{
+		// toolbar
+		toolbar.enable(6, false);
+		toolbar.enable(7, false);
+
+		prop_grp.div("vert margin=5 arrange=[25,repeated] field1");
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+		// label2
+		label2.create(prop_grp);
+		label2.caption("Image:");
+		label2.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// img_lyt
+		img_lyt_panel.create(prop_grp);
+		img_lyt_place.bind(img_lyt_panel);
+		img_lyt_place.div("<field1><weight=30 field2>");
+		// img_txt
+		img_txt.create(img_lyt_panel);
+		img_lyt_place["field1"] << img_txt;
+		img_txt.line_wrapped(false);
+		img_txt.multi_lines(false);
+		// img_btn
+		img_btn.create(img_lyt_panel);
+		img_lyt_place["field2"] << img_btn;
+		img_btn.caption("...");
+
+		prop_grp["field1"] << label1 << item_txt << label2 << img_lyt_panel;
+		prop_grp.collocate();
+	}
+	else if(_type == ctrls::pg_type::collection_toolbar)
+	{
+		// toolbar
+		toolbar.enable(6, false);
+		toolbar.enable(7, false);
+
+		prop_grp.div("vert margin=5 <weight=25 field1><vert arrange=[25,repeated] field2>");
+
+		// normal_chk
+		normal_chk.create(prop_grp);
+		normal_chk.caption("Normal");
+		rg_type.add(normal_chk);
+		// separator_chk
+		separator_chk.create(prop_grp);
+		separator_chk.caption("Separator");
+		rg_type.add(separator_chk);
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+		// label2
+		label2.create(prop_grp);
+		label2.caption("Image:");
+		label2.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// img_lyt
+		img_lyt_panel.create(prop_grp);
+		img_lyt_place.bind(img_lyt_panel);
+		img_lyt_place.div("<field1><weight=30 field2>");
+		// img_txt
+		img_txt.create(img_lyt_panel);
+		img_lyt_place["field1"] << img_txt;
+		img_txt.line_wrapped(false);
+		img_txt.multi_lines(false);
+		// img_btn
+		img_btn.create(img_lyt_panel);
+		img_lyt_place["field2"] << img_btn;
+		img_btn.caption("...");
+
+		prop_grp["field1"] << normal_chk << separator_chk;
+		prop_grp["field2"] << label1 << item_txt << label2 << img_lyt_panel;
+		prop_grp.collocate();
+	}
+	else if(_type == ctrls::pg_type::collection_listbox)
+	{
+		// toolbar
+		toolbar.enable(6, false);
+		toolbar.enable(7, false);
+
+		prop_grp.div("vert margin=5 arrange=[25,repeated] field1");
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+		// label3
+		label3.create(prop_grp);
+		label3.caption("Width:");
+		label3.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// width_txt
+		width_txt.create(prop_grp);
+		width_txt.line_wrapped(false);
+		width_txt.multi_lines(false);
+
+		prop_grp["field1"] << label1 << item_txt << label3 << width_txt;
+		prop_grp.collocate();
+	}
+	else if(_type == ctrls::pg_type::collection_tabbar)
+	{
+	}
+	else if(_type == ctrls::pg_type::collection_menubar)
+	{
+		prop_grp.div("vert margin=5 arrange=[25,repeated] field1");
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+
+		prop_grp["field1"] << label1 << item_txt;
+		prop_grp.collocate();
+	}
+	else if(_type == ctrls::pg_type::collection_categorize)
+	{
+		prop_grp.div("vert margin=5 arrange=[25,repeated] field1");
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+
+		prop_grp["field1"] << label1 << item_txt;
+		prop_grp.collocate();
+	}
+	//ctrls - END
+
+
 	_retval = nana::msgbox::pick_cancel;
 
-	disable_editing();
+	_update_selected();
 
+	//------------------
 	// events
+	//------------------
 	toolbar.events().selected([this](const nana::arg_toolbar & arg)
 	{
 		if(arg.button == 0)
 		{
 			// add item
 
-			// combox
 			auto ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), NEW_ITEM_TXT);
 			if(_root.empty())
 				_root = ip.owner();
@@ -61,7 +213,6 @@ void items_dialog::init()
 			m << "Delete selected item?";
 			if(m() == nana::msgbox::pick_yes)
 			{
-				// combox
 				if(sel == _root.child())
 				{
 					// this is the 1st sibling
@@ -94,7 +245,6 @@ void items_dialog::init()
 		{
 			// move up
 
-			// combox
 			auto sn = sel._m_node();
 			auto pn = sel.owner().child()._m_node(); // previous node
 
@@ -124,7 +274,6 @@ void items_dialog::init()
 		{
 			// move down
 
-			// combox
 			auto sn = sel._m_node();
 			if(!sn->next)
 				return; // this is the last sibling: nothing to do
@@ -149,6 +298,73 @@ void items_dialog::init()
 
 			nana::API::refresh_window(items_tree);
 		}
+		else if(arg.button == 6)
+		{
+			// move left
+
+			if(sel.level() == 1)
+				return; // this is the first level: nothing to do
+
+			auto sn = sel._m_node();
+
+			// remove selected node from current level
+			auto prev = sel.owner().child(); // previous node
+
+			if(prev == sel)
+			{
+				// this is the 1st sibling
+				sn->owner->child = sn->next;
+			}
+			else
+			{
+				while(prev.sibling() != sel)
+					prev = prev.sibling();
+
+				auto pn = prev._m_node();
+				pn->next = sn->next;
+			}
+
+
+			// insert selected node into previous level right after the owner node
+			auto on = sel.owner()._m_node(); // owner node
+			
+			sn->owner = on->owner;
+			sn->next = on->next;
+			on->next = sn;
+
+			nana::API::refresh_window(items_tree);
+		}
+		else if(arg.button == 7)
+		{
+			// move right
+			
+			auto prev = sel.owner().child(); // previous node
+			if(prev == sel)
+				return; // this is the 1st sibling: nothing to do
+
+			while(prev.sibling() != sel)
+				prev = prev.sibling();
+			
+			auto sn = sel._m_node();
+			auto pn = prev._m_node();
+
+			sn->owner = pn;
+			pn->next = sn->next;
+			// append as last children
+			sn->next = 0;
+			if(pn->child)
+			{
+				pn = pn->child;
+				while(pn->next)
+					pn = pn->next;
+				pn->next = sn;
+			}
+			else
+				pn->child = sn;
+
+			prev.expand(true);
+			nana::API::refresh_window(items_tree);
+		}
 	});
 
 	// select item
@@ -156,12 +372,12 @@ void items_dialog::init()
 	{
 		if(arg.operated)
 		{
-			type(_type);
 			select_item(arg.item.key());
 		}
 		else
 		{
-			disable_editing();
+			_selected = 0;
+			_update_selected();
 		}
 	});
 
@@ -180,40 +396,44 @@ void items_dialog::init()
 	});
 
 
-	// type radioboxes
-	normal_chk.events().click([this]()
+
+	if(_type == ctrls::pg_type::collection_toolbar)
 	{
-		if(!_selected)
-			return;
+		// type radioboxes
+		normal_chk.events().click([this]()
+		{
+			if(!_selected)
+				return;
 
-		_selected->separator = false;
-		_update_selected();
+			_selected->separator = false;
+			_update_selected();
 
-		// update treebox
-		auto sel = items_tree.selected();
-		if(sel.empty())
-			return;
-		sel.text(_selected->text);
+			// update treebox
+			auto sel = items_tree.selected();
+			if(sel.empty())
+				return;
+			sel.text(_selected->text);
 
-		nana::API::refresh_window(items_tree);
-	});
+			nana::API::refresh_window(items_tree);
+		});
 
-	separator_chk.events().click([this]()
-	{
-		if(!_selected)
-			return;
+		separator_chk.events().click([this]()
+		{
+			if(!_selected)
+				return;
 
-		_selected->separator = true;
-		_update_selected();
+			_selected->separator = true;
+			_update_selected();
 
-		// update treebox
-		auto sel = items_tree.selected();
-		if(sel.empty())
-			return;
-		sel.text(SEPARATOR_TXT);
+			// update treebox
+			auto sel = items_tree.selected();
+			if(sel.empty())
+				return;
+			sel.text(SEPARATOR_TXT);
 
-		nana::API::refresh_window(items_tree);
-	});
+			nana::API::refresh_window(items_tree);
+		});
+	}
 
 
 	// text
@@ -242,61 +462,96 @@ void items_dialog::init()
 		}
 	});
 
-	// image
-	img_txt.events().key_press([this](const nana::arg_keyboard& arg)
+
+	if(_type == ctrls::pg_type::collection_combox || _type == ctrls::pg_type::collection_toolbar)
 	{
-		if(arg.key == nana::keyboard::enter)
+		// image
+		img_txt.events().key_press([this](const nana::arg_keyboard& arg)
 		{
-			// user can only erase content -> to select image must use btn
-			if(img_txt.caption().empty())
+			if(arg.key == nana::keyboard::enter)
 			{
-				if(!_selected)
-					return;
+				// user can only erase content -> to select image must use btn
+				if(img_txt.caption().empty())
+				{
+					if(!_selected)
+						return;
 
-				_selected->img = "";
+					_selected->img = "";
 
-				// update treebox
-				//TODO aggiunta immagine
+					// update treebox
+					//TODO aggiunta immagine
 
-				nana::API::refresh_window(items_tree);
+					nana::API::refresh_window(items_tree);
+				}
 			}
-		}
-	});
+		});
 
-	img_btn.events().click.connect_front([this](const nana::arg_click& arg)
-	{
-		if(!_selected)
-			return;
-
-		nana::filebox fb(arg.window_handle, true);
-
-		fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
-		fb.add_filter("All Files", "*.*");
-
-		fb.init_file(img_txt.caption());
-
-		if(fb())
+		img_btn.events().click.connect_front([this](const nana::arg_click& arg)
 		{
-			img_txt.caption(g_file_mgr.to_relative(fb.file()));
-			_selected->img = fb.file();
-		}
-	});
-}
+			if(!_selected)
+				return;
+
+			nana::filebox fb(arg.window_handle, true);
+
+			fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+			fb.add_filter("All Files", "*.*");
+
+			fb.init_file(img_txt.caption());
+
+			if(fb())
+			{
+				img_txt.caption(g_file_mgr.to_relative(fb.file()));
+				_selected->img = fb.file();
+			}
+		});
+	}
 
 
-void items_dialog::disable_editing()
-{
-	_selected = 0;
+	if(_type == ctrls::pg_type::collection_listbox)
+	{
+		width_txt.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
+		{
+			if(arg.key == nana::keyboard::enter)
+			{
+				unsigned u_val = -1;
+				try
+				{
+					u_val = std::stoul(width_txt.caption());
+				}
+				catch(...)
+				{
+					width_txt.caption(_selected->width);
+					arg.stop_propagation();
+					return;
+				}
 
-	normal_chk.enabled(false);
-	separator_chk.enabled(false);
-	//
-	item_txt.caption("");
-	item_txt.enabled(false);
-	//
-	img_txt.caption("");
-	img_txt.enabled(false);
-	img_btn.enabled(false);
+				_selected->width = std::to_string(u_val);
+				width_txt.caption(_selected->width);
+				arg.stop_propagation();
+			}
+		});
+
+		width_txt.set_accept([](wchar_t c) -> bool
+		{
+			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+		});
+	}
+
+
+	if(_type == ctrls::pg_type::collection_tabbar)
+	{
+	}
+	
+
+	if(_type == ctrls::pg_type::collection_menubar)
+	{
+	}
+	
+
+	if(_type == ctrls::pg_type::collection_categorize)
+	{
+
+	}
 }
 
 
@@ -333,38 +588,117 @@ void items_dialog::_update_selected()
 {
 	if(_type == ctrls::pg_type::collection_combox)
 	{
-		normal_chk.enabled(true);
-		normal_chk.check(true);
-		//
-		item_txt.enabled(true);
-		item_txt.caption(_selected->text);
-		//
-		img_txt.enabled(true);
-		img_txt.caption(g_file_mgr.to_relative(_selected->img));
-		img_btn.enabled(true);
-	}
-	else if(_type == ctrls::pg_type::collection_toolbar)
-	{
-		normal_chk.enabled(true);
-		separator_chk.enabled(true);
-
-		if(_selected->separator)
+		if(_selected)
 		{
-			separator_chk.check(true);
-			item_txt.enabled(false);
-			img_txt.enabled(false);
-			img_btn.enabled(false);
+			item_txt.enabled(true);
+			item_txt.caption(_selected->text);
+			//
+			img_txt.enabled(true);
+			img_txt.caption(g_file_mgr.to_relative(_selected->img));
+			img_btn.enabled(true);
+			// set focus
+			item_txt.focus();
 		}
 		else
 		{
-			normal_chk.check(true);
-			item_txt.enabled(true);
-			img_txt.enabled(true);
-			img_btn.enabled(true);
+			item_txt.enabled(false);
+			//
+			img_txt.enabled(false);
+			img_btn.enabled(false);
 		}
+	}
+	else if(_type == ctrls::pg_type::collection_toolbar)
+	{
+		if(_selected)
+		{
+			normal_chk.enabled(true);
+			separator_chk.enabled(true);
 
-		item_txt.caption(_selected->text);
-		img_txt.caption(g_file_mgr.to_relative(_selected->img));
+			if(_selected->separator)
+			{
+				separator_chk.check(true);
+				//
+				item_txt.enabled(false);
+				//
+				img_txt.enabled(false);
+				img_btn.enabled(false);
+			}
+			else
+			{
+				normal_chk.check(true);
+				//
+				item_txt.enabled(true);
+				//
+				img_txt.enabled(true);
+				img_btn.enabled(true);
+			}
+
+			item_txt.caption(_selected->text);
+			img_txt.caption(g_file_mgr.to_relative(_selected->img));
+			// set focus
+			item_txt.focus();
+		}
+		else
+		{
+			normal_chk.enabled(false);
+			separator_chk.enabled(false);
+			//
+			item_txt.enabled(false);
+			//
+			img_txt.enabled(false);
+			img_btn.enabled(false);
+
+		}
+	}
+	else if(_type == ctrls::pg_type::collection_listbox)
+	{
+		if(_selected)
+		{
+			item_txt.enabled(true);
+			item_txt.caption(_selected->text);
+			//
+			width_txt.enabled(true);
+			width_txt.caption(_selected->width);
+			// set focus
+			item_txt.focus();
+		}
+		else
+		{
+			item_txt.enabled(false);
+			//
+			width_txt.enabled(false);
+		}
+	}
+	else if(_type == ctrls::pg_type::collection_tabbar)
+	{
+	}
+	else if(_type == ctrls::pg_type::collection_menubar)
+	{
+		if(_selected)
+		{
+			item_txt.enabled(true);
+			item_txt.caption(_selected->text);
+			// set focus
+			item_txt.focus();
+		}
+		else
+		{
+			item_txt.enabled(false);
+		}
+	}
+	else if(_type == ctrls::pg_type::collection_categorize)
+	{
+		if(_selected)
+		{
+			item_txt.enabled(true);
+			item_txt.caption(_selected->text);
+			// set focus
+			item_txt.focus();
+		}
+		else
+		{
+			item_txt.enabled(false);
+		}
 	}
 }
 
@@ -382,6 +716,7 @@ void items_dialog::value(const std::string& items)
 	{
 		_data_struct d;
 		d.key = _node_mgr.add_numbered(NODE_NAME);
+		d.owner = CITEM_EMPTY_OWNER;
 		std::string items_tree_text;
 
 		// split item into properties (delimiter = CITEM_INNER_TKN)
@@ -390,7 +725,7 @@ void items_dialog::value(const std::string& items)
 
 		if(_type == ctrls::pg_type::collection_combox)
 		{
-			d.text = item_tkn.next();
+			d.text = items_tree_text = item_tkn.next();
 			d.img = item_tkn.next();
 		}
 		else if(_type == ctrls::pg_type::collection_toolbar)
@@ -407,14 +742,57 @@ void items_dialog::value(const std::string& items)
 				d.img = item_tkn.next();
 			}
 		}
+		else if(_type == ctrls::pg_type::collection_listbox)
+		{
+			d.text = items_tree_text = item_tkn.next();
+			d.width = item_tkn.next();
+		}
+		else if(_type == ctrls::pg_type::collection_tabbar)
+		{
+		}
+		else if(_type == ctrls::pg_type::collection_menubar)
+		{
+			d.key = item_tkn.next();
+			d.owner = item_tkn.next();
+			d.text = items_tree_text = item_tkn.next();
+		}
+		else if(_type == ctrls::pg_type::collection_categorize)
+		{
+		}
 		else
 			return;
 		
 
-		auto ip = items_tree.insert(d.key, items_tree_text);
-		if(_root.empty())
-			_root = ip.owner();
+		if(d.owner == CITEM_EMPTY_OWNER)
+		{
+			auto ip = items_tree.insert(d.key, items_tree_text);
+			if(_root.empty())
+				_root = ip.owner();
+		}
+		else
+		{
+			bool found = false;
+			auto p = _root.child();
+			while(!p.empty() && !found)
+			{
+				p.visit_recursively([this, &d, &items_tree_text, &found](nana::treebox::item_proxy item) -> bool
+				{
+					if(d.owner == item.key())
+					{
+						item.append(d.key, items_tree_text);
+						item.expand(true);
+						
+						found = true;
+						return false;
+					}
 
+					return true;
+				});
+
+				p = p.sibling();
+			}
+		}
+	
 		_data.push_back(d);
 	}
 
@@ -435,41 +813,44 @@ std::string items_dialog::value()
 	auto p = _root.child();
 	while(!p.empty())
 	{
-		if(_type == ctrls::pg_type::collection_combox)
+		p.visit_recursively([this, &vitems](nana::treebox::item_proxy item) -> bool
 		{
-			p.visit_recursively([this, &vitems](nana::treebox::item_proxy item) -> bool
+			for(auto i : _data)
 			{
-				for(auto i : _data)
+				if(i.key == item.key())
 				{
-					if(i.key == item.key())
+					if(_type == ctrls::pg_type::collection_combox)
 					{
 						vitems.push_back(i.text + CITEM_INNER_TKN + i.img);
 					}
-				}
-
-				return true;
-			});
-		}
-		else if(_type == ctrls::pg_type::collection_toolbar)
-		{
-			p.visit_recursively([this, &vitems](nana::treebox::item_proxy item) -> bool
-			{
-				for(auto i : _data)
-				{
-					if(i.key == item.key())
+					else if(_type == ctrls::pg_type::collection_toolbar)
 					{
 						if(i.separator)
 							vitems.push_back(CITEM_TLB_SEPARATOR);
 						else
 							vitems.push_back(i.text + CITEM_INNER_TKN + i.img);
 					}
-				}
+					else if(_type == ctrls::pg_type::collection_listbox)
+					{
+						vitems.push_back(i.text + CITEM_INNER_TKN + i.width);
+					}
+					else if(_type == ctrls::pg_type::collection_tabbar)
+					{
+					}
+					else if(_type == ctrls::pg_type::collection_menubar)
+					{
+						vitems.push_back(item.key() + CITEM_INNER_TKN + (item.owner().key().empty() ? CITEM_EMPTY_OWNER : item.owner().key()) + CITEM_INNER_TKN + i.text);
+					}
+					else if(_type == ctrls::pg_type::collection_categorize)
+					{
+					}
 
-				return true;
-			});
-		}
-		else
-			return "";
+					break;
+				}
+			}
+
+			return true;
+		});
 
 		p = p.sibling();
 	}

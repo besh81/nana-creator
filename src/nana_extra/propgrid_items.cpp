@@ -219,7 +219,7 @@ namespace nana
 
 		txt_.set_accept([](wchar_t c) -> bool
 		{
-			return isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace ? true : false;
+			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
 		});
 	}
 	/// class pg_string_uint end

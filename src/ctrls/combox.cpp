@@ -23,7 +23,7 @@ namespace ctrls
 
 		// common
 		properties.append("options").label("Options").category(CAT_COMMON).type(pg_type::collection_combox) = "";
-		properties.append("option").label("Option").category(CAT_COMMON).type(pg_type::string_uint) = cmb.option();
+		properties.append("option").label("Option").category(CAT_COMMON).type(pg_type::string_uint) = 0; //cmb.option();
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = cmb.editable();
 		// appearance
 		// ...

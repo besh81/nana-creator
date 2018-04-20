@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.6.0)
+ *	C++ code generated with Nana Creator (0.8.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -37,8 +37,8 @@ class form1
 	: public nana::form
 {
 public:
-	form1(const nana::rectangle& rect = nana::API::make_center(650, 550), const nana::appearance& apr = {true, true, false, false, false, false, false})
-		: nana::form(rect, apr)
+	form1(nana::window wd, const ::nana::size& sz = {650, 550}, const nana::appearance& apr = {true, true, false, false, false, false, false})
+		: nana::form(wd, sz, apr)
 	{
 		init_();
 
@@ -62,11 +62,11 @@ private:
 		caption("Nana-Creator Test");
 		// layout1
 		layout1_place.bind(*this);
-		layout1_place.div("margin=5 <margin=0 field1><margin=5 field2>");
+		layout1_place.div("margin=5 <field1><margin=5 field2>");
 		// layout2
 		layout2_panel.create(*this);
 		layout2_place.bind(layout2_panel);
-		layout2_place.div("vert margin=5 <weight=30 margin=0 field1><weight=40 margin=3 field2><weight=30 margin=3 field3><weight=30 margin=3 field4><weight=40 margin=0 field5><weight=30 margin=3 field6><margin=0 field7><margin=0 field8><weight=30 margin=3 field9><weight=30 margin=3 field10><weight=30 margin=3 field11><weight=30 margin=3 field12>");
+		layout2_place.div("vert margin=5 <weight=30 field1><weight=40 margin=3 field2><weight=30 margin=3 field3><weight=30 margin=3 field4><weight=40 field5><weight=30 margin=3 field6><field7><field8><weight=30 margin=3 field9><weight=30 margin=3 field10><weight=30 margin=3 field11><weight=30 margin=3 field12>");
 		layout1_place["field1"] << layout2_panel;
 		// label1
 		label1.create(layout2_panel);
@@ -106,7 +106,7 @@ private:
 		layout2_place["field5"] << panel2;
 		// layout4
 		layout4_place.bind(panel2);
-		layout4_place.div("margin=5 <margin=0 field1><margin=0 field2>");
+		layout4_place.div("margin=5 <field1><field2>");
 		// checkbox2
 		checkbox2.create(panel2);
 		layout4_place["field1"] << checkbox2;
@@ -133,10 +133,11 @@ private:
 		combox1.enabled(true);
 		combox1.bgcolor(nana::color(255,255,255));
 		combox1.fgcolor(nana::color(0,0,0));
-		combox1.editable(false);
 		combox1.push_back("A");
 		combox1.push_back("B");
 		combox1.push_back("C");
+		combox1.option(0);
+		combox1.editable(false);
 		// group1
 		group1.create(layout2_panel);
 		layout2_place["field7"] << group1;
@@ -144,6 +145,7 @@ private:
 		group1.bgcolor(nana::color(201,197,190));
 		group1.fgcolor(nana::color(0,0,0));
 		group1.caption("Group");
+		group1.div("field1");
 		// picture1
 		picture1.create(layout2_panel);
 		layout2_place["field8"] << picture1;
@@ -178,7 +180,10 @@ private:
 		spinbox1.enabled(true);
 		spinbox1.bgcolor(nana::color(255,255,255));
 		spinbox1.fgcolor(nana::color(0,0,0));
+		spinbox1.range(0, 100, 1);
+		spinbox1.value("0");
 		spinbox1.editable(true);
+		spinbox1.modifier("", "");
 		// textbox1
 		textbox1.create(layout2_panel);
 		layout2_place["field12"] << textbox1;
@@ -197,22 +202,28 @@ private:
 		layout1_place["field2"] << panel1;
 		// layout3
 		layout3_place.bind(panel1);
-		layout3_place.div("vert margin=0 <weight=30 margin=0 field1><weight=40 margin=0 field2><margin=3 field3><margin=3 field4>");
+		layout3_place.div("vert <weight=30 field1><weight=40 field2><margin=3 field3><margin=3 field4>");
 		// menubar1
 		menubar1.create(panel1);
 		layout3_place["field1"] << menubar1;
 		menubar1.enabled(true);
-		menubar1.bgcolor(nana::color(212,208,200));
-		menubar1.fgcolor(nana::color(0,0,0));
-		menubar1.push_back("&Entry1");
-		menubar1.push_back("E&ntry2");
+		auto* menubar1_0 = &menubar1.push_back("&File");
+		menubar1_0->append("E&xit");
+		auto* menubar1_1 = &menubar1.push_back("menu_1");
+		menubar1_1->append("menu_1_1");
+		auto* menubar1_1_0 = menubar1_1->create_sub_menu(0);
+		menubar1_1_0->append("menu_1_1_1");
+		menubar1.push_back("&Help");
 		// toolbar1
 		toolbar1.create(panel1);
 		layout3_place["field2"] << toolbar1;
 		toolbar1.enabled(true);
 		toolbar1.bgcolor(nana::color(212,208,200));
 		toolbar1.fgcolor(nana::color(0,0,0));
-		toolbar1.scale(16);
+		toolbar1.scale(21);
+		toolbar1.append("Uno", nana::paint::image("icons/up_dark.png"));
+		toolbar1.separate();
+		toolbar1.append("Due", nana::paint::image("icons/down_dark.png"));
 		// datechooser1
 		datechooser1.create(panel1);
 		layout3_place["field3"] << datechooser1;
@@ -227,8 +238,8 @@ private:
 		listbox1.fgcolor(nana::color(0,0,0));
 		listbox1.checkable(false);
 		listbox1.show_header(true);
-		listbox1.append_header("col1");
-		listbox1.append_header("col2");
+		listbox1.append_header("Col1", 150);
+		listbox1.append_header("Col2");
 
 		layout1_place.collocate();
 		layout4_place.collocate();

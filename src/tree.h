@@ -43,10 +43,29 @@ struct tree_node
 		auto t = child;
 		while(t)
 		{
-			tree_node* t_next = t->next;
+			auto t_next = t->next;
 			delete t;
 			t = t_next;
 		}
+	}
+
+
+	tree_node* append(const T& elem)
+	{
+		auto new_node_ptr = &(this->child);
+		if(this->child)
+		{
+			auto last = this->child;
+			while(last->next)
+				last = last->next;
+
+			new_node_ptr = &(last->next);
+		}
+
+		*new_node_ptr = new tree_node<T>(this);
+
+		(*new_node_ptr)->value = elem;
+		return (*new_node_ptr);
 	}
 
 
@@ -106,6 +125,35 @@ struct tree_node
 		t->next->next = this;
 		return true;
 	}
+
+
+	unsigned pos() const
+	{
+		if(!owner)
+			return 0;
+
+		unsigned pos = 0;
+		auto prev = owner->child;
+		while(prev != this)
+		{
+			prev = prev->next;
+			++pos;
+		}
+		return pos;
+	}
+
+
+	unsigned level() const
+	{
+		unsigned indent = 0;
+		auto node = owner;
+		while(node->owner)
+		{
+			node = node->owner;
+			++indent;
+		}
+		return indent;
+	}
 };
 
 
@@ -163,6 +211,12 @@ public:
 	}
 
 
+	node_type* append(const element_type& elem)
+	{
+		return append(nullptr, elem);
+	}
+
+
 	node_type* append(node_type* node, const element_type& elem)
 	{
 		if(nullptr == node)
@@ -170,22 +224,7 @@ public:
 		else if(!verify(node))
 			return nullptr;
 
-		node_type** new_node_ptr;
-		if(node->child)
-		{
-			node_type* child = node->child;
-			while(child->next)
-				child = child->next;
-
-			new_node_ptr = &(child->next);
-		}
-		else
-			new_node_ptr = &(node->child);
-
-		*new_node_ptr = new node_type(node);
-
-		(*new_node_ptr)->value = elem;
-		return (*new_node_ptr);
+		return node->append(elem);
 	}
 
 
@@ -216,11 +255,7 @@ public:
 	{
 		if(verify(node))
 		{
-			unsigned indent = 0;
-			for(;(node = node->owner); ++indent)
-			{
-				if(node == &_root)	return indent;
-			}
+			return node->level();
 		}
 		return 0;
 	}

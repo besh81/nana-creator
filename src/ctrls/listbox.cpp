@@ -23,7 +23,7 @@ namespace ctrls
 		ctrl::init(&lst, CTRL_LISTBOX, name);
 
 		// common
-		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection_combox) = "";
+		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection_listbox) = "";
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
 		properties.append("single_selection").label("Single selection").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
@@ -38,21 +38,28 @@ namespace ctrls
 	{
 		ctrl::update();
 
-		// columns
+		// columns - START
 		lst.clear_headers();
-		std::string options = properties.property("columns").as_string();
-		if(!options.empty())
+		// split columns into item (delimiter = CITEM_TKN)
+		Tokenizer items_tkn(properties.property("columns").as_string());
+		items_tkn.setDelimiter(CITEM_TKN);
+
+		std::string item;
+		while((item = items_tkn.next()) != "")
 		{
-			// columns: string with this format  ->  "item1" "item2" "item3" ...
-			Tokenizer strtkn(options);
-			strtkn.setDelimiter("\"");
-			std::string item;
-			while((item = strtkn.next()) != "")
-			{
-				if(item != " ")
-					lst.append_header(item);
-			}
+			// split item into properties (delimiter = CITEM_INNER_TKN)
+			Tokenizer item_tkn(item);
+			item_tkn.setDelimiter(CITEM_INNER_TKN);
+
+			auto text = item_tkn.next();
+			auto width = item_tkn.next();
+
+			if(width == "")
+				lst.append_header(text);
+			else
+				lst.append_header(text, std::stoul(width));
 		}
+		// columns - END
 
 		lst.show_header(properties.property("show_header").as_bool());
 	}
@@ -74,20 +81,27 @@ namespace ctrls
 			cd->init.push_back(name + ".enable_single(true, true);");
 		cd->init.push_back(name + ".show_header(" + properties.property("show_header").as_string() + ");");
 
-		// columns
-		std::string options = properties.property("columns").as_string();
-		if(!options.empty())
+		// columns - START
+		// split columns into item (delimiter = CITEM_TKN)
+		Tokenizer items_tkn(properties.property("columns").as_string());
+		items_tkn.setDelimiter(CITEM_TKN);
+
+		std::string item;
+		while((item = items_tkn.next()) != "")
 		{
-			// columns: string with this format  ->  "item1" "item2" "item3" ...
-			Tokenizer strtkn(options);
-			strtkn.setDelimiter("\"");
-			std::string item;
-			while((item = strtkn.next()) != "")
-			{
-				if(item != " ")
-					cd->init.push_back(name + ".append_header(\"" + item + "\");");
-			}
+			// split item into properties (delimiter = CITEM_INNER_TKN)
+			Tokenizer item_tkn(item);
+			item_tkn.setDelimiter(CITEM_INNER_TKN);
+
+			std::string ln = name + ".append_header(\"" + item_tkn.next() + "\"";
+			auto width = item_tkn.next();
+			if(width == "")
+				ln.append(");");
+			else
+				ln.append(", " + width + ");");
+			cd->init.push_back(ln);
 		}
+		// columns - END
 	}
 
 }//end namespace ctrls

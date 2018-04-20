@@ -11,7 +11,7 @@ int main()
 {
 	using namespace nana;
 
-	form1 fm;
+	form1 fm(0);
 	fm.show();
 	exec();
 }

@@ -64,7 +64,7 @@ namespace ctrls
 			//TODO: il nome del gruppo non dovrebbe essere presente tra i vari controlli
 			std::string group = "rg_" + properties.property("group").as_string();
 
-			// check if a group with the same name already present
+			// check if the group is been already declared
 			bool first_time = true;
 			std::string group_decl("nana::radio_group " + group + ";");
 			for(auto i : cd->decl)
