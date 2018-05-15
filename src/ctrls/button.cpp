@@ -50,7 +50,8 @@ namespace ctrls
 		cd->decl.push_back("nana::button " + name + ";");
 		// init
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
-		cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
+		if(properties.property("transparent").as_bool())
+			cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
 	}
 
 }//end namespace ctrls

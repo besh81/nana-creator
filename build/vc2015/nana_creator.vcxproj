@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\libs\tokenizer\Tokenizer.cpp" />
     <ClCompile Include="..\..\src\assetspanel.cpp" />
     <ClCompile Include="..\..\src\codegenerator.cpp" />
+    <ClCompile Include="..\..\src\ctrls\box_model.cpp" />
     <ClCompile Include="..\..\src\ctrls\button.cpp" />
     <ClCompile Include="..\..\src\ctrls\categorize.cpp" />
     <ClCompile Include="..\..\src\ctrls\checkbox.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\relativepath.cpp" />
     <ClCompile Include="..\..\src\resizablecanvas.cpp" />
+    <ClCompile Include="..\..\src\statusbar.cpp" />
     <ClCompile Include="..\..\src\wdir.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +190,7 @@
     <ClInclude Include="..\..\src\codegenerator_data.h" />
     <ClInclude Include="..\..\src\codegenerator.h" />
     <ClInclude Include="..\..\src\config.h" />
+    <ClInclude Include="..\..\src\ctrls\box_model.h" />
     <ClInclude Include="..\..\src\ctrls\button.h" />
     <ClInclude Include="..\..\src\ctrls\categorize.h" />
     <ClInclude Include="..\..\src\ctrls\checkbox.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="..\..\src\propertiespanel.h" />
     <ClInclude Include="..\..\src\relativepath.h" />
     <ClInclude Include="..\..\src\resizablecanvas.h" />
+    <ClInclude Include="..\..\src\statusbar.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
     <ClInclude Include="..\..\src\wdir.h" />

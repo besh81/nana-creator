@@ -22,6 +22,7 @@
 #include "assetspanel.h"
 #include "objectspanel.h"
 #include "resizablecanvas.h"
+#include "statusbar.h"
 #include "style.h"
 
 
@@ -42,7 +43,7 @@ public:
 	{
 		caption(CREATOR_NAME " " CREATOR_VERSION);
 
-		_place.div("vertical <weight=30 toolbar><<weight=20% vertical <assets>|<objects>>|<weight=55% canvas>|<props>>");
+		_place.div("vertical <weight=30 toolbar><<weight=20% vertical <assets>|<objects>>|<weight=55% canvas>|<props>><weight=24 statusbar>");
 
 		_init_ctrls();
 
@@ -116,29 +117,40 @@ private:
 		// toolbar
 		_toolbar.scale(21);
 		nana::paint::image _img_new;
-		_img_new.open("icons/new_prj_dark.png");
+		_img_new.open("icons/new_prj.png");
 		_toolbar.append("New project", _img_new);
 		nana::paint::image _img_load;
-		_img_load.open("icons/load_prj_dark.png");
+		_img_load.open("icons/load_prj.png");
 		_toolbar.append("Load project", _img_load);
 		nana::paint::image _img_save;
-		_img_save.open("icons/save_dark.png");
+		_img_save.open("icons/save.png");
 		_toolbar.append("Save project", _img_save);
 		_toolbar.separate();
 		nana::paint::image _img_out;
-		_img_out.open("icons/output_on_dark.png");
+		_img_out.open("icons/output_on.png");
 		_toolbar.append("Generate C++ code", _img_out);
 		_toolbar.separate();
 		nana::paint::image _img_del;
-		_img_del.open("icons/delete_dark.png");
+		_img_del.open("icons/delete.png");
 		_toolbar.append("Delete current selection", _img_del);
 		_toolbar.separate();
 		nana::paint::image _img_up;
-		_img_up.open("icons/up_dark.png");
+		_img_up.open("icons/up.png");
 		_toolbar.append("Move up current selection", _img_up);
 		nana::paint::image _img_down;
-		_img_down.open("icons/down_dark.png");
+		_img_down.open("icons/down.png");
 		_toolbar.append("Move down current selection", _img_down);
+		_toolbar.separate();
+		nana::paint::image _img_cut;
+		_img_cut.open("icons/cut.png");
+		_toolbar.append("Cut current selection", _img_cut);
+		nana::paint::image _img_copy;
+		_img_copy.open("icons/copy.png");
+		_toolbar.append("Copy current selection", _img_copy);
+		nana::paint::image _img_paste;
+		_img_paste.open("icons/paste.png");
+		_toolbar.append("Paste into/after current selection", _img_paste);
+
 
 		_toolbar.events().selected([this](const nana::arg_toolbar & arg)
 		{
@@ -194,6 +206,21 @@ private:
 				// move down current selection
 				g_gui_mgr.movedownselected();
 			}
+			else if(arg.button == 11)
+			{
+				// cut current selection
+				g_gui_mgr.cutselected();
+			}
+			else if(arg.button == 12)
+			{
+				// copy current selection
+				g_gui_mgr.copyselected();
+			}
+			else if(arg.button == 13)
+			{
+				// paste into/after current selection
+				g_gui_mgr.pasteselected();
+			}
 		});
 		_place.field("toolbar") << _toolbar;
 
@@ -213,12 +240,13 @@ private:
 		_place.field("canvas") << _canvas;
 
 
+		// statusbar
+		_statusbar.set("Ready");
+		_place.field("statusbar") << _statusbar;
+
+
 		g_gui_mgr.root_wd(*this);
-		g_gui_mgr.init(&_properties, &_assets, &_objects, &_canvas);
-
-
-		//TEMP - main panel
-		//g_gui_mgr.addmainpanel();
+		g_gui_mgr.init(&_properties, &_assets, &_objects, &_canvas, &_statusbar);
 	}
 
 
@@ -231,173 +259,37 @@ private:
 	propertiespanel		_properties{ *this };
 
 	toolbar				_toolbar{ *this };
+
+	statusbar			_statusbar{ *this };
 };
 
 
 void main()
 {
 	// init ctrls images
-	g_img_mgr.add(CTRL_LAYOUT, "icons/horizontal_layout_dark.png");
-	g_img_mgr.add(CTRL_BUTTON, "icons/button_dark.png");
-	g_img_mgr.add(CTRL_LABEL, "icons/label_dark.png");
-	g_img_mgr.add(CTRL_TEXTBOX, "icons/textbox_dark.png");
-	g_img_mgr.add(CTRL_LISTBOX, "icons/listbox_dark.png");
-	g_img_mgr.add(CTRL_PANEL, "icons/panel_dark.png");
-	g_img_mgr.add(CTRL_COMBOX, "icons/combox_dark.png");
-	g_img_mgr.add(CTRL_SPINBOX, "icons/spinbox_dark.png");
-	g_img_mgr.add(CTRL_CHECKBOX, "icons/checkbox_dark.png");
-	g_img_mgr.add(CTRL_DATECHOOSER, "icons/datechooser_dark.png");
-	g_img_mgr.add(CTRL_TOOLBAR, "icons/toolbar_dark.png");
-	g_img_mgr.add(CTRL_FORM, "icons/form_dark.png");
-	g_img_mgr.add(CTRL_CATEGORIZE, "icons/categorize_dark.png");
-	g_img_mgr.add(CTRL_GROUP, "icons/group_dark.png");
-	g_img_mgr.add(CTRL_MENUBAR, "icons/menubar_dark.png");
-	g_img_mgr.add(CTRL_PICTURE, "icons/picture_dark.png");
-	g_img_mgr.add(CTRL_PROGRESS, "icons/progress_dark.png");
-	g_img_mgr.add(CTRL_SLIDER, "icons/slider_dark.png");
-	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar_dark.png");
-	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox_dark.png");
+	g_img_mgr.add(CTRL_LAYOUT, "icons/horizontal_layout.png");
+	g_img_mgr.add(CTRL_BUTTON, "icons/button.png");
+	g_img_mgr.add(CTRL_LABEL, "icons/label.png");
+	g_img_mgr.add(CTRL_TEXTBOX, "icons/textbox.png");
+	g_img_mgr.add(CTRL_LISTBOX, "icons/listbox.png");
+	g_img_mgr.add(CTRL_PANEL, "icons/panel.png");
+	g_img_mgr.add(CTRL_COMBOX, "icons/combox.png");
+	g_img_mgr.add(CTRL_SPINBOX, "icons/spinbox.png");
+	g_img_mgr.add(CTRL_CHECKBOX, "icons/checkbox.png");
+	g_img_mgr.add(CTRL_DATECHOOSER, "icons/datechooser.png");
+	g_img_mgr.add(CTRL_TOOLBAR, "icons/toolbar.png");
+	g_img_mgr.add(CTRL_FORM, "icons/form.png");
+	g_img_mgr.add(CTRL_CATEGORIZE, "icons/categorize.png");
+	g_img_mgr.add(CTRL_GROUP, "icons/group.png");
+	g_img_mgr.add(CTRL_MENUBAR, "icons/menubar.png");
+	g_img_mgr.add(CTRL_PICTURE, "icons/picture.png");
+	g_img_mgr.add(CTRL_PROGRESS, "icons/progress.png");
+	g_img_mgr.add(CTRL_SLIDER, "icons/slider.png");
+	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar.png");
+	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox.png");
 
 
 	nana_creator fm;
-	//fm.zoom(true);
 	fm.show();
 	exec();
 }
-/*
-#include <nana/gui/wvl.hpp>
-#include <nana/gui/widgets/tabbar.hpp>
-#include <nana/gui/widgets/group.hpp>
-#include <nana/gui/widgets/panel.hpp>
-#include <nana/gui/widgets/listbox.hpp>
-#include <nana/gui/widgets/button.hpp>
-#include <string>
-#include <set>
-#include <functional>
-#include <random>
-
-using namespace std;
-using namespace nana;
-
-
-int main()
-{
-	form fm{ API::make_center(1000, 800), appear::decorate<appear::taskbar, appear::sizable>() };
-	fm.bgcolor(colors::white);
-	group gp1(fm, "Group 1"), gp2(fm, "Group 2");
-	fm.div("vert margin=10");
-	tabbar<panel<true>*> tb(gp1);
-	tb.push_back("Page 1");
-	tb.push_back("Page 2");
-	panel<true> page1(gp1, true), page2(gp1, true);
-	page1.bgcolor(colors::light_green);
-	page2.bgcolor(colors::light_blue);
-	tb.tab_bgcolor(0, colors::light_green);
-	tb.tab_bgcolor(1, colors::light_blue);
-
-	place plc1(page1);
-	plc1.div("vert <listbox margin=15> <button weight=45 margin=[0,15,15,15]>");
-	listbox lb1(page1);
-	button btn1(page1, "press to add a new page");
-	plc1["listbox"] << lb1;
-	plc1["button"] << btn1;
-	plc1.collocate();
-
-	place plc2(page2);
-	plc2.div("vert <button weight=60 margin=15> <listbox margin=[0,15,15,15]>");
-	listbox lb2(page2);
-	button btn2(page2, "press to add a new page");
-	plc2["listbox"] << lb2;
-	plc2["button"] << btn2;
-	plc2.collocate();
-
-	tb.attach(0, page1);
-	tb.attach(1, page2);
-
-	const size_t static_page_count = tb.length();
-
-	using panel_ptr = unique_ptr<panel<true>>;
-	using place_ptr = unique_ptr<place>;
-	using widget_ptr = unique_ptr<widget>;
-
-	set<panel_ptr> newpages;
-	set<place_ptr> newplaces;
-	set<widget_ptr> newwidgets;
-
-	function<void(void)> newpagefn = [&]
-	{
-		auto &newpage = *newpages.emplace(new panel<true>{ gp1, true }).first;
-		auto &newplace = *newplaces.emplace(new place{ *newpage }).first;
-		auto &newlistbox = *newwidgets.emplace(new listbox{ *newpage }).first;
-		auto &newbtn1 = *newwidgets.emplace(new button{ *newpage, "Add new page" }).first;
-		auto &newbtn2 = *newwidgets.emplace(new button{ *newpage, "Remove this page" }).first;
-		auto &newbtn3 = *newwidgets.emplace(new button{ *newpage, "Remove all new pages" }).first;
-
-		static size_t pagecount(1);
-
-		newbtn1->events().click(newpagefn);
-
-		newbtn2->events().click([&]
-		{
-			size_t pos(static_page_count);
-			for(; pos < tb.length(); pos++)
-				if(tb.at(pos) == newpage.get()) break;
-			tb.erase(pos);
-			API::refresh_window(tb);
-			newpages.erase(newpage);
-			newplaces.erase(newplace);
-			newwidgets.erase(newlistbox);
-			newwidgets.erase(newbtn1);
-			newwidgets.erase(newbtn2);
-			newwidgets.erase(newbtn3);
-		});
-
-		newbtn3->events().click([&]
-		{
-			for(auto &page : newpages)
-			{
-				size_t pos(static_page_count);
-				for(; pos < tb.length(); pos++)
-					if(tb.at(pos) == page.get()) break;
-				tb.erase(pos);
-			}
-			API::refresh_window(tb);
-			newpages.clear();
-			newplaces.clear();
-			newwidgets.clear();
-			pagecount = 1;
-		});
-
-		newplace->div("vert <listbox margin=15> <buttons gap=15 weight=45 margin=[0,15,15,15]>");
-		newplace->field("listbox") << *newlistbox;
-		newplace->field("buttons") << *newbtn1 << *newbtn2 << *newbtn3;
-		newplace->collocate();
-
-		size_t newtab_pos = static_page_count + newpages.size() - 1;
-		tb.insert(newtab_pos, "New page #" + to_string(pagecount++), newpage.get());
-		tb.attach(newtab_pos, *newpage);
-		gp1["tabpage"].fasten(*newpage);
-		gp1.collocate();
-
-		mt19937 rng;
-		rng.seed(random_device()());
-		uniform_int_distribution<mt19937::result_type> dist(190, 255);
-		color rcolor(dist(rng), dist(rng), dist(rng));
-		tb.tab_bgcolor(newtab_pos, rcolor);
-		newpage->bgcolor(rcolor);
-	};
-
-	btn1.events().click(newpagefn);
-	btn2.events().click(newpagefn);
-
-	gp1.div("vert margin=15 <tabbar weight=20> <tabpage>");
-	gp1["tabbar"] << tb;
-	gp1["tabpage"].fasten(page1);
-	gp1["tabpage"].fasten(page2);
-	gp1.collocate();
-	fm[""] << gp1 << gp2;
-	fm.collocate();
-	fm.show();
-	exec();
-}
-*/

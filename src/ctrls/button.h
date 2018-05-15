@@ -10,7 +10,7 @@
 
 #include <nana/gui/widgets/button.hpp>
 #include "ctrls/ctrl.h"
-#include "codegenerator.h"
+#include "codegenerator_data.h"
 
 
 namespace ctrls

@@ -32,7 +32,6 @@ namespace nana
 			void drawer::refresh(graph_reference graph)
 			{
 				graph.rectangle(true, nana::API::bgcolor(window_));
-				//graph.frame_rectangle(rectangle(graph.size()), colors::blue, colors::red, colors::red, colors::red);
 				graph.rectangle(false, nana::colors::red);
 			}
 
@@ -53,150 +52,7 @@ namespace nana
 			return false;
 		bgcolor(nana::API::bgcolor(wd));
 
-		_place.bind(*this);
-		_place.collocate();
 		return true;
-	}
-
-
-	void layout::update()
-	{
-		auto pw = nana::API::get_widget(parent());
-		bgcolor(pw->bgcolor());
-		fgcolor(pw->fgcolor());
-
-		_place.div(getdiv().c_str());
-		_place.collocate();
-	}
-
-
-	void layout::orientation(layout_orientation orientation)
-	{
-		_orientation_str = (orientation == layout_orientation::vertical) ? "vert " : "";
-	}
-
-
-	void layout::padding(int pixels)
-	{
-		// [css boxmodel]padding -> [nana]margin
-		if(pixels > 0)
-			_padding_str = "margin=" + std::to_string(pixels) + " ";
-		else
-			_padding_str = "";
-	}
-
-
-	void layout::updatefield(nana::window child, const std::string& weight, const std::string& margin)
-	{
-		for(auto& f : _children)
-		{
-			if(f.second == child)
-			{
-				f.first.weight = weight;
-				f.first.margin = margin;
-
-				_place.div(getdiv().c_str());
-				_place.collocate();
-				return;
-			}
-		}
-	}
-
-
-	bool layout::append(nana::window child)
-	{
-		field f;
-		f.name = _name_mgr.add_numbered("field");
-
-		_children.push_back(std::pair<field, nana::window>(f, child));
-
-		_place.div(getdiv().c_str());
-		_place.field(f.name.c_str()) << child;
-		return true;
-	}
-
-
-	bool layout::remove(nana::window child)
-	{
-		_place.erase(child);
-
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == child)
-			{
-				_name_mgr.remove(i->first.name);
-				_children.erase(i);
-
-				_place.div(getdiv().c_str());
-				_place.collocate();
-				return false;
-			}
-		}
-
-		_place.collocate();
-		return false;
-	}
-
-	bool layout::moveup(nana::window child)
-	{
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == child)
-			{
-				if(i == _children.begin())
-					return false;
-
-				std::iter_swap(i, i-1);
-
-				_place.div(getdiv().c_str());
-				_place.collocate();
-				return false;
-			}
-		}
-
-		return false;
-	}
-
-	bool layout::movedown(nana::window child)
-	{
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == child)
-			{
-				if(i + 1 == _children.end())
-					return false;
-
-				std::iter_swap(i, i + 1);
-
-				_place.div(getdiv().c_str());
-				_place.collocate();
-				return false;
-			}
-		}
-
-		return false;
-	}
-
-
-	std::string layout::getdiv()
-	{
-		std::string div;
-		div.append(_orientation_str);
-		div.append(_padding_str);
-		//
-		for(auto f : _children)
-		{
-			div.append("<");
-			if(!f.first.weight.empty())
-				div.append("weight=" + f.first.weight + " ");
-			if(!f.first.margin.empty())
-				if(f.first.margin != "0")
-					div.append("margin=" + f.first.margin + " ");
-			div.append(f.first.name);
-			div.append(">");
-		}
-
-		return div;
 	}
 
 }//end namespace nana
@@ -210,6 +66,8 @@ namespace ctrls
 		: ctrl()
 	{
 		lyt.create(wd);
+		boxmodel.bind(lyt);
+
 		ctrl::init(&lyt, CTRL_LAYOUT, name);
 
 		properties.clear();
@@ -218,10 +76,11 @@ namespace ctrls
 		properties.append("type") = CTRL_LAYOUT;
 		properties.append("name") = name;
 		// common
-		properties.append("layout").label("Layout").category(CAT_COMMON).type(pg_type::layout) = static_cast<int>(nana::layout_orientation::horizontal);
+		// ...
 		// appearance
 		// ...
 		// layout
+		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
 		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
 		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
 		properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
@@ -232,9 +91,9 @@ namespace ctrls
 	{
 		//ctrl::update();
 
-		lyt.orientation(static_cast<nana::layout_orientation>(properties.property("layout").as_int()));
-		lyt.padding(properties.property("padding").as_int());
-		lyt.update();
+		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.update();
 	}
 
 
@@ -266,7 +125,7 @@ namespace ctrls
 		{
 			cd->init.push_back(name + "_place.bind(" + ci->create + ");");
 		}
-		cd->init.push_back(name + "_place.div(\"" + lyt.getdiv() + "\");");
+		cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv() + "\");");
 		// placement
 		if (!ci->place.empty())
 			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + "_panel;");
@@ -280,33 +139,45 @@ namespace ctrls
 	}
 
 
-	void layout::updatefield(nana::window child, const std::string& weight, const std::string& margin)
+	void layout::updatefield(nana::window ctrl, const std::string& weight, const std::string& margin)
 	{
-		lyt.updatefield(child, weight, margin);
+		boxmodel.updatefield(ctrl, weight, margin);
 	}
 
 
-	bool layout::append(nana::window child)
+	bool layout::children()
 	{
-		return lyt.append(child);
+		return boxmodel.children();
 	}
 
 
-	bool layout::remove(nana::window child)
+	bool layout::append(nana::window ctrl)
 	{
-		return lyt.remove(child);
+		return boxmodel.append(ctrl);
+	}
+	
+
+	bool layout::insert(nana::window pos, nana::window ctrl, bool after)
+	{
+		return boxmodel.insert(pos, ctrl, after);
 	}
 
 
-	bool layout::moveup(nana::window child)
+	bool layout::remove(nana::window ctrl)
 	{
-		return lyt.moveup(child);
+		return boxmodel.remove(ctrl);
 	}
 
 
-	bool layout::movedown(nana::window child)
+	bool layout::moveup(nana::window ctrl)
 	{
-		return lyt.movedown(child);
+		return boxmodel.moveup(ctrl);
+	}
+
+
+	bool layout::movedown(nana::window ctrl)
+	{
+		return boxmodel.movedown(ctrl);
 	}
 
 }//end namespace ctrls

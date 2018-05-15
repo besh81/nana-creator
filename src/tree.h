@@ -52,6 +52,13 @@ struct tree_node
 
 	tree_node* append(const T& elem)
 	{
+		auto p = new tree_node<T>(this);
+		p->value = elem;
+
+		return append(p);
+	}
+	tree_node* append(tree_node* new_node)
+	{
 		auto new_node_ptr = &(this->child);
 		if(this->child)
 		{
@@ -62,10 +69,58 @@ struct tree_node
 			new_node_ptr = &(last->next);
 		}
 
-		*new_node_ptr = new tree_node<T>(this);
+		new_node->owner = this;
 
-		(*new_node_ptr)->value = elem;
-		return (*new_node_ptr);
+		*new_node_ptr = new_node;
+		return *new_node_ptr;
+	}
+
+
+	tree_node* insert_before(const T& elem)
+	{
+		auto p = new tree_node<T>(this);
+		p->value = elem;
+
+		return insert_before(p);
+	}
+	tree_node* insert_before(tree_node* new_node)
+	{
+		new_node->owner = owner;
+		new_node->next = this;
+
+		if(!owner)
+			// the inserted node is the first of the chain
+			return new_node;
+
+		auto t = owner->child;
+		if(t == this)
+		{
+			// this is the 1st sibling
+			owner->child = new_node;
+			return new_node;
+		}
+
+		while(t->next != this)
+			t = t->next;
+
+		t->next = new_node;
+		return new_node;
+	}
+
+
+	tree_node* insert_after(const T& elem)
+	{
+		auto p = new tree_node<T>(this);
+		p->value = elem;
+
+		return insert_after(p);
+	}
+	tree_node* insert_after(tree_node* new_node)
+	{
+		new_node->owner = owner;
+		new_node->next = next;
+		next = new_node;
+		return new_node;
 	}
 
 
@@ -100,11 +155,11 @@ struct tree_node
 
 	bool move_after()
 	{
-		if(!next)
-			// this is the last sibling: nothing to do
+		if(!owner)
 			return false;
 
-		if(!owner)
+		if(!next)
+			// this is the last sibling: nothing to do
 			return false;
 
 		auto t = owner->child;
@@ -127,17 +182,40 @@ struct tree_node
 	}
 
 
-	unsigned pos() const
+	bool detach()
 	{
 		if(!owner)
-			return 0;
+			return false;
 
-		unsigned pos = 0;
-		auto prev = owner->child;
-		while(prev != this)
+		auto t = owner->child;
+		if(t == this)
 		{
-			prev = prev->next;
-			++pos;
+			// this is the 1st sibling
+			owner->child = next;
+			owner = next = 0;
+			return true;
+		}
+
+		while(t->next != this)
+			t = t->next;
+
+		t->next = next;
+		owner = next = 0;
+		return true;
+	}
+
+
+	unsigned pos() const
+	{
+		unsigned pos = 0;
+		if(owner)
+		{
+			auto prev = owner->child;
+			while(prev != this)
+			{
+				prev = prev->next;
+				++pos;
+			}
 		}
 		return pos;
 	}
@@ -146,11 +224,14 @@ struct tree_node
 	unsigned level() const
 	{
 		unsigned indent = 0;
-		auto node = owner;
-		while(node->owner)
+		if(owner)
 		{
-			node = node->owner;
-			++indent;
+			auto node = owner;
+			while(node->owner)
+			{
+				node = node->owner;
+				++indent;
+			}
 		}
 		return indent;
 	}
@@ -174,6 +255,12 @@ public:
 	~tree()
 	{
 		clear();
+	}
+
+
+	bool empty()
+	{
+		return _root.child ? false : true;
 	}
 
 
@@ -216,7 +303,6 @@ public:
 		return append(nullptr, elem);
 	}
 
-
 	node_type* append(node_type* node, const element_type& elem)
 	{
 		if(nullptr == node)
@@ -225,6 +311,52 @@ public:
 			return nullptr;
 
 		return node->append(elem);
+	}
+
+
+	node_type* append(node_type* new_node)
+	{
+		return append(nullptr, new_node);
+	}
+
+	node_type* append(node_type* node, node_type* new_node)
+	{
+		if(nullptr == node)
+			node = &_root;
+		else if(!verify(node))
+			return nullptr;
+
+		return node->append(new_node);
+	}
+
+
+	node_type* insert_before(node_type* node, const element_type& elem)
+	{
+		if(verify(node))
+			return node->insert_before(elem);
+		return nullptr;
+	}
+
+	node_type* insert_before(node_type* node, node_type* new_node)
+	{
+		if(verify(node))
+			return node->insert_before(new_node);
+		return nullptr;
+	}
+
+
+	node_type* insert_after(node_type* node, const element_type& elem)
+	{
+		if(verify(node))
+			return node->insert_after(elem);
+		return nullptr;
+	}
+
+	node_type* insert_after(node_type* node, node_type* new_node)
+	{
+		if(verify(node))
+			return node->insert_after(new_node);
+		return nullptr;
 	}
 
 
@@ -251,12 +383,18 @@ public:
 	}
 
 
+	bool detach(node_type* node)
+	{
+		if(verify(node))
+			return node->detach();
+		return false;
+	}
+
+
 	unsigned level(const node_type* node) const
 	{
 		if(verify(node))
-		{
 			return node->level();
-		}
 		return 0;
 	}
 
@@ -265,7 +403,6 @@ public:
 	{
 		_for_each(_root.child, action);
 	}
-
 
 	void for_each(node_type* node, std::function<bool(node_type* node)> action)
 	{
@@ -276,6 +413,23 @@ public:
 			return;
 
 		_for_each(node->child, action);
+	}
+
+
+	void recursive_backward(std::function<bool(node_type* node)> action)
+	{
+		_recursive_backward(_root.child, action);
+	}
+
+	void recursive_backward(node_type* node, std::function<bool(node_type* node)> action)
+	{
+		if(!node)
+			return;
+
+		if(!_recursive_backward(node->child, action))
+			return;
+
+		action(node);
 	}
 
 
@@ -293,6 +447,22 @@ private:
 
 		return _for_each(node->next, action);
 	}
+
+
+	bool _recursive_backward(node_type* node, std::function<bool(node_type* node)> action)
+	{
+		if(!node)
+			return true;
+
+		if(!_recursive_backward(node->child, action))
+			return false;
+
+		if(!_recursive_backward(node->next, action))
+			return false;
+
+		return action(node);
+	}
+
 
 	mutable node_type _root{ 0 };
 };

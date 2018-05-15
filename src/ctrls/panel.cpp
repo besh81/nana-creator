@@ -22,13 +22,13 @@ namespace ctrls
 	panel::panel(nana::window wd, const std::string& name, bool mainclass, bool visible)
 		: ctrl()
 	{
+		_mainclass = mainclass;
+
 		pnl.create(wd, visible);
-		_place.bind(pnl);
-		_place.div("abc");
-		_place.collocate();
+		boxmodel.bind(pnl);
 
 		// project
-		if(mainclass)
+		if(_mainclass)
 		{
 			properties.append("mainclass") = true;
 			properties.append("filename").label("File Name").category(CAT_CPPCODE).type(pg_type::string) = DEFAULT_FILENAME;
@@ -39,16 +39,27 @@ namespace ctrls
 		ctrl::init(&pnl, CTRL_PANEL, name);
 
 		// common
-		//properties.append(property_t{ "hasbackground", "", "Has Background", "", pg_type::check }) = true; //TODO
+		if(_mainclass)
+		{
+			properties.append("width").label("Width").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_W;
+			properties.append("height").label("Height").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_H;
+		}
 		// appearance
 		// ...
 		// layout
-		if(mainclass)
+		properties.remove("weight");
+		properties.remove("margin");
+		if(_mainclass)
 		{
-			properties.remove("weight");
-			properties.remove("margin");
-			properties.append("width").label("Width").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_W;
-			properties.append("height").label("Height").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_H;
+			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
+			properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		}
+		else
+		{
+			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
+			properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
+			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
+			properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 		}
 	}
 
@@ -58,14 +69,14 @@ namespace ctrls
 		//ctrl::update();
 
 		// manage absolute/relative path
-		if(properties.property("mainclass").as_bool())
+		if(_mainclass)
 		{
 			g_file_mgr.enable_relative(properties.property("rel_path").as_bool());
 			g_file_mgr.basedir(properties.property("work_dir").as_string());
 		}
 
 		auto pw = nana::API::get_widget(nanawdg->parent());
-		if(properties.property("mainclass").as_bool())
+		if(_mainclass)
 			pw = nana::API::get_widget(pw->parent());
 		bool inherited;
 		nana::color col;
@@ -78,12 +89,15 @@ namespace ctrls
 		col = nana::to_color(properties.property("fgcolor").as_string(), inherited);
 		nanawdg->fgcolor(inherited ? pw->fgcolor() : col);
 
-		if(properties.property("mainclass").as_bool())
+		if(_mainclass)
 		{
 			pnl.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
 		}
 
-		_place.collocate();
+
+		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.update();
 	}
 
 
@@ -94,10 +108,10 @@ namespace ctrls
 		auto name = properties.property("name").as_string();
 
 		// mainclass definition
-		if(properties.property("mainclass").as_bool())
+		if(_mainclass)
 		{
 			cd->mainclass = name;
-			cd->mainclass_base = "nana::panel<true>"; //TODO: controllare hasbackground
+			cd->mainclass_base = "nana::panel<true>"; //TODO: add hasbackground prop
 			cd->mainclass_ctor = "(nana::window wd, bool visible = true)";
 			cd->mainclass_base_ctor = "(wd, visible)";
 
@@ -107,81 +121,111 @@ namespace ctrls
 
 		// headers
 		cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
+		cd->hpps.add("#include <nana/gui/place.hpp>");
 		// declaration
-		if(!properties.property("mainclass").as_bool())
-			cd->decl.push_back("nana::panel<true> " + name + ";"); //TODO: controllare hasbackground
-		// init
-		if(!properties.property("mainclass").as_bool())
+		if(!_mainclass)
 		{
-			cd->init.push_back("// " + name);
-			cd->init.push_back(name + ".create(" + ci->create + ");");
-			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
-			// color
-			bool inherited;
-			std::string col;
-			// bg
-			col = properties.property("bgcolor").as_string();
-			nana::to_color(col, inherited);
-			if(!inherited)
-				cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
-			// fg
-			col = properties.property("fgcolor").as_string();
-			nana::to_color(col, inherited);
-			if(!inherited)
-				cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+			cd->decl.push_back("nana::panel<true> " + name + ";"); //TODO: add hasbackground prop
+			if(children())
+				cd->decl.push_back("nana::place " + name + "_place;");
 		}
 		else
 		{
-			cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
-			// color
-			bool inherited;
-			std::string col;
-			// bg
-			col = properties.property("bgcolor").as_string();
-			nana::to_color(col, inherited);
-			if(!inherited)
-				cd->init.push_back(name + "bgcolor(nana::color(" + col + "));");
-			// fg
-			col = properties.property("fgcolor").as_string();
-			nana::to_color(col, inherited);
-			if(!inherited)
-				cd->init.push_back(name + "fgcolor(nana::color(" + col + "));");
+			cd->decl.push_back("nana::place _place{ *this };");
+		}
+		// init
+		if(!_mainclass)
+		{
+			cd->init.push_back("// " + name);
+			cd->init.push_back(name + ".create(" + ci->create + ");");
+
+			if(children())
+			{
+				cd->init.push_back(name + "_place.bind(" + name + ");");
+				cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv() + "\");");
+			}
+
+			if(!properties.property("enabled").as_bool())
+				cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+
+			generatecode_colors(cd, ci, name);
+		}
+		else
+		{
+			cd->init.push_back("_place.div(\"" + boxmodel.getdiv() + "\");");
+			
+			if(!properties.property("enabled").as_bool())
+				cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
+
+			generatecode_colors(cd, ci);
 		}
 		// placement
-		if(!properties.property("mainclass").as_bool())
+		if(!_mainclass)
+		{
 			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
+		}
+		// collocate
+		if(!_mainclass)
+		{
+			if(children())
+				cd->init_post.push_back(name + "_place.collocate();");
+		}
+		else
+		{
+			cd->init_post.push_back("_place.collocate();");
+		}
 		// children
-		if(!properties.property("mainclass").as_bool())
+		if(!_mainclass)
+		{
 			ci->create = name;
-		ci->place = "";
+			ci->place = name + "_place";
+		}
+		else
+		{
+			ci->place = "_place";
+		}
 	}
 
 
-	bool panel::append(nana::window child)
+	void panel::updatefield(nana::window ctrl, const std::string& weight, const std::string& margin)
 	{
-		if(haschild())
-			return false;
-
-		_child = true;
-
-		_place.field("abc") << child;
-		_place.collocate();
-		return true;
+		boxmodel.updatefield(ctrl, weight, margin);
 	}
 
 
-	bool panel::remove(nana::window child)
+	bool panel::children()
 	{
-		if(!_child)
-			return false;
+		return boxmodel.children();
+	}
+	
 
-		_place.field_display("abc", false);
-		_place.erase(child);
-		_place.field_display("abc", true);
-		_place.collocate();
+	bool panel::append(nana::window ctrl)
+	{
+		return boxmodel.append(ctrl);
+	}
 
-		_child = false;
-		return true;
+
+	bool panel::insert(nana::window pos, nana::window ctrl, bool after)
+	{
+		return boxmodel.insert(pos, ctrl, after);
+	}
+
+
+	bool panel::remove(nana::window ctrl)
+	{
+		return boxmodel.remove(ctrl);
+	}
+
+
+	bool panel::moveup(nana::window ctrl)
+	{
+		return boxmodel.moveup(ctrl);
+	}
+
+
+	bool panel::movedown(nana::window ctrl)
+	{
+		return boxmodel.movedown(ctrl);
 	}
 
 }//end namespace ctrls

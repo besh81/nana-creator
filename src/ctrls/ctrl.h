@@ -30,17 +30,26 @@ namespace ctrls
 		virtual void update();
 
 		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
-		
-		bool highlighted() { return _ishighlighted; }
+		void generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name = "");
 
-		virtual void set_highlight(const nana::color& color);
-		virtual void reset_highlight();
+		virtual void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin) { return; }
+
+		virtual bool children() { return false; }
+		virtual bool append(nana::window ctrl) { return false; }
+		virtual bool insert(nana::window pos, nana::window ctrl, bool after = true) { return false; }
+		virtual bool remove(nana::window ctrl) { return false; }
+
+		virtual bool moveup(nana::window ctrl) { return false; }
+		virtual bool movedown(nana::window ctrl) { return false; }
+
+		bool highlighted() { return _ishighlighted; }
+		virtual void set_highlight() { _ishighlighted = true; }
+		virtual void reset_highlight() { _ishighlighted = false; }
 
 
 	protected:
 		void init(nana::widget* wdg, const std::string& type, const std::string& name);
 
-		nana::color		_bgcolor;
 		bool			_ishighlighted{ false };
 	};
 

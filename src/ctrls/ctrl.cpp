@@ -41,36 +41,37 @@ namespace ctrls
 		// placement
 		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
 		// init
-		cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
-		// color
+		if(!properties.property("enabled").as_bool())
+			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+
+		generatecode_colors(cd, ci, name);
+	}
+
+
+	void ctrl::generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name)
+	{
 		bool inherited;
 		std::string col;
 		// bg
 		col = properties.property("bgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+		{
+			if(name == "")
+				cd->init.push_back("bgcolor(nana::color(" + col + "));");
+			else
+				cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+		}
 		// fg
 		col = properties.property("fgcolor").as_string();
 		nana::to_color(col, inherited);
 		if(!inherited)
-			cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
-	}
-
-
-	void ctrl::set_highlight(const nana::color& color)
-	{
-		// reset bgcolor highlight
-		_ishighlighted = true;
-		_bgcolor = nanawdg->bgcolor();
-		nanawdg->bgcolor(color);
-	}
-
-	void ctrl::reset_highlight()
-	{
-		// reset bgcolor highlight
-		_ishighlighted = false;
-		nanawdg->bgcolor(_bgcolor);
+		{
+			if(name == "")
+				cd->init.push_back("fgcolor(nana::color(" + col + "));");
+			else
+				cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+		}
 	}
 
 
@@ -80,6 +81,7 @@ namespace ctrls
 
 		nana::API::ignore_mouse_focus(*nanawdg, false);
 		nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::none);
+		//XXX - custom select effect
 		nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::active);
 
 

@@ -76,14 +76,14 @@ private:
 		left_lyt_place["field2"] << toolbar;
 		toolbar.enabled(true);
 		toolbar.scale(21);
-		toolbar.append("Add item", nana::paint::image("icons/item_add_dark.png"));
-		toolbar.append("Delete item", nana::paint::image("icons/item_delete_dark.png"));
+		toolbar.append("Add item", nana::paint::image("icons/item_add.png"));
+		toolbar.append("Delete item", nana::paint::image("icons/item_delete.png"));
 		toolbar.separate();
-		toolbar.append("Move up", nana::paint::image("icons/up_dark.png"));
-		toolbar.append("Move down", nana::paint::image("icons/down_dark.png"));
+		toolbar.append("Move up", nana::paint::image("icons/up.png"));
+		toolbar.append("Move down", nana::paint::image("icons/down.png"));
 		toolbar.separate();
-		toolbar.append("Move left", nana::paint::image("icons/left_dark.png"));
-		toolbar.append("Move right", nana::paint::image("icons/right_dark.png"));
+		toolbar.append("Move left", nana::paint::image("icons/left.png"));
+		toolbar.append("Move right", nana::paint::image("icons/right.png"));
 		// prop_grp
 		prop_grp.create(body_lyt_panel);
 		body_lyt_place["field2"] << prop_grp;

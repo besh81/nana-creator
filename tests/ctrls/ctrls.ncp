@@ -1,34 +1,28 @@
 <?xml version="1.0"?>
-<nana-creator version="0.8.0">
-	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" bgcolor="[inherited],128,128,128" fgcolor="[inherited],0,0,0" caption="Nana-Creator Test" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" width="650" height="550">
-		<layout type="layout" name="layout1" layout="0" weight="-1" margin="0" padding="5">
-			<layout type="layout" name="layout2" layout="1" weight="-1" margin="0" padding="5">
-				<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" caption="Nana-Creator test controls" format="false" transparent="false" halign="1" valign="1" />
-				<button type="button" name="button1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="40" margin="3" caption="Button" transparent="false" />
-				<categorize type="categorize" name="categorize1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" splitter="\" />
-				<checkbox type="checkbox" name="checkbox1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" caption="checkbox" check="false" group="" radio="false" />
-				<panel type="panel" name="panel2" enabled="true" bgcolor="112,255,20" fgcolor="[inherited],0,0,0" weight="40" margin="0">
-					<layout type="layout" name="layout4" layout="0" weight="-1" margin="0" padding="5">
-						<checkbox type="checkbox" name="checkbox2" enabled="true" bgcolor="112,255,20" fgcolor="0,0,0" weight="-1" margin="0" caption="radio 1" check="false" group="radio" radio="true" />
-						<checkbox type="checkbox" name="checkbox3" enabled="true" bgcolor="112,255,20" fgcolor="0,0,0" weight="-1" margin="0" caption="radio 2" check="false" group="radio" radio="true" />
-					</layout>
-				</panel>
-				<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" options="A&#13;&#10;B&#13;&#10;C&#13;" option="0" editable="false" />
-				<group type="group" name="group1" enabled="true" bgcolor="201,197,190" fgcolor="0,0,0" weight="-1" margin="0" caption="Group" />
-				<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="0" source="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\delete_dark.png" transparent="false" halign="0" valign="0" stretchable="false" />
-				<progress type="progress" name="progress1" enabled="true" bgcolor="212,208,200" fgcolor="16,117,21" weight="30" margin="3" value="60" unknown="false" />
-				<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" value="2" maximum="10" seek="0" vertical="false" transparent="false" />
-				<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" value="0" begin="0" last="100" step="1" editable="true" prefix="" suffix="" />
-				<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" caption="" tip_string="" line_wrapped="false" multi_lines="true" editable="true" />
-			</layout>
-			<panel type="panel" name="panel1" enabled="true" bgcolor="22,128,250" fgcolor="[inherited],0,0,0" weight="-1" margin="5">
-				<layout type="layout" name="layout3" layout="1" weight="-1" margin="0" padding="0">
-					<menubar type="menubar" name="menubar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" menus="n1&#13; &#13;&amp;File&#10;n2&#13;n1&#13;E&amp;xit&#10;n4&#13; &#13;menu_1&#10;n5&#13;n4&#13;menu_1_1&#10;n6&#13;n5&#13;menu_1_1_1&#10;n3&#13; &#13;&amp;Help" />
-					<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="40" margin="0" buttons="Uno&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up_dark.png&#10;{sep}&#13;{sep}&#10;Due&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down_dark.png" scale="21" />
-					<datechooser type="datechooser" name="datechooser1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="3" />
-					<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="-1" margin="3" columns="Col1&#13;150&#10;Col2&#13;" checkable="false" single_selection="false" show_header="true" />
-				</layout>
+<nana-creator version="0.9.0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" bgcolor="[inherited],128,128,128" fgcolor="[inherited],0,0,0" caption="Nana-Creator Test" width="650" height="550" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="0" padding="5">
+		<layout type="layout" name="layout1" layout="1" weight="-1" margin="0" padding="5">
+			<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" caption="Nana-Creator test controls" format="false" transparent="false" halign="1" valign="1" />
+			<button type="button" name="button1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="40" margin="3" caption="Button" transparent="false" />
+			<categorize type="categorize" name="categorize1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" splitter="\" />
+			<checkbox type="checkbox" name="checkbox1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" caption="checkbox" check="false" group="" radio="false" />
+			<panel type="panel" name="panel2" enabled="true" bgcolor="112,255,20" fgcolor="[inherited],0,0,0" layout="0" weight="40" margin="0" padding="5">
+				<checkbox type="checkbox" name="checkbox2" enabled="true" bgcolor="112,255,20" fgcolor="0,0,0" weight="-1" margin="0" caption="radio 1" check="false" group="radio" radio="true" />
+				<checkbox type="checkbox" name="checkbox3" enabled="true" bgcolor="112,255,20" fgcolor="0,0,0" weight="-1" margin="0" caption="radio 2" check="false" group="radio" radio="true" />
 			</panel>
+			<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" options="A&#13;&#10;B&#13;&#10;C&#13;" option="0" editable="false" />
+			<group type="group" name="group1" enabled="true" bgcolor="201,197,190" fgcolor="0,0,0" caption="Group" layout="0" weight="-1" margin="0" padding="5" />
+			<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="0" source="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save.png" transparent="false" halign="0" valign="0" stretchable="false" />
+			<progress type="progress" name="progress1" enabled="true" bgcolor="212,208,200" fgcolor="16,117,21" weight="30" margin="3" value="60" unknown="false" />
+			<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" value="2" maximum="10" seek="0" vertical="false" transparent="false" />
+			<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" value="0" begin="0" last="100" step="1" editable="true" prefix="" suffix="" />
+			<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" caption="" tip_string="" line_wrapped="false" multi_lines="true" editable="true" />
 		</layout>
+		<panel type="panel" name="panel1" enabled="true" bgcolor="22,128,250" fgcolor="[inherited],0,0,0" layout="1" weight="-1" margin="5" padding="5">
+			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" menus="n1&#13; &#13;&amp;File&#10;n2&#13;n1&#13;E&amp;xit&#10;n4&#13; &#13;menu_1&#10;n5&#13;n4&#13;menu_1_1&#10;n6&#13;n5&#13;menu_1_1_1&#10;n3&#13; &#13;&amp;Help" />
+			<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="40" margin="0" buttons="Uno&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;{sep}&#13;{sep}&#10;Due&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down.png" scale="21" />
+			<datechooser type="datechooser" name="datechooser1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="3" />
+			<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="-1" margin="3" columns="Col1&#13;150&#10;Col2&#13;" checkable="false" single_selection="false" show_header="true" />
+		</panel>
 	</form>
 </nana-creator>

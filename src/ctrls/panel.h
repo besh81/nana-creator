@@ -11,12 +11,13 @@
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/place.hpp>
 #include "ctrls/ctrl.h"
-#include "codegenerator.h"
+#include "ctrls/box_model.h"
+#include "codegenerator_data.h"
 
 
 namespace ctrls
 {
-	
+
 	class panel
 		: public ctrl
 	{
@@ -27,17 +28,22 @@ namespace ctrls
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
-		bool append(nana::window child);
-		bool remove(nana::window child);
+		void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin);
 
-		bool haschild() { return _child; }
+		bool children();
+		bool append(nana::window ctrl);
+		bool insert(nana::window pos, nana::window ctrl, bool after = true);
+		bool remove(nana::window ctrl);
+
+		bool moveup(nana::window ctrl);
+		bool movedown(nana::window ctrl);
 
 
 	protected:
 		nana::panel<true>	pnl;
-		nana::place			_place;
-
-		bool				_child{ false };
+		box_model			boxmodel;
+	
+		bool				_mainclass{ false };
 	};
 
 }//end namespace ctrls

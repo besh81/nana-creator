@@ -9,21 +9,13 @@
 #define NANA_CREATOR_LAYOUT_H
 
 #include <nana/gui/widgets/widget.hpp>
-#include <nana/gui/place.hpp>
 #include "ctrls/ctrl.h"
-#include "namemanager.h"
-#include "codegenerator.h"
+#include "ctrls/box_model.h"
+#include "codegenerator_data.h"
 
 
 namespace nana
 {
-
-	enum class layout_orientation
-	{
-		horizontal,
-		vertical
-	};
-
 
 	namespace drawerbase
 	{
@@ -49,35 +41,6 @@ namespace nana
 		layout(nana::window wd, const nana::rectangle& r = {}, bool visible = true);
 
 		bool create(nana::window wd, const nana::rectangle& r = {}, bool visible = true);
-
-		void update();
-		void orientation(layout_orientation orientation);
-		void padding(int pixels);
-
-		void updatefield(nana::window child, const std::string& weight, const std::string& margin);
-
-		std::string getdiv();
-
-		bool append(nana::window child);
-		bool remove(nana::window child);
-		bool moveup(nana::window child);
-		bool movedown(nana::window child);
-
-
-	protected:
-		std::string		_orientation_str;
-		std::string		_padding_str;
-
-		namemanager		_name_mgr;
-		struct field
-		{
-			std::string name;
-			std::string weight;
-			std::string margin;
-		};
-		std::vector<std::pair<field, nana::window>>	_children;
-
-		nana::place		_place;
 	};
 
 }//end namespace nana
@@ -96,17 +59,20 @@ namespace ctrls
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 		
-		void updatefield(nana::window child, const std::string& weight, const std::string& margin);
+		void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin);
 
-		bool append(nana::window child);
-		bool remove(nana::window child);
+		bool children();
+		bool append(nana::window ctrl);
+		bool insert(nana::window pos, nana::window ctrl, bool after = true);
+		bool remove(nana::window ctrl);
 
-		bool moveup(nana::window child);
-		bool movedown(nana::window child);
+		bool moveup(nana::window ctrl);
+		bool movedown(nana::window ctrl);
 
 
 	protected:
-		nana::layout	lyt;
+		nana::layout		lyt;
+		box_model			boxmodel;
 	};
 
 }//end namespace ctrls

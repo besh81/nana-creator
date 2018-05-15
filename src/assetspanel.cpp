@@ -59,7 +59,9 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.expand(true);
 	//
 	set = _assets.insert("layouts", "Layouts").value(cursor_state{ cursor_action::select });
+	set.append("layouts/group", CTRL_GROUP, cursor_state{ cursor_action::add, CTRL_GROUP }).icon(CTRL_GROUP);
 	set.append("layouts/layout", CTRL_LAYOUT, cursor_state{ cursor_action::add, CTRL_LAYOUT }).icon(CTRL_LAYOUT);
+	set.append("layouts/panel", CTRL_PANEL, cursor_state{ cursor_action::add, CTRL_PANEL }).icon(CTRL_PANEL);
 	set.expand(true);
 	//
 	set = _assets.insert("controls", "Controls").value(cursor_state{ cursor_action::select });
@@ -68,11 +70,9 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.append("controls/checkbox", CTRL_CHECKBOX, cursor_state{ cursor_action::add, CTRL_CHECKBOX }).icon(CTRL_CHECKBOX);
 	set.append("controls/combox", CTRL_COMBOX, cursor_state{ cursor_action::add, CTRL_COMBOX }).icon(CTRL_COMBOX);
 	set.append("controls/datechooser", CTRL_DATECHOOSER, cursor_state{ cursor_action::add, CTRL_DATECHOOSER }).icon(CTRL_DATECHOOSER);
-	set.append("controls/group", CTRL_GROUP, cursor_state{ cursor_action::add, CTRL_GROUP }).icon(CTRL_GROUP);
 	set.append("controls/label", CTRL_LABEL, cursor_state{ cursor_action::add, CTRL_LABEL }).icon(CTRL_LABEL);
 	set.append("controls/listbox", CTRL_LISTBOX, cursor_state{ cursor_action::add, CTRL_LISTBOX }).icon(CTRL_LISTBOX);
 	set.append("controls/menubar", CTRL_MENUBAR, cursor_state{ cursor_action::add, CTRL_MENUBAR }).icon(CTRL_MENUBAR);
-	set.append("controls/panel", CTRL_PANEL, cursor_state{ cursor_action::add, CTRL_PANEL }).icon(CTRL_PANEL);
 	set.append("controls/picture", CTRL_PICTURE, cursor_state{ cursor_action::add, CTRL_PICTURE }).icon(CTRL_PICTURE);
 	set.append("controls/progress", CTRL_PROGRESS, cursor_state{ cursor_action::add, CTRL_PROGRESS }).icon(CTRL_PROGRESS);
 	set.append("controls/slider", CTRL_SLIDER, cursor_state{ cursor_action::add, CTRL_SLIDER }).icon(CTRL_SLIDER);

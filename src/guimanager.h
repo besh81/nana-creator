@@ -18,6 +18,7 @@
 #include "assetspanel.h"
 #include "objectspanel.h"
 #include "resizablecanvas.h"
+#include "statusbar.h"
 
 
 enum class cursor_action
@@ -34,6 +35,21 @@ struct cursor_state
 };
 
 
+enum class insert_position
+{
+	before,
+	into,
+	after
+};
+
+
+struct add_position
+{
+	tree_node<control_obj>*	ctrl{ 0 };
+	insert_position			pos{ insert_position::into };
+};
+
+
 
 class guimanager
 {
@@ -45,9 +61,9 @@ public:
 	{
 		_root_wd = wd;
 	}
-	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd)
+	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb)
 	{
-		_pp = pp; _ap = ap; _op = op; _main_wd = main_wd;
+		_pp = pp; _ap = ap; _op = op; _main_wd = main_wd; _sb = sb;
 	}
 	void clear();
 
@@ -58,12 +74,15 @@ public:
 
 	tree_node<control_obj>* addmainform(const std::string& name = "");
 	tree_node<control_obj>* addmainpanel(const std::string& name = "");
-	tree_node<control_obj>* addlayout(tree_node<control_obj>* parent, nana::layout_orientation layout, const std::string& name = "");
-	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* parent, const std::string& type, const std::string& name = "");
+	tree_node<control_obj>* addcommonctrl(add_position add_pos, const std::string& type, const std::string& name = "");
 
 	void deleteselected();
 	void moveupselected();
 	void movedownselected();
+
+	void cutselected() { copyselected(true); }
+	void copyselected(bool cut = false);
+	void pasteselected();
 
 
 	tree_node<control_obj>* get_root()
@@ -87,16 +106,16 @@ public:
 
 
 	void serialize(pugi::xml_node* xml_parent);
-	void serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
-
 	bool deserialize(pugi::xml_node* xml_parent);
-	bool deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
+	
 
 private:
-	bool _checksonship(const std::string& child, const std::string& parent);
+	control_obj _create_ctrl(control_obj parent, const std::string& type, const std::string& name);
 
-	tree_node<control_obj>* _registerobject(control_obj ctrl, tree_node<control_obj>* parent);
+	tree_node<control_obj>* _registerobject(control_obj ctrl, add_position add_pos);
 
+	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
+	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
 	void _deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node);
 
 	bool _updatectrlname(ctrls::properties_collection* properties, const std::string& new_name);
@@ -104,11 +123,13 @@ private:
 	void _updateparentctrl(tree_node<control_obj>* node);
 	void _updatechildrenctrls(tree_node<control_obj>* node);
 
+	void _update_op();
+
 
 	nana::window			_root_wd;
 
 	tree<control_obj>		_ctrls;
-	tree_node<control_obj>*	_selected;
+	tree_node<control_obj>*	_selected{ 0 };
 
 	cursor_state			_cursor_state{ cursor_action::select };
 
@@ -116,10 +137,16 @@ private:
 	assetspanel*			_ap{ 0 };
 	objectspanel*			_op{ 0 };
 	resizablecanvas*		_main_wd{ 0 };
+	statusbar*				_sb{ 0 };
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator
 
 	bool					_deserializing{ false };
+
+	pugi::xml_document		_cut_copy_doc;
+	bool					_copied{ false };
+
+	insert_position			_insert_pos;
 };
 
 #endif //NANA_CREATOR_GUIMANAGER_H

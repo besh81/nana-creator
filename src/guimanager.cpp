@@ -44,7 +44,9 @@ void guimanager::clear()
 			_main_wd->remove(*root_child->value->nanawdg);
 		}
 	}
-	
+
+	_cut_copy_doc.reset();
+
 	_ctrls.clear();
 	_op->clear();
 	_pp->set(0);
@@ -80,6 +82,12 @@ void guimanager::cursor(cursor_state state)
 		}
 	}
 
+	//XXX - statusbar
+	if(state.type == "")
+		_sb->set("");
+	else
+		_sb->set("Add control: " + state.type);
+
 	_cursor_state = state;
 }
 
@@ -107,13 +115,12 @@ tree_node<control_obj>* guimanager::addmainform(const std::string& name)
 	control_obj_ptr pctrl = ctrl;
 	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
 	{
-		auto pform = static_cast<ctrls::form*>(pctrl.lock().get());
-		if(pform->haschild())
-			return; // already has a child
-
-		if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
+		if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select)
 		{
-			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+			_insert_pos = insert_position::into;
+
+			pctrl.lock()->set_highlight();
+			nana::API::refresh_window(*pctrl.lock()->nanawdg);
 		}
 	});
 
@@ -121,7 +128,10 @@ tree_node<control_obj>* guimanager::addmainform(const std::string& name)
 	{
 		if(pctrl.lock()->highlighted())
 		{
+			_insert_pos = insert_position::into;
+
 			pctrl.lock()->reset_highlight();
+			nana::API::refresh_window(*pctrl.lock()->nanawdg);
 		}
 	});
 
@@ -130,8 +140,17 @@ tree_node<control_obj>* guimanager::addmainform(const std::string& name)
 		clickctrl(pctrl.lock());
 	});
 
+	nana::drawing dw{ *ctrl->nanawdg };
+	dw.draw([this, pctrl](nana::paint::graphics& graph)
+	{
+		if(pctrl.lock()->highlighted())
+		{
+			graph.blend(nana::rectangle({ 0, 0 }, { graph.width(), graph.height() }), HIGHLIGHT_ON_PLACE, 0.5);
+		}
+	});
 
-	return _registerobject(ctrl, 0);
+
+	return _registerobject(ctrl, {});
 }
 
 
@@ -158,67 +177,12 @@ tree_node<control_obj>* guimanager::addmainpanel(const std::string& name)
 	control_obj_ptr pctrl = ctrl;
 	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
 	{
-		auto ppanel = static_cast<ctrls::panel*>(pctrl.lock().get());
-		if(ppanel->haschild())
-			return; // already has a child
-
-		if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
-		{
-			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
-		}
-	});
-
-	ctrl->nanawdg->events().mouse_leave([this, pctrl]()
-	{
-		if(pctrl.lock()->highlighted())
-		{
-			pctrl.lock()->reset_highlight();
-		}
-	});
-
-	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
-	{
-		clickctrl(pctrl.lock());
-	});
-
-
-	return _registerobject(ctrl, 0);
-}
-
-
-tree_node<control_obj>* guimanager::addlayout(tree_node<control_obj>* parent, nana::layout_orientation layout, const std::string& name)
-{
-	control_obj parent_ = parent->value;
-	if(!_checksonship(CTRL_LAYOUT, parent_->properties.property("type").as_string()))
-		return 0;
-
-	control_obj ctrl(new ctrls::layout(*parent_->nanawdg, name.empty() ? _name_mgr.add_numbered(CTRL_LAYOUT) : name));
-
-	// 
-	if(parent_->properties.property("type").as_string() == CTRL_PANEL)
-	{
-		(static_cast<ctrls::panel*>(parent_.get()))->append(*ctrl->nanawdg);
-	}
-	else if(parent_->properties.property("type").as_string() == CTRL_GROUP)
-	{
-		(static_cast<ctrls::group*>(parent_.get()))->append(*ctrl->nanawdg);
-	}
-	else if(parent_->properties.property("type").as_string() == CTRL_FORM)
-	{
-		(static_cast<ctrls::form*>(parent_.get()))->append(*ctrl->nanawdg);
-	}
-	else
-	{
-		(static_cast<ctrls::layout*>(parent_.get()))->append(*ctrl->nanawdg);
-	}
-
-	// events
-	control_obj_ptr pctrl = ctrl;
-	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
-	{
 		if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select)
 		{
-			pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+			_insert_pos = insert_position::into;
+
+			pctrl.lock()->set_highlight();
+			nana::API::refresh_window(*pctrl.lock()->nanawdg);
 		}
 	});
 
@@ -226,7 +190,10 @@ tree_node<control_obj>* guimanager::addlayout(tree_node<control_obj>* parent, na
 	{
 		if(pctrl.lock()->highlighted())
 		{
+			_insert_pos = insert_position::into;
+
 			pctrl.lock()->reset_highlight();
+			nana::API::refresh_window(*pctrl.lock()->nanawdg);
 		}
 	});
 
@@ -235,136 +202,216 @@ tree_node<control_obj>* guimanager::addlayout(tree_node<control_obj>* parent, na
 		clickctrl(pctrl.lock());
 	});
 
-	return _registerobject(ctrl, parent);
+	nana::drawing dw{ *ctrl->nanawdg };
+	dw.draw([this, pctrl](nana::paint::graphics& graph)
+	{
+		if(pctrl.lock()->highlighted())
+		{
+			graph.blend(nana::rectangle({ 0, 0 }, { graph.width(), graph.height() }), HIGHLIGHT_ON_PLACE, 0.5);
+		}
+	});
+
+
+	return _registerobject(ctrl, {});
 }
 
 
-tree_node<control_obj>* guimanager::addcommonctrl(tree_node<control_obj>* parent, const std::string& type, const std::string& name)
+control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type, const std::string& name)
 {
-	control_obj parent_ = parent->value;
-	if(!_checksonship(type, parent_->properties.property("type").as_string()))
-		return 0;
+	if(type == CTRL_LAYOUT)
+		return control_obj(new ctrls::layout(*parent->nanawdg, name));
+	else if(type == CTRL_PANEL)
+		return control_obj(new ctrls::panel(*parent->nanawdg, name));
+	else if(type == CTRL_GROUP)
+		return control_obj(new ctrls::group(*parent->nanawdg, name));
+	else if(type == CTRL_BUTTON)
+		return control_obj(new ctrls::button(*parent->nanawdg, name));
+	else if(type == CTRL_LABEL)
+		return control_obj(new ctrls::label(*parent->nanawdg, name));
+	else if(type == CTRL_TEXTBOX)
+		return control_obj(new ctrls::textbox(*parent->nanawdg, name));
+	else if(type == CTRL_COMBOX)
+		return control_obj(new ctrls::combox(*parent->nanawdg, name));
+	else if(type == CTRL_SPINBOX)
+		return control_obj(new ctrls::spinbox(*parent->nanawdg, name));
+	else if(type == CTRL_LISTBOX)
+		return control_obj(new ctrls::listbox(*parent->nanawdg, name));
+	else if(type == CTRL_CHECKBOX)
+		return control_obj(new ctrls::checkbox(*parent->nanawdg, name));
+	else if(type == CTRL_DATECHOOSER)
+		return control_obj(new ctrls::date_chooser(*parent->nanawdg, name));
+	else if(type == CTRL_TOOLBAR)
+		return control_obj(new ctrls::toolbar(*parent->nanawdg, name));
+	else if(type == CTRL_CATEGORIZE)
+		return control_obj(new ctrls::categorize(*parent->nanawdg, name));
+	else if(type == CTRL_MENUBAR)
+		return control_obj(new ctrls::menubar(*parent->nanawdg, name));
+	else if(type == CTRL_PICTURE)
+		return control_obj(new ctrls::picture(*parent->nanawdg, name));
+	else if(type == CTRL_PROGRESS)
+		return control_obj(new ctrls::progress(*parent->nanawdg, name));
+	else if(type == CTRL_SLIDER)
+		return control_obj(new ctrls::slider(*parent->nanawdg, name));
+	else if(type == CTRL_TABBAR)
+		return control_obj(new ctrls::tabbar(*parent->nanawdg, name));
+	else if(type == CTRL_TREEBOX)
+		return control_obj(new ctrls::treebox(*parent->nanawdg, name));
+	
+	return 0;
+}
 
-	control_obj ctrl;
+
+tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const std::string& type, const std::string& name)
+{
+	control_obj parent_ = (add_pos.pos == insert_position::into) ? add_pos.ctrl->value : add_pos.ctrl->owner->value;
+
 	std::string name_ = name.empty() ? _name_mgr.add_numbered(type) : name;
 
 	// nana::widget + properties
-	if(type == CTRL_PANEL)
-	{
-		ctrl = control_obj(new ctrls::panel(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_BUTTON)
-	{
-		ctrl = control_obj(new ctrls::button(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_LABEL)
-	{
-		ctrl = control_obj(new ctrls::label(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_TEXTBOX)
-	{
-		ctrl = control_obj(new ctrls::textbox(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_COMBOX)
-	{
-		ctrl = control_obj(new ctrls::combox(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_SPINBOX)
-	{
-		ctrl = control_obj(new ctrls::spinbox(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_LISTBOX)
-	{
-		ctrl = control_obj(new ctrls::listbox(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_CHECKBOX)
-	{
-		ctrl = control_obj(new ctrls::checkbox(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_DATECHOOSER)
-	{
-		ctrl = control_obj(new ctrls::date_chooser(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_TOOLBAR)
-	{
-		ctrl = control_obj(new ctrls::toolbar(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_CATEGORIZE)
-	{
-		ctrl = control_obj(new ctrls::categorize(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_GROUP)
-	{
-		ctrl = control_obj(new ctrls::group(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_MENUBAR)
-	{
-		ctrl = control_obj(new ctrls::menubar(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_PICTURE)
-	{
-		ctrl = control_obj(new ctrls::picture(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_PROGRESS)
-	{
-		ctrl = control_obj(new ctrls::progress(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_SLIDER)
-	{
-		ctrl = control_obj(new ctrls::slider(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_TABBAR)
-	{
-		ctrl = control_obj(new ctrls::tabbar(*parent_->nanawdg, name_));
-	}
-	else if(type == CTRL_TREEBOX)
-	{
-		ctrl = control_obj(new ctrls::treebox(*parent_->nanawdg, name_));
-	}
-	else
+	control_obj ctrl = _create_ctrl(parent_, type, name_);
+	if(ctrl == 0)
 		return 0;
 
-	auto playout = static_cast<ctrls::layout*>(parent_.get());
-	playout->append(*ctrl->nanawdg);
+
+	// append/insert
+	if(add_pos.pos == insert_position::into)
+		parent_->append(*ctrl->nanawdg);
+	else
+		parent_->insert(*add_pos.ctrl->value->nanawdg, *ctrl->nanawdg, (add_pos.pos == insert_position::after) ? true : false);
+
 
 	// events
 	control_obj_ptr pctrl = ctrl;
-	if(type == CTRL_PANEL || type == CTRL_GROUP)
-	{
-		ctrl->nanawdg->events().mouse_enter([this, pctrl, type]()
-		{
-			if(type == CTRL_PANEL)
-			{
-				if((static_cast<ctrls::panel*>(pctrl.lock().get()))->haschild())
-					return; // already has a child
-			}
-			else
-			{
-				if((static_cast<ctrls::group*>(pctrl.lock().get()))->haschild())
-					return; // already has a child
-			}
+	control_obj_ptr pparent = parent_;
 
-			if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select && cursor().type == CTRL_LAYOUT)
+	// mouse enter
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	{
+		ctrl->nanawdg->events().mouse_enter([this, pctrl]()
+		{
+			if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select)
 			{
-				pctrl.lock()->set_highlight(HIGHLIGHT_ON_PLACE);
+				_insert_pos = insert_position::into;
+
+				pctrl.lock()->set_highlight();
+				nana::API::refresh_window(*pctrl.lock()->nanawdg);
 			}
 		});
+	}
+	else
+	{
+		ctrl->nanawdg->events().mouse_enter([this, pctrl, pparent]()
+		{
+			if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select)
+			{
+				_insert_pos = insert_position::into;
 
+				pctrl.lock()->set_highlight();
+				pparent.lock()->set_highlight();
+				nana::API::refresh_window(*pctrl.lock()->nanawdg);
+				nana::API::refresh_window(*pparent.lock()->nanawdg);
+			}
+		});
+	}
+
+	// mouse leave
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	{
 		ctrl->nanawdg->events().mouse_leave([this, pctrl]()
 		{
 			if(pctrl.lock()->highlighted())
 			{
+				_insert_pos = insert_position::into;
+
 				pctrl.lock()->reset_highlight();
+				nana::API::refresh_window(*pctrl.lock()->nanawdg);
+			}
+		});
+	}
+	else
+	{
+		ctrl->nanawdg->events().mouse_leave([this, pctrl, pparent]()
+		{
+			if(pctrl.lock()->highlighted())
+			{
+				_insert_pos = insert_position::into;
+
+				pctrl.lock()->reset_highlight();
+				pparent.lock()->reset_highlight();
+				nana::API::refresh_window(*pctrl.lock()->nanawdg);
+				nana::API::refresh_window(*pparent.lock()->nanawdg);
 			}
 		});
 	}
 
+	// mouse move
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	{
+		// do nothing !
+	}
+	else
+	{
+		ctrl->nanawdg->events().mouse_move([this, pctrl](const nana::arg_mouse& arg)
+		{
+			if(pctrl.lock()->highlighted())
+			{
+				if(arg.pos.x > pctrl.lock()->nanawdg->size().width / 2)
+				{
+					if(_insert_pos != insert_position::after)
+					{
+						_insert_pos = insert_position::after;
+						nana::API::refresh_window(*pctrl.lock()->nanawdg);
+					}
+				}
+				else
+				{
+					if(_insert_pos != insert_position::before)
+					{
+						_insert_pos = insert_position::before;
+						nana::API::refresh_window(*pctrl.lock()->nanawdg);
+					}
+				}
+			}
+		});
+	}
+
+	// mouse click
 	ctrl->nanawdg->events().click.connect_front([this, pctrl](const nana::arg_click & arg)
 	{
 		clickctrl(pctrl.lock());
 	});
 
-	return _registerobject(ctrl, parent);
+
+	// drawing
+	nana::drawing dw{ *ctrl->nanawdg }; 
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	{
+		dw.draw([this, pctrl](nana::paint::graphics& graph)
+		{
+			if(pctrl.lock()->highlighted())
+			{
+				graph.blend(nana::rectangle({ 1, 1 }, { graph.width() - 2, graph.height() - 2 }), HIGHLIGHT_ON_PLACE, 0.5);
+			}
+		});
+	}
+	else
+	{
+		dw.draw([this, pctrl](nana::paint::graphics& graph)
+		{
+			if(pctrl.lock()->highlighted() && _insert_pos != insert_position::into)
+			{
+				nana::point p{ 1, 1 };
+
+				if(_insert_pos == insert_position::after)
+					p.x = (graph.width() - 2) / 2 + 1;
+
+				graph.blend(nana::rectangle(p, { (graph.width() - 2) / 2, graph.height() - 2 }), HIGHLIGHT_ON_PLACE, 0.5);
+			}
+		});
+	}
+
+
+	return _registerobject(ctrl, add_pos);
 }
 
 
@@ -373,12 +420,8 @@ void guimanager::deleteselected()
 	if(!_selected)
 		return;
 
-	
-	// delete objectspanel item
-	_op->remove(_selected->value->properties.property("name").as_string());
-
-
 	auto toremove = _selected;
+	auto parent = toremove->owner;
 	_selected = 0;
 
 
@@ -391,32 +434,6 @@ void guimanager::deleteselected()
 	
 
 	// delete ctrl
-	if(toremove->owner)
-	{
-		control_obj parent_ = toremove->owner->value;
-		if(parent_)
-		{
-			if(parent_->properties.property("type").as_string() == CTRL_PANEL)
-			{
-				(static_cast<ctrls::panel*>(parent_.get()))->remove(*toremove->value->nanawdg);
-			}
-			else if(parent_->properties.property("type").as_string() == CTRL_GROUP)
-			{
-				(static_cast<ctrls::group*>(parent_.get()))->remove(*toremove->value->nanawdg);
-			}
-			else if(parent_->properties.property("type").as_string() == CTRL_FORM)
-			{
-				(static_cast<ctrls::form*>(parent_.get()))->remove(*toremove->value->nanawdg);
-			}
-			else
-			{
-				(static_cast<ctrls::layout*>(parent_.get()))->remove(*toremove->value->nanawdg);
-			}
-		}
-	}
-
-	auto parent = toremove->owner;
-
 	if(toremove == _ctrls.get_root()->child)
 	{
 		parent = 0;
@@ -424,20 +441,28 @@ void guimanager::deleteselected()
 		_main_wd->remove(*toremove->value->nanawdg);
 	}
 
-	_ctrls.remove(toremove);
-
-	printf("\nREMOVED:\n");
-	// delete ctrl name
-	_ctrls.for_each([this](tree_node<control_obj>* node) -> bool
+	_ctrls.recursive_backward(toremove, [this](tree_node<control_obj>* node) -> bool
 	{
-		printf("- %s\n", node->value->properties.property("name").as_string().c_str());
+		if(node->owner)
+		{
+			control_obj parent_ = node->owner->value;
+			if(parent_)
+				parent_->remove(*node->value->nanawdg);
+		}
+
+		_ctrls.remove(node);
+
 		return true;
 	});
 
 
+	// delete objectspanel item
+	_update_op();
+
+	// select parent
 	if(parent)
 	{
-		// select parent
+		nana::API::refresh_window(*parent->value->nanawdg);
 		clickctrl(parent->value);
 	}
 }
@@ -452,12 +477,12 @@ void guimanager::moveupselected()
 	if(!_ctrls.move_before_sibling(_selected))
 		return;
 
-	// if here the parent is a layout with at least 2 children
-	auto playout = static_cast<ctrls::layout*>(_selected->owner->value.get());
-	playout->moveup(*_selected->value->nanawdg);
+	// if here is possible to move up
+	auto parent = _selected->owner->value;
+	parent->moveup(*_selected->value->nanawdg);
 
 	// reorder objectspanel item
-	_op->move_before_sibling(_selected->value->properties.property("name").as_string());
+	_update_op();
 }
 
 
@@ -470,30 +495,101 @@ void guimanager::movedownselected()
 	if(!_ctrls.move_after_sibling(_selected))
 		return;
 
-	// if here the parent is a layout with at least 2 children
-	auto playout = static_cast<ctrls::layout*>(_selected->owner->value.get());
-	playout->movedown(*_selected->value->nanawdg);
+	// if here is possible to move down
+	auto parent = _selected->owner->value;
+	parent->movedown(*_selected->value->nanawdg);
 
 	// reorder objectspanel item
-	_op->move_after_sibling(_selected->value->properties.property("name").as_string());
+	_update_op();
+}
+
+
+void guimanager::copyselected(bool cut)
+{
+	if(!_selected)
+		return;
+
+	// main widget cannot be cut or copied
+	if(_selected == _ctrls.get_root()->child)
+	{
+		nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
+		m.icon(m.icon_error);
+		m << "Impossible to cut/copy the main widget!";
+		m();
+		return;
+	}
+
+	_cut_copy_doc.reset();
+	_copied = !cut;
+
+	// append root node
+	pugi::xml_node root = _cut_copy_doc.append_child(NODE_ROOT);
+	_serialize(_selected, &root, true);
+
+	if(cut)
+		deleteselected(); // erase ctrls
+}
+
+
+void guimanager::pasteselected()
+{
+	if(!_selected)
+		return;
+
+	auto prev_selected = _selected;
+
+	// read root node
+	pugi::xml_node root = _cut_copy_doc.child(NODE_ROOT);
+	if(root.empty())
+		return; // nothing to paste
+
+
+	// deserialize the XML structure and avoid window update
+	lock_guard des_lock(&_deserializing, true);
+	_op->emit_events(false);
+	_op->auto_draw(false);
+		
+	_deserialize(_selected, &root);
+	
+	_op->auto_draw(true);
+	_op->emit_events(true);
+	_update_op();
+
+
+	if(!_copied)
+		_cut_copy_doc.reset(); // cut items can be paste only once
+
+
+	// select previous ctrl
+	clickctrl(prev_selected->value);
 }
 
 
 void guimanager::clickctrl(control_obj ctrl)
 {
+	// search control
+	tree_node<control_obj>*	_ctrl_node{ 0 };
+
+	_ctrls.for_each([this, &ctrl, &_ctrl_node](tree_node<control_obj>* node) -> bool
+	{
+		if(node->value == ctrl)
+		{
+			_ctrl_node = node;
+			return false;
+		}
+
+		return true;
+	});
+
+	if(!_ctrl_node)
+		return;
+
+
+	// select
+	//---------------------
 	if(cursor().action == cursor_action::select)
 	{
-		// search control to select
-		_ctrls.for_each([this, &ctrl](tree_node<control_obj>* node) -> bool
-		{
-			if(node->value == ctrl)
-			{
-				_selected = node;
-				return false;
-			}
-
-			return true;
-		});
+		_selected = _ctrl_node;
 
 		// select objectspanel item
 		_op->select(ctrl->properties.property("name").as_string());
@@ -503,74 +599,33 @@ void guimanager::clickctrl(control_obj ctrl)
 		return;
 	}
 
+
+	// add
+	//---------------------
+	// deselect previous ctrl
 	_ap->deselect();
 
-	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_PANEL || type == CTRL_GROUP || type == CTRL_FORM)
+	// reset ctrl highlight
+	ctrl->reset_highlight();
+	nana::API::refresh_window(*ctrl->nanawdg);
+
+	// reset parent ctrl highlight
+	auto _ctrl_node_parent = _ctrl_node->owner;
+	if(_ctrl_node_parent)
 	{
-		if(cursor().type == CTRL_LAYOUT)
+		if(_ctrl_node_parent->value)
 		{
-			if(type == CTRL_PANEL)
-			{
-				if((static_cast<ctrls::panel*>(ctrl.get()))->haschild())
-					return; // already has a child
-			}
-			else if(type == CTRL_GROUP)
-			{
-				if((static_cast<ctrls::group*>(ctrl.get()))->haschild())
-					return; // already has a child
-			}
-			else if(type == CTRL_FORM)
-			{
-				if((static_cast<ctrls::form*>(ctrl.get()))->haschild())
-					return; // already has a child
-			}
-
-			ctrl->reset_highlight();
-
-			control_obj_ptr pctrl = ctrl;
-			_ctrls.for_each([this, pctrl](tree_node<control_obj>* node) -> bool
-			{
-				if(node->value == pctrl.lock())
-				{
-					addlayout(node, nana::layout_orientation::horizontal);
-					return false;
-				}
-
-				return true;
-			});
+			_ctrl_node_parent->value->reset_highlight();
+			nana::API::refresh_window(*_ctrl_node_parent->value->nanawdg);
 		}
-		else
-		{
-			nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
-			m.icon(m.icon_warning);
-			m << "Impossible to create the control. Did you forget to add a layout?";
-			m();
-		}
-		return;
 	}
-	
-	if(type == CTRL_LAYOUT)
-	{
-		ctrl->reset_highlight();
 
-		control_obj_ptr pctrl = ctrl;
-		_ctrls.for_each([this, pctrl](tree_node<control_obj>* node) -> bool
-		{
-			if(node->value == pctrl.lock())
-			{
-				if(cursor().type == CTRL_LAYOUT)
-					addlayout(node, nana::layout_orientation::horizontal);
-				else
-					addcommonctrl(node, cursor().type);
-				return false;
-			}
+	// add ctrl
+	add_position add_pos;
+	add_pos.ctrl = _ctrl_node;
+	add_pos.pos = _insert_pos;
 
-			return true;
-		});
-
-		return;
-	}
+	addcommonctrl(add_pos, cursor().type);
 }
 
 
@@ -598,10 +653,10 @@ void guimanager::clickobjectspanel(const std::string& name)
 
 void guimanager::serialize(pugi::xml_node* xml_parent)
 {
-	serialize(0, xml_parent);
+	_serialize(0, xml_parent);
 }
 
-void guimanager::serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent)
+void guimanager::_serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only)
 {
 	pugi::xml_node xml_child;
 	if(!node)
@@ -618,22 +673,24 @@ void guimanager::serialize(tree_node<control_obj>* node, pugi::xml_node* xml_par
 	}
 
 	if(node->child)
-		serialize(node->child, &xml_child);
+		_serialize(node->child, &xml_child);
 
-	if(node->next)
-		serialize(node->next, xml_parent);
+	if(node->next && !children_only)
+		_serialize(node->next, xml_parent);
 }
 
 
 bool guimanager::deserialize(pugi::xml_node* xml_parent)
 {
 	lock_guard des_lock(&_deserializing, true);
-	
 	_op->emit_events(false);
 	_op->auto_draw(false);
-	bool ret_val = deserialize(0, xml_parent);
+
+	bool ret_val = _deserialize(0, xml_parent);
+
 	_op->auto_draw(true);
 	_op->emit_events(true);
+	_update_op();
 
 	if(!ret_val)
 		return false;
@@ -649,10 +706,9 @@ bool guimanager::deserialize(pugi::xml_node* xml_parent)
 	return true;
 }
 
-bool guimanager::deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml_parent)
+bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml_parent)
 {
-	//ATTENTION: No check on deserialize
-
+	//ATTENTION !!! No check on deserialize
 
 	// read children
 	for(pugi::xml_node xml_node = xml_parent->first_child(); xml_node; xml_node = xml_node.next_sibling())
@@ -662,10 +718,15 @@ bool guimanager::deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml
 		std::string node_name = xml_node.name();
 		std::string ctrl_name = xml_node.attribute("name").as_string();
 
+		// add name to name manager (and check)
+		bool ctrl_name_changed = false;
+		if(!_name_mgr.add(ctrl_name))
+		{
+			ctrl_name = _name_mgr.add_numbered(ctrl_name);
+			ctrl_name_changed = true;
+		}
 
-		if(node_name == CTRL_LAYOUT)
-			node = addlayout(parent, static_cast<nana::layout_orientation>(xml_node.attribute("layout").as_int()), ctrl_name);
-		else if(xml_node.attribute("mainclass").as_bool())
+		if(xml_node.attribute("mainclass").as_bool())
 		{
 			if(node_name == CTRL_FORM)
 				node = addmainform(ctrl_name);
@@ -673,7 +734,12 @@ bool guimanager::deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml
 				node = addmainpanel(ctrl_name);
 		}
 		else
-			node = addcommonctrl(parent, node_name, ctrl_name);
+		{
+			add_position add_pos;
+			add_pos.ctrl = parent;
+			add_pos.pos = insert_position::into;
+			node = addcommonctrl(add_pos, node_name, ctrl_name);
+		}
 
 		if(node == 0)
 		{
@@ -682,75 +748,58 @@ bool guimanager::deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml
 		}
 
 
-		// add name to name manager
-		_name_mgr.add(ctrl_name);
-
 		// deserialize properties
 		_deserializeproperties(&node->value->properties, &xml_node);
+
+		// align control name
+		if(ctrl_name_changed)
+			node->value->properties.property("name") = ctrl_name;
 
 		// update nana::widget
 		_updatectrl(node);
 
 
 		// deserialize children
-		if(node_name == CTRL_LAYOUT || node_name == CTRL_PANEL || node_name == CTRL_GROUP || node_name == CTRL_FORM)
-		{
-			if(!deserialize(node, &xml_node))
-				return false;
-		}
+		if(!_deserialize(node, &xml_node))
+			return false;
 	}
 
 	return true;
 }
 
 
-bool guimanager::_checksonship(const std::string& child, const std::string& parent)
+tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, add_position add_pos)
 {
-	if(parent == CTRL_LAYOUT)
-		return true;
-	if(parent == CTRL_PANEL && child == CTRL_LAYOUT)
-		return true;
-	if(parent == CTRL_GROUP && child == CTRL_LAYOUT)
-		return true;
-	if(parent == CTRL_FORM && child == CTRL_LAYOUT)
-		return true;
+	tree_node<control_obj>* child = 0;
 
-	return false;
-}
+	// append/insert to controls tree
+	if(add_pos.pos == insert_position::into)
+		child = _ctrls.append(add_pos.ctrl, ctrl);
+	else if(add_pos.pos == insert_position::after)
+		child = _ctrls.insert_after(add_pos.ctrl, ctrl);
+	else
+		child = _ctrls.insert_before(add_pos.ctrl, ctrl);
 
-
-tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<control_obj>* parent)
-{
-	// append to controls tree
-	tree_node<control_obj>* child = _ctrls.append(parent, ctrl);
 
 	_updatectrl(child);
 
-	// append to objectspanel
-	std::string type = ctrl->properties.property("type").as_string();
-	if(parent)
-	{
-		control_obj parent_ = parent->value;
-		_op->append(parent_->properties.property("name").as_string(), ctrl->properties.property("name").as_string(), type);
-	}
-	else
-		_op->append("", ctrl->properties.property("name").as_string(), type);
 
+	// select new control
+	_selected = child;
 
 	if(!_deserializing)
 	{
+		_update_op();
+
 		// set properties panel
 		_pp->set(&ctrl->properties);
 
 		// set focus to new object
 		ctrl->nanawdg->focus();
+
+		// reset mouse cursor
+		cursor(cursor_state{ cursor_action::select });
 	}
-
-	// select new control
-	_selected = child;
-
-	// reset mouse cursor
-	cursor(cursor_state{ cursor_action::select });
 
 	return _selected;
 }
@@ -779,34 +828,29 @@ bool guimanager::_updatectrlname(ctrls::properties_collection* properties, const
 		return false;
 	_name_mgr.remove(properties->property("name").as_string());
 
-
-	// update objects panel
-	_op->change_name(properties->property("name").as_string(), new_name, properties->property("type").as_string());
-
-
 	// update properties
 	properties->property("name") = new_name;
+
+	// update objects panel
+	_update_op();
+
 	return true;
 }
 
 
 void guimanager::_updatectrl(tree_node<control_obj>* node, bool update_owner, bool update_children)
 {
-	auto ctrl = node->value;
-	ctrl->update();
+	node->value->update();
 
-	std::string type = ctrl->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_FORM || type == CTRL_GROUP)
-	{
-		// update children ctrls
-		if(update_children)
-			_updatechildrenctrls(node);
-	}
+	// update children ctrls
+	if(node->child && update_children)
+		_updatechildrenctrls(node);
 
 	// update parent ctrl
 	if(node->owner && update_owner)
 		_updateparentctrl(node);
 }
+
 
 void guimanager::_updateparentctrl(tree_node<control_obj>* node)
 {
@@ -817,19 +861,16 @@ void guimanager::_updateparentctrl(tree_node<control_obj>* node)
 	if(!node->owner)
 		return;
 
+	std::string weight = ctrl->properties.property("weight").as_string();
+	if(weight[0] == '-')
+		weight = "";
+
+	std::string margin = ctrl->properties.property("margin").as_string();
+
 	auto parent = node->owner->value;
-	std::string type = parent->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT)
-	{
-		std::string weight = ctrl->properties.property("weight").as_string();
-		if(weight[0] == '-')
-			weight = "";
-
-		std::string margin = ctrl->properties.property("margin").as_string();
-
-		static_cast<ctrls::layout*>(parent.get())->updatefield(*ctrl->nanawdg, weight, margin);
-	}
+	parent->updatefield(*ctrl->nanawdg, weight, margin);
 }
+
 
 void guimanager::_updatechildrenctrls(tree_node<control_obj>* node)
 {
@@ -842,4 +883,34 @@ void guimanager::_updatechildrenctrls(tree_node<control_obj>* node)
 		_updatectrl(node, false, false);
 		return true;
 	});
+}
+
+
+void guimanager::_update_op()
+{
+	_op->emit_events(false);
+	_op->auto_draw(false);
+
+	_op->clear();
+
+	_ctrls.for_each([this](tree_node<control_obj>* node) -> bool
+	{
+		auto ctrl = node->value;
+
+		if(node->owner->value)
+		{
+			auto parent = node->owner->value;
+			_op->append(parent->properties.property("name").as_string(), ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
+		}
+		else
+			_op->append("", ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
+		return true;
+	});
+
+	_op->auto_draw(true);
+	_op->emit_events(true);
+	_op->refresh();
+
+	if(_selected)
+		_op->select(_selected->value->properties.property("name").as_string());
 }

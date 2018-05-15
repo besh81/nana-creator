@@ -138,6 +138,23 @@ void items_dialog::init()
 	}
 	else if(_type == ctrls::pg_type::collection_tabbar)
 	{
+		// toolbar
+		toolbar.enable(6, false);
+		toolbar.enable(7, false);
+
+		prop_grp.div("vert margin=5 arrange=[25,repeated] field1");
+
+		// label1
+		label1.create(prop_grp);
+		label1.caption("Text:");
+		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		// item_txt
+		item_txt.create(prop_grp);
+		item_txt.line_wrapped(false);
+		item_txt.multi_lines(false);
+
+		prop_grp["field1"] << label1 << item_txt;
+		prop_grp.collocate();
 	}
 	else if(_type == ctrls::pg_type::collection_menubar)
 	{
@@ -671,6 +688,17 @@ void items_dialog::_update_selected()
 	}
 	else if(_type == ctrls::pg_type::collection_tabbar)
 	{
+		if(_selected)
+		{
+			item_txt.enabled(true);
+			item_txt.caption(_selected->text);
+			// set focus
+			item_txt.focus();
+		}
+		else
+		{
+			item_txt.enabled(false);
+		}
 	}
 	else if(_type == ctrls::pg_type::collection_menubar)
 	{
@@ -749,6 +777,7 @@ void items_dialog::value(const std::string& items)
 		}
 		else if(_type == ctrls::pg_type::collection_tabbar)
 		{
+			d.text = items_tree_text = item_tkn.next();
 		}
 		else if(_type == ctrls::pg_type::collection_menubar)
 		{
@@ -836,6 +865,7 @@ std::string items_dialog::value()
 					}
 					else if(_type == ctrls::pg_type::collection_tabbar)
 					{
+						vitems.push_back(i.text);
 					}
 					else if(_type == ctrls::pg_type::collection_menubar)
 					{

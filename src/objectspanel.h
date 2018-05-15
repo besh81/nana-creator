@@ -24,15 +24,9 @@ public:
 	~objectspanel() {}
 
 	bool append(const std::string& parent, const std::string& name, const std::string& type);
-	bool remove(const std::string& name);
-	bool move_before_sibling(const std::string& name);
-	bool move_after_sibling(const std::string& name);
-
 	bool clear();
 
 	bool select(const std::string& name);
-
-	bool change_name(const std::string& old_name, const std::string& new_name, const std::string& new_type);
 
 	void emit_events(bool state)
 	{
@@ -42,6 +36,11 @@ public:
 	void auto_draw(bool state)
 	{
 		_objects.auto_draw(state);
+	}
+
+	void refresh()
+	{
+		nana::API::refresh_window(_objects);
 	}
 
 private:

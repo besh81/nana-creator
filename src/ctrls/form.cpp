@@ -23,9 +23,7 @@ namespace ctrls
 		: ctrl()
 	{
 		frm.create(wd, visible);
-		_place.bind(frm);
-		_place.div("abc");
-		_place.collocate();
+		boxmodel.bind(frm);
 
 		// form IS ALWAYS mainclass
 		properties.append("mainclass") = true;
@@ -38,6 +36,8 @@ namespace ctrls
 
 		// common
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "Form";
+		properties.append("width").label("Width").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_W;
+		properties.append("height").label("Height").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_H;
 		// appearance
 		properties.append("decoration").label("Decoration").category(CAT_APPEARANCE).type(pg_type::check) = true;
 		properties.append("taskbar").label("Taskbar").category(CAT_APPEARANCE).type(pg_type::check) = true;
@@ -49,8 +49,8 @@ namespace ctrls
 		// layout
 		properties.remove("weight");
 		properties.remove("margin");
-		properties.append("width").label("Width").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_W;
-		properties.append("height").label("Height").category(CAT_LAYOUT).type(pg_type::string_uint) = MAIN_WDG_H;
+		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
+		properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 	}
 
 
@@ -67,7 +67,8 @@ namespace ctrls
 		bool inherited;
 		nana::color col;
 
-		nanawdg->enabled(properties.property("enabled").as_bool());
+		if(!properties.property("enabled").as_bool())
+			nanawdg->enabled(properties.property("enabled").as_bool());
 
 		col = nana::to_color(properties.property("bgcolor").as_string(), inherited);
 		nanawdg->bgcolor(inherited ? pw->bgcolor() : col);
@@ -77,7 +78,10 @@ namespace ctrls
 
 		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
 
-		_place.collocate();
+
+		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.update();
 	}
 
 
@@ -104,56 +108,56 @@ namespace ctrls
 
 		// headers
 		cd->hpps.add("#include <nana/gui.hpp>");
+		cd->hpps.add("#include <nana/gui/place.hpp>");
 		// declaration
-		// ...
+		cd->decl.push_back("nana::place _place{ *this };");
 		// init
+		cd->init.push_back("_place.div(\"" + boxmodel.getdiv() + "\");");
 		cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
 		cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
-		// color
-		bool inherited;
-		std::string col;
-		// bg
-		col = properties.property("bgcolor").as_string();
-		nana::to_color(col, inherited);
-		if(!inherited)
-			cd->init.push_back("bgcolor(nana::color(" + col + "));");
-		// fg
-		col = properties.property("fgcolor").as_string();
-		nana::to_color(col, inherited);
-		if(!inherited)
-			cd->init.push_back("fgcolor(nana::color(" + col + "));");
+		generatecode_colors(cd, ci);
 		// placement
 		// ...
+		// collocate
+		cd->init_post.push_back("_place.collocate();");
 		// children
-		ci->place = "";
+		ci->place = "_place";
+	}
+
+
+	void form::updatefield(nana::window child, const std::string& weight, const std::string& margin)
+	{
+		boxmodel.updatefield(child, weight, margin);
+	}
+
+
+	bool form::children()
+	{
+		return boxmodel.children();
 	}
 
 
 	bool form::append(nana::window child)
 	{
-		if (haschild())
-			return false;
-
-		_child = true;
-
-		_place.field("abc") << child;
-		_place.collocate();
-		return true;
+		return boxmodel.append(child);
 	}
 
 
 	bool form::remove(nana::window child)
 	{
-		if (!haschild())
-			return false;
+		return boxmodel.remove(child);
+	}
 
-		_place.field_display("abc", false);
-		_place.erase(child);
-		_place.field_display("abc", true);
-		_place.collocate();
 
-		_child = false;
-		return true;
+	bool form::moveup(nana::window child)
+	{
+		return boxmodel.moveup(child);
+	}
+
+
+	bool form::movedown(nana::window child)
+	{
+		return boxmodel.movedown(child);
 	}
 
 }//end namespace ctrls

@@ -10,6 +10,7 @@
 
 #include <nana/gui/widgets/group.hpp>
 #include "ctrls/ctrl.h"
+#include "ctrls/box_model.h"
 #include "codegenerator_data.h"
 
 
@@ -26,16 +27,20 @@ namespace ctrls
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
-		bool append(nana::window child);
-		bool remove(nana::window child);
+		void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin);
 
-		bool haschild() { return _child; }
+		bool children();
+		bool append(nana::window ctrl);
+		bool insert(nana::window pos, nana::window ctrl, bool after = true);
+		bool remove(nana::window ctrl);
+
+		bool moveup(nana::window ctrl);
+		bool movedown(nana::window ctrl);
 
 
 	protected:
 		nana::group			grp;
-
-		bool				_child{ false };
+		box_model			boxmodel;
 	};
 
 }//end namespace ctrls
