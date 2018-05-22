@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include "ctrls/layout.h"
+#include "style.h"
 
 
 
@@ -32,7 +33,7 @@ namespace nana
 			void drawer::refresh(graph_reference graph)
 			{
 				graph.rectangle(true, nana::API::bgcolor(window_));
-				graph.rectangle(false, nana::colors::red);
+				graph.rectangle(false, LAYOUT_CTRL);
 			}
 
 		}//end namespace layout

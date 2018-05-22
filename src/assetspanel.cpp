@@ -53,12 +53,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 
 
 	// populate
-	auto set = _assets.insert("widgets", "Widgets").value(cursor_state{ cursor_action::select });
-	set.append("widgets/form", CTRL_FORM, cursor_state{ cursor_action::add, CTRL_MAINFORM }).icon(CTRL_FORM);
-	set.append("widgets/panel", CTRL_PANEL, cursor_state{ cursor_action::add, CTRL_MAINPANEL }).icon(CTRL_PANEL);
-	set.expand(true);
-	//
-	set = _assets.insert("layouts", "Layouts").value(cursor_state{ cursor_action::select });
+	auto set = _assets.insert("layouts", "Layouts").value(cursor_state{ cursor_action::select });
 	set.append("layouts/group", CTRL_GROUP, cursor_state{ cursor_action::add, CTRL_GROUP }).icon(CTRL_GROUP);
 	set.append("layouts/layout", CTRL_LAYOUT, cursor_state{ cursor_action::add, CTRL_LAYOUT }).icon(CTRL_LAYOUT);
 	set.append("layouts/panel", CTRL_PANEL, cursor_state{ cursor_action::add, CTRL_PANEL }).icon(CTRL_PANEL);

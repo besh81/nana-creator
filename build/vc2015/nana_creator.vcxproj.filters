@@ -102,9 +102,6 @@
     <ClCompile Include="..\..\src\resizablecanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\wdir.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libs\pugixml\pugixml.cpp">
       <Filter>libs\pugixml</Filter>
     </ClCompile>
@@ -156,9 +153,6 @@
     <ClCompile Include="..\..\src\nana_extra\folderbox.cpp">
       <Filter>Source Files\nana_extra</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\relativepath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\filemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -167,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ctrls\box_model.cpp">
       <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\new_project.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +245,6 @@
     <ClInclude Include="..\..\src\tree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\wdir.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\libs\pugixml\pugiconfig.hpp">
       <Filter>libs\pugixml</Filter>
     </ClInclude>
@@ -305,9 +299,6 @@
     <ClInclude Include="..\..\src\nana_extra\folderbox.h">
       <Filter>Header Files\nana_extra</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\relativepath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\filemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -316,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\box_model.h">
       <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\new_project.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

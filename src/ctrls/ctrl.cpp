@@ -81,8 +81,7 @@ namespace ctrls
 
 		nana::API::ignore_mouse_focus(*nanawdg, false);
 		nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::none);
-		//XXX - custom select effect
-		nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::active);
+		//nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::active);
 
 
 		// properties - main

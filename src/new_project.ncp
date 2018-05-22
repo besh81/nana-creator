@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<nana-creator version="0.10.0">
+	<form mainclass="true" filename="new_project" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="new_project" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="New project" width="540" height="350" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" padding="5">
+		<label type="label" name="label3" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="2" caption="   Type:" format="false" transparent="false" halign="0" valign="2" />
+		<layout type="layout" name="layout1" layout="0" weight="-1" margin="0" padding="3">
+			<listbox type="listbox" name="type_lst" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="180" margin="3" columns="Widget type&#13;150" checkable="false" single_selection="true" show_header="false" />
+			<textbox type="textbox" name="type_txt" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="3" caption="" tip_string="" line_wrapped="true" multi_lines="true" editable="false" />
+		</layout>
+		<layout type="layout" name="layout2" layout="0" weight="40" margin="5" padding="0">
+			<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="100" margin="3" caption="Name:" format="false" transparent="false" halign="2" valign="1" />
+			<textbox type="textbox" name="name_txt" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="3" caption="" tip_string="" line_wrapped="false" multi_lines="false" editable="true" />
+		</layout>
+		<layout type="layout" name="layout21" layout="0" weight="40" margin="5" padding="0">
+			<label type="label" name="label2" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="100" margin="3" caption="Create in:" format="false" transparent="false" halign="2" valign="1" />
+			<textbox type="textbox" name="folder_txt" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="3" caption="" tip_string="" line_wrapped="false" multi_lines="false" editable="false" />
+			<button type="button" name="folder_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="50" margin="3" caption="..." transparent="false" />
+		</layout>
+		<layout type="layout" name="footer_lyt" layout="0" weight="40" margin="0" padding="2">
+			<layout type="layout" name="spacer" layout="0" weight="-1" margin="0" padding="5" />
+			<button type="button" name="create_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="Create" transparent="false" />
+			<button type="button" name="canc_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="Cancel" transparent="false" />
+		</layout>
+	</form>
+</nana-creator>

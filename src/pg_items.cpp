@@ -10,7 +10,6 @@
 #include <nana/gui/filebox.hpp>
 #include "nana_extra/folderbox.h"
 #include "items_dialog.h"
-#include "relativepath.h"
 #include "filemanager.h"
 #include "lock_guard.h"
 

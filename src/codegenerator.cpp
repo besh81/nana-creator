@@ -10,7 +10,7 @@
 #include <streambuf>
 #include "codegenerator.h"
 #include "guimanager.h"
-#include "wdir.h"
+#include "filemanager.h"
 #include "ctrls/ctrl.h"
 
 
@@ -45,7 +45,7 @@ bool codegenerator::generate(nana::window wd, tree_node<control_obj>* node, cons
 	if(path.empty())
 	{
 		// use current working dir
-		_filename = GetCurrentWorkingDir() + "\\" + _code_data.filename + ".h";
+		_filename = get_working_dir() + "\\" + _code_data.filename + ".h";
 	}
 	else
 	{
@@ -256,6 +256,11 @@ bool codegenerator::_write_file()
 	_code.clear();
 	_indent = 0;
 
+	std::string def_str = _code_data.filename;
+	std::transform(def_str.begin(), def_str.end(), def_str.begin(), ::toupper);
+	def_str.append("_H");
+
+
 	//---- file header - START
 	const char* header =
 		"/*****************************************************\n"
@@ -268,6 +273,11 @@ bool codegenerator::_write_file()
 		" *		//*>\n"
 		"*****************************************************/\n";
 	_write_line(header);
+
+	_write_line("#ifndef " + def_str);
+	_write_line("#define " + def_str);
+
+
 	//---- file header - END
 
 	_write_line();
@@ -372,6 +382,9 @@ bool codegenerator::_write_file()
 	_write_line("};");
 	_write_line();
 
+	_write_line("#endif //" + def_str);
+	_write_line();
+	
 	_buffer = _code;
 
 	return true;

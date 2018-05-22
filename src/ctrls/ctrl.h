@@ -42,15 +42,20 @@ namespace ctrls
 		virtual bool moveup(nana::window ctrl) { return false; }
 		virtual bool movedown(nana::window ctrl) { return false; }
 
-		bool highlighted() { return _ishighlighted; }
-		virtual void set_highlight() { _ishighlighted = true; }
-		virtual void reset_highlight() { _ishighlighted = false; }
+		bool highlighted() { return _highlighted; }
+		virtual void set_highlight() { _highlighted = true; }
+		virtual void reset_highlight() { _highlighted = false; }
+
+		bool selected() { return _selected; }
+		virtual void set_select() { _selected = true; }
+		virtual void reset_select() { _selected = false; }
 
 
 	protected:
 		void init(nana::widget* wdg, const std::string& type, const std::string& name);
 
-		bool			_ishighlighted{ false };
+		bool			_highlighted{ false };
+		bool			_selected{ false };
 	};
 
 }//end namespace ctrls

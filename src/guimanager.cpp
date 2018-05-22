@@ -30,10 +30,85 @@
 #include "style.h"
 
 
+// utility functions
+
+void draw_selection(nana::paint::graphics& graph)
+{
+	graph.rectangle(false, SELECT_CTRL_COL);
+	graph.rectangle({ 1, 1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
+	graph.rectangle({ 1, static_cast<int>(graph.height()) - SELECT_CTRL_SIZE -1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
+	graph.rectangle({ static_cast<int>(graph.width()) - SELECT_CTRL_SIZE - 1, 1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
+	graph.rectangle({ static_cast<int>(graph.width()) - SELECT_CTRL_SIZE - 1, static_cast<int>(graph.height()) - SELECT_CTRL_SIZE - 1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
+}
+
+void draw_highlight(nana::paint::graphics& graph, insert_position type)
+{
+	if(type == insert_position::into)
+		graph.blend({ 0, 0, graph.width(), graph.height() }, HIGHLIGHT_CTRL_COL, 0.5);
+	else if(type == insert_position::before)
+		graph.blend({ 0, 0, graph.width()/2, graph.height() }, HIGHLIGHT_CTRL_COL, 0.5);
+	else
+		graph.blend({ static_cast<int>(graph.width()) / 2, 0, graph.width()/2, graph.height() }, HIGHLIGHT_CTRL_COL, 0.5);
+}
+
+
+
+//guimanager
+guimanager::guimanager()
+{
+	// context menu
+	// 0. move up
+	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)
+	{
+		moveupselected();
+	});
+	nana::paint::image _img_up("icons/up.png");
+	_ctxmenu.image(0, _img_up);
+	// 1. move down
+	_ctxmenu.append("Move Down", [this](const nana::menu::item_proxy& ip)
+	{
+		movedownselected();
+	});
+	nana::paint::image _img_down("icons/down.png");
+	_ctxmenu.image(1, _img_down);
+	// 2. -----
+	_ctxmenu.append_splitter();
+	// 3. delete
+	_ctxmenu.append("Delete", [this](const nana::menu::item_proxy& ip)
+	{
+		deleteselected();
+	});
+	nana::paint::image _img_del("icons/delete.png");
+	_ctxmenu.image(3, _img_del);
+	// 4. -----
+	_ctxmenu.append_splitter();
+	// 5. cut
+	_ctxmenu.append("Cut", [this](const nana::menu::item_proxy& ip)
+	{
+		copyselected(true);
+	});
+	nana::paint::image _img_cut("icons/cut.png");
+	_ctxmenu.image(5, _img_cut);
+	// 6. copy
+	_ctxmenu.append("Copy", [this](const nana::menu::item_proxy& ip)
+	{
+		copyselected();
+	});
+	nana::paint::image _img_copy("icons/copy.png");
+	_ctxmenu.image(6, _img_copy);
+	// 7. paste
+	_ctxmenu.append("Paste", [this](const nana::menu::item_proxy& ip)
+	{
+		pasteselected();
+	});
+	nana::paint::image _img_paste("icons/paste.png");
+	_ctxmenu.image(7, _img_paste);
+}
+
 
 void guimanager::clear()
 {
-	_selected = 0;
+	_select_ctrl(0);
 
 	auto root = _ctrls.get_root();
 	if(root)
@@ -51,6 +126,33 @@ void guimanager::clear()
 	_op->clear();
 	_pp->set(0);
 	_name_mgr.clear();
+
+	enableGUI(false);
+}
+
+
+void guimanager::enableGUI(bool state)
+{
+	nana::API::enum_widgets(*_ap, true, [state](nana::widget &w)
+	{
+		std::cout << typeid(w).name() << std::endl;
+		w.enabled(state);
+	});
+	nana::API::enum_widgets(*_pp, true, [state](nana::widget &w)
+	{
+		std::cout << typeid(w).name() << std::endl;
+		w.enabled(state);
+	});
+
+	_tb->enable(TB_SAVE, state);
+	_tb->enable(TB_SAVE_AS, state);
+	_tb->enable(TB_GENERATE, state);
+	_tb->enable(TB_DELETE, state);
+	_tb->enable(TB_UP, state);
+	_tb->enable(TB_DOWN, state);
+	_tb->enable(TB_CUT, state);
+	_tb->enable(TB_COPY, state);
+	_tb->enable(TB_PASTE, state);
 }
 
 
@@ -58,25 +160,8 @@ void guimanager::cursor(cursor_state state)
 {
 	if(state.action == cursor_action::add)
 	{
-		if(state.type == CTRL_MAINFORM)
+		if(!_main_wd->haschild())
 		{
-			addmainform();
-			// reset mouse cursor
-			state = cursor_state{ cursor_action::select };
-		}
-		else if(state.type == CTRL_MAINPANEL)
-		{
-			addmainpanel();
-			// reset mouse cursor
-			state = cursor_state{ cursor_action::select };
-		}
-		else if(!_main_wd->haschild())
-		{
-			nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
-			m.icon(m.icon_warning);
-			m << "Create a main widget!";
-			m();
-
 			// reset mouse cursor
 			state = cursor_state{ cursor_action::select };
 		}
@@ -92,86 +177,30 @@ void guimanager::cursor(cursor_state state)
 }
 
 
-tree_node<control_obj>* guimanager::addmainform(const std::string& name)
+void guimanager::new_project(const std::string& type, const std::string& filename)
 {
-	if(_main_wd->haschild())
-	{
-		nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
-		m.icon(m.icon_warning);
-		m << "Widget already exists. Try to add a layout/control!";
-		m();
-		return 0;
-	}
+	if(!addmainctrl(type))
+		return;
 
-	control_obj ctrl(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, _deserializing ? false : true));
-
-	//TEMP
-	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
-	//
-	_main_wd->add(*ctrl->nanawdg);
-
-
-	// events
-	control_obj_ptr pctrl = ctrl;
-	ctrl->nanawdg->events().mouse_enter([this, pctrl]()
-	{
-		if(!pctrl.lock()->highlighted() && cursor().action != cursor_action::select)
-		{
-			_insert_pos = insert_position::into;
-
-			pctrl.lock()->set_highlight();
-			nana::API::refresh_window(*pctrl.lock()->nanawdg);
-		}
-	});
-
-	ctrl->nanawdg->events().mouse_leave([this, pctrl]()
-	{
-		if(pctrl.lock()->highlighted())
-		{
-			_insert_pos = insert_position::into;
-
-			pctrl.lock()->reset_highlight();
-			nana::API::refresh_window(*pctrl.lock()->nanawdg);
-		}
-	});
-
-	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
-	{
-		clickctrl(pctrl.lock());
-	});
-
-	nana::drawing dw{ *ctrl->nanawdg };
-	dw.draw([this, pctrl](nana::paint::graphics& graph)
-	{
-		if(pctrl.lock()->highlighted())
-		{
-			graph.blend(nana::rectangle({ 0, 0 }, { graph.width(), graph.height() }), HIGHLIGHT_ON_PLACE, 0.5);
-		}
-	});
-
-
-	return _registerobject(ctrl, {});
+	enableGUI(true);
 }
 
 
-tree_node<control_obj>* guimanager::addmainpanel(const std::string& name)
+tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const std::string& name)
 {
-	if(_main_wd->haschild())
-	{
-		nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
-		m.icon(m.icon_warning);
-		m << "Widget already exists. Try to add a layout/control!";
-		m();
-		return 0;
-	}
+	control_obj ctrl;
 
-	control_obj ctrl(new ctrls::panel(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
-	
-	//TEMP
+	if(type == CTRL_FORM)
+		ctrl = control_obj(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, _deserializing ? false : true));
+	else if(type == CTRL_PANEL)
+		ctrl = control_obj(new ctrls::panel(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
+	else
+		return 0;
+
+
 	ctrl->nanawdg->bgcolor(nana::API::bgcolor(nana::API::get_parent_window(*_main_wd)));
-	//
 	_main_wd->add(*ctrl->nanawdg);
-	
+
 
 	// events
 	control_obj_ptr pctrl = ctrl;
@@ -197,7 +226,9 @@ tree_node<control_obj>* guimanager::addmainpanel(const std::string& name)
 		}
 	});
 
-	ctrl->nanawdg->events().click([this, pctrl](const nana::arg_click & arg)
+	// mouse click
+	ctrl->nanawdg->events().mouse_down(nana::menu_popuper(_ctxmenu));
+	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl]()
 	{
 		clickctrl(pctrl.lock());
 	});
@@ -205,10 +236,11 @@ tree_node<control_obj>* guimanager::addmainpanel(const std::string& name)
 	nana::drawing dw{ *ctrl->nanawdg };
 	dw.draw([this, pctrl](nana::paint::graphics& graph)
 	{
+		if(pctrl.lock()->selected())
+			draw_selection(graph);
+
 		if(pctrl.lock()->highlighted())
-		{
-			graph.blend(nana::rectangle({ 0, 0 }, { graph.width(), graph.height() }), HIGHLIGHT_ON_PLACE, 0.5);
-		}
+			draw_highlight(graph, insert_position::into);
 	});
 
 
@@ -376,7 +408,8 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 	}
 
 	// mouse click
-	ctrl->nanawdg->events().click.connect_front([this, pctrl](const nana::arg_click & arg)
+	ctrl->nanawdg->events().mouse_down(nana::menu_popuper(_ctxmenu));
+	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl]()
 	{
 		clickctrl(pctrl.lock());
 	});
@@ -388,28 +421,24 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 	{
 		dw.draw([this, pctrl](nana::paint::graphics& graph)
 		{
+			if(pctrl.lock()->selected())
+				draw_selection(graph);
+
 			if(pctrl.lock()->highlighted())
-			{
-				graph.blend(nana::rectangle({ 1, 1 }, { graph.width() - 2, graph.height() - 2 }), HIGHLIGHT_ON_PLACE, 0.5);
-			}
+				draw_highlight(graph, insert_position::into);
 		});
 	}
 	else
 	{
 		dw.draw([this, pctrl](nana::paint::graphics& graph)
 		{
+			if(pctrl.lock()->selected())
+				draw_selection(graph);
+
 			if(pctrl.lock()->highlighted() && _insert_pos != insert_position::into)
-			{
-				nana::point p{ 1, 1 };
-
-				if(_insert_pos == insert_position::after)
-					p.x = (graph.width() - 2) / 2 + 1;
-
-				graph.blend(nana::rectangle(p, { (graph.width() - 2) / 2, graph.height() - 2 }), HIGHLIGHT_ON_PLACE, 0.5);
-			}
+				draw_highlight(graph, _insert_pos);
 		});
 	}
-
 
 	return _registerobject(ctrl, add_pos);
 }
@@ -420,9 +449,13 @@ void guimanager::deleteselected()
 	if(!_selected)
 		return;
 
+	// main widget cannot be removed
+	if(_selected == _ctrls.get_root()->child)
+		return;
+
 	auto toremove = _selected;
 	auto parent = toremove->owner;
-	_selected = 0;
+	_select_ctrl(0);
 
 
 	// delete ctrl name
@@ -538,6 +571,19 @@ void guimanager::pasteselected()
 
 	auto prev_selected = _selected;
 
+	auto type = prev_selected->value->properties.property("type").as_string();
+	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP || type == CTRL_FORM)
+	{
+		// do nothing !!!
+	}
+	else
+	{
+		_select_ctrl(_selected->owner);
+		if(!_selected)
+			return;
+	}
+	
+
 	// read root node
 	pugi::xml_node root = _cut_copy_doc.child(NODE_ROOT);
 	if(root.empty())
@@ -589,7 +635,7 @@ void guimanager::clickctrl(control_obj ctrl)
 	//---------------------
 	if(cursor().action == cursor_action::select)
 	{
-		_selected = _ctrl_node;
+		_select_ctrl(_ctrl_node);
 
 		// select objectspanel item
 		_op->select(ctrl->properties.property("name").as_string());
@@ -635,7 +681,7 @@ void guimanager::clickobjectspanel(const std::string& name)
 	{
 		if(node->value->properties.property("name").as_string() == name)
 		{
-			_selected = node;
+			_select_ctrl(node);
 
 			// set properties panel
 			_pp->set(&node->value->properties);
@@ -728,10 +774,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 		if(xml_node.attribute("mainclass").as_bool())
 		{
-			if(node_name == CTRL_FORM)
-				node = addmainform(ctrl_name);
-			else if(node_name == CTRL_PANEL)
-				node = addmainpanel(ctrl_name);
+			node = addmainctrl(node_name, ctrl_name);
 		}
 		else
 		{
@@ -764,6 +807,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			return false;
 	}
 
+	enableGUI(true);
 	return true;
 }
 
@@ -785,7 +829,7 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, add_positi
 
 
 	// select new control
-	_selected = child;
+	_select_ctrl(child);
 
 	if(!_deserializing)
 	{
@@ -914,3 +958,30 @@ void guimanager::_update_op()
 	if(_selected)
 		_op->select(_selected->value->properties.property("name").as_string());
 }
+
+void guimanager::_select_ctrl(tree_node<control_obj>* to_select)
+{
+	if(_selected == to_select)
+		return;
+
+	if(_selected)
+	{
+		if(_selected->value)
+		{
+			_selected->value->reset_select();
+			nana::API::refresh_window(*_selected->value->nanawdg);
+		}
+	}
+
+	_selected = to_select;
+
+	if(_selected)
+	{
+		if(_selected->value)
+		{
+			_selected->value->set_select();
+			nana::API::refresh_window(*_selected->value->nanawdg);
+		}
+	}
+}
+

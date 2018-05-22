@@ -9,6 +9,7 @@
 #define NANA_CREATOR_GUIMANAGER_H
 
 #include "config.h"
+#include <nana/gui/widgets/toolbar.hpp>
 #include "pugixml/pugixml.hpp"
 #include "tree.h"
 #include "ctrls/ctrl.h"
@@ -54,26 +55,28 @@ struct add_position
 class guimanager
 {
 public:
-	guimanager() = default;
+	guimanager();
 
 
 	void root_wd(nana::window wd)
 	{
 		_root_wd = wd;
 	}
-	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb)
+	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, nana::toolbar* tb, statusbar* sb)
 	{
-		_pp = pp; _ap = ap; _op = op; _main_wd = main_wd; _sb = sb;
+		_pp = pp; _ap = ap; _op = op; _main_wd = main_wd; _tb = tb; _sb = sb;
+		enableGUI(false);
 	}
 	void clear();
 
+	void enableGUI(bool state);
 
 	void cursor(cursor_state state);
 	cursor_state cursor() { return _cursor_state; }
 
+	void new_project(const std::string& type, const std::string& filename);
 
-	tree_node<control_obj>* addmainform(const std::string& name = "");
-	tree_node<control_obj>* addmainpanel(const std::string& name = "");
+	tree_node<control_obj>* addmainctrl(const std::string& type, const std::string& name = "");
 	tree_node<control_obj>* addcommonctrl(add_position add_pos, const std::string& type, const std::string& name = "");
 
 	void deleteselected();
@@ -125,8 +128,11 @@ private:
 
 	void _update_op();
 
+	void _select_ctrl(tree_node<control_obj>* to_select);
+
 
 	nana::window			_root_wd;
+	nana::menu				_ctxmenu;
 
 	tree<control_obj>		_ctrls;
 	tree_node<control_obj>*	_selected{ 0 };
@@ -137,6 +143,7 @@ private:
 	assetspanel*			_ap{ 0 };
 	objectspanel*			_op{ 0 };
 	resizablecanvas*		_main_wd{ 0 };
+	nana::toolbar*			_tb{ 0 };
 	statusbar*				_sb{ 0 };
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator

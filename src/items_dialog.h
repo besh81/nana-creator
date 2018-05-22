@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.8.0)
+ *	C++ code generated with Nana Creator (0.10.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -8,6 +8,8 @@
  *		//*>
 *****************************************************/
 
+#ifndef ITEMS_DIALOG_H
+#define ITEMS_DIALOG_H
 
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
@@ -51,16 +53,14 @@ public:
 private:
 	void init_()
 	{
+		_place.div("vert margin=5 <field1><weight=40 field2>");
 		enabled(true);
 		caption("Form");
-		// main_lyt
-		main_lyt_place.bind(*this);
-		main_lyt_place.div("vert <field1><weight=40 field2>");
 		// body_lyt
 		body_lyt_panel.create(*this);
 		body_lyt_place.bind(body_lyt_panel);
-		body_lyt_place.div("margin=5 <field1><field2>");
-		main_lyt_place["field1"] << body_lyt_panel;
+		body_lyt_place.div("margin=5 <margin=3 field1><margin=3 field2>");
+		_place["field1"] << body_lyt_panel;
 		// left_lyt
 		left_lyt_panel.create(body_lyt_panel);
 		left_lyt_place.bind(left_lyt_panel);
@@ -69,12 +69,10 @@ private:
 		// items_tree
 		items_tree.create(left_lyt_panel);
 		left_lyt_place["field1"] << items_tree;
-		items_tree.enabled(true);
 		items_tree.bgcolor(nana::color(255,255,255));
 		// toolbar
 		toolbar.create(left_lyt_panel);
 		left_lyt_place["field2"] << toolbar;
-		toolbar.enabled(true);
 		toolbar.scale(21);
 		toolbar.append("Add item", nana::paint::image("icons/item_add.png"));
 		toolbar.append("Delete item", nana::paint::image("icons/item_delete.png"));
@@ -86,15 +84,13 @@ private:
 		toolbar.append("Move right", nana::paint::image("icons/right.png"));
 		// prop_grp
 		prop_grp.create(body_lyt_panel);
-		body_lyt_place["field2"] << prop_grp;
-		prop_grp.enabled(true);
 		prop_grp.caption("Properties");
-		prop_grp.div("field1");
+		body_lyt_place["field2"] << prop_grp;
 		// footer_lyt
 		footer_lyt_panel.create(*this);
 		footer_lyt_place.bind(footer_lyt_panel);
 		footer_lyt_place.div("margin=2 <field1><weight=90 margin=3 field2><weight=90 margin=3 field3>");
-		main_lyt_place["field2"] << footer_lyt_panel;
+		_place["field2"] << footer_lyt_panel;
 		// spacer
 		spacer_panel.create(footer_lyt_panel);
 		spacer_place.bind(spacer_panel);
@@ -103,22 +99,18 @@ private:
 		// ok_btn
 		ok_btn.create(footer_lyt_panel);
 		footer_lyt_place["field2"] << ok_btn;
-		ok_btn.enabled(true);
 		ok_btn.caption("OK");
-		ok_btn.transparent(false);
 		// canc_btn
 		canc_btn.create(footer_lyt_panel);
 		footer_lyt_place["field3"] << canc_btn;
-		canc_btn.enabled(true);
 		canc_btn.caption("Cancel");
-		canc_btn.transparent(false);
 
-		main_lyt_place.collocate();
+		_place.collocate();
 	}
 
 
 protected:
-	nana::place main_lyt_place;
+	nana::place _place{ *this };
 	nana::panel<false> body_lyt_panel;
 	nana::place body_lyt_place;
 	nana::panel<false> left_lyt_panel;
@@ -197,4 +189,6 @@ protected:
 	nana::textbox width_txt;
 	//*>
 };
+
+#endif //ITEMS_DIALOG_H
 

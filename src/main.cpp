@@ -23,6 +23,7 @@
 #include "objectspanel.h"
 #include "resizablecanvas.h"
 #include "statusbar.h"
+#include "new_project.h"
 #include "style.h"
 
 
@@ -125,6 +126,9 @@ private:
 		nana::paint::image _img_save;
 		_img_save.open("icons/save.png");
 		_toolbar.append("Save project", _img_save);
+		nana::paint::image _img_save_as;
+		_img_save_as.open("icons/save_as.png");
+		_toolbar.append("Save project as...", _img_save_as);
 		_toolbar.separate();
 		nana::paint::image _img_out;
 		_img_out.open("icons/output_on.png");
@@ -154,71 +158,114 @@ private:
 
 		_toolbar.events().selected([this](const nana::arg_toolbar & arg)
 		{
-			if(arg.button == 0)
+			if(arg.button == TB_NEW) // new project
 			{
-				//TODO: messaggio di conferma
+				// confirmation message
+				if(prj_name != "")
+				{
+					nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
+					m.icon(m.icon_warning);
+					m << "Do you want to save the current project?";
+					auto ret = m();
+					if(ret == nana::msgbox::pick_cancel)
+						return;
+					else if(ret == nana::msgbox::pick_yes)
+						save_xml(prj_name);
+				}
+
 				g_gui_mgr.clear();
+				prj_name = "";
+
+				new_project dlg(*this);
+				dlg.modality();
+
+				if(dlg.return_val() == nana::msgbox::pick_ok)
+				{
+					prj_name = dlg.get_filename();
+					g_gui_mgr.new_project(dlg.get_ctrl_type(), dlg.get_filename());
+					// crea file di progetto
+					save_xml(prj_name);
+				}
 			}
-			else if(arg.button == 1)
+			else if(arg.button == TB_LOAD) // load project
 			{
+				// confirmation message
+				if(prj_name != "")
+				{
+					nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
+					m.icon(m.icon_warning);
+					m << "Do you want to save the current project?";
+					auto ret = m();
+					if(ret == nana::msgbox::pick_cancel)
+						return;
+					else if(ret == nana::msgbox::pick_yes)
+						save_xml(prj_name);
+				}
+
+				g_gui_mgr.clear();
+				prj_name = "";
+
 				filebox fb(*this, true);
 				fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 				fb.add_filter("All Files (*.*)", "*.*");
 
 				if(fb())
 				{
-					//TODO: messaggio di conferma
-					g_gui_mgr.clear();
-
-					std::cout << "Load file: " << fb.file() << std::endl;
-					load_xml(fb.file());
 					prj_name = fb.file();
+					load_xml(prj_name);
 				}
 			}
-			else if(arg.button == 2)
+			else if(arg.button == TB_SAVE) // save project
 			{
+				if(prj_name == "")
+					return;
+
+				save_xml(prj_name);
+			}
+			else if(arg.button == TB_SAVE_AS) // save project as
+			{
+				if(prj_name == "")
+					return;
+
 				filebox fb(*this, false);
 				fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 				fb.init_file(prj_name);
 
 				if(fb())
 				{
-					std::cout << "Save file: " << fb.file() << std::endl;
-					save_xml(fb.file());
+					prj_name = fb.file();
+					save_xml(prj_name);
 				}
 			}
-			else if(arg.button == 4)
+			else if(arg.button == TB_GENERATE) // generate code
 			{
+				if(prj_name == "")
+					return;
+
 				generate_cpp();
 			}
-			else if(arg.button == 6)
+			else if(arg.button == TB_DELETE) // delete current selection
 			{
-				// delete current selection
 				g_gui_mgr.deleteselected();
 			}
-			else if(arg.button == 8)
+			else if(arg.button == TB_UP) // move up current selection
 			{
-				// move up current selection
 				g_gui_mgr.moveupselected();
 			}
-			else if(arg.button == 9)
+			else if(arg.button == TB_DOWN) // move down current selection
 			{
-				// move down current selection
 				g_gui_mgr.movedownselected();
 			}
-			else if(arg.button == 11)
+			else if(arg.button == TB_CUT) // cut current selection
 			{
-				// cut current selection
 				g_gui_mgr.cutselected();
 			}
-			else if(arg.button == 12)
+			else if(arg.button == TB_COPY) // copy current selection
 			{
-				// copy current selection
 				g_gui_mgr.copyselected();
 			}
-			else if(arg.button == 13)
+			else if(arg.button == TB_PASTE) // paste into/after current selection
 			{
-				// paste into/after current selection
 				g_gui_mgr.pasteselected();
 			}
 		});
@@ -246,7 +293,7 @@ private:
 
 
 		g_gui_mgr.root_wd(*this);
-		g_gui_mgr.init(&_properties, &_assets, &_objects, &_canvas, &_statusbar);
+		g_gui_mgr.init(&_properties, &_assets, &_objects, &_canvas, &_toolbar, &_statusbar);
 	}
 
 

@@ -25,7 +25,7 @@ namespace ctrls
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("tip_string").label("Tip").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("line_wrapped").label("Line Wrapped").category(CAT_COMMON).type(pg_type::check) = txt.line_wrapped();
-		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = txt.multi_lines();
+		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = false; // txt.multi_lines();
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = txt.editable();
 		// appearance
 		properties.property("bgcolor") = nana::to_string(txt.bgcolor(), false);
@@ -58,9 +58,12 @@ namespace ctrls
 		cd->decl.push_back("nana::textbox " + name + ";");
 		// init
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
-		cd->init.push_back(name + ".tip_string(\"" + properties.property("tip_string").as_string() + "\");");
-		cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
-		cd->init.push_back(name + ".line_wrapped(" + properties.property("line_wrapped").as_string() + ");");
+		if(properties.property("tip_string").as_string() != "")
+			cd->init.push_back(name + ".tip_string(\"" + properties.property("tip_string").as_string() + "\");");
+		if(!properties.property("editable").as_bool())
+			cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
+		if(properties.property("line_wrapped").as_bool())
+			cd->init.push_back(name + ".line_wrapped(" + properties.property("line_wrapped").as_string() + ");");
 		cd->init.push_back(name + ".multi_lines(" + properties.property("multi_lines").as_string() + ");");
 	}
 
