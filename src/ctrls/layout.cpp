@@ -126,7 +126,7 @@ namespace ctrls
 		{
 			cd->init.push_back(name + "_place.bind(" + ci->create + ");");
 		}
-		cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv() + "\");");
+		cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv(true) + "\");");
 		// placement
 		if (!ci->place.empty())
 			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + "_panel;");

@@ -167,11 +167,11 @@
     <ClCompile Include="..\..\src\filemanager.cpp" />
     <ClCompile Include="..\..\src\guimanager.cpp" />
     <ClCompile Include="..\..\src\imagemanager.cpp" />
+    <ClCompile Include="..\..\src\inifile.cpp" />
     <ClCompile Include="..\..\src\items_dialog.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\namemanager.cpp" />
     <ClCompile Include="..\..\src\nana_extra\color_helper.cpp" />
-    <ClCompile Include="..\..\src\nana_extra\folderbox.cpp" />
     <ClCompile Include="..\..\src\nana_extra\propgrid_items.cpp" />
     <ClCompile Include="..\..\src\nana_extra\propgrid.cpp" />
     <ClCompile Include="..\..\src\new_project.cpp" />
@@ -215,11 +215,11 @@
     <ClInclude Include="..\..\src\filemanager.h" />
     <ClInclude Include="..\..\src\guimanager.h" />
     <ClInclude Include="..\..\src\imagemanager.h" />
+    <ClInclude Include="..\..\src\inifile.h" />
     <ClInclude Include="..\..\src\items_dialog.h" />
     <ClInclude Include="..\..\src\lock_guard.h" />
     <ClInclude Include="..\..\src\namemanager.h" />
     <ClInclude Include="..\..\src\nana_extra\color_helper.h" />
-    <ClInclude Include="..\..\src\nana_extra\folderbox.h" />
     <ClInclude Include="..\..\src\nana_extra\propgrid_items.h" />
     <ClInclude Include="..\..\src\nana_extra\propgrid.h" />
     <ClInclude Include="..\..\src\new_project.h" />

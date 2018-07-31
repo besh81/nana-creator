@@ -104,7 +104,8 @@ public:
 	}
 
 
-	void clickctrl(control_obj ctrl);
+	void left_click_ctrl(control_obj ctrl);
+	bool right_click_ctrl(control_obj ctrl);
 	void clickobjectspanel(const std::string& name);
 
 

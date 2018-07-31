@@ -38,7 +38,7 @@ namespace ctrls
 
 		void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin);
 
-		std::string getdiv();
+		std::string getdiv(bool reset_fields_num = false);
 
 		bool children() { return !_children.empty(); }
 		bool append(nana::window ctrl);

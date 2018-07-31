@@ -150,9 +150,6 @@
     <ClCompile Include="..\..\src\items_dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\nana_extra\folderbox.cpp">
-      <Filter>Source Files\nana_extra</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\filemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -163,6 +160,9 @@
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\new_project.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\inifile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -296,9 +296,6 @@
     <ClInclude Include="..\..\src\items_dialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\nana_extra\folderbox.h">
-      <Filter>Header Files\nana_extra</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\filemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -309,6 +306,9 @@
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\new_project.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\inifile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

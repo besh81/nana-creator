@@ -26,8 +26,10 @@ namespace ctrls
 
 		// common
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = CTRL_GROUP;
+		properties.append("format").label("Format").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
 		properties.property("bgcolor") = nana::to_string(grp.bgcolor(), false);
+		properties.append("halign").label("Caption Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
 		// layout
 		properties.remove("weight");
 		properties.remove("margin");
@@ -42,13 +44,43 @@ namespace ctrls
 	{
 		ctrl::update();
 
-		grp.caption(properties.property("caption").as_string());
+		// format and caption
+		if(properties.property("format").as_bool())
+		{
+			try
+			{
+				grp.caption(properties.property("caption").as_string());
+				grp.enable_format_caption(true);
+			}
+			catch(...)
+			{
+				nana::msgbox m(0, CREATOR_NAME, nana::msgbox::ok);
+				m.icon(m.icon_warning);
+				m << "Errore formato!"; //TODO
+				m();
+
+				grp.enable_format_caption(false);
+				grp.caption(properties.property("caption").as_string());
+			}
+		}
+		else
+		{
+			grp.enable_format_caption(false);
+			grp.caption(properties.property("caption").as_string());
+		}
+
+
+		grp.caption_align(static_cast<nana::align>(properties.property("halign").as_int()));
+
 
 		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
 		boxmodel.padding(properties.property("padding").as_int());
 		boxmodel.update();
 
 		grp.collocate();
+
+		// needed to correctly redraw the group control when the caption change
+		nana::API::refresh_window(grp);
 	}
 
 
@@ -63,12 +95,15 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::group " + name + ";");
 		// init
-
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");  //BUG: if positioned after: the group caption is not displayed correctly !!!
+		if(properties.property("format").as_bool())
+			cd->init.push_back(name + ".enable_format_caption(" + properties.property("format").as_string() + ");");
+		if(properties.property("format").as_string() != "left")
+			cd->init.push_back(name + ".caption_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "));");
 		if(children())
-			cd->init.push_back(name + ".div(\"" + boxmodel.getdiv() + "\");");
+			cd->init.push_back(name + ".div(\"" + boxmodel.getdiv(true) + "\");");
 
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");

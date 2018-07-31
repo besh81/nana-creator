@@ -32,6 +32,7 @@ namespace ctrls
 
 		bool children();
 		bool append(nana::window child);
+		bool insert(nana::window pos, nana::window ctrl, bool after = true);
 		bool remove(nana::window child);
 
 		bool moveup(nana::window child);

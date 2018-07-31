@@ -135,12 +135,10 @@ void guimanager::enableGUI(bool state)
 {
 	nana::API::enum_widgets(*_ap, true, [state](nana::widget &w)
 	{
-		std::cout << typeid(w).name() << std::endl;
 		w.enabled(state);
 	});
 	nana::API::enum_widgets(*_pp, true, [state](nana::widget &w)
 	{
-		std::cout << typeid(w).name() << std::endl;
 		w.enabled(state);
 	});
 
@@ -228,9 +226,15 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 
 	// mouse click
 	ctrl->nanawdg->events().mouse_down(nana::menu_popuper(_ctxmenu));
-	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl]()
+	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl](const nana::arg_mouse& arg)
 	{
-		clickctrl(pctrl.lock());
+		if(arg.left_button)
+			left_click_ctrl(pctrl.lock());
+		else if(arg.right_button)
+		{
+			if(!right_click_ctrl(pctrl.lock()))
+				arg.stop_propagation();
+		}
 	});
 
 	nana::drawing dw{ *ctrl->nanawdg };
@@ -409,9 +413,15 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 
 	// mouse click
 	ctrl->nanawdg->events().mouse_down(nana::menu_popuper(_ctxmenu));
-	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl]()
+	ctrl->nanawdg->events().mouse_down.connect_front([this, pctrl](const nana::arg_mouse& arg)
 	{
-		clickctrl(pctrl.lock());
+		if(arg.left_button)
+			left_click_ctrl(pctrl.lock());
+		else if(arg.right_button)
+		{
+			if(!right_click_ctrl(pctrl.lock()))
+				arg.stop_propagation();
+		}
 	});
 
 
@@ -496,7 +506,7 @@ void guimanager::deleteselected()
 	if(parent)
 	{
 		nana::API::refresh_window(*parent->value->nanawdg);
-		clickctrl(parent->value);
+		left_click_ctrl(parent->value);
 	}
 }
 
@@ -607,11 +617,11 @@ void guimanager::pasteselected()
 
 
 	// select previous ctrl
-	clickctrl(prev_selected->value);
+	left_click_ctrl(prev_selected->value);
 }
 
 
-void guimanager::clickctrl(control_obj ctrl)
+void guimanager::left_click_ctrl(control_obj ctrl)
 {
 	// search control
 	tree_node<control_obj>*	_ctrl_node{ 0 };
@@ -672,6 +682,57 @@ void guimanager::clickctrl(control_obj ctrl)
 	add_pos.pos = _insert_pos;
 
 	addcommonctrl(add_pos, cursor().type);
+}
+
+
+bool guimanager::right_click_ctrl(control_obj ctrl)
+{
+	// search control
+	tree_node<control_obj>*	_ctrl_node{ 0 };
+
+	_ctrls.for_each([this, &ctrl, &_ctrl_node](tree_node<control_obj>* node) -> bool
+	{
+		if(node->value == ctrl)
+		{
+			_ctrl_node = node;
+			return false;
+		}
+
+		return true;
+	});
+
+	if(!_ctrl_node)
+		return false;
+
+
+	// reset add action
+	//---------------------
+	if(cursor().action == cursor_action::add)
+	{
+		// deselect previous ctrl
+		_ap->deselect();
+
+		// reset ctrl highlight
+		ctrl->reset_highlight();
+		nana::API::refresh_window(*ctrl->nanawdg);
+
+		// reset parent ctrl highlight
+		auto _ctrl_node_parent = _ctrl_node->owner;
+		if(_ctrl_node_parent)
+		{
+			if(_ctrl_node_parent->value)
+			{
+				_ctrl_node_parent->value->reset_highlight();
+				nana::API::refresh_window(*_ctrl_node_parent->value->nanawdg);
+			}
+		}
+
+		// reset mouse cursor
+		cursor(cursor_state{ cursor_action::select });
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -747,7 +808,7 @@ bool guimanager::deserialize(pugi::xml_node* xml_parent)
 		_ctrls.get_root()->child->value->nanawdg->show();
 
 		// select main panel
-		clickctrl(_ctrls.get_root()->child->value);
+		left_click_ctrl(_ctrls.get_root()->child->value);
 	}
 	return true;
 }

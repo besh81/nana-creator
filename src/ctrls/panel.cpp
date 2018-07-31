@@ -142,7 +142,7 @@ namespace ctrls
 			if(children())
 			{
 				cd->init.push_back(name + "_place.bind(" + name + ");");
-				cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv() + "\");");
+				cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv(true) + "\");");
 			}
 
 			if(!properties.property("enabled").as_bool())
@@ -152,7 +152,7 @@ namespace ctrls
 		}
 		else
 		{
-			cd->init.push_back("_place.div(\"" + boxmodel.getdiv() + "\");");
+			cd->init.push_back("_place.div(\"" + boxmodel.getdiv(true) + "\");");
 			
 			if(!properties.property("enabled").as_bool())
 				cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");

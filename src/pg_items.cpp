@@ -8,7 +8,6 @@
 #include "config.h"
 #include "pg_items.h"
 #include <nana/gui/filebox.hpp>
-#include "nana_extra/folderbox.h"
 #include "items_dialog.h"
 #include "filemanager.h"
 #include "lock_guard.h"
@@ -81,14 +80,13 @@ void pg_folder::create(nana::window wd)
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
-		nana::folderbox fb(arg.window_handle);
+		nana::folderbox folder_picker(arg.window_handle, equalize_path(value_, '/', '\\'));
 
-		fb.init_path(value_);
-
-		if(fb())
+		auto path = folder_picker.show();
+		if(path)
 		{
-			value_ = fb.path();
-			txt_.caption(equalize_path(fb.path()));
+			value_ = path.value().string();
+			txt_.caption(equalize_path(value_));
 			emit_event();
 		}
 	});

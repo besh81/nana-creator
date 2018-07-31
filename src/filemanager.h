@@ -52,9 +52,9 @@ private:
 
 
 //---------------------------------------------
-// equalize path characters (tolower) and slashs('/')
+// equalize path characters (tolower) and and dir separators
 //---------------------------------------------
-std::string equalize_path(const std::string& path);
+std::string equalize_path(const std::string& path, char div_from = '\\', char div_to = '/');
 
 
 //---------------------------------------------
@@ -62,6 +62,12 @@ std::string equalize_path(const std::string& path);
 // absolute path (abspath), returns the relative path
 //---------------------------------------------
 std::string get_relative_path(const std::string& basedir, const std::string& abspath);
+
+
+//---------------------------------------------
+// extract the dir path from the given filename
+//---------------------------------------------
+std::string get_dir_path(const std::string& filename);
 
 
 //---------------------------------------------

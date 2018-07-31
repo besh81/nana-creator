@@ -241,3 +241,4 @@ nana_creator.VC.db
 wdir/*.h
 wdir/*.ncp
 wdir/icons/*.db
+wdir/nc.ini

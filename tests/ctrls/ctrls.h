@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.9.0)
+ *	C++ code generated with Nana Creator (0.11.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -8,6 +8,8 @@
  *		//*>
 *****************************************************/
 
+#ifndef CTRLS_H
+#define CTRLS_H
 
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
@@ -70,8 +72,6 @@ private:
 		label1.create(layout1_panel);
 		layout1_place["field1"] << label1;
 		label1.caption("Nana-Creator test controls");
-		label1.format(false);
-		label1.transparent(false);
 		label1.text_align(static_cast<nana::align>(1), static_cast<nana::align_v>(1));
 		// button1
 		button1.create(layout1_panel);
@@ -128,7 +128,9 @@ private:
 		combox1.editable(false);
 		// group1
 		group1.create(layout1_panel);
-		group1.caption("Group");
+		group1.caption("Group <bold>right</>");
+		group1.enable_format_caption(true);
+		group1.caption_align(static_cast<nana::align>(2));
 		group1.bgcolor(nana::color(201,197,190));
 		group1.fgcolor(nana::color(0,0,0));
 		layout1_place["field7"] << group1;
@@ -172,9 +174,6 @@ private:
 		textbox1.bgcolor(nana::color(255,255,255));
 		textbox1.fgcolor(nana::color(0,0,0));
 		textbox1.caption("");
-		textbox1.tip_string("");
-		textbox1.editable(true);
-		textbox1.line_wrapped(false);
 		textbox1.multi_lines(true);
 		// panel1
 		panel1.create(*this);
@@ -254,4 +253,6 @@ protected:
 
 	//*>
 };
+
+#endif //CTRLS_H
 

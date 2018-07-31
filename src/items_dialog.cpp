@@ -513,7 +513,7 @@ void items_dialog::init()
 			fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
 			fb.add_filter("All Files", "*.*");
 
-			fb.init_file(img_txt.caption());
+			fb.init_file(_selected->img);
 
 			if(fb())
 			{

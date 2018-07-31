@@ -34,21 +34,24 @@ std::string filemanager::to_relative(const std::string& abspath)
 }
 
 
-// equalize path characters (tolower) and slashs('/')
-std::string equalize_path(const std::string& path)
+// equalize path characters (tolower) and dir separators
+std::string equalize_path(const std::string& path, char div_from, char div_to)
 {
 	std::string p = path;
+
+	// tolower
 #if defined(NANA_WINDOWS)
 	std::transform(p.begin(), p.end(), p.begin(),
 		[](unsigned char c) { return std::tolower(c); }
 	);
 #endif
 
-	auto found = p.find('\\');
+	// change dir separator
+	auto found = p.find(div_from);
 	while(found != std::string::npos)
 	{
-		p[found] = '/';
-		found = p.find('\\', found + 1);
+		p[found] = div_to;
+		found = p.find(div_from, found + 1);
 	}
 
 	return p;
@@ -122,6 +125,29 @@ std::string get_relative_path(const std::string& basedir, const std::string& abs
 	// copy the rest of the filename into the result string
 	relpath.append(abspath.substr(marker));
 	return relpath;
+}
+
+
+// Given a file path returns the dir path
+// Eg.: if file path is c:\aaa\ccc\file.txt will return c:\aaa\ccc
+std::string get_dir_path(const std::string& filename)
+{
+	// make sure the names are not too long or too short
+	if(filename.empty())
+		return "";
+
+	// find out the last dir
+	int marker = 0;
+	for(int i = 0; i < filename.size(); i++)
+	{
+		if(filename[i] == '/')
+			marker = i;
+	}
+
+	if(marker == 0)
+		return "";
+
+	return filename.substr(0, marker);
 }
 
 

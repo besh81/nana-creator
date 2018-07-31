@@ -53,8 +53,7 @@ bool codegenerator::generate(nana::window wd, tree_node<control_obj>* node, cons
 	}
 
 	// check file
-	struct stat buf;
-	if(stat(_filename.c_str(), &buf) == -1)
+	if(!file_exists(_filename))
 	{
 		// file doesn't exist -> create a new one
 		create_file = true;

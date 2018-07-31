@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.9.0">
+<nana-creator version="0.11.0">
 	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" bgcolor="[inherited],128,128,128" fgcolor="[inherited],0,0,0" caption="Nana-Creator Test" width="650" height="550" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="0" padding="5">
 		<layout type="layout" name="layout1" layout="1" weight="-1" margin="0" padding="5">
 			<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" caption="Nana-Creator test controls" format="false" transparent="false" halign="1" valign="1" />
@@ -11,7 +11,7 @@
 				<checkbox type="checkbox" name="checkbox3" enabled="true" bgcolor="112,255,20" fgcolor="0,0,0" weight="-1" margin="0" caption="radio 2" check="false" group="radio" radio="true" />
 			</panel>
 			<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" weight="30" margin="3" options="A&#13;&#10;B&#13;&#10;C&#13;" option="0" editable="false" />
-			<group type="group" name="group1" enabled="true" bgcolor="201,197,190" fgcolor="0,0,0" caption="Group" layout="0" weight="-1" margin="0" padding="5" />
+			<group type="group" name="group1" enabled="true" bgcolor="201,197,190" fgcolor="0,0,0" caption="Group &lt;bold&gt;right&lt;/&gt;" format="true" halign="2" layout="0" weight="-1" margin="0" padding="5" />
 			<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="-1" margin="0" source="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save.png" transparent="false" halign="0" valign="0" stretchable="false" />
 			<progress type="progress" name="progress1" enabled="true" bgcolor="212,208,200" fgcolor="16,117,21" weight="30" margin="3" value="60" unknown="false" />
 			<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="30" margin="3" value="2" maximum="10" seek="0" vertical="false" transparent="false" />

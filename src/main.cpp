@@ -17,6 +17,7 @@
 #include "guimanager.h"
 #include "imagemanager.h"
 #include "filemanager.h"
+#include "inifile.h"
 #include "codegenerator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
@@ -33,6 +34,7 @@ using namespace nana;
 guimanager		g_gui_mgr;	// manage all the gui elements
 imagemanager	g_img_mgr;
 filemanager		g_file_mgr;	// manage absolute and relative path
+inifile			g_inifile;
 std::string		prj_name;
 
 
@@ -44,7 +46,7 @@ public:
 	{
 		caption(CREATOR_NAME " " CREATOR_VERSION);
 
-		_place.div("vertical <weight=30 toolbar><<weight=20% vertical <assets>|<objects>>|<weight=55% canvas>|<props>><weight=24 statusbar>");
+		_place.div("vertical <weight=30 toolbar><<weight=20% vertical <assets>|<objects>>|<weight=55% canvas>|<props>><weight=24 margin=3 statusbar>");
 
 		_init_ctrls();
 
@@ -209,8 +211,16 @@ private:
 				fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 				fb.add_filter("All Files (*.*)", "*.*");
 
+				fb.init_path(g_inifile.load_project_dir());
+
 				if(fb())
 				{
+					// save load project folder
+					//funzione per estrarre la dir da un path
+					auto path = get_dir_path(equalize_path(fb.file()));
+					if(path != g_inifile.load_project_dir())
+						g_inifile.load_project_dir(path, true);
+
 					prj_name = fb.file();
 					load_xml(prj_name);
 				}

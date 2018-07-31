@@ -112,7 +112,7 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::place _place{ *this };");
 		// init
-		cd->init.push_back("_place.div(\"" + boxmodel.getdiv() + "\");");
+		cd->init.push_back("_place.div(\"" + boxmodel.getdiv(true) + "\");");
 		cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
 		cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
 		generatecode_colors(cd, ci);
@@ -140,6 +140,12 @@ namespace ctrls
 	bool form::append(nana::window child)
 	{
 		return boxmodel.append(child);
+	}
+
+
+	bool form::insert(nana::window pos, nana::window ctrl, bool after)
+	{
+		return boxmodel.insert(pos, ctrl, after);
 	}
 
 

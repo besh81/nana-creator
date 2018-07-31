@@ -10,7 +10,13 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.10.0"
+#define CREATOR_VERSION			"0.11.0"
+
+
+
+ // ini file
+ //--------------------------------------------------------
+#define INI_FILE				"nc.ini"
 
 
 

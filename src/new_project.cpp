@@ -7,12 +7,14 @@
 
 #include "config.h"
 #include "new_project.h"
+#include <nana/gui/filebox.hpp>
 #include "imagemanager.h"
-#include "nana_extra/folderbox.h"
 #include "filemanager.h"
+#include "inifile.h"
 
 
 extern imagemanager		g_img_mgr;
+extern inifile			g_inifile;
 
 
  //items_dialog
@@ -20,8 +22,12 @@ void new_project::init()
 {
 	// type list
 	auto cat = type_lst.at(0);
-	cat.append(CTRL_FORM).icon(nana::paint::image(g_img_mgr.path(CTRL_FORM)));
+	cat.append(CTRL_FORM).select(true).icon(nana::paint::image(g_img_mgr.path(CTRL_FORM)));
 	cat.append(CTRL_PANEL).icon(nana::paint::image(g_img_mgr.path(CTRL_PANEL)));
+
+
+	// folder textbox
+	folder_txt.caption(g_inifile.new_project_dir());
 
 
 
@@ -50,13 +56,17 @@ void new_project::init()
 	// folder button
 	folder_btn.events().click([this]()
 	{
-		nana::folderbox fb(*this);
+		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption(), '/', '\\'));
 
-		fb.init_path(folder_txt.caption());
-
-		if(fb())
+		auto path = folder_picker.show();
+		if(path)
 		{
-			folder_txt.caption(equalize_path(fb.path()));
+			//folder_txt.caption(equalize_path(fb.path()));
+			folder_txt.caption(path.value().string());
+
+			// save new project folder
+			if(folder_txt.caption() != g_inifile.new_project_dir())
+				g_inifile.new_project_dir(folder_txt.caption(), true);
 		}
 	});
 

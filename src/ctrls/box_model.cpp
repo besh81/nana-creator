@@ -190,12 +190,13 @@ namespace ctrls
 	}
 
 
-	std::string box_model::getdiv()
+	std::string box_model::getdiv(bool reset_fields_num)
 	{
 		std::string div;
 		div.append(_orientation_str);
 		div.append(_padding_str);
 		//
+		int new_num = 1;
 		for(auto f : _children)
 		{
 			div.append("<");
@@ -204,7 +205,12 @@ namespace ctrls
 			if(!f.first.margin.empty())
 				if(f.first.margin != "0")
 					div.append("margin=" + f.first.margin + " ");
-			div.append(f.first.name);
+
+			if(reset_fields_num)
+				div.append("field" + std::to_string(new_num++));
+			else
+				div.append(f.first.name);
+
 			div.append(">");
 		}
 
