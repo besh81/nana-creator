@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include "ctrls/field.h"
 #include "ctrls/panel.h"
 #include "ctrls/button.h"
 #include "ctrls/label.h"
@@ -25,6 +26,7 @@
 #include "ctrls/slider.h"
 #include "ctrls/tabbar.h"
 #include "ctrls/treebox.h"
+#include "ctrls/spacer.h"
 #include "guimanager.h"
 #include "lock_guard.h"
 #include "style.h"
@@ -175,7 +177,7 @@ void guimanager::cursor(cursor_state state)
 }
 
 
-void guimanager::new_project(const std::string& type, const std::string& filename)
+void guimanager::new_project(const std::string& type)
 {
 	if(!addmainctrl(type))
 		return;
@@ -252,10 +254,32 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 }
 
 
+bool guimanager::_check_siblings(control_obj parent, const std::string& type)
+{
+	if(!parent->children())
+		return true;
+
+	if(type == CTRL_FIELD || type == CTRL_GRID)
+	{
+		if(parent->children_fields())
+			return true;
+	}
+	else
+	{
+		if(!parent->children_fields())
+			return true;
+	}
+
+	return false;
+}
+
+
 control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type, const std::string& name)
 {
-	if(type == CTRL_LAYOUT)
-		return control_obj(new ctrls::layout(*parent->nanawdg, name));
+	if(type == CTRL_FIELD)
+		return control_obj(new ctrls::field(*parent->nanawdg, name));
+	else if(type == CTRL_GRID)
+		return control_obj(new ctrls::field(*parent->nanawdg, name, true));
 	else if(type == CTRL_PANEL)
 		return control_obj(new ctrls::panel(*parent->nanawdg, name));
 	else if(type == CTRL_GROUP)
@@ -292,6 +316,8 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 		return control_obj(new ctrls::tabbar(*parent->nanawdg, name));
 	else if(type == CTRL_TREEBOX)
 		return control_obj(new ctrls::treebox(*parent->nanawdg, name));
+	else if(type == CTRL_SPACER)
+		return control_obj(new ctrls::spacer(*parent->nanawdg, name));
 	
 	return 0;
 }
@@ -300,6 +326,12 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const std::string& type, const std::string& name)
 {
 	control_obj parent_ = (add_pos.pos == insert_position::into) ? add_pos.ctrl->value : add_pos.ctrl->owner->value;
+
+
+	// check siblings type
+	if(!_check_siblings(parent_, type))
+		return 0;
+
 
 	std::string name_ = name.empty() ? _name_mgr.add_numbered(type) : name;
 
@@ -321,7 +353,7 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 	control_obj_ptr pparent = parent_;
 
 	// mouse enter
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_PANEL || type == CTRL_GROUP)
 	{
 		ctrl->nanawdg->events().mouse_enter([this, pctrl]()
 		{
@@ -351,7 +383,7 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 	}
 
 	// mouse leave
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_PANEL || type == CTRL_GROUP)
 	{
 		ctrl->nanawdg->events().mouse_leave([this, pctrl]()
 		{
@@ -381,7 +413,7 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 	}
 
 	// mouse move
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_PANEL || type == CTRL_GROUP)
 	{
 		// do nothing !
 	}
@@ -427,7 +459,7 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 
 	// drawing
 	nana::drawing dw{ *ctrl->nanawdg }; 
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_PANEL || type == CTRL_GROUP)
 	{
 		dw.draw([this, pctrl](nana::paint::graphics& graph)
 		{
@@ -582,7 +614,7 @@ void guimanager::pasteselected()
 	auto prev_selected = _selected;
 
 	auto type = prev_selected->value->properties.property("type").as_string();
-	if(type == CTRL_LAYOUT || type == CTRL_PANEL || type == CTRL_GROUP || type == CTRL_FORM)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_PANEL || type == CTRL_GROUP || type == CTRL_FORM)
 	{
 		// do nothing !!!
 	}
@@ -681,7 +713,9 @@ void guimanager::left_click_ctrl(control_obj ctrl)
 	add_pos.ctrl = _ctrl_node;
 	add_pos.pos = _insert_pos;
 
-	addcommonctrl(add_pos, cursor().type);
+	if(!addcommonctrl(add_pos, cursor().type))
+		// reset mouse cursor
+		cursor(cursor_state{ cursor_action::select });
 }
 
 
@@ -923,8 +957,10 @@ void guimanager::_deserializeproperties(ctrls::properties_collection* properties
 }
 
 
-bool guimanager::_updatectrlname(ctrls::properties_collection* properties, const std::string& new_name)
+bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string& new_name)
 {
+	ctrls::properties_collection* properties = &_selected->value->properties;
+
 	if(properties->property("name").as_string() == new_name)
 		return false;
 
@@ -938,6 +974,10 @@ bool guimanager::_updatectrlname(ctrls::properties_collection* properties, const
 
 	// update objects panel
 	_update_op();
+
+	// update parent ctrl
+	if(node->owner)
+		_updateparentctrl(node);
 
 	return true;
 }
@@ -966,14 +1006,10 @@ void guimanager::_updateparentctrl(tree_node<control_obj>* node)
 	if(!node->owner)
 		return;
 
-	std::string weight = ctrl->properties.property("weight").as_string();
-	if(weight[0] == '-')
-		weight = "";
-
-	std::string margin = ctrl->properties.property("margin").as_string();
-
 	auto parent = node->owner->value;
-	parent->updatefield(*ctrl->nanawdg, weight, margin);
+	parent->update_children_info(*ctrl->nanawdg, ctrl->get_divtext(), ctrl->get_weight());
+
+	_updateparentctrl(node->owner);
 }
 
 

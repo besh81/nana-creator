@@ -48,18 +48,16 @@ namespace ctrls
 		// ...
 		// layout
 		properties.remove("weight");
-		properties.remove("margin");
 		if(_mainclass)
 		{
 			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-			properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 		}
 		else
 		{
 			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-			properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
-			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
-			properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+			properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_weight) = -1;
+			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 		}
 	}
 
@@ -95,8 +93,8 @@ namespace ctrls
 		}
 
 
-		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
-		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), "", 
+			properties.property("margin").as_string());
 		boxmodel.update();
 	}
 
@@ -131,6 +129,7 @@ namespace ctrls
 		}
 		else
 		{
+			// mainclass
 			cd->decl.push_back("nana::place _place{ *this };");
 		}
 		// init
@@ -142,7 +141,7 @@ namespace ctrls
 			if(children())
 			{
 				cd->init.push_back(name + "_place.bind(" + name + ");");
-				cd->init.push_back(name + "_place.div(\"" + boxmodel.getdiv(true) + "\");");
+				cd->init.push_back(name + "_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 			}
 
 			if(!properties.property("enabled").as_bool())
@@ -152,7 +151,8 @@ namespace ctrls
 		}
 		else
 		{
-			cd->init.push_back("_place.div(\"" + boxmodel.getdiv(true) + "\");");
+			// mainclass
+			cd->init.push_back("_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 			
 			if(!properties.property("enabled").as_bool())
 				cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
@@ -162,7 +162,7 @@ namespace ctrls
 		// placement
 		if(!_mainclass)
 		{
-			cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
+			cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		}
 		// collocate
 		if(!_mainclass)
@@ -172,6 +172,7 @@ namespace ctrls
 		}
 		else
 		{
+			// mainclass
 			cd->init_post.push_back("_place.collocate();");
 		}
 		// children
@@ -182,20 +183,28 @@ namespace ctrls
 		}
 		else
 		{
+			// mainclass
 			ci->place = "_place";
 		}
+		ci->field = DEFAULT_FIELD;
 	}
 
 
-	void panel::updatefield(nana::window ctrl, const std::string& weight, const std::string& margin)
+	void panel::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
 	{
-		boxmodel.updatefield(ctrl, weight, margin);
+		boxmodel.update_children_info(child, divtext, weight);
 	}
 
 
 	bool panel::children()
 	{
 		return boxmodel.children();
+	}
+
+
+	bool panel::children_fields()
+	{
+		return boxmodel.children_fields();
 	}
 	
 

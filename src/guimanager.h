@@ -13,7 +13,6 @@
 #include "pugixml/pugixml.hpp"
 #include "tree.h"
 #include "ctrls/ctrl.h"
-#include "ctrls/layout.h"
 #include "namemanager.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
@@ -74,7 +73,7 @@ public:
 	void cursor(cursor_state state);
 	cursor_state cursor() { return _cursor_state; }
 
-	void new_project(const std::string& type, const std::string& filename);
+	void new_project(const std::string& type);
 
 	tree_node<control_obj>* addmainctrl(const std::string& type, const std::string& name = "");
 	tree_node<control_obj>* addcommonctrl(add_position add_pos, const std::string& type, const std::string& name = "");
@@ -96,7 +95,7 @@ public:
 
 	void updateselectedname(const std::string& name)
 	{
-		_updatectrlname(&_selected->value->properties, name);
+		_updatectrlname(_selected, name);
 	}
 	void updateselected()
 	{
@@ -114,6 +113,7 @@ public:
 	
 
 private:
+	bool _check_siblings(control_obj parent, const std::string& type);
 	control_obj _create_ctrl(control_obj parent, const std::string& type, const std::string& name);
 
 	tree_node<control_obj>* _registerobject(control_obj ctrl, add_position add_pos);
@@ -122,7 +122,7 @@ private:
 	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
 	void _deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node);
 
-	bool _updatectrlname(ctrls::properties_collection* properties, const std::string& new_name);
+	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
 	void _updateparentctrl(tree_node<control_obj>* node);
 	void _updatechildrenctrls(tree_node<control_obj>* node);

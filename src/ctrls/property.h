@@ -29,6 +29,7 @@ namespace ctrls
 		layout,
 		seekdir,
 		string_uint_0_100,
+		string_uint_1_100,
 		filename,
 		filename_img,
 		folder,
@@ -37,7 +38,8 @@ namespace ctrls
 		collection_listbox,
 		collection_tabbar,
 		collection_menubar,
-		collection_categorize
+		collection_categorize,
+		string_weight
 	};
 
 	struct property_t

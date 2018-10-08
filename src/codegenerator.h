@@ -37,7 +37,7 @@ protected:
 
 	bool _write_file();
 
-	void _generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, int field);
+	void _generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, const std::string& field);
 
 
 	//

@@ -77,4 +77,28 @@ protected:
 	ctrls::pg_type type_;
 };
 
+
+/// class pg_layout_weight
+class pg_layout_weight
+	: public nana::pg_string_int
+{
+public:
+	pg_layout_weight() = default;
+
+	pg_layout_weight(const std::string& label, const std::string& value)
+		: pg_string_int(label, value)
+	{}
+
+	virtual void value(const std::string& value) override;
+	virtual std::string value() const override;
+
+protected:
+	virtual void create(nana::window wd) override;
+
+	virtual bool draw_value(nana::paint::graphics* graph, nana::rectangle rect, nana::color bgcolor, nana::color fgcolor) const override;
+
+	mutable ::nana::combox	cmb_;
+};
+
+
 #endif //NANA_CREATOR_PG_ITEMS_H

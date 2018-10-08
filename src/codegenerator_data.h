@@ -44,8 +44,7 @@ struct code_info_struct
 {
 	std::string create;
 	std::string place;
-
-	int field;
+	std::string field;
 };
 
 

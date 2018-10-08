@@ -6,70 +6,136 @@
  */
 
 #include "ctrls/box_model.h"
+#include "config.h"
 
 
 namespace ctrls
 {
 
 	//box_model
-	box_model::box_model(nana::window wd)
-	{
-		bind(wd);
-	}
-
-
 	void box_model::bind(nana::window wd)
 	{
 		_place.bind(wd);
-		_place.collocate();
 	}
 
 	void box_model::bind(nana::group* grp)
 	{
-		_p_grp = grp;
-		_p_grp->collocate();
+		_place.bind(grp);
 	}
 
 
 	void box_model::update()
 	{
-		if(_p_grp)
-		{
-			_p_grp->div(getdiv().c_str());
-			_p_grp->collocate();
-		}
-		else
-		{
-			_place.div(getdiv().c_str());
-			_place.collocate();
-		}
+		_place.div(get(DEFAULT_FIELD, false));
+		_place.collocate();
 	}
 
 
-	void box_model::orientation(layout_orientation orientation)
+	void box_model::set(layout_orientation orientation, const std::string& weight, const std::string& margin)
 	{
-		_orientation_str = (orientation == layout_orientation::vertical) ? "vert " : "";
+		_field_str = (orientation == layout_orientation::vertical) ? "vert " : "";
+		_is_grid = false;
+
+		if(!weight.empty())
+			if(weight[0] != '-')
+				_field_str.append("weight=" + weight + " ");
+
+		if(!margin.empty())
+			if(margin[0] != '0')
+				_field_str.append("margin=" + margin + " ");
 	}
 
 
-	void box_model::padding(int pixels)
+	void box_model::set(const std::string& cols, const std::string& rows, const std::string& margin, const std::string& gap)
 	{
-		// [css boxmodel]padding -> [nana]margin
-		if(pixels > 0)
-			_padding_str = "margin=" + std::to_string(pixels) + " ";
-		else
-			_padding_str = "";
+		if(cols.empty() || rows.empty())
+			return;
+
+		if(cols[0] == '0' || rows[0] == '0')
+			return;
+
+		_field_str = "grid=[" + cols + "," + rows + "] ";
+		_is_grid = true;
+
+		if(!margin.empty())
+			if(margin[0] != '0')
+				_field_str.append("margin=" + margin + " ");
+
+		if(!gap.empty())
+			if(gap[0] != '0')
+				_field_str.append("gap=" + gap + " ");
 	}
 
 
-	void box_model::updatefield(nana::window ctrl, const std::string& weight, const std::string& margin)
+	std::string box_model::get(const std::string& field, bool generate_code)
+	{
+		std::string divtext;
+
+		// children divtext
+		//-----------------------------
+		if(generate_code)
+		{
+			for(auto f : _children)
+			{
+				if(!f.first.divtext.empty())
+					divtext.append(f.first.divtext);
+			}
+		}
+
+		if(divtext.empty())
+		{
+			if(!_is_grid)
+			{
+				// arrange - children's weight
+				//-----------------------------
+				std::string arrange;
+				bool all_variable = true;
+
+				if(!_children.empty())
+				{
+					arrange = "arrange=[";
+					for(auto f : _children)
+					{
+						if(!f.first.weight.empty())
+						{
+							arrange.append(f.first.weight + ",");
+
+							if(f.first.weight[0] != 'v')
+								all_variable = false;
+						}
+					}
+					if(arrange[arrange.size() - 1] == ',')
+						arrange.pop_back();
+					arrange.append("] ");
+
+					// if all ctrls have variable weight -> arrange not needed
+					if(all_variable)
+						arrange = "";
+				}
+
+				divtext += arrange;
+			}
+
+			divtext += field;
+		}
+
+
+		return _field_str + divtext;
+	}
+
+
+	void box_model::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
 	{
 		for(auto& f : _children)
 		{
-			if(f.second == ctrl)
+			if(f.second == child)
 			{
-				f.first.weight = weight;
-				f.first.margin = margin;
+				f.first.divtext = divtext;
+
+				if(weight[0] == '-')
+					f.first.weight = "variable";
+				else
+					f.first.weight = weight;
 
 				update();
 				return;
@@ -78,48 +144,57 @@ namespace ctrls
 	}
 
 
+	bool box_model::children_fields()
+	{
+		if(!children())
+			return false;
+
+		std::string divtext;
+
+		for(auto f : _children)
+		{
+			if(!f.first.divtext.empty())
+				divtext.append(f.first.divtext);
+		}
+
+		return divtext.empty() ? false : true;
+	}
+	
+
 	bool box_model::append(nana::window ctrl)
 	{
-		field f;
-		f.name = _name_mgr.add_numbered("field");
+		_children.push_back(std::pair<child_info, nana::window>({}, ctrl));
 
-		_children.push_back(std::pair<field, nana::window>(f, ctrl));
+		_place.div(get(DEFAULT_FIELD, false));
+		_place[DEFAULT_FIELD] << ctrl;
 
-		if(_p_grp)
-		{
-			_p_grp->div(getdiv().c_str());
-			(*_p_grp)[f.name.c_str()] << ctrl;
-		}
-		else
-		{
-			_place.div(getdiv().c_str());
-			_place[f.name.c_str()] << ctrl;
-		}
+		_place.collocate();
 		return true;
 	}
 
 
 	bool box_model::insert(nana::window pos, nana::window ctrl, bool after)
 	{
-		field f;
-		f.name = _name_mgr.add_numbered("field");
-
 		for(auto i = _children.begin(); i < _children.end(); ++i)
 		{
 			if(i->second == pos)
 			{
-				_children.insert(after ? ++i : i, std::pair<field, nana::window>(f, ctrl));
+				if(after)
+					++i;
 
-				if(_p_grp)
-				{
-					_p_grp->div(getdiv().c_str());
-					(*_p_grp)[f.name.c_str()] << ctrl;
-				}
-				else
-				{
-					_place.div(getdiv().c_str());
-					_place[f.name.c_str()] << ctrl;
-				}
+				// remove from place all ctrls after i
+				for(auto r = i; r < _children.end(); ++r)
+					_place.erase(r->second);
+
+				i = _children.insert(i, std::pair<child_info, nana::window>({}, ctrl));
+
+				_place.div(get(DEFAULT_FIELD, false));
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << r->second;
+
+				_place.collocate();
 				return true;
 			}
 		}
@@ -130,16 +205,12 @@ namespace ctrls
 
 	bool box_model::remove(nana::window ctrl)
 	{
-		if(_p_grp)
-			_p_grp->erase(ctrl);
-		else
-			_place.erase(ctrl);
+		_place.erase(ctrl);
 
 		for(auto i = _children.begin(); i < _children.end(); ++i)
 		{
 			if(i->second == ctrl)
 			{
-				_name_mgr.remove(i->first.name);
 				_children.erase(i);
 
 				update();
@@ -162,6 +233,14 @@ namespace ctrls
 
 				std::iter_swap(i, i - 1);
 
+				// remove from place all ctrls after i-1
+				for(auto r = i-1; r < _children.end(); ++r)
+					_place.erase(r->second);
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i - 1; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << r->second;
+
 				update();
 				return true;
 			}
@@ -181,6 +260,14 @@ namespace ctrls
 
 				std::iter_swap(i, i + 1);
 
+				// remove from place all ctrls after i
+				for(auto r = i; r < _children.end(); ++r)
+					_place.erase(r->second);
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << r->second;
+
 				update();
 				return true;
 			}
@@ -189,32 +276,5 @@ namespace ctrls
 		return false;
 	}
 
-
-	std::string box_model::getdiv(bool reset_fields_num)
-	{
-		std::string div;
-		div.append(_orientation_str);
-		div.append(_padding_str);
-		//
-		int new_num = 1;
-		for(auto f : _children)
-		{
-			div.append("<");
-			if(!f.first.weight.empty())
-				div.append("weight=" + f.first.weight + " ");
-			if(!f.first.margin.empty())
-				if(f.first.margin != "0")
-					div.append("margin=" + f.first.margin + " ");
-
-			if(reset_fields_num)
-				div.append("field" + std::to_string(new_num++));
-			else
-				div.append(f.first.name);
-
-			div.append(">");
-		}
-
-		return div;
-	}
 
 }//end namespace ctrls

@@ -57,9 +57,6 @@
     <ClCompile Include="..\..\src\ctrls\label.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ctrls\layout.cpp">
-      <Filter>Source Files\ctrls</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ctrls\listbox.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
@@ -165,6 +162,12 @@
     <ClCompile Include="..\..\src\inifile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\spacer.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\field.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -186,9 +189,6 @@
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\label.h">
-      <Filter>Header Files\ctrls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ctrls\layout.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\listbox.h">
@@ -310,6 +310,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\inifile.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\spacer.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\field.h">
+      <Filter>Header Files\ctrls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

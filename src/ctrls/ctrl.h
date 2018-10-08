@@ -32,9 +32,12 @@ namespace ctrls
 		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
 		void generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name = "");
 
-		virtual void updatefield(nana::window ctrl, const std::string& weight, const std::string& margin) { return; }
+		virtual std::string get_divtext() { return ""; }
+		virtual std::string get_weight();
+		virtual void update_children_info(nana::window child, const std::string& divtext, const std::string& weight) { return; }
 
 		virtual bool children() { return false; }
+		virtual bool children_fields() { return false; }
 		virtual bool append(nana::window ctrl) { return false; }
 		virtual bool insert(nana::window pos, nana::window ctrl, bool after = true) { return false; }
 		virtual bool remove(nana::window ctrl) { return false; }

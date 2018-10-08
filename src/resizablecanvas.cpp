@@ -194,7 +194,6 @@ namespace drawerbase
 
 		void trigger::attached(widget_reference wdg, graph_reference graph)
 		{
-			wdg.caption(CTRL_LAYOUT);
 			window_ = wdg.handle();
 
 			::nana::API::ignore_mouse_focus(wdg, true);

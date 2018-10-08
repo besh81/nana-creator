@@ -148,10 +148,10 @@
     <ClCompile Include="..\..\src\ctrls\combox.cpp" />
     <ClCompile Include="..\..\src\ctrls\ctrl.cpp" />
     <ClCompile Include="..\..\src\ctrls\date_chooser.cpp" />
+    <ClCompile Include="..\..\src\ctrls\field.cpp" />
     <ClCompile Include="..\..\src\ctrls\form.cpp" />
     <ClCompile Include="..\..\src\ctrls\group.cpp" />
     <ClCompile Include="..\..\src\ctrls\label.cpp" />
-    <ClCompile Include="..\..\src\ctrls\layout.cpp" />
     <ClCompile Include="..\..\src\ctrls\listbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\menubar.cpp" />
     <ClCompile Include="..\..\src\ctrls\panel.cpp" />
@@ -159,6 +159,7 @@
     <ClCompile Include="..\..\src\ctrls\progress.cpp" />
     <ClCompile Include="..\..\src\ctrls\property.cpp" />
     <ClCompile Include="..\..\src\ctrls\slider.cpp" />
+    <ClCompile Include="..\..\src\ctrls\spacer.cpp" />
     <ClCompile Include="..\..\src\ctrls\spinbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\tabbar.cpp" />
     <ClCompile Include="..\..\src\ctrls\textbox.cpp" />
@@ -196,10 +197,10 @@
     <ClInclude Include="..\..\src\ctrls\combox.h" />
     <ClInclude Include="..\..\src\ctrls\ctrl.h" />
     <ClInclude Include="..\..\src\ctrls\date_chooser.h" />
+    <ClInclude Include="..\..\src\ctrls\field.h" />
     <ClInclude Include="..\..\src\ctrls\form.h" />
     <ClInclude Include="..\..\src\ctrls\group.h" />
     <ClInclude Include="..\..\src\ctrls\label.h" />
-    <ClInclude Include="..\..\src\ctrls\layout.h" />
     <ClInclude Include="..\..\src\ctrls\listbox.h" />
     <ClInclude Include="..\..\src\ctrls\menubar.h" />
     <ClInclude Include="..\..\src\ctrls\panel.h" />
@@ -207,6 +208,7 @@
     <ClInclude Include="..\..\src\ctrls\progress.h" />
     <ClInclude Include="..\..\src\ctrls\property.h" />
     <ClInclude Include="..\..\src\ctrls\slider.h" />
+    <ClInclude Include="..\..\src\ctrls\spacer.h" />
     <ClInclude Include="..\..\src\ctrls\spinbox.h" />
     <ClInclude Include="..\..\src\ctrls\tabbar.h" />
     <ClInclude Include="..\..\src\ctrls\textbox.h" />

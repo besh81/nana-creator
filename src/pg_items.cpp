@@ -125,3 +125,55 @@ void pg_collection::create(nana::window wd)
 	});
 }
 /// class pg_collection end
+
+
+
+/// class pg_layout_weight
+#define STRING_CHOICE_SIZE		50
+
+void pg_layout_weight::value(const std::string& value)
+{
+	cmb_.option((value.find('%') == std::string::npos) ? 0 : 1);
+
+	value_ = value;
+	pg_string_int::value(to_int());
+}
+std::string pg_layout_weight::value() const
+{
+	if(cmb_.option() == 1)
+		return value_ + "%";
+	return value_;
+}
+
+void pg_layout_weight::create(nana::window wd)
+{
+	pg_string_int::create(wd);
+
+	//combox
+	cmb_.create(wd);
+
+	cmb_.events().click.connect_front([this](const nana::arg_click& arg)
+	{
+		scroll();
+	});
+	cmb_.events().selected([this](const nana::arg_combox& arg)
+	{
+		emit_event();
+	});
+
+	cmb_.push_back(CITEM_PIXELS);
+	cmb_.push_back(CITEM_PERCENT);
+	//cmb_.option(0);
+	pg_layout_weight::value(value_);
+}
+
+bool pg_layout_weight::draw_value(nana::paint::graphics* graph, nana::rectangle rect, nana::color bgcolor, nana::color fgcolor) const
+{
+	txt_.move(PG_BORDER_X, PG_BORDER_Y);
+	txt_.size(nana::size(rect.width - 2 * PG_BORDER_X - STRING_CHOICE_SIZE, size_ - 2 * PG_BORDER_Y));
+
+	cmb_.move(PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
+	cmb_.size(nana::size(STRING_CHOICE_SIZE, size_ - 2 * PG_BORDER_Y));
+	return false;
+}
+/// class pg_layout_weight end

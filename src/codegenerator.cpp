@@ -39,7 +39,7 @@ bool codegenerator::generate(nana::window wd, tree_node<control_obj>* node, cons
 
 	// generate code from controls
 	_code_data.clear();
-	_generate(node, "*this", "", 1);
+	_generate(node, "*this", "", DEFAULT_FIELD);
 
 
 	if(path.empty())
@@ -229,7 +229,7 @@ void codegenerator::_append_tag(const std::string& tag)
 }
 
 
-void codegenerator::_generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, int field)
+void codegenerator::_generate(tree_node<control_obj>* node, const std::string& create, const std::string& place, const std::string& field)
 {
 	if(!node)
 		return;
@@ -242,11 +242,16 @@ void codegenerator::_generate(tree_node<control_obj>* node, const std::string& c
 	ci.field = field;
 
 	node->value->generatecode(&_code_data, &ci);
+	
+	// children
+	_generate(node->child, ci.create, ci.place, ci.field);
+	// siblings
+	_generate(node->next, create, place, field);
 
 	// children
-	_generate(node->child, ci.create, ci.place, 1);
+	/*_generate(node->child, ci.create, ci.place, ci.place.find(CTRL_GRID) != std::string::npos ? 0 : 1);
 	// siblings
-	_generate(node->next, create, place, field + 1);
+	_generate(node->next, create, place, place.find(CTRL_GRID) != std::string::npos ? 0 : field + 1);*/
 }
 
 

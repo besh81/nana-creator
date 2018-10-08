@@ -16,6 +16,10 @@
 #include "propgrid.h"
 
 
+#define PG_BORDER_X		1
+#define PG_BORDER_Y		2
+
+
 namespace nana
 {
 	using pgitem = drawerbase::propertygrid::pgitem;

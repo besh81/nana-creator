@@ -32,11 +32,9 @@ namespace ctrls
 		properties.append("halign").label("Caption Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
 		// layout
 		properties.remove("weight");
-		properties.remove("margin");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
-		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
-		properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_weight) = -1;
+		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 	}
 
 
@@ -73,8 +71,8 @@ namespace ctrls
 		grp.caption_align(static_cast<nana::align>(properties.property("halign").as_int()));
 
 
-		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
-		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), "",
+			properties.property("margin").as_string());
 		boxmodel.update();
 
 		grp.collocate();
@@ -97,37 +95,46 @@ namespace ctrls
 		// init
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");  //BUG: if positioned after: the group caption is not displayed correctly !!!
+		
 		if(properties.property("format").as_bool())
 			cd->init.push_back(name + ".enable_format_caption(" + properties.property("format").as_string() + ");");
 		if(properties.property("format").as_string() != "left")
 			cd->init.push_back(name + ".caption_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "));");
 		if(children())
-			cd->init.push_back(name + ".div(\"" + boxmodel.getdiv(true) + "\");");
+			cd->init.push_back(name + ".div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
+
+		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
 
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
 		generatecode_colors(cd, ci, name);
 		// placement
-		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
+		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		// collocate
 		if(children())
 			cd->init_post.push_back(name + ".collocate();");
 		// children
 		ci->create = name;
 		ci->place = name;
+		ci->field = DEFAULT_FIELD;
 	}
 
 
-	void group::updatefield(nana::window ctrl, const std::string& weight, const std::string& margin)
+	void group::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
 	{
-		boxmodel.updatefield(ctrl, weight, margin);
+		boxmodel.update_children_info(child, divtext, weight);
 	}
 
 
 	bool group::children()
 	{
 		return boxmodel.children();
+	}
+
+
+	bool group::children_fields()
+	{
+		return boxmodel.children_fields();
 	}
 
 

@@ -39,7 +39,7 @@ namespace ctrls
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
 		// placement
-		cd->init.push_back(ci->place + "[\"field" + std::to_string(ci->field) + "\"] << " + name + ";");
+		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		// init
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
@@ -75,6 +75,12 @@ namespace ctrls
 	}
 
 
+	std::string ctrl::get_weight()
+	{
+		return properties.property("weight").as_string();
+	}
+
+
 	void ctrl::init(nana::widget* wdg, const std::string& type, const std::string& name)
 	{
 		nanawdg = wdg;
@@ -93,8 +99,7 @@ namespace ctrls
 		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->bgcolor(), true);
 		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->fgcolor(), true);
 		// layout
-		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_int) = -1;
-		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 0;
+		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_weight) = -1;
 	}
 
 }//end namespace ctrls

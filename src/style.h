@@ -22,7 +22,8 @@
 #define SELECT_CTRL_SIZE		3
 
 
-#define LAYOUT_CTRL				nana::colors::blue
+#define FIELD_COL				nana::colors::blue
+#define SPACER_COL				nana::colors::black
 
 
 #endif //NANA_CREATOR_STYLE_H

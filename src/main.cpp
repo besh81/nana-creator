@@ -184,7 +184,7 @@ private:
 				if(dlg.return_val() == nana::msgbox::pick_ok)
 				{
 					prj_name = dlg.get_filename();
-					g_gui_mgr.new_project(dlg.get_ctrl_type(), dlg.get_filename());
+					g_gui_mgr.new_project(dlg.get_ctrl_type());
 					// crea file di progetto
 					save_xml(prj_name);
 				}
@@ -324,7 +324,8 @@ private:
 void main()
 {
 	// init ctrls images
-	g_img_mgr.add(CTRL_LAYOUT, "icons/horizontal_layout.png");
+	g_img_mgr.add(CTRL_FIELD, "icons/horizontal_layout.png");
+	g_img_mgr.add(CTRL_GRID, "icons/grid_layout.png");
 	g_img_mgr.add(CTRL_BUTTON, "icons/button.png");
 	g_img_mgr.add(CTRL_LABEL, "icons/label.png");
 	g_img_mgr.add(CTRL_TEXTBOX, "icons/textbox.png");
@@ -344,6 +345,7 @@ void main()
 	g_img_mgr.add(CTRL_SLIDER, "icons/slider.png");
 	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar.png");
 	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox.png");
+	g_img_mgr.add(CTRL_SPACER, "icons/spacer.png");
 
 
 	nana_creator fm;

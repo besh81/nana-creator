@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.11.0"
+#define CREATOR_VERSION			"0.12.0"
 
 
 
@@ -27,7 +27,8 @@
 #define CTRL_FORM				"form"
 #define CTRL_GROUP				"group"
 //
-#define CTRL_LAYOUT				"layout"
+#define CTRL_FIELD				"field"
+#define CTRL_GRID				"grid"
 
 // controls without child/children
 #define CTRL_BUTTON				"button"
@@ -46,6 +47,9 @@
 #define CTRL_SLIDER				"slider"
 #define CTRL_TABBAR				"tabbar"
 #define CTRL_TREEBOX			"treebox"
+
+// controls emulated in nana lib
+#define CTRL_SPACER				"spacer"
 
 
 
@@ -79,6 +83,9 @@
 #define CITEM_BILATERAL			"Bilateral"
 #define CITEM_FORWD				"Forward"
 #define CITEM_BACKWD			"Backward"
+//
+#define CITEM_PIXELS			"px"
+#define CITEM_PERCENT			"%"
 
 
 // code-generator
@@ -86,6 +93,7 @@
 #define CTRL_NAMESPACE			"nana::"
 #define DEFAULT_FILENAME		"code"
 
+#define DEFAULT_FIELD			"_field_"
 
 #define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
 #define CITEM_INNER_TKN			"\r"

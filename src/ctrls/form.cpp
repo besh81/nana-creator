@@ -48,9 +48,8 @@ namespace ctrls
 		properties.append("sizable").label("Sizable").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		// layout
 		properties.remove("weight");
-		properties.remove("margin");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-		properties.append("padding").label("Padding").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
 	}
 
 
@@ -79,8 +78,8 @@ namespace ctrls
 		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
 
 
-		boxmodel.orientation(static_cast<layout_orientation>(properties.property("layout").as_int()));
-		boxmodel.padding(properties.property("padding").as_int());
+		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), properties.property("weight").as_string(),
+			properties.property("margin").as_string());
 		boxmodel.update();
 	}
 
@@ -112,8 +111,9 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::place _place{ *this };");
 		// init
-		cd->init.push_back("_place.div(\"" + boxmodel.getdiv(true) + "\");");
-		cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
+		cd->init.push_back("_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
+		if(!properties.property("enabled").as_bool())
+			cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
 		cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
 		generatecode_colors(cd, ci);
 		// placement
@@ -125,15 +125,21 @@ namespace ctrls
 	}
 
 
-	void form::updatefield(nana::window child, const std::string& weight, const std::string& margin)
+	void form::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
 	{
-		boxmodel.updatefield(child, weight, margin);
+		boxmodel.update_children_info(child, divtext, weight);
 	}
 
 
 	bool form::children()
 	{
 		return boxmodel.children();
+	}
+
+
+	bool form::children_fields()
+	{
+		return boxmodel.children_fields();
 	}
 
 

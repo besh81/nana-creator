@@ -12,9 +12,6 @@
 #include "lock_guard.h"
 
 
-#define PG_BORDER_X		1
-#define PG_BORDER_Y		2
-
 
 namespace nana
 {
@@ -346,7 +343,7 @@ namespace nana
 		});
 		cmb_.events().selected([this](const nana::arg_combox& arg)
 		{
-			value_ = "1";// std::to_string(arg.widget.option());
+			value_ = std::to_string(arg.widget.option());
 			emit_event();
 		});
 	}

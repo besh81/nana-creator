@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "propertiespanel.h"
-#include "ctrls/layout.h"
 #include "ctrls/panel.h"
 #include "pg_items.h"
 #include "guimanager.h"
@@ -122,7 +121,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
 		}
-		else if(prop.type() == ctrls::pg_type::string_uint || prop.type() == ctrls::pg_type::string_uint_0_100)
+		else if(prop.type() == ctrls::pg_type::string_uint || prop.type() == ctrls::pg_type::string_uint_0_100 || prop.type() == ctrls::pg_type::string_uint_1_100)
 		{
 			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
 
@@ -131,6 +130,15 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 				auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
 				psui->range(0, 100);
 			}
+			else if(prop.type() == ctrls::pg_type::string_uint_1_100)
+			{
+				auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
+				psui->range(1, 100);
+			}
+		}
+		else if(prop.type() == ctrls::pg_type::string_weight)
+		{
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_layout_weight(prop.label(), prop.value())));
 		}
 		else if(prop.type() == ctrls::pg_type::check)
 		{
