@@ -52,12 +52,14 @@ namespace ctrls
 		{
 			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
 			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+			properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
 		}
 		else
 		{
 			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
 			properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_weight) = -1;
 			properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+			properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
 		}
 	}
 
@@ -93,8 +95,11 @@ namespace ctrls
 		}
 
 
-		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), "", 
-			properties.property("margin").as_string());
+		boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		if(_mainclass)
+			boxmodel.set_attributes("", properties.property("margin").as_string(), properties.property("gap").as_string());
+		else
+			boxmodel.set_attributes(properties.property("weight").as_string(), properties.property("margin").as_string(), properties.property("gap").as_string());
 		boxmodel.update();
 	}
 

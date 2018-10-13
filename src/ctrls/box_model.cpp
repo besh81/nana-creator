@@ -31,22 +31,14 @@ namespace ctrls
 	}
 
 
-	void box_model::set(layout_orientation orientation, const std::string& weight, const std::string& margin)
+	void box_model::set_type(layout_orientation orientation)
 	{
-		_field_str = (orientation == layout_orientation::vertical) ? "vert " : "";
+		_type_str = (orientation == layout_orientation::vertical) ? "vert " : "";
 		_is_grid = false;
-
-		if(!weight.empty())
-			if(weight[0] != '-')
-				_field_str.append("weight=" + weight + " ");
-
-		if(!margin.empty())
-			if(margin[0] != '0')
-				_field_str.append("margin=" + margin + " ");
 	}
-
-
-	void box_model::set(const std::string& cols, const std::string& rows, const std::string& margin, const std::string& gap)
+	
+	
+	void box_model::set_type(const std::string& cols, const std::string& rows)
 	{
 		if(cols.empty() || rows.empty())
 			return;
@@ -54,16 +46,40 @@ namespace ctrls
 		if(cols[0] == '0' || rows[0] == '0')
 			return;
 
-		_field_str = "grid=[" + cols + "," + rows + "] ";
+		_type_str = "grid=[" + cols + "," + rows + "] ";
 		_is_grid = true;
+	}
 
+
+	void box_model::set_attributes(const std::string& weight, const std::string& margin, const std::string& gap)
+	{
+		_weight_str = "";
+		if(!weight.empty())
+			if(weight[0] != '-')
+				_weight_str = "weight=" + weight + " ";
+
+		_margin_str = "";
 		if(!margin.empty())
 			if(margin[0] != '0')
-				_field_str.append("margin=" + margin + " ");
+				_margin_str = "margin=" + margin + " ";
 
+		_gap_str = "";
 		if(!gap.empty())
 			if(gap[0] != '0')
-				_field_str.append("gap=" + gap + " ");
+				_gap_str = "gap=" + gap + " ";
+	}
+
+
+	void box_model::add_collapse(const std::string& collapse)
+	{
+		if(!collapse.empty())
+			_collapse.push_back(collapse);
+	}
+
+
+	void box_model::clear_collapse()
+	{
+		_collapse.clear();
 	}
 
 
@@ -73,14 +89,16 @@ namespace ctrls
 
 		// children divtext
 		//-----------------------------
-		if(generate_code)
+		for(auto f : _children)
 		{
-			for(auto f : _children)
-			{
-				if(!f.first.divtext.empty())
-					divtext.append(f.first.divtext);
-			}
+			if(!f.first.divtext.empty())
+				divtext.append(f.first.divtext);
 		}
+
+		bool _fields = divtext.empty() ? false : true;
+
+		if(!generate_code)
+			divtext = "";
 
 		if(divtext.empty())
 		{
@@ -115,12 +133,18 @@ namespace ctrls
 
 				divtext += arrange;
 			}
+			else
+			{
+				// is grid
+
+				for(auto & c : _collapse)
+					divtext += "collapse(" + c + ") ";
+			}
 
 			divtext += field;
 		}
 
-
-		return _field_str + divtext;
+		return _type_str + _weight_str + _margin_str + (_fields ? "" : _gap_str) + divtext;
 	}
 
 

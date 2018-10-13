@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
-<nana-creator version="0.10.0">
-	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Form" width="640" height="480" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" padding="5">
-		<layout type="layout" name="body_lyt" layout="0" weight="-1" margin="0" padding="5">
-			<layout type="layout" name="left_lyt" layout="1" weight="-1" margin="3" padding="0">
-				<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" margin="0" />
-				<toolbar type="toolbar" name="toolbar" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" margin="0" buttons="Add item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_add.png&#10;Delete item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_delete.png&#10;{sep}&#13;{sep}&#10;Move up&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;Move down&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down.png&#10;{sep}&#13;{sep}&#10;Move left&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\left.png&#10;Move right&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\right.png" scale="21" />
-			</layout>
-			<group type="group" name="prop_grp" enabled="true" bgcolor="[inherited],201,197,190" fgcolor="[inherited],0,0,0" caption="Properties" layout="0" weight="-1" margin="3" padding="5" />
-		</layout>
-		<layout type="layout" name="footer_lyt" layout="0" weight="40" margin="0" padding="2">
-			<layout type="layout" name="spacer" layout="0" weight="-1" margin="0" padding="5" />
-			<button type="button" name="ok_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="OK" transparent="false" />
-			<button type="button" name="canc_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" margin="3" caption="Cancel" transparent="false" />
-		</layout>
+<nana-creator version="0.13.0">
+	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Form" width="600" height="480" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
+		<field type="field" name="body_lyt" weight="-1" layout="0" margin="0" gap="2">
+			<field type="field" name="left_lyt" weight="-1" layout="1" margin="3" gap="2">
+				<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" />
+				<toolbar type="toolbar" name="toolbar" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" buttons="Add item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_add.png&#10;Delete item&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_delete.png&#10;{sep}&#13;{sep}&#10;Move up&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;Move down&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down.png&#10;{sep}&#13;{sep}&#10;Move left&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\left.png&#10;Move right&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\right.png" scale="21" />
+			</field>
+			<field type="field" name="right_lyt" weight="-1" layout="0" margin="3" gap="2" />
+		</field>
+		<field type="field" name="footer_lyt" weight="40" layout="0" margin="5" gap="3">
+			<panel type="panel" name="panel1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" layout="0" weight="-1" margin="5" gap="2" />
+			<button type="button" name="ok_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" caption="OK" transparent="false" />
+			<button type="button" name="canc_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="90" caption="Cancel" transparent="false" />
+		</field>
 	</form>
 </nana-creator>

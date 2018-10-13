@@ -39,6 +39,7 @@ namespace ctrls
 		collection_tabbar,
 		collection_menubar,
 		collection_categorize,
+		collection_collapse,
 		string_weight
 	};
 

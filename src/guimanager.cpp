@@ -254,6 +254,16 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 }
 
 
+bool guimanager::_check_parent(control_obj parent, const std::string& type)
+{
+	if(parent->get_type() == CTRL_GRID)
+		if(type == CTRL_FIELD || type == CTRL_GRID)
+			return false;
+
+	return true;
+}
+
+
 bool guimanager::_check_siblings(control_obj parent, const std::string& type)
 {
 	if(!parent->children())
@@ -327,6 +337,10 @@ tree_node<control_obj>* guimanager::addcommonctrl(add_position add_pos, const st
 {
 	control_obj parent_ = (add_pos.pos == insert_position::into) ? add_pos.ctrl->value : add_pos.ctrl->owner->value;
 
+
+	// check parent type
+	if(!_check_parent(parent_, type))
+		return 0;
 
 	// check siblings type
 	if(!_check_siblings(parent_, type))

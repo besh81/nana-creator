@@ -113,6 +113,7 @@ public:
 	
 
 private:
+	bool _check_parent(control_obj parent, const std::string& type);
 	bool _check_siblings(control_obj parent, const std::string& type);
 	control_obj _create_ctrl(control_obj parent, const std::string& type, const std::string& name);
 

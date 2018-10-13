@@ -138,7 +138,7 @@ std::string get_dir_path(const std::string& filename)
 
 	// find out the last dir
 	int marker = 0;
-	for(int i = 0; i < filename.size(); i++)
+	for(unsigned int i = 0; i < filename.size(); i++)
 	{
 		if(filename[i] == '/')
 			marker = i;

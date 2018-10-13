@@ -25,7 +25,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 
 	_place.div("vertical <weight=20 caption><assets>");
 
-	//TEMP caption
+	// caption
 	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
 	_caption.caption("Assets");

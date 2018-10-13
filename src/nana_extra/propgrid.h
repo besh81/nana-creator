@@ -129,6 +129,10 @@ namespace nana
 				//it should return false to avoid property useless drawing
 				virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const = 0;
 
+				virtual bool enabled()
+				{
+					return en_;
+				}
 				virtual void enabled(bool state)
 				{
 					en_ = state;
@@ -198,6 +202,8 @@ namespace nana
 				item_proxy& value(const std::string& value, bool emit = false);
 				std::string value() const;
 
+				bool enabled();
+				void enabled(bool state);
 
 				/// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
@@ -357,6 +363,9 @@ namespace nana
 		propertygrid(window, bool visible);
 		propertygrid(window, const rectangle& = {}, bool visible = true);
 
+		bool enabled() { return _en; }
+		void enabled(bool state);
+
 		void auto_draw(bool);										///< Set state: Redraw automatically after an operation
 
 		void scroll(const index_pair& pos, bool as_first = false);	/// Scrolls the view to the selected item
@@ -389,6 +398,8 @@ namespace nana
 
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;
+
+		bool	_en{ true };
 	};
 }//end namespace nana
 

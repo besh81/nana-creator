@@ -204,7 +204,8 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		}
 		else if(prop.type() == ctrls::pg_type::collection_combox || prop.type() == ctrls::pg_type::collection_toolbar
 			|| prop.type() == ctrls::pg_type::collection_listbox || prop.type() == ctrls::pg_type::collection_tabbar
-			|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize)
+			|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize
+			|| prop.type() == ctrls::pg_type::collection_collapse)
 		{
 			cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value(), prop.type())));
 		}

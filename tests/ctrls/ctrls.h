@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.12.0)
+ *	C++ code generated with Nana Creator (0.13.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -28,6 +28,7 @@
 #include <nana/gui/widgets/date_chooser.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/treebox.hpp>
+#include <nana/gui/widgets/toolbar.hpp>
 
 //<*includes
 
@@ -59,7 +60,7 @@ public:
 private:
 	void init_()
 	{
-		_place.div("margin=3 <vert weight=300 margin=5 arrange=[25,variable,variable,24,variable,variable,variable,25,variable,30,30] field1><margin=2 field2>");
+		_place.div("margin=3 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1><margin=2 gap=5 field2>");
 		caption("Nana-Creator test");
 		// label1
 		label1.create(*this);
@@ -84,7 +85,7 @@ private:
 		// group1
 		group1.create(*this);
 		group1.caption_align(static_cast<nana::align>(0));
-		group1.div("margin=5 _field_");
+		group1.div("margin=5 gap=2 _field_");
 		group1.caption("group");
 		group1.bgcolor(nana::color(201,197,190));
 		_place["field1"] << group1;
@@ -107,13 +108,14 @@ private:
 		_place["field1"] << combox1;
 		combox1.push_back("UNO");
 		combox1.push_back("tre");
+		combox1.image(1, nana::paint::image("icons/up.png"));
 		combox1.push_back("DUE");
 		combox1.option(0);
 		combox1.editable(false);
 		// picture1
 		picture1.create(*this);
 		_place["field1"] << picture1;
-		picture1.load(nana::paint::image(""));
+		picture1.load(nana::paint::image("icons/save.png"));
 		picture1.transparent(false);
 		picture1.align(static_cast<nana::align>(0), static_cast<nana::align_v>(0));
 		picture1.stretchable(false);
@@ -148,7 +150,7 @@ private:
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
-		panel1_place.div("vert margin=5 arrange=[40%,variable,variable] _field_");
+		panel1_place.div("vert margin=5 gap=5 arrange=[40%,variable,variable,30] _field_");
 		panel1.bgcolor(nana::color(120,208,200));
 		_place["field2"] << panel1;
 		// datechooser1
@@ -164,6 +166,13 @@ private:
 		treebox1.create(panel1);
 		panel1_place["_field_"] << treebox1;
 		treebox1.bgcolor(nana::color(255,255,255));
+		// toolbar1
+		toolbar1.create(panel1);
+		panel1_place["_field_"] << toolbar1;
+		toolbar1.scale(21);
+		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
+		toolbar1.separate();
+		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
 
 		_place.collocate();
 		group1.collocate();
@@ -192,6 +201,7 @@ protected:
 	nana::date_chooser datechooser1;
 	nana::listbox listbox1;
 	nana::treebox treebox1;
+	nana::toolbar toolbar1;
 
 
 	//<*declarations

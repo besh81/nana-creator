@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<nana-creator version="0.12.0">
-	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="" type="form" name="form1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Nana-Creator test" width="640" height="480" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="0" margin="3">
+<nana-creator version="0.13.0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Nana-Creator test" width="640" height="480" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="0" margin="3">
 		<field type="field" name="field1" weight="300" layout="1" margin="5">
 			<label type="label" name="label1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="255,0,0" weight="25" caption="Nana-Creator test" format="false" transparent="false" halign="1" valign="1" />
 			<button type="button" name="button1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" caption="button" transparent="false" />
@@ -10,18 +10,19 @@
 				<checkbox type="checkbox" name="checkbox2" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" caption="radio1" check="false" group="gruppo1" radio="true" />
 				<checkbox type="checkbox" name="checkbox3" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" caption="radio2" check="true" group="gruppo1" radio="true" />
 			</group>
-			<combox type="combox" name="combox1" enabled="true" bgcolor="[inherited],255,255,255" fgcolor="[inherited],0,0,0" weight="-1" options="UNO&#13;&#10;tre&#13;&#10;DUE&#13;" option="0" editable="false" />
-			<picture type="picture" name="picture1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" source="" transparent="false" halign="0" valign="0" stretchable="false" />
+			<combox type="combox" name="combox1" enabled="true" bgcolor="[inherited],255,255,255" fgcolor="[inherited],0,0,0" weight="26" options="UNO&#13;&#10;tre&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;DUE&#13;" option="0" editable="false" />
+			<picture type="picture" name="picture1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" source="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save.png" transparent="false" halign="0" valign="0" stretchable="false" />
 			<progress type="progress" name="progress1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="16,117,21" weight="25" value="25" unknown="false" />
-			<slider type="slider" name="slider1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="-1" value="4" maximum="10" seek="0" vertical="false" transparent="false" />
-			<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="30" value="55" begin="0" last="100" step="5" editable="true" prefix="" suffix="" />
-			<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="30" caption="" tip_string="insert text" line_wrapped="false" multi_lines="false" editable="true" />
+			<slider type="slider" name="slider1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" value="4" maximum="10" seek="0" vertical="false" transparent="false" />
+			<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="26" value="55" begin="0" last="100" step="5" editable="true" prefix="" suffix="" />
+			<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="26" caption="" tip_string="insert text" line_wrapped="false" multi_lines="false" editable="true" />
 		</field>
 		<field type="field" name="field2" weight="-1" layout="0" margin="2">
 			<panel type="panel" name="panel1" enabled="true" bgcolor="120,208,200" fgcolor="[inherited],0,0,0" layout="1" weight="-1" margin="5">
 				<datechooser type="datechooser" name="datechooser1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="40%" />
 				<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" columns="" checkable="false" single_selection="false" show_header="true" />
 				<treebox type="treebox" name="treebox1" enabled="true" bgcolor="255,255,255" fgcolor="[inherited],0,0,0" weight="-1" />
+				<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" weight="30" buttons="Add&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_add.png&#10;{sep}&#13;{sep}&#10;Delete&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_delete.png" scale="21" />
 			</panel>
 		</field>
 	</form>

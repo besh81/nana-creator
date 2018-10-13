@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.12.0"
+#define CREATOR_VERSION			"0.13.0"
 
 
 
@@ -98,7 +98,7 @@
 #define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
 #define CITEM_INNER_TKN			"\r"
 #define CITEM_TKN				"\n"
-#define CITEM_EMPTY_OWNER		" "
+#define CITEM_EMPTY				" "
 #define CITEM_SEPARATOR			"{sep}"
 // toolbar separator
 #define CITEM_TLB_SEPARATOR		CITEM_SEPARATOR CITEM_INNER_TKN CITEM_SEPARATOR

@@ -88,8 +88,11 @@ namespace ctrls
 
 		void update();
 
-		void set(layout_orientation orientation, const std::string& weight, const std::string& margin);
-		void set(const std::string& cols, const std::string& rows, const std::string& margin, const std::string& gap);
+		void set_type(layout_orientation orientation);
+		void set_type(const std::string& cols, const std::string& rows);
+		void set_attributes(const std::string& weight, const std::string& margin, const std::string& gap);
+		void add_collapse(const std::string& collapse);
+		void clear_collapse();
 		std::string get(const std::string& field, bool generate_code);
 
 		void update_children_info(nana::window child, const std::string& divtext, const std::string& weight);
@@ -105,8 +108,13 @@ namespace ctrls
 
 
 	protected:
-		std::string		_field_str;
+		std::string		_type_str;
+		std::string		_weight_str;
+		std::string		_margin_str;
+		std::string		_gap_str;
 		bool			_is_grid{ false };
+
+		std::vector<std::string> _collapse;
 
 		struct child_info
 		{

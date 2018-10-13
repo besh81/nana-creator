@@ -75,6 +75,12 @@ namespace ctrls
 	}
 
 
+	std::string ctrl::get_type()
+	{
+		return properties.property("type").as_string();
+	}
+
+
 	std::string ctrl::get_weight()
 	{
 		return properties.property("weight").as_string();

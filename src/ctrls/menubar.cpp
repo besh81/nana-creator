@@ -133,7 +133,7 @@ namespace ctrls
 		menu_tree.clear();
 
 		menu_data root;
-		root.key = CITEM_EMPTY_OWNER;
+		root.key = CITEM_EMPTY;
 		root.text = "root";
 		menu_tree.append(0, root);
 

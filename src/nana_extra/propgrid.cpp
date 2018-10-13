@@ -259,6 +259,17 @@ namespace nana
 					return (cat < categories_.size());
 				}
 
+				void enabled(bool state)
+				{
+					for(auto & c : categories_)
+					{
+						for(auto & i : c.items)
+						{
+							i->enabled(state);
+						}
+					}
+				}
+
 
 				/// categories iterator
 				std::vector<category_t>::iterator get(std::size_t pos)
@@ -1288,6 +1299,15 @@ namespace nana
 				return _m_property().value();
 			}
 
+			bool item_proxy::enabled()
+			{
+				return _m_property().enabled();
+			}
+			void item_proxy::enabled(bool state)
+			{
+				_m_property().enabled(state);
+			}
+
 			auto item_proxy::_m_property() const -> pgitem&
 			{
 				return ess_->lister.get_property(cat_, pos_.item);
@@ -1509,6 +1529,14 @@ namespace nana
 	propertygrid::propertygrid(window wd, const rectangle& r, bool visible)
 	{
 		create(wd, r, visible);
+	}
+
+	void propertygrid::enabled(bool state)
+	{
+		if(_en == state)
+			return;
+
+		_m_ess().lister.enabled(_en = state);
 	}
 
 	void propertygrid::auto_draw(bool ad)

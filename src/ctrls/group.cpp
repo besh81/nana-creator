@@ -35,6 +35,7 @@ namespace ctrls
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
 		properties.append("weight").label("Weight").category(CAT_LAYOUT).type(pg_type::string_weight) = -1;
 		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
 	}
 
 
@@ -67,15 +68,11 @@ namespace ctrls
 			grp.caption(properties.property("caption").as_string());
 		}
 
-
 		grp.caption_align(static_cast<nana::align>(properties.property("halign").as_int()));
 
-
-		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), "",
-			properties.property("margin").as_string());
+		boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		boxmodel.set_attributes("", properties.property("margin").as_string(), properties.property("gap").as_string());
 		boxmodel.update();
-
-		grp.collocate();
 
 		// needed to correctly redraw the group control when the caption change
 		nana::API::refresh_window(grp);

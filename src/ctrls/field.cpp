@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 #include "ctrls/field.h"
+#include "tokenizer/Tokenizer.h"
 #include "style.h"
 
 
@@ -43,16 +44,13 @@ namespace ctrls
 			properties.append("rows").label("Rows").category(CAT_LAYOUT).type(pg_type::string_uint_1_100) = 3;
 		}
 		else
-		{
 			properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-		}
 		
 		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
-		
+		properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
+
 		if(_grid)
-		{
-			properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
-		}
+			properties.append("collapse").label("collapse").category(CAT_LAYOUT).type(pg_type::collection_collapse);
 	}
 
 
@@ -61,11 +59,40 @@ namespace ctrls
 		//ctrl::update();
 
 		if(_grid)
-			boxmodel.set(properties.property("columns").as_string(), properties.property("rows").as_string(),
-				properties.property("margin").as_string(), properties.property("gap").as_string());
+			boxmodel.set_type(properties.property("columns").as_string(), properties.property("rows").as_string());
 		else
-			boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), properties.property("weight").as_string(),
-				properties.property("margin").as_string());
+			boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
+
+		boxmodel.set_attributes(properties.property("weight").as_string(), properties.property("margin").as_string(), properties.property("gap").as_string());
+
+		if(_grid)
+		{
+			// collapse - START
+			boxmodel.clear_collapse();
+			// split columns into item (delimiter = CITEM_TKN)
+			Tokenizer items_tkn(properties.property("collapse").as_string());
+			items_tkn.setDelimiter(CITEM_TKN);
+
+			std::string item;
+			while((item = items_tkn.next()) != "")
+			{
+				// split item into properties (delimiter = CITEM_INNER_TKN)
+				Tokenizer item_tkn(item);
+				item_tkn.setDelimiter(CITEM_INNER_TKN);
+
+				auto left = item_tkn.next();
+				if(left == CITEM_EMPTY) left = "0";
+				auto top = item_tkn.next();
+				if(top == CITEM_EMPTY) top = "0";
+				auto cols = item_tkn.next();
+				if(cols == CITEM_EMPTY) cols = "0";
+				auto rows = item_tkn.next();
+				if(rows == CITEM_EMPTY) rows = "0";
+
+				boxmodel.add_collapse(left + "," + top + "," + cols + "," + rows);
+			}
+			// collapse - END
+		}
 
 		boxmodel.update();
 	}

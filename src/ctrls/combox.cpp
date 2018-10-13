@@ -8,7 +8,11 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/combox.h"
+#include "filemanager.h"
 #include "tokenizer/Tokenizer.h"
+
+
+extern filemanager		g_file_mgr;
 
 
 namespace ctrls
@@ -59,6 +63,7 @@ namespace ctrls
 		Tokenizer items_tkn(properties.property("options").as_string());
 		items_tkn.setDelimiter(CITEM_TKN);
 
+		std::size_t pos = 0;
 		std::string item;
 		while((item = items_tkn.next()) != "")
 		{
@@ -68,7 +73,11 @@ namespace ctrls
 
 			cd->init.push_back(name + ".push_back(\"" + item_tkn.next() + "\");");
 
-			//TODO aggiungere immagine
+			// load image if any
+			auto img = item_tkn.next();
+			if(img != "")
+				cd->init.push_back(name + ".image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(img) + "\"));");
+			++pos;
 		}
 		// options - END
 

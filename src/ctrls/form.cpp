@@ -50,6 +50,7 @@ namespace ctrls
 		properties.remove("weight");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
 		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
 	}
 
 
@@ -78,8 +79,8 @@ namespace ctrls
 		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
 
 
-		boxmodel.set(static_cast<layout_orientation>(properties.property("layout").as_int()), properties.property("weight").as_string(),
-			properties.property("margin").as_string());
+		boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
+		boxmodel.set_attributes("", properties.property("margin").as_string(), properties.property("gap").as_string());
 		boxmodel.update();
 	}
 
