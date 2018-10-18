@@ -36,7 +36,7 @@ namespace ctrls
 			properties.append("work_dir").label("Working Dir").category(CAT_CPPCODE).type(pg_type::folder).enabled("rel_path", true) = "";
 		}
 
-		ctrl::init(&pnl, CTRL_PANEL, name);
+		ctrl::init(&pnl, CTRL_PANEL, name, false);
 
 		// common
 		if(_mainclass)

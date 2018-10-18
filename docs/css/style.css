@@ -1,0 +1,607 @@
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 400;
+    src: url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot);
+    src: local('Titillium Web'), local('TitilliumWeb-Regular'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.eot?#iefix") format('embedded-opentype'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff2) format('woff2'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.woff) format('woff'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.ttf) format('truetype'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-regular.svg#TitilliumWeb") format('svg')
+}
+
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: italic;
+    font-weight: 400;
+    src: url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot);
+    src: local('Titillium WebItalic'), local('TitilliumWeb-Italic'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.eot?#iefix") format('embedded-opentype'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff2) format('woff2'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.woff) format('woff'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.ttf) format('truetype'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-italic.svg#TitilliumWeb") format('svg')
+}
+
+@font-face {
+    font-family: 'Titillium Web';
+    font-style: normal;
+    font-weight: 600;
+    src: url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot);
+    src: local('Titillium WebSemiBold'), local('TitilliumWeb-SemiBold'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.eot?#iefix") format('embedded-opentype'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff2) format('woff2'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.woff) format('woff'), url(//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.ttf) format('truetype'), url("//d33sqmjvzgs8hq.cloudfront.net/wp-content/themes/oneqt/assets/fonts/titillium-web-v4-latin_latin-ext-600.svg#TitilliumWeb") format('svg')
+}
+
+html {
+    font-size: 16px
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Titillium Web', sans-serif
+}
+
+body {
+    background-color: #f3f3f4
+}
+
+a {
+    text-decoration: none;
+    color: #17a81a;
+    background: none
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    color: #17a81a
+}
+
+img {
+    border: none;
+    vertical-align: middle
+}
+
+hr {
+    height: 1px;
+    color: #aaa;
+    background-color: #aaa;
+    border: 0;
+    margin: .2em 0
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: black;
+    background: none;
+    font-weight: normal;
+    margin: 0;
+    overflow: hidden;
+    padding-top: .5em;
+    padding-bottom: .17em;
+    border-bottom: 1px solid #aaa
+}
+
+h1 {
+    font-size: 188%
+}
+
+h2 {
+    font-size: 150%
+}
+
+h3,
+h4,
+h5,
+h6 {
+    border-bottom: none;
+    font-weight: bold
+}
+
+h3 {
+    font-size: 128%
+}
+
+h4 {
+    font-size: 116%
+}
+
+h5 {
+    font-size: 108%
+}
+
+h6 {
+    font-size: 100%
+}
+
+h1,
+h2 {
+    margin-bottom: .6em
+}
+
+h3,
+h4,
+h5 {
+    margin-bottom: .3em
+}
+
+p {
+    margin: .4em 0 .5em 0
+}
+
+p img {
+    margin: 0
+}
+
+ul {
+    list-style-type: square;
+    margin: .3em 0 0 1.6em;
+    padding: 0
+}
+
+ol {
+    margin: .3em 0 0 3.2em;
+    padding: 0;
+    list-style-image: none
+}
+
+li {
+    margin-bottom: .1em
+}
+
+dt {
+    font-weight: bold;
+    margin-bottom: .1em
+}
+
+dl {
+    margin-top: .2em;
+    margin-bottom: .5em
+}
+
+dd {
+    margin-left: 1.6em;
+    margin-bottom: .1em
+}
+
+
+.mw-body {
+    margin-left: 5em;
+    margin-right: 5em;
+    padding: 1em;
+    border: 1px solid #ffffff;
+    border-right-width: 0;
+    margin-top: -1px;
+    background-color: #ffffff;
+    color: #09102b;
+}
+
+.mw-body .mw-editsection,
+.mw-body .mw-editsection-like {
+    font-family: 'Titillium Web', sans-serif
+}
+
+.mw-body p {
+    line-height: inherit;
+    margin: 0.5em 0
+}
+
+.mw-body h1,
+.mw-body h2 {
+    font-family: 'Titillium Web', sans-serif;
+    line-height: 1.25;
+    margin: 15px 0;
+    padding: 0
+}
+
+.mw-body h1 {
+    font-size: 2.5em
+}
+
+.mw-body .mw-body-content h1 {
+    margin-top: 1em
+}
+
+.mw-body h2 {
+    font-size: 1.5em;
+    margin-top: 1em
+}
+
+.mw-body h3,
+.mw-body h4,
+.mw-body h5,
+.mw-body h6 {
+    line-height: 1.625;
+    margin-top: 0.3em;
+    margin-bottom: 0;
+    padding-bottom: 0
+}
+
+.mw-body h3 {
+    font-size: 1.2em
+}
+
+.mw-body h3,
+.mw-body h4 {
+    font-weight: bold
+}
+
+.mw-body h4,
+.mw-body h5,
+.mw-body h6 {
+    font-size: 100%
+}
+
+.firstHeading {
+    margin-bottom: .1em;
+    line-height: 1.2em;
+    padding-bottom: 0;
+    overflow: visible
+}
+
+.mw-body-content {
+    position: relative;
+    line-height: 1.625;
+    font-size: 1em;
+    z-index: 0
+}
+
+.mw-highlight .hll {
+    background-color: #ffffcc
+}
+
+.mw-highlight {
+    background: #f8f8f8
+}
+
+.mw-highlight .c {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .err {
+    border: 1px solid #FF0000
+}
+
+.mw-highlight .k {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .o {
+    color: #666666
+}
+
+.mw-highlight .ch {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .cm {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .cp {
+    color: #BC7A00
+}
+
+.mw-highlight .cpf {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .c1 {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .cs {
+    color: #408080;
+    font-style: italic
+}
+
+.mw-highlight .gd {
+    color: #A00000
+}
+
+.mw-highlight .ge {
+    font-style: italic
+}
+
+.mw-highlight .gr {
+    color: #FF0000
+}
+
+.mw-highlight .gh {
+    color: #000080;
+    font-weight: bold
+}
+
+.mw-highlight .gi {
+    color: #00A000
+}
+
+.mw-highlight .go {
+    color: #888888
+}
+
+.mw-highlight .gp {
+    color: #000080;
+    font-weight: bold
+}
+
+.mw-highlight .gs {
+    font-weight: bold
+}
+
+.mw-highlight .gu {
+    color: #800080;
+    font-weight: bold
+}
+
+.mw-highlight .gt {
+    color: #0044DD
+}
+
+.mw-highlight .kc {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .kd {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .kn {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .kp {
+    color: #008000
+}
+
+.mw-highlight .kr {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .kt {
+    color: #B00040
+}
+
+.mw-highlight .m {
+    color: #666666
+}
+
+.mw-highlight .s {
+    color: #BA2121
+}
+
+.mw-highlight .na {
+    color: #7D9029
+}
+
+.mw-highlight .nb {
+    color: #008000
+}
+
+.mw-highlight .nc {
+    color: #0000FF;
+    font-weight: bold
+}
+
+.mw-highlight .no {
+    color: #880000
+}
+
+.mw-highlight .nd {
+    color: #AA22FF
+}
+
+.mw-highlight .ni {
+    color: #999999;
+    font-weight: bold
+}
+
+.mw-highlight .ne {
+    color: #D2413A;
+    font-weight: bold
+}
+
+.mw-highlight .nf {
+    color: #0000FF
+}
+
+.mw-highlight .nl {
+    color: #A0A000
+}
+
+.mw-highlight .nn {
+    color: #0000FF;
+    font-weight: bold
+}
+
+.mw-highlight .nt {
+    color: #008000;
+    font-weight: bold
+}
+
+.mw-highlight .nv {
+    color: #19177C
+}
+
+.mw-highlight .ow {
+    color: #AA22FF;
+    font-weight: bold
+}
+
+.mw-highlight .w {
+    color: #bbbbbb
+}
+
+.mw-highlight .mb {
+    color: #666666
+}
+
+.mw-highlight .mf {
+    color: #666666
+}
+
+.mw-highlight .mh {
+    color: #666666
+}
+
+.mw-highlight .mi {
+    color: #666666
+}
+
+.mw-highlight .mo {
+    color: #666666
+}
+
+.mw-highlight .sb {
+    color: #BA2121
+}
+
+.mw-highlight .sc {
+    color: #BA2121
+}
+
+.mw-highlight .sd {
+    color: #BA2121;
+    font-style: italic
+}
+
+.mw-highlight .s2 {
+    color: #BA2121
+}
+
+.mw-highlight .se {
+    color: #BB6622;
+    font-weight: bold
+}
+
+.mw-highlight .sh {
+    color: #BA2121
+}
+
+.mw-highlight .si {
+    color: #BB6688;
+    font-weight: bold
+}
+
+.mw-highlight .sx {
+    color: #008000
+}
+
+.mw-highlight .sr {
+    color: #BB6688
+}
+
+.mw-highlight .s1 {
+    color: #BA2121
+}
+
+.mw-highlight .ss {
+    color: #19177C
+}
+
+.mw-highlight .bp {
+    color: #008000
+}
+
+.mw-highlight .vc {
+    color: #19177C
+}
+
+.mw-highlight .vg {
+    color: #19177C
+}
+
+.mw-highlight .vi {
+    color: #19177C
+}
+
+.mw-highlight .il {
+    color: #666666
+}
+
+.mw-highlight {
+    direction: ltr;
+    unicode-bidi: embed
+}
+
+.mw-highlight pre {
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4
+}
+
+code code.mw-highlight {
+    background-color: transparent;
+    border: 0;
+    padding: 0
+}
+
+.mw-highlight .err {
+    border: 0
+}
+
+.mw-highlight .hll {
+    display: block
+}
+
+.mw-highlight .lineno {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none
+}
+
+.mw-highlight.mw-content-ltr .lineno {
+    float: left
+}
+
+.mw-highlight.mw-content-rtl .lineno {
+    float: right
+}
+
+pre,
+.mw-code {
+    background: #fff;
+    color: #000;
+    border: 1pt dashed #000;
+    padding: 1em 0;
+    font-size: 0.8em;
+    white-space: pre;
+    word-wrap: break-word;
+    overflow: auto
+}
+
+
+pre,
+code,
+tt,
+kbd,
+samp,
+.mw-code {
+    font-family: monospace, Courier
+}
+
+code {
+    color: black;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    padding: 1px 4px
+}
+
+pre,
+.mw-code {
+    color: black;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 1em;
+    white-space: pre-wrap;
+    line-height: 1.3em
+}

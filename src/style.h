@@ -23,7 +23,10 @@
 
 
 #define FIELD_COL				nana::colors::blue
-#define SPACER_COL				nana::colors::black
+#define SPLITTERBAR_COL			nana::colors::black
+
+
+#define SPLITTERBAR_WEIGHT		4
 
 
 #endif //NANA_CREATOR_STYLE_H

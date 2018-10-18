@@ -26,7 +26,7 @@
 #include "ctrls/slider.h"
 #include "ctrls/tabbar.h"
 #include "ctrls/treebox.h"
-#include "ctrls/spacer.h"
+#include "ctrls/splitterbar.h"
 #include "guimanager.h"
 #include "lock_guard.h"
 #include "style.h"
@@ -257,7 +257,7 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 bool guimanager::_check_parent(control_obj parent, const std::string& type)
 {
 	if(parent->get_type() == CTRL_GRID)
-		if(type == CTRL_FIELD || type == CTRL_GRID)
+		if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_SPLITTERBAR)
 			return false;
 
 	return true;
@@ -269,7 +269,7 @@ bool guimanager::_check_siblings(control_obj parent, const std::string& type)
 	if(!parent->children())
 		return true;
 
-	if(type == CTRL_FIELD || type == CTRL_GRID)
+	if(type == CTRL_FIELD || type == CTRL_GRID || type == CTRL_SPLITTERBAR)
 	{
 		if(parent->children_fields())
 			return true;
@@ -290,6 +290,8 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 		return control_obj(new ctrls::field(*parent->nanawdg, name));
 	else if(type == CTRL_GRID)
 		return control_obj(new ctrls::field(*parent->nanawdg, name, true));
+	else if(type == CTRL_SPLITTERBAR)
+		return control_obj(new ctrls::splitterbar(*parent->nanawdg, name));
 	else if(type == CTRL_PANEL)
 		return control_obj(new ctrls::panel(*parent->nanawdg, name));
 	else if(type == CTRL_GROUP)
@@ -326,8 +328,6 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 		return control_obj(new ctrls::tabbar(*parent->nanawdg, name));
 	else if(type == CTRL_TREEBOX)
 		return control_obj(new ctrls::treebox(*parent->nanawdg, name));
-	else if(type == CTRL_SPACER)
-		return control_obj(new ctrls::spacer(*parent->nanawdg, name));
 	
 	return 0;
 }

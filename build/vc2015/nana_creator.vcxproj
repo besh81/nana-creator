@@ -159,7 +159,7 @@
     <ClCompile Include="..\..\src\ctrls\progress.cpp" />
     <ClCompile Include="..\..\src\ctrls\property.cpp" />
     <ClCompile Include="..\..\src\ctrls\slider.cpp" />
-    <ClCompile Include="..\..\src\ctrls\spacer.cpp" />
+    <ClCompile Include="..\..\src\ctrls\splitterbar.cpp" />
     <ClCompile Include="..\..\src\ctrls\spinbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\tabbar.cpp" />
     <ClCompile Include="..\..\src\ctrls\textbox.cpp" />
@@ -208,7 +208,7 @@
     <ClInclude Include="..\..\src\ctrls\progress.h" />
     <ClInclude Include="..\..\src\ctrls\property.h" />
     <ClInclude Include="..\..\src\ctrls\slider.h" />
-    <ClInclude Include="..\..\src\ctrls\spacer.h" />
+    <ClInclude Include="..\..\src\ctrls\splitterbar.h" />
     <ClInclude Include="..\..\src\ctrls\spinbox.h" />
     <ClInclude Include="..\..\src\ctrls\tabbar.h" />
     <ClInclude Include="..\..\src\ctrls\textbox.h" />

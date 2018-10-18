@@ -64,10 +64,12 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 		if(_grid_setup)
 			return;
 
+		auto cat = _propgrid.at(arg.item.pos().cat);
+
 		for(size_t i = 0; i < _properties->count(); ++i)
 		{
 			auto pi = (*_properties)[i];
-			if(arg.item.label() == pi.label())
+			if(arg.item.label() == pi.label() && cat.text() == pi.category())
 			{
 				pi.value(arg.item.value());
 

@@ -162,10 +162,10 @@
     <ClCompile Include="..\..\src\inifile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ctrls\spacer.cpp">
+    <ClCompile Include="..\..\src\ctrls\field.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ctrls\field.cpp">
+    <ClCompile Include="..\..\src\ctrls\splitterbar.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
   </ItemGroup>
@@ -311,10 +311,10 @@
     <ClInclude Include="..\..\src\inifile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ctrls\spacer.h">
+    <ClInclude Include="..\..\src\ctrls\field.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ctrls\field.h">
+    <ClInclude Include="..\..\src\ctrls\splitterbar.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
   </ItemGroup>

@@ -56,10 +56,13 @@ namespace ctrls
 
 
 	protected:
-		void init(nana::widget* wdg, const std::string& type, const std::string& name);
+		void init(nana::widget* wdg, const std::string& type, const std::string& name, bool font = true);
 
-		bool			_highlighted{ false };
-		bool			_selected{ false };
+		nana::paint::font	_defaultfont;
+		bool				_use_font{ true };
+
+		bool				_highlighted{ false };
+		bool				_selected{ false };
 	};
 
 }//end namespace ctrls

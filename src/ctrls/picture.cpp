@@ -22,7 +22,7 @@ namespace ctrls
 		: ctrl()
 	{
 		pct.create(wd);
-		ctrl::init(&pct, CTRL_PICTURE, name);
+		ctrl::init(&pct, CTRL_PICTURE, name, false);
 
 		// common
 		properties.append("source").label("Source").category(CAT_COMMON).type(pg_type::filename_img) = "";

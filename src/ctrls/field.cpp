@@ -30,7 +30,7 @@ namespace ctrls
 		});
 
 
-		ctrl::init(&fld, _grid ? CTRL_GRID : CTRL_FIELD, name);
+		ctrl::init(&fld, _grid ? CTRL_GRID : CTRL_FIELD, name, false);
 
 		// common
 		properties.remove("enabled");
@@ -57,7 +57,12 @@ namespace ctrls
 	void field::update()
 	{
 		//ctrl::update();
+		
+		// has the same bg color of parent control
+		auto pw = nana::API::get_widget(nanawdg->parent());
+		nanawdg->bgcolor(pw->bgcolor());
 
+		// update boxmodel
 		if(_grid)
 			boxmodel.set_type(properties.property("columns").as_string(), properties.property("rows").as_string());
 		else

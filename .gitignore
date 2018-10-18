@@ -242,3 +242,4 @@ wdir/*.h
 wdir/*.ncp
 wdir/icons/*.db
 wdir/nc.ini
+docs/img/Thumbs.db

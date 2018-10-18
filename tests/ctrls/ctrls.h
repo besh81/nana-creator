@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.13.0)
+ *	C++ code generated with Nana Creator (0.14.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -60,7 +60,7 @@ public:
 private:
 	void init_()
 	{
-		_place.div("margin=3 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1><margin=2 gap=5 field2>");
+		_place.div("margin=3 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1>|<margin=2 gap=2 field2>");
 		caption("Nana-Creator test");
 		// label1
 		label1.create(*this);
@@ -79,6 +79,7 @@ private:
 		// checkbox1
 		checkbox1.create(*this);
 		_place["field1"] << checkbox1;
+		checkbox1.typeface(nana::paint::font("", 12, {600, true, false, false}));
 		checkbox1.caption("checkbox");
 		checkbox1.check(false);
 		checkbox1.radio(false);
@@ -150,7 +151,7 @@ private:
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
-		panel1_place.div("vert margin=5 gap=5 arrange=[40%,variable,variable,30] _field_");
+		panel1_place.div("vert margin=5 gap=2 arrange=[40%,variable,variable,30] _field_");
 		panel1.bgcolor(nana::color(120,208,200));
 		_place["field2"] << panel1;
 		// datechooser1

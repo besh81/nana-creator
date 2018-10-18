@@ -32,7 +32,7 @@ namespace ctrls
 		properties.append("rel_path").label("Relative Path").category(CAT_CPPCODE).type(pg_type::check) = true;
 		properties.append("work_dir").label("Working Dir").category(CAT_CPPCODE).type(pg_type::folder).enabled("rel_path", true) = "";
 
-		ctrl::init(&frm, CTRL_FORM, name);
+		ctrl::init(&frm, CTRL_FORM, name, false);
 
 		// common
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "Form";

@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.13.0"
+#define CREATOR_VERSION			"0.14.0"
 
 
 
@@ -22,13 +22,15 @@
 
 // available controls
 //--------------------------------------------------------
+// layout controls
+#define CTRL_FIELD				"field"
+#define CTRL_GRID				"grid"
+#define CTRL_SPLITTERBAR		"splitterbar"
+
 // controls with child/children
 #define CTRL_PANEL				"panel"
 #define CTRL_FORM				"form"
 #define CTRL_GROUP				"group"
-//
-#define CTRL_FIELD				"field"
-#define CTRL_GRID				"grid"
 
 // controls without child/children
 #define CTRL_BUTTON				"button"
@@ -48,9 +50,6 @@
 #define CTRL_TABBAR				"tabbar"
 #define CTRL_TREEBOX			"treebox"
 
-// controls emulated in nana lib
-#define CTRL_SPACER				"spacer"
-
 
 
 // project file
@@ -68,6 +67,7 @@
 #define CAT_COMMON				"Common"
 #define CAT_APPEARANCE			"Appearance"
 #define CAT_LAYOUT				"Layout"
+#define CAT_FONT				"Font"
 
 
 // choices

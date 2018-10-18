@@ -56,6 +56,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	auto set = _assets.insert("layouts", "Layouts").value(cursor_state{ cursor_action::select });
 	set.append("layouts/field", CTRL_FIELD, cursor_state{ cursor_action::add, CTRL_FIELD }).icon(CTRL_FIELD);
 	set.append("layouts/grid", CTRL_GRID, cursor_state{ cursor_action::add, CTRL_GRID }).icon(CTRL_GRID);
+	set.append("layouts/splitterbar", CTRL_SPLITTERBAR, cursor_state{ cursor_action::add, CTRL_SPLITTERBAR }).icon(CTRL_SPLITTERBAR);
 	set.expand(true);
 	//
 	set = _assets.insert("containers", "Containers").value(cursor_state{ cursor_action::select });
@@ -81,8 +82,6 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.append("controls/toolbar", CTRL_TOOLBAR, cursor_state{ cursor_action::add, CTRL_TOOLBAR }).icon(CTRL_TOOLBAR);
 	set.append("controls/treebox", CTRL_TREEBOX, cursor_state{ cursor_action::add, CTRL_TREEBOX }).icon(CTRL_TREEBOX);
 	set.expand(true);
-
-	//set.append("xxx/spacer", CTRL_SPACER, cursor_state{ cursor_action::add, CTRL_SPACER }).icon(CTRL_SPACER);
 
 	_assets.bgcolor(CREATOR_WINDOW_BG);
 	_place.field("assets") << _assets;

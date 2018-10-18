@@ -1,5 +1,5 @@
 /*
- *		ctrls::spacer Implementation
+ *		ctrls::splitterbar Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
@@ -7,15 +7,15 @@
 
 #include "config.h"
 #include <iostream>
-#include "ctrls/spacer.h"
+#include "ctrls/splitterbar.h"
 #include "style.h"
 
 
 namespace ctrls
 {
 
-	//spacer
-	spacer::spacer(nana::window wd, const std::string& name)
+	//splitterbar
+	splitterbar::splitterbar(nana::window wd, const std::string& name)
 		: ctrl()
 	{
 		pnl.create(wd, true);
@@ -24,13 +24,11 @@ namespace ctrls
 		nana::drawing dw{ pnl };
 		dw.draw([this](nana::paint::graphics& graph)
 		{
-			graph.rectangle(false, SPACER_COL);
-			graph.line(nana::point(0, 0), nana::point(static_cast<int>(graph.width()) - 1, static_cast<int>(graph.height()) - 1), SPACER_COL);
-			graph.line(nana::point(0, static_cast<int>(graph.height()) - 1), nana::point(static_cast<int>(graph.width()) - 1, 0), SPACER_COL);
+			graph.rectangle(false, SPLITTERBAR_COL);
 		});
 
 
-		ctrl::init(&pnl, CTRL_SPACER, name);
+		ctrl::init(&pnl, CTRL_SPLITTERBAR, name, false);
 
 		// common
 		properties.remove("enabled");
@@ -38,22 +36,35 @@ namespace ctrls
 		properties.remove("bgcolor");
 		properties.remove("fgcolor");
 		// layout
-		// ...
+		properties.remove("weight");
 	}
 
 
-	void spacer::update()
+	void splitterbar::update()
 	{
 		//ctrl::update();
 
+		// has the same bg color of parent control
 		auto pw = nana::API::get_widget(nanawdg->parent());
 		nanawdg->bgcolor(pw->bgcolor());
 	}
 
 
-	void spacer::generatecode(code_data_struct* cd, code_info_struct* ci)
+	void splitterbar::generatecode(code_data_struct* cd, code_info_struct* ci)
 	{
 		//ctrl::generatecode(cd, ci);
+	}
+
+
+	std::string splitterbar::get_weight()
+	{
+		return std::to_string(SPLITTERBAR_WEIGHT);
+	}
+
+
+	std::string splitterbar::get_divtext()
+	{
+		return "|";
 	}
 
 }//end namespace ctrls
