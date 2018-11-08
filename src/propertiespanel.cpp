@@ -31,7 +31,8 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 	//TEMP caption
 	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-	_caption.caption("Properties");
+	_caption.caption("  Properties");
+	_caption.text_align(nana::align::left, nana::align_v::center);
 	_place.field("caption") << _caption;
 
 
@@ -190,15 +191,13 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 
 			pgc->option(std::atoi(prop.value().c_str()));
 		}
-		else if(prop.type() == ctrls::pg_type::filename || prop.type() == ctrls::pg_type::filename_img)
+		else if(prop.type() == ctrls::pg_type::filename)
 		{
-			auto item = cat.append(nana::propertygrid::pgitem_ptr(new pg_filename(prop.label(), prop.value())));
-			auto pgc = static_cast<pg_filename*>(item._m_pgitem());
-
-			if(prop.type() == ctrls::pg_type::filename_img)
-			{
-				pgc->add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
-			}
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_filename(prop.label(), prop.value())));
+		}
+		else if(prop.type() == ctrls::pg_type::image)
+		{
+			cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.value())));
 		}
 		else if(prop.type() == ctrls::pg_type::folder)
 		{
@@ -233,6 +232,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 
 	_place.collocate();
 }
+
 
 void propertiespanel::enabled_bonds(const std::string& name, bool value)
 {

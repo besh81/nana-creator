@@ -27,7 +27,8 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	// caption
 	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-	_caption.caption("Objects");
+	_caption.caption("  Objects");
+	_caption.text_align(nana::align::left, nana::align_v::center);
 	_place.field("caption") << _caption;
 
 
@@ -37,15 +38,13 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	{
 		g_gui_mgr.moveupselected();
 	});
-	nana::paint::image _img_up("icons/up.png");
-	_ctxmenu.image(0, _img_up);
+	_ctxmenu.image(0, nana::paint::image("icons/up.png"));
 	// 1. move down
 	_ctxmenu.append("Move Down", [this](const nana::menu::item_proxy& ip)
 	{
 		g_gui_mgr.movedownselected();
 	});
-	nana::paint::image _img_down("icons/down.png");
-	_ctxmenu.image(1, _img_down);
+	_ctxmenu.image(1, nana::paint::image("icons/down.png"));
 	// 2. -----
 	_ctxmenu.append_splitter();
 	// 3. delete
@@ -53,8 +52,7 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	{
 		g_gui_mgr.deleteselected();
 	});
-	nana::paint::image _img_del("icons/delete.png");
-	_ctxmenu.image(3, _img_del);
+	_ctxmenu.image(3, nana::paint::image("icons/delete.png"));
 	// 4. -----
 	_ctxmenu.append_splitter();
 	// 5. cut
@@ -62,22 +60,19 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	{
 		g_gui_mgr.copyselected(true);
 	});
-	nana::paint::image _img_cut("icons/cut.png");
-	_ctxmenu.image(5, _img_cut);
+	_ctxmenu.image(5, nana::paint::image("icons/cut.png"));
 	// 6. copy
 	_ctxmenu.append("Copy", [this](const nana::menu::item_proxy& ip)
 	{
 		g_gui_mgr.copyselected();
 	});
-	nana::paint::image _img_copy("icons/copy.png");
-	_ctxmenu.image(6, _img_copy);
+	_ctxmenu.image(6, nana::paint::image("icons/copy.png"));
 	// 7. paste
 	_ctxmenu.append("Paste", [this](const nana::menu::item_proxy& ip)
 	{
 		g_gui_mgr.pasteselected();
 	});
-	nana::paint::image _img_paste("icons/paste.png");
-	_ctxmenu.image(7, _img_paste);
+	_ctxmenu.image(7, nana::paint::image("icons/paste.png"));
 
 
 	// events

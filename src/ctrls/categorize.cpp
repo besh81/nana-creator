@@ -25,7 +25,7 @@ namespace ctrls
 		//properties.append("categories").label("Categories").category(CAT_COMMON).type(pg_type::collection_categorize) = ""; //TODO //XXX
 		properties.append("splitter").label("Splitter").category(CAT_COMMON).type(pg_type::string) = ctg.splitstr();
 		// appearance
-		properties.property("bgcolor") = nana::to_string(ctg.bgcolor(), false);
+		// ...
 		// layout
 		// ...
 	}

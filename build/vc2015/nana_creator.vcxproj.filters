@@ -168,6 +168,9 @@
     <ClCompile Include="..\..\src\ctrls\splitterbar.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\creator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -316,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\splitterbar.h">
       <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\creator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

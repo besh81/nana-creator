@@ -10,10 +10,12 @@
 #include <nana/gui/filebox.hpp>
 #include "items_dialog.h"
 #include "filemanager.h"
+#include "inifile.h"
 #include "lock_guard.h"
 
 
 extern filemanager		g_file_mgr;
+extern inifile			g_inifile;
 
 
 
@@ -61,6 +63,64 @@ void pg_filename::create(nana::window wd)
 
 
 
+/// class pg_image
+void pg_image::value(const std::string& value)
+{
+	value_ = equalize_path(value,
+#ifdef NANA_WINDOWS
+		'/', '\\'
+#else
+		'\\', '/'
+#endif //NANA_WINDOWS
+	);
+
+	lock_guard evt_lock(&evt_emit_, false);
+	txt_.caption(g_file_mgr.to_relative(value_));
+}
+
+void pg_image::create(nana::window wd)
+{
+	pg_string_button::create(wd);
+
+	//textbox
+	value(value_);
+
+	//button
+	set_button_click([this](const nana::arg_click& arg)
+	{
+		nana::filebox fb(arg.window_handle, true);
+
+		fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+
+		if(value_.empty())
+			fb.init_path(equalize_path(g_inifile.image_dir(),
+#ifdef NANA_WINDOWS
+				'/', '\\'
+#else
+				'\\', '/'
+#endif // NANA_WINDOWS
+			));
+		else
+			fb.init_file(value_);
+
+		if(fb())
+		{
+			value_ = fb.file();
+			txt_.caption(g_file_mgr.to_relative(fb.file()));
+			
+			// save image folder
+			auto path = get_dir_path(equalize_path(fb.file()));
+			if(path != g_inifile.image_dir())
+				g_inifile.image_dir(path, true);
+
+			emit_event();
+		}
+	});
+}
+/// class pg_image end
+
+
+
 /// class pg_folder
 void pg_folder::value(const std::string& value)
 {
@@ -80,7 +140,13 @@ void pg_folder::create(nana::window wd)
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
-		nana::folderbox folder_picker(arg.window_handle, equalize_path(value_, '/', '\\'));
+		nana::folderbox folder_picker(arg.window_handle, equalize_path(value_,
+#ifdef NANA_WINDOWS
+			'/', '\\'
+#else
+			'\\', '/'
+#endif //NANA_WINDOWS
+		));
 
 		auto path = folder_picker.show();
 		if(path)

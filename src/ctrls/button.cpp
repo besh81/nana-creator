@@ -51,7 +51,7 @@ namespace ctrls
 		// init
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
 		if(properties.property("transparent").as_bool())
-			cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
+			cd->init.push_back(name + ".transparent(true);");
 	}
 
 }//end namespace ctrls

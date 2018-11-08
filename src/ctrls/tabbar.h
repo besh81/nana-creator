@@ -28,7 +28,8 @@ namespace ctrls
 
 
 	protected:
-		nana::tabbar<int> tbb;
+		nana::tabbar<size_t> tbb;
+		bool internal_use{ false };
 	};
 
 }//end namespace ctrls

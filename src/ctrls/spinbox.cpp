@@ -28,7 +28,6 @@ namespace ctrls
 		properties.append("step").label("Step").category(CAT_COMMON).type(pg_type::string_int) = 1;
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = spn.editable();
 		// appearance
-		properties.property("bgcolor") = nana::to_string(spn.bgcolor(), false);
 		properties.append("prefix").label("Prefix").category(CAT_APPEARANCE).type(pg_type::string) = "";
 		properties.append("suffix").label("Suffix").category(CAT_APPEARANCE).type(pg_type::string) = "";
 		// layout

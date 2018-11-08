@@ -8,10 +8,12 @@
 #include "config.h"
 #include "items_dialog.h"
 #include <nana/gui/filebox.hpp>
+#include "nana_extra/color_helper.h"
 #include "nana_extra/propgrid_items.h"
 #include "pg_items.h"
 #include "filemanager.h"
 #include "tokenizer/Tokenizer.h"
+#include "style.h"
 
 
 #define NODE_NAME		"n"
@@ -21,6 +23,14 @@
 
 
 extern filemanager		g_file_mgr;
+
+
+
+size_t hash_string(std::string const& str)
+{
+	static std::hash<std::string> h;
+	return h(str);
+}
 
 
 //items_dialog
@@ -40,10 +50,7 @@ void items_dialog::init()
 
 
 		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string("Text", "")));
-		//
-		auto pgc = new pg_filename("Image", "");
-		cat.append(nana::propertygrid::pgitem_ptr(pgc));
-		pgc->add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+		cat.append(nana::propertygrid::pgitem_ptr(new pg_image("Image", "")));
 	}
 	else if(_type == ctrls::pg_type::collection_toolbar)
 	{
@@ -51,12 +58,10 @@ void items_dialog::init()
 		toolbar.enable(6, false);
 		toolbar.enable(7, false);
 
+
 		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_check("Separator", false)));
 		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string("Text", "")));
-		//
-		auto pgc = new pg_filename("Image", "");
-		cat.append(nana::propertygrid::pgitem_ptr(pgc));
-		pgc->add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+		cat.append(nana::propertygrid::pgitem_ptr(new pg_image("Image", "")));
 	}
 	else if(_type == ctrls::pg_type::collection_listbox)
 	{
@@ -76,6 +81,9 @@ void items_dialog::init()
 
 
 		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string("Text", "")));
+		cat.append(nana::propertygrid::pgitem_ptr(new pg_image("Image", "")));
+		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color("Background", "", true)));
+		cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color("Foreground", "", true)));
 	}
 	else if(_type == ctrls::pg_type::collection_menubar)
 	{
@@ -120,41 +128,46 @@ void items_dialog::init()
 			}
 			_selected->text = arg.item.value();
 
-			// update treebox
-			auto sel = items_tree.selected();
-			if(sel.empty())
-				return;
-			sel.text(_selected->text);
-
-			nana::API::refresh_window(items_tree);
+			update_text(items_tree.selected(), _selected->text);
 		}
 		else if(arg.item.label() == "Image")
 		{
 			// collection_combox
 			// collection_toolbar
+			// collection_tabbar
 
 			_selected->img = arg.item.value();
+
+			update_image(items_tree.selected(), _selected->img);
 		}
 		else if(arg.item.label() == "Separator")
 		{
 			// collection_toolbar
 
 			_selected->separator = arg.item.value() == "true" ? true : false;
-			_update_selected();
+			update_selected();
 
-			// update treebox
-			auto sel = items_tree.selected();
-			if(sel.empty())
-				return;
-			sel.text(arg.item.value() == "true" ? SEPARATOR_TXT : _selected->text);
-
-			nana::API::refresh_window(items_tree);
+			auto ip = items_tree.selected();
+			update_text(ip, arg.item.value() == "true" ? SEPARATOR_TXT : _selected->text);
+			update_image(ip, arg.item.value() == "true" ? "" : _selected->img);
 		}
 		else if(arg.item.label() == "Width")
 		{
 			// collection_listbox
 
 			_selected->width = arg.item.value();
+		}
+		else if(arg.item.label() == "Background")
+		{
+			// collection_tabbar
+
+			_selected->bgcolor = arg.item.value();
+		}
+		else if(arg.item.label() == "Foreground")
+		{
+			// collection_tabbar
+
+			_selected->fgcolor = arg.item.value();
 		}
 		// collection_collapse
 		else if(arg.item.label() == "Left")
@@ -172,7 +185,7 @@ void items_dialog::init()
 
 	_retval = nana::msgbox::pick_cancel;
 
-	_update_selected();
+	update_selected();
 
 	//------------------
 	// events
@@ -192,6 +205,8 @@ void items_dialog::init()
 			_data_struct ds;
 			ds.key = ip.key();
 			ds.text = item_txt;
+			ds.bgcolor = nana::to_string(ITEMS_DEF_BGCOL, true);
+			ds.fgcolor = nana::to_string(ITEMS_DEF_FGCOL, true);
 
 			_data.push_back(ds);
 			ip.select(true);
@@ -376,7 +391,7 @@ void items_dialog::init()
 		else
 		{
 			_selected = 0;
-			_update_selected();
+			update_selected();
 		}
 	});
 
@@ -405,7 +420,7 @@ void items_dialog::select_item(const std::string& key)
 		if(i->key == key)
 		{
 			_selected = i._Ptr;
-			_update_selected();
+			update_selected();
 			break;
 		}
 	}
@@ -425,7 +440,7 @@ void items_dialog::erase_item(const std::string& key)
 }
 
 
-void items_dialog::_update_selected()
+void items_dialog::update_selected()
 {
 	_propgrid.enabled(_selected);
 
@@ -434,7 +449,7 @@ void items_dialog::_update_selected()
 		if(_selected)
 		{
 			_propgrid.at(nana::propertygrid::index_pair(1, 0)).value(_selected->text);
-			_propgrid.at(nana::propertygrid::index_pair(1, 1)).value(g_file_mgr.to_relative(_selected->img));
+			_propgrid.at(nana::propertygrid::index_pair(1, 1)).value(_selected->img);
 
 			// set focus
 			//TODO
@@ -465,7 +480,7 @@ void items_dialog::_update_selected()
 				_propgrid.at(nana::propertygrid::index_pair(1, 2)).enabled(true);
 
 				_propgrid.at(nana::propertygrid::index_pair(1, 1)).value(_selected->text);
-				_propgrid.at(nana::propertygrid::index_pair(1, 2)).value(g_file_mgr.to_relative(_selected->img));
+				_propgrid.at(nana::propertygrid::index_pair(1, 2)).value(_selected->img);
 			}
 		}
 		else
@@ -492,10 +507,16 @@ void items_dialog::_update_selected()
 		if(_selected)
 		{
 			_propgrid.at(nana::propertygrid::index_pair(1, 0)).value(_selected->text);
+			_propgrid.at(nana::propertygrid::index_pair(1, 1)).value(_selected->img);
+			_propgrid.at(nana::propertygrid::index_pair(1, 2)).value(_selected->bgcolor.empty() ? nana::to_string(ITEMS_DEF_BGCOL, true) : _selected->bgcolor);
+			_propgrid.at(nana::propertygrid::index_pair(1, 3)).value(_selected->fgcolor.empty() ? nana::to_string(ITEMS_DEF_FGCOL, true) : _selected->fgcolor);
 		}
 		else
 		{
 			_propgrid.at(nana::propertygrid::index_pair(1, 0)).value("");
+			_propgrid.at(nana::propertygrid::index_pair(1, 1)).value("");
+			_propgrid.at(nana::propertygrid::index_pair(1, 2)).value("");
+			_propgrid.at(nana::propertygrid::index_pair(1, 3)).value("");
 		}
 	}
 	else if(_type == ctrls::pg_type::collection_menubar)
@@ -530,6 +551,32 @@ void items_dialog::_update_selected()
 			_propgrid.at(nana::propertygrid::index_pair(1, 3)).value("");
 		}
 	}
+}
+
+
+void items_dialog::update_text(nana::drawerbase::treebox::item_proxy& ip, const std::string& text)
+{
+	if(ip.empty())
+		return;
+
+	ip.text(text);
+	nana::API::refresh_window(items_tree);
+}
+
+
+void items_dialog::update_image(nana::drawerbase::treebox::item_proxy& ip, const std::string& filename)
+{
+	if(ip.empty())
+		return;
+
+	auto img_id = hash_string(filename);
+
+	auto & img = items_tree.icon(std::to_string(img_id));
+	if(img.normal.empty())
+		img.normal.open(filename);
+
+	ip.icon(std::to_string(img_id));
+	nana::API::refresh_window(items_tree);
 }
 
 
@@ -580,6 +627,9 @@ void items_dialog::value(const std::string& items)
 		else if(_type == ctrls::pg_type::collection_tabbar)
 		{
 			d.text = items_tree_text = item_tkn.next();
+			d.img = item_tkn.next();
+			d.bgcolor = item_tkn.next();
+			d.fgcolor = item_tkn.next();
 		}
 		else if(_type == ctrls::pg_type::collection_menubar)
 		{
@@ -604,13 +654,19 @@ void items_dialog::value(const std::string& items)
 		}
 		else
 			return;
-		
+
 
 		if(d.owner == CITEM_EMPTY)
 		{
 			auto ip = items_tree.insert(d.key, items_tree_text);
 			if(_root.empty())
 				_root = ip.owner();
+
+			// load treebox image
+			if(!d.img.empty())
+			{
+				update_image(ip, d.img);
+			}
 		}
 		else
 		{
@@ -622,8 +678,14 @@ void items_dialog::value(const std::string& items)
 				{
 					if(d.owner == item.key())
 					{
-						item.append(d.key, items_tree_text);
+						auto ip = item.append(d.key, items_tree_text);
 						item.expand(true);
+
+						// load treebox image
+						if(!d.img.empty())
+						{
+							update_image(ip, d.img);
+						}
 						
 						found = true;
 						return false;
@@ -679,7 +741,7 @@ std::string items_dialog::value()
 					}
 					else if(_type == ctrls::pg_type::collection_tabbar)
 					{
-						vitems.push_back(i.text);
+						vitems.push_back(i.text + CITEM_INNER_TKN + (i.img.empty() ? CITEM_EMPTY : i.img) + CITEM_INNER_TKN + i.bgcolor + CITEM_INNER_TKN + i.fgcolor);
 					}
 					else if(_type == ctrls::pg_type::collection_menubar)
 					{

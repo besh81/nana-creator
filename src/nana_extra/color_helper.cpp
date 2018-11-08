@@ -10,6 +10,9 @@
 #include "color_helper.h"
 
 
+#define	INHERITED_COLOR		"[inherited]"
+
+
 namespace nana
 {
 	/// helper functions
@@ -25,7 +28,7 @@ namespace nana
 		{
 			while(getline(ss, item, ','))
 			{
-				if(item == "[inherited]")
+				if(item == INHERITED_COLOR)
 					inherited = true;
 				else
 					items.push_back(item.empty() ? 0 : std::stoi(item));
@@ -47,9 +50,16 @@ namespace nana
 		return nana::color(items[0], items[1], items[2]);
 	}
 
+
 	std::string to_string(const nana::color& c, bool inherited)
 	{
-		return (inherited ? "[inherited]," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
+		return (inherited ? INHERITED_COLOR "," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
+	}
+
+
+	bool is_color_inherited(const std::string& s)
+	{
+		return s.find(INHERITED_COLOR) == 0 ? true : false;
 	}
 	/// helper functions - end
 

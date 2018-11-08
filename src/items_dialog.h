@@ -118,7 +118,9 @@ protected:
 	void select_item(const std::string& key);
 	void erase_item(const std::string& key);
 
-	void _update_selected();
+	void update_selected();
+	void update_text(nana::drawerbase::treebox::item_proxy& ip, const std::string& text);
+	void update_image(nana::drawerbase::treebox::item_proxy& ip, const std::string& filename);
 
 	ctrls::pg_type				_type;
 
@@ -138,6 +140,8 @@ protected:
 		std::string top{ "0" };
 		std::string cols{ "0" };
 		std::string rows{ "0" };
+		std::string bgcolor;
+		std::string fgcolor;
 	};
 	std::vector<_data_struct>	_data;
 	_data_struct*				_selected{ 0 };

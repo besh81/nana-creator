@@ -31,7 +31,7 @@ inifile::inifile()
 			// read values
 			_new_prj_dir = root.attribute("new_prj_dir").as_string();
 			_load_prj_dir = root.attribute("load_prj_dir").as_string();
-			_load_img_dir = root.attribute("load_img_dir").as_string();
+			_img_dir = root.attribute("img_dir").as_string();
 		}
 	}
 
@@ -63,9 +63,9 @@ void inifile::load_project_dir(const std::string& dir, bool save_to_file)
 }
 
 
-void inifile::load_image_dir(const std::string& dir, bool save_to_file)
+void inifile::image_dir(const std::string& dir, bool save_to_file)
 {
-	_load_img_dir = dir;
+	_img_dir = dir;
 
 	if(save_to_file)
 		save();
@@ -82,7 +82,7 @@ bool inifile::save()
 
 	root.append_attribute("new_prj_dir") = _new_prj_dir.c_str();
 	root.append_attribute("load_prj_dir") = _load_prj_dir.c_str();
-	root.append_attribute("load_img_dir") = _load_img_dir.c_str();
+	root.append_attribute("img_dir") = _img_dir.c_str();
 
 	return doc.save_file(INI_FILE);
 }

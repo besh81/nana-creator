@@ -28,7 +28,8 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	// caption
 	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-	_caption.caption("Assets");
+	_caption.caption("  Assets");
+	_caption.text_align(nana::align::left, nana::align_v::center);
 	_place.field("caption") << _caption;
 
 

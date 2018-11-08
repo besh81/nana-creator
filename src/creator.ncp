@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<nana-creator version="0.14.0">
+	<form mainclass="true" filename="creator" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="creator" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" caption="Nana Creator" width="800" height="500" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
+		<field type="field" name="toolbar" weight="30" layout="0" margin="0" gap="0">
+			<toolbar type="toolbar" name="_tb" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="[inherited],0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" buttons="New project&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\new_prj.png&#10;Load project&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\load_prj.png&#10;Save project&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save.png&#10;Save project as...&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save_as.png&#10;{sep}&#13;{sep}&#10;Generate C++ code&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\output_on.png&#10;{sep}&#13;{sep}&#10;Delete current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\delete.png&#10;{sep}&#13;{sep}&#10;Move up current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;Move down current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\down.png&#10;{sep}&#13;{sep}&#10;Cut current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\cut.png&#10;Copy current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\copy.png&#10;Paste into/after current selection&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\paste.png" scale="21" />
+		</field>
+		<field type="field" name="main_field" weight="-1" layout="0" margin="0" gap="0">
+			<field type="field" name="left_field" weight="20%" layout="1" margin="0" gap="0">
+				<field type="field" name="assets" weight="-1" layout="0" margin="0" gap="0" />
+				<splitterbar type="splitterbar" name="splitterbar3" />
+				<field type="field" name="objects" weight="-1" layout="0" margin="0" gap="0" />
+			</field>
+			<splitterbar type="splitterbar" name="splitterbar1" />
+			<field type="field" name="canvas" weight="55%" layout="0" margin="0" gap="0" />
+			<splitterbar type="splitterbar" name="splitterbar2" />
+			<field type="field" name="properties" weight="-1" layout="0" margin="0" gap="0" />
+		</field>
+		<field type="field" name="statusbar" weight="24" layout="0" margin="3" gap="0" />
+	</form>
+</nana-creator>

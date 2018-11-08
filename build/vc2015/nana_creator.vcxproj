@@ -83,13 +83,16 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../src;../../libs;$(NANALIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <UndefinePreprocessorDefinitions>
+      </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nana_v140_Debug_x86.lib;libjpeg.MDd.lib;libzlib.MDd.lib;libpng.MDd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,7 +114,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../src;../../libs;$(NANALIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -119,6 +122,7 @@
       <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>nana_v140_Release_x86.lib;libjpeg.MD.lib;libzlib.MD.lib;libpng.MD.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,6 +145,7 @@
     <ClCompile Include="..\..\libs\tokenizer\Tokenizer.cpp" />
     <ClCompile Include="..\..\src\assetspanel.cpp" />
     <ClCompile Include="..\..\src\codegenerator.cpp" />
+    <ClCompile Include="..\..\src\creator.cpp" />
     <ClCompile Include="..\..\src\ctrls\box_model.cpp" />
     <ClCompile Include="..\..\src\ctrls\button.cpp" />
     <ClCompile Include="..\..\src\ctrls\categorize.cpp" />
@@ -190,6 +195,7 @@
     <ClInclude Include="..\..\src\codegenerator_data.h" />
     <ClInclude Include="..\..\src\codegenerator.h" />
     <ClInclude Include="..\..\src\config.h" />
+    <ClInclude Include="..\..\src\creator.h" />
     <ClInclude Include="..\..\src\ctrls\box_model.h" />
     <ClInclude Include="..\..\src\ctrls\button.h" />
     <ClInclude Include="..\..\src\ctrls\categorize.h" />

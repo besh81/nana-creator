@@ -28,7 +28,7 @@ namespace ctrls
 		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = false; // txt.multi_lines();
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = txt.editable();
 		// appearance
-		properties.property("bgcolor") = nana::to_string(txt.bgcolor(), false);
+		// ...
 		// layout
 		// ...
 	}

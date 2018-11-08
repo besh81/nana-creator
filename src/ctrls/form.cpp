@@ -39,6 +39,10 @@ namespace ctrls
 		properties.append("width").label("Width").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_W;
 		properties.append("height").label("Height").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_H;
 		// appearance
+		properties.remove("bgcolor");
+		properties.remove("fgcolor");
+		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->bgcolor(), false);
+		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->fgcolor(), false);
 		properties.append("decoration").label("Decoration").category(CAT_APPEARANCE).type(pg_type::check) = true;
 		properties.append("taskbar").label("Taskbar").category(CAT_APPEARANCE).type(pg_type::check) = true;
 		properties.append("floating").label("Floating").category(CAT_APPEARANCE).type(pg_type::check) = false;

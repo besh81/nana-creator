@@ -39,6 +39,25 @@ protected:
 
 
 
+/// class pg_image
+class pg_image
+	: public nana::pg_string_button
+{
+public:
+	pg_image() = default;
+
+	pg_image(const std::string& label, const std::string& value)
+		: pg_string_button(label, value)
+	{}
+
+	virtual void value(const std::string& value) override;
+
+protected:
+	virtual void create(nana::window wd) override;
+};
+
+
+
 /// class pg_folder
 class pg_folder
 	: public nana::pg_string_button

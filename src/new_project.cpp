@@ -27,8 +27,13 @@ void new_project::init()
 
 
 	// folder textbox
-	folder_txt.caption(g_inifile.new_project_dir());
-
+	folder_txt.caption(equalize_path(g_inifile.new_project_dir(),
+#ifdef NANA_WINDOWS
+		'/', '\\'
+#else
+		'\\', '/'
+#endif //NANA_WINDOWS
+	));
 
 
 	//------------------
@@ -56,17 +61,23 @@ void new_project::init()
 	// folder button
 	folder_btn.events().click([this]()
 	{
-		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption(), '/', '\\'));
+		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption(),
+#ifdef NANA_WINDOWS
+			'/', '\\'
+#else
+			'\\', '/'
+#endif //NANA_WINDOWS
+		));
 
 		auto path = folder_picker.show();
 		if(path)
 		{
-			//folder_txt.caption(equalize_path(fb.path()));
 			folder_txt.caption(path.value().string());
 
-			// save new project folder
-			if(folder_txt.caption() != g_inifile.new_project_dir())
-				g_inifile.new_project_dir(folder_txt.caption(), true);
+			// save new_project folder
+			auto path = get_dir_path(equalize_path(folder_txt.caption()));
+			if(path != g_inifile.new_project_dir())
+				g_inifile.new_project_dir(path, true);
 		}
 	});
 

@@ -27,15 +27,15 @@ public:
 	std::string load_project_dir() { return _load_prj_dir; }
 	void load_project_dir(const std::string& dir, bool save_to_file = true);
 
-	std::string load_image_dir() { return _load_img_dir; }
-	void load_image_dir(const std::string& dir, bool save_to_file = true);
+	std::string image_dir() { return _img_dir; }
+	void image_dir(const std::string& dir, bool save_to_file = true);
 
 	bool save();
 
 protected:
 	std::string		_new_prj_dir;
 	std::string		_load_prj_dir;
-	std::string		_load_img_dir;
+	std::string		_img_dir;
 };
 
 #endif //NANA_INIFILE_H

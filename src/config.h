@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.14.0"
+#define CREATOR_VERSION			"0.15.0"
 
 
 

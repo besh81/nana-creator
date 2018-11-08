@@ -28,7 +28,6 @@ namespace ctrls
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = CTRL_GROUP;
 		properties.append("format").label("Format").category(CAT_COMMON).type(pg_type::check) = false;
 		// appearance
-		properties.property("bgcolor") = nana::to_string(grp.bgcolor(), false);
 		properties.append("halign").label("Caption Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
 		// layout
 		properties.remove("weight");

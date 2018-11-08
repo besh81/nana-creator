@@ -45,7 +45,10 @@ namespace ctrls
 			properties.append("height").label("Height").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_H;
 		}
 		// appearance
-		// ...
+		properties.remove("bgcolor");
+		properties.remove("fgcolor");
+		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->bgcolor(), false);
+		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->fgcolor(), false);
 		// layout
 		properties.remove("weight");
 		if(_mainclass)

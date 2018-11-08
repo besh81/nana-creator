@@ -25,7 +25,7 @@ namespace ctrls
 		ctrl::init(&pct, CTRL_PICTURE, name, false);
 
 		// common
-		properties.append("source").label("Source").category(CAT_COMMON).type(pg_type::filename_img) = "";
+		properties.append("source").label("Source").category(CAT_COMMON).type(pg_type::image) = "";
 		// appearance
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = pct.transparent();
 		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);

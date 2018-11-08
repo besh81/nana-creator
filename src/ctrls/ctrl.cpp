@@ -82,27 +82,61 @@ namespace ctrls
 
 	void ctrl::generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name)
 	{
+		auto pw = nana::API::get_widget(nanawdg->parent());
 		bool inherited;
-		std::string col;
+		std::string color_txt;
+		nana::color color;
+
 		// bg
-		col = properties.property("bgcolor").as_string();
-		nana::to_color(col, inherited);
-		if(!inherited)
+		color_txt = properties.property("bgcolor").as_string();
+		color = nana::to_color(color_txt, inherited);
+		if(inherited)
 		{
-			if(name == "")
-				cd->init.push_back("bgcolor(nana::color(" + col + "));");
-			else
-				cd->init.push_back(name + ".bgcolor(nana::color(" + col + "));");
+			// is inherited: set parent color
+			if(name != "")
+			{
+				if(ci->create == "*this")
+					cd->init.push_back(name + ".bgcolor(this->bgcolor());");
+				else
+					cd->init.push_back(name + ".bgcolor(" + ci->create + ".bgcolor());");
+			}
 		}
-		// fg
-		col = properties.property("fgcolor").as_string();
-		nana::to_color(col, inherited);
-		if(!inherited)
+		else
 		{
-			if(name == "")
-				cd->init.push_back("fgcolor(nana::color(" + col + "));");
-			else
-				cd->init.push_back(name + ".fgcolor(nana::color(" + col + "));");
+			// not inherited: color_txt is in the form R,G,B
+			if(color != _defaults.bgcolor)
+			{
+				if(name == "")
+					cd->init.push_back("bgcolor(nana::color(" + color_txt + "));");
+				else
+					cd->init.push_back(name + ".bgcolor(nana::color(" + color_txt + "));");
+			}
+		}
+
+		// fg
+		color_txt = properties.property("fgcolor").as_string();
+		color = nana::to_color(color_txt, inherited);
+		if(inherited)
+		{
+			// is inherited: set parent color
+			if(name != "")
+			{
+				if(ci->create == "*this")
+					cd->init.push_back(name + ".fgcolor(this->fgcolor());");
+				else
+					cd->init.push_back(name + ".fgcolor(" + ci->create + ".fgcolor());");
+			}
+		}
+		else
+		{
+			// not inherited: color_txt is in the form R,G,B
+			if(color != _defaults.fgcolor)
+			{
+				if(name == "")
+					cd->init.push_back("fgcolor(nana::color(" + color_txt + "));");
+				else
+					cd->init.push_back(name + ".fgcolor(nana::color(" + color_txt + "));");
+			}
 		}
 	}
 
@@ -129,14 +163,19 @@ namespace ctrls
 		//nana::API::effects_edge_nimbus(*nanawdg, nana::effects::edge_nimbus::active);
 
 
+		// save defaults values
+		_defaults.bgcolor = nanawdg->bgcolor();
+		_defaults.fgcolor = nanawdg->fgcolor();
+
+
 		// properties - main
 		properties.append("type") = type;
 		properties.append("name") = name;
 		// common
 		properties.append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = nanawdg->enabled();
 		// appearance
-		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->bgcolor(), true);
-		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->fgcolor(), true);
+		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->bgcolor(), false);
+		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->fgcolor(), false);
 		// font
 		if(_use_font)
 		{

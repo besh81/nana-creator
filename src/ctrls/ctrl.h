@@ -63,6 +63,14 @@ namespace ctrls
 
 		bool				_highlighted{ false };
 		bool				_selected{ false };
+
+		struct def_values
+		{
+			nana::color		bgcolor;
+			nana::color		fgcolor;
+		};
+		
+		def_values			_defaults;
 	};
 
 }//end namespace ctrls

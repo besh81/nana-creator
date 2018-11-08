@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.14.0)
+ *	C++ code generated with Nana Creator (0.15.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -25,6 +25,7 @@
 #include <nana/gui/widgets/spinbox.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/panel.hpp>
+#include <nana/gui/widgets/tabbar.hpp>
 #include <nana/gui/widgets/date_chooser.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/treebox.hpp>
@@ -65,6 +66,7 @@ private:
 		// label1
 		label1.create(*this);
 		_place["field1"] << label1;
+		label1.bgcolor(this->bgcolor());
 		label1.fgcolor(nana::color(255,0,0));
 		label1.caption("Nana-Creator test");
 		label1.text_align(static_cast<nana::align>(1), static_cast<nana::align_v>(1));
@@ -75,7 +77,6 @@ private:
 		// categorize1
 		categorize1.create(*this);
 		_place["field1"] << categorize1;
-		categorize1.bgcolor(nana::color(255,255,255));
 		// checkbox1
 		checkbox1.create(*this);
 		_place["field1"] << checkbox1;
@@ -88,7 +89,6 @@ private:
 		group1.caption_align(static_cast<nana::align>(0));
 		group1.div("margin=5 gap=2 _field_");
 		group1.caption("group");
-		group1.bgcolor(nana::color(201,197,190));
 		_place["field1"] << group1;
 		// checkbox2
 		checkbox2.create(group1);
@@ -116,6 +116,7 @@ private:
 		// picture1
 		picture1.create(*this);
 		_place["field1"] << picture1;
+		picture1.bgcolor(this->bgcolor());
 		picture1.load(nana::paint::image("icons/save.png"));
 		picture1.transparent(false);
 		picture1.align(static_cast<nana::align>(0), static_cast<nana::align_v>(0));
@@ -123,7 +124,6 @@ private:
 		// progress1
 		progress1.create(*this);
 		_place["field1"] << progress1;
-		progress1.fgcolor(nana::color(16,117,21));
 		progress1.value(25);
 		// slider1
 		slider1.create(*this);
@@ -136,7 +136,6 @@ private:
 		// spinbox1
 		spinbox1.create(*this);
 		_place["field1"] << spinbox1;
-		spinbox1.bgcolor(nana::color(255,255,255));
 		spinbox1.range(0, 100, 5);
 		spinbox1.value("55");
 		spinbox1.editable(true);
@@ -144,32 +143,41 @@ private:
 		// textbox1
 		textbox1.create(*this);
 		_place["field1"] << textbox1;
-		textbox1.bgcolor(nana::color(255,255,255));
 		textbox1.caption("");
 		textbox1.tip_string("insert text");
 		textbox1.multi_lines(false);
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
-		panel1_place.div("vert margin=5 gap=2 arrange=[40%,variable,variable,30] _field_");
+		panel1_place.div("vert margin=5 gap=2 arrange=[40,40%,variable,variable,30] _field_");
 		panel1.bgcolor(nana::color(120,208,200));
+		panel1.fgcolor(this->fgcolor());
 		_place["field2"] << panel1;
+		// tabbar1
+		tabbar1.create(panel1);
+		panel1_place["_field_"] << tabbar1;
+		tabbar1.push_back("tab1");
+		tabbar1.push_back("tab2");
+		tabbar1.tab_image(1, nana::paint::image("icons/datechooser.png"));
+		tabbar1.tab_bgcolor(1, nana::color(212,208,20));
+		tabbar1.tab_fgcolor(1, nana::color(0,50,255));
+		tabbar1.toolbox(nana::drawerbase::tabbar::trigger::kits::close, true);
+		tabbar1.close_fly(true);
 		// datechooser1
 		datechooser1.create(panel1);
 		panel1_place["_field_"] << datechooser1;
 		// listbox1
 		listbox1.create(panel1);
 		panel1_place["_field_"] << listbox1;
-		listbox1.bgcolor(nana::color(255,255,255));
 		listbox1.checkable(false);
 		listbox1.show_header(true);
 		// treebox1
 		treebox1.create(panel1);
 		panel1_place["_field_"] << treebox1;
-		treebox1.bgcolor(nana::color(255,255,255));
 		// toolbar1
 		toolbar1.create(panel1);
 		panel1_place["_field_"] << toolbar1;
+		toolbar1.bgcolor(panel1.bgcolor());
 		toolbar1.scale(21);
 		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
 		toolbar1.separate();
@@ -199,6 +207,7 @@ protected:
 	nana::textbox textbox1;
 	nana::panel<true> panel1;
 	nana::place panel1_place;
+	nana::tabbar<size_t> tabbar1;
 	nana::date_chooser datechooser1;
 	nana::listbox listbox1;
 	nana::treebox treebox1;

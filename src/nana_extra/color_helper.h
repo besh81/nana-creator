@@ -17,6 +17,8 @@ namespace nana
 	nana::color to_color(const std::string& s, bool& inherited);
 	std::string to_string(const nana::color& c, bool inherited);
 
+	bool is_color_inherited(const std::string& s);
+
 }//end namespace nana
 
 #endif //NANA_CREATOR_COLOR_HELPER_H
