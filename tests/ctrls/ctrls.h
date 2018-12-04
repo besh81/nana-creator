@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.15.0)
+ *	C++ code generated with Nana Creator (0.16.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -25,11 +25,11 @@
 #include <nana/gui/widgets/spinbox.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/panel.hpp>
+#include <nana/gui/widgets/toolbar.hpp>
 #include <nana/gui/widgets/tabbar.hpp>
 #include <nana/gui/widgets/date_chooser.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/treebox.hpp>
-#include <nana/gui/widgets/toolbar.hpp>
 
 //<*includes
 
@@ -149,31 +149,10 @@ private:
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
-		panel1_place.div("vert margin=5 gap=2 arrange=[40,40%,variable,variable,30] _field_");
+		panel1_place.div("vert margin=5 gap=2 arrange=[30,variable] _field_");
 		panel1.bgcolor(nana::color(120,208,200));
 		panel1.fgcolor(this->fgcolor());
 		_place["field2"] << panel1;
-		// tabbar1
-		tabbar1.create(panel1);
-		panel1_place["_field_"] << tabbar1;
-		tabbar1.push_back("tab1");
-		tabbar1.push_back("tab2");
-		tabbar1.tab_image(1, nana::paint::image("icons/datechooser.png"));
-		tabbar1.tab_bgcolor(1, nana::color(212,208,20));
-		tabbar1.tab_fgcolor(1, nana::color(0,50,255));
-		tabbar1.toolbox(nana::drawerbase::tabbar::trigger::kits::close, true);
-		tabbar1.close_fly(true);
-		// datechooser1
-		datechooser1.create(panel1);
-		panel1_place["_field_"] << datechooser1;
-		// listbox1
-		listbox1.create(panel1);
-		panel1_place["_field_"] << listbox1;
-		listbox1.checkable(false);
-		listbox1.show_header(true);
-		// treebox1
-		treebox1.create(panel1);
-		panel1_place["_field_"] << treebox1;
 		// toolbar1
 		toolbar1.create(panel1);
 		panel1_place["_field_"] << toolbar1;
@@ -182,10 +161,54 @@ private:
 		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
 		toolbar1.separate();
 		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
+		// notebook1
+		notebook1_pnl.create(panel1);
+		notebook1_tbb.create(notebook1_pnl);
+		notebook1_plc.bind(notebook1_pnl);
+		notebook1_plc.div("vert margin=1 <vert weight=30 tabs><pages>");
+		notebook1_plc["tabs"] << notebook1_tbb;
+		notebook1_tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::close, true);
+		notebook1_tbb.close_fly(true);
+		panel1_place["_field_"] << notebook1_pnl;
+		// page1
+		page1.create(notebook1_pnl);
+		page1_place.bind(page1);
+		page1_place.div("margin=5 gap=2 _field_");
+		notebook1_tbb.push_back("page");
+		notebook1_tbb.tab_bgcolor(notebook1_tbb.length()-1, page1.bgcolor());
+		notebook1_tbb.tab_fgcolor(notebook1_tbb.length()-1, page1.fgcolor());
+		notebook1_tbb.attach(notebook1_tbb.length()-1, page1);
+		notebook1_plc["pages"].fasten(page1);
+		// datechooser1
+		datechooser1.create(page1);
+		page1_place["_field_"] << datechooser1;
+		// page2
+		page2.create(notebook1_pnl);
+		page2_place.bind(page2);
+		page2_place.div("vert margin=5 gap=2 _field_");
+		page2.bgcolor(nana::color(212,208,20));
+		page2.fgcolor(nana::color(0,0,255));
+		notebook1_tbb.push_back("page");
+		notebook1_tbb.tab_image(notebook1_tbb.length()-1, nana::paint::image("icons/datechooser.png"));
+		notebook1_tbb.tab_bgcolor(notebook1_tbb.length()-1, page2.bgcolor());
+		notebook1_tbb.tab_fgcolor(notebook1_tbb.length()-1, page2.fgcolor());
+		notebook1_tbb.attach(notebook1_tbb.length()-1, page2);
+		notebook1_plc["pages"].fasten(page2);
+		// listbox1
+		listbox1.create(page2);
+		page2_place["_field_"] << listbox1;
+		listbox1.checkable(false);
+		listbox1.show_header(true);
+		// treebox1
+		treebox1.create(page2);
+		page2_place["_field_"] << treebox1;
 
 		_place.collocate();
 		group1.collocate();
 		panel1_place.collocate();
+		notebook1_plc.collocate();
+		page1_place.collocate();
+		page2_place.collocate();
 	}
 
 
@@ -207,11 +230,17 @@ protected:
 	nana::textbox textbox1;
 	nana::panel<true> panel1;
 	nana::place panel1_place;
-	nana::tabbar<size_t> tabbar1;
+	nana::toolbar toolbar1;
+	nana::panel<true> notebook1_pnl;
+	nana::tabbar<size_t> notebook1_tbb;
+	nana::place notebook1_plc;
+	nana::panel<true> page1;
+	nana::place page1_place;
 	nana::date_chooser datechooser1;
+	nana::panel<true> page2;
+	nana::place page2_place;
 	nana::listbox listbox1;
 	nana::treebox treebox1;
-	nana::toolbar toolbar1;
 
 
 	//<*declarations

@@ -22,6 +22,7 @@ public:
 	assetspanel(nana::window wd, bool visible = true);
 	~assetspanel() {}
 
+	void selected(std::function<void(const std::string&)> f);
 	void deselect();
 
 private:

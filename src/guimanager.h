@@ -21,12 +21,15 @@
 #include "statusbar.h"
 
 
+typedef std::shared_ptr<ctrls::ctrl>	control_obj;
+typedef std::weak_ptr<ctrls::ctrl>		control_obj_ptr;
+
+
 enum class cursor_action
 {
 	select,
 	add
 };
-
 
 struct cursor_state
 {
@@ -34,19 +37,11 @@ struct cursor_state
 	std::string		type;
 };
 
-
-enum class insert_position
+enum class insert_mode
 {
 	before,
 	into,
 	after
-};
-
-
-struct add_position
-{
-	tree_node<control_obj>*	ctrl{ 0 };
-	insert_position			pos{ insert_position::into };
 };
 
 
@@ -61,11 +56,7 @@ public:
 	{
 		_root_wd = wd;
 	}
-	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, nana::toolbar* tb, statusbar* sb)
-	{
-		_pp = pp; _ap = ap; _op = op; _main_wd = main_wd; _tb = tb; _sb = sb;
-		enableGUI(false);
-	}
+	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, nana::toolbar* tb, statusbar* sb);
 	void clear();
 
 	void enableGUI(bool state);
@@ -76,7 +67,7 @@ public:
 	void new_project(const std::string& type);
 
 	tree_node<control_obj>* addmainctrl(const std::string& type, const std::string& name = "");
-	tree_node<control_obj>* addcommonctrl(add_position add_pos, const std::string& type, const std::string& name = "");
+	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* node, const std::string& type, insert_mode mode, const std::string& name = "");
 
 	void deleteselected();
 	void moveupselected();
@@ -103,9 +94,9 @@ public:
 	}
 
 
+	bool click_ctrl(control_obj ctrl, const nana::arg_mouse& arg);
 	void left_click_ctrl(control_obj ctrl);
-	bool right_click_ctrl(control_obj ctrl);
-	void clickobjectspanel(const std::string& name);
+	void click_objectspanel(const std::string& name);
 
 
 	void serialize(pugi::xml_node* xml_parent);
@@ -113,19 +104,18 @@ public:
 	
 
 private:
-	bool _check_parent(control_obj parent, const std::string& type);
-	bool _check_siblings(control_obj parent, const std::string& type);
+	bool _check_relationship(control_obj parent, const std::string& child_type);
+
 	control_obj _create_ctrl(control_obj parent, const std::string& type, const std::string& name);
 
-	tree_node<control_obj>* _registerobject(control_obj ctrl, add_position add_pos);
+	tree_node<control_obj>* _registerobject(control_obj ctrl, tree_node<control_obj>* node, insert_mode mode);
 
 	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
-	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent);
+	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool paste = false);
 	void _deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node);
 
 	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
-	void _updateparentctrl(tree_node<control_obj>* node);
 	void _updatechildrenctrls(tree_node<control_obj>* node);
 
 	void _update_op();
@@ -154,8 +144,6 @@ private:
 
 	pugi::xml_document		_cut_copy_doc;
 	bool					_copied{ false };
-
-	insert_position			_insert_pos;
 };
 
 #endif //NANA_CREATOR_GUIMANAGER_H

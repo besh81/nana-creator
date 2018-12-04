@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//categorize
-	categorize::categorize(nana::window wd, const std::string& name)
-		: ctrl()
+	categorize::categorize(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		ctg.create(wd);
+		ctg.create(*parent->nanawdg);
 		ctrl::init(&ctg, CTRL_CATEGORIZE, name);
 
 		// common

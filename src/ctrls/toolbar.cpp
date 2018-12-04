@@ -19,10 +19,10 @@ namespace ctrls
 {
 
 	//toolbar
-	toolbar::toolbar(nana::window wd, const std::string& name)
-		: ctrl()
+	toolbar::toolbar(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		tlb.create(wd);
+		tlb.create(*parent->nanawdg);
 		ctrl::init(&tlb, CTRL_TOOLBAR, name);
 
 		// common

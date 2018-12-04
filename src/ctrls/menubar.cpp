@@ -13,14 +13,12 @@
 
 namespace ctrls
 {
-	
-
 
 	//menubar
-	menubar::menubar(nana::window wd, const std::string& name)
-		: ctrl()
+	menubar::menubar(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		mnb.create(wd);
+		mnb.create(*parent->nanawdg);
 		ctrl::init(&mnb, CTRL_MENUBAR, name);
 
 		// common

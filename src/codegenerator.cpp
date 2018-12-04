@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <streambuf>
+#include <cstring>
 #include "codegenerator.h"
 #include "guimanager.h"
 #include "filemanager.h"
@@ -234,8 +235,6 @@ void codegenerator::_generate(tree_node<control_obj>* node, const std::string& c
 	if(!node)
 		return;
 
-	auto attr = &node->value->properties;
-
 	code_info_struct ci;
 	ci.create = create;
 	ci.place = place;
@@ -247,11 +246,6 @@ void codegenerator::_generate(tree_node<control_obj>* node, const std::string& c
 	_generate(node->child, ci.create, ci.place, ci.field);
 	// siblings
 	_generate(node->next, create, place, field);
-
-	// children
-	/*_generate(node->child, ci.create, ci.place, ci.place.find(CTRL_GRID) != std::string::npos ? 0 : 1);
-	// siblings
-	_generate(node->next, create, place, place.find(CTRL_GRID) != std::string::npos ? 0 : field + 1);*/
 }
 
 

@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//treebox
-	treebox::treebox(nana::window wd, const std::string& name)
-		: ctrl()
+	treebox::treebox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		trb.create(wd);
+		trb.create(*parent->nanawdg);
 		ctrl::init(&trb, CTRL_TREEBOX, name);
 
 		// common

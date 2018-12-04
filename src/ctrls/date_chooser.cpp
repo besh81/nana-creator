@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//date_chooser
-	date_chooser::date_chooser(nana::window wd, const std::string& name)
-		: ctrl()
+	date_chooser::date_chooser(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		dtc.create(wd);
+		dtc.create(*parent->nanawdg);
 		ctrl::init(&dtc, CTRL_DATECHOOSER, name);
 
 		// common

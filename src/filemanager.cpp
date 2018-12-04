@@ -13,6 +13,7 @@
 #define GetCurrentDir _getcwd
 #else
 #include <unistd.h>
+#include <sys/stat.h>
 #define GetCurrentDir getcwd
 #endif
 #include<iostream>

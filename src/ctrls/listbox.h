@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		listbox(nana::window wd, const std::string& name);
+		listbox(ctrl* parent, const std::string& name);
 
 		void update() override;
 

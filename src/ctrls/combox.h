@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		combox(nana::window wd, const std::string& name);
+		combox(ctrl* parent, const std::string& name);
 
 		void update() override;
 

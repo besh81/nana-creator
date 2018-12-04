@@ -159,6 +159,8 @@
     <ClCompile Include="..\..\src\ctrls\label.cpp" />
     <ClCompile Include="..\..\src\ctrls\listbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\menubar.cpp" />
+    <ClCompile Include="..\..\src\ctrls\notebook.cpp" />
+    <ClCompile Include="..\..\src\ctrls\page.cpp" />
     <ClCompile Include="..\..\src\ctrls\panel.cpp" />
     <ClCompile Include="..\..\src\ctrls\picture.cpp" />
     <ClCompile Include="..\..\src\ctrls\progress.cpp" />
@@ -209,6 +211,8 @@
     <ClInclude Include="..\..\src\ctrls\label.h" />
     <ClInclude Include="..\..\src\ctrls\listbox.h" />
     <ClInclude Include="..\..\src\ctrls\menubar.h" />
+    <ClInclude Include="..\..\src\ctrls\notebook.h" />
+    <ClInclude Include="..\..\src\ctrls\page.h" />
     <ClInclude Include="..\..\src\ctrls\panel.h" />
     <ClInclude Include="..\..\src\ctrls\picture.h" />
     <ClInclude Include="..\..\src\ctrls\progress.h" />

@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//checkbox
-	checkbox::checkbox(nana::window wd, const std::string& name)
-		: ctrl()
+	checkbox::checkbox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		chk.create(wd);
+		chk.create(*parent->nanawdg);
 		ctrl::init(&chk, CTRL_CHECKBOX, name);
 
 		// common

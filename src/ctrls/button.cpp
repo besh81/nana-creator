@@ -14,10 +14,10 @@ namespace ctrls
 {
 
 	//button
-	button::button(nana::window wd, const std::string& name)
-		: ctrl()
+	button::button(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		btn.create(wd);
+		btn.create(*parent->nanawdg);
 		ctrl::init(&btn, CTRL_BUTTON, name);
 
 		// common

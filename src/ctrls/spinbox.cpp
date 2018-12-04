@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//spinbox
-	spinbox::spinbox(nana::window wd, const std::string& name)
-		: ctrl()
+	spinbox::spinbox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		spn.create(wd);
+		spn.create(*parent->nanawdg);
 		ctrl::init(&spn, CTRL_SPINBOX, name);
 
 		// common

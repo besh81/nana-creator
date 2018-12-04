@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		checkbox(nana::window wd, const std::string& name);
+		checkbox(ctrl* parent, const std::string& name);
 
 		void update() override;
 

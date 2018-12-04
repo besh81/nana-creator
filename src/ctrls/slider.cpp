@@ -14,10 +14,10 @@ namespace ctrls
 {
 
 	//slider
-	slider::slider(nana::window wd, const std::string& name)
-		: ctrl()
+	slider::slider(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		sld.create(wd);
+		sld.create(*parent->nanawdg);
 		ctrl::init(&sld, CTRL_SLIDER, name);
 
 		// common

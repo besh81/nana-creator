@@ -27,6 +27,7 @@ public:
 	bool clear();
 
 	bool select(const std::string& name);
+	void selected(std::function<void(const std::string&)> f);
 
 	void emit_events(bool state)
 	{

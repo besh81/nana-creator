@@ -14,10 +14,10 @@ namespace ctrls
 {
 
 	//label
-	label::label(nana::window wd, const std::string& name)
-		: ctrl()
+	label::label(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		lbl.create(wd);
+		lbl.create(*parent->nanawdg);
 		ctrl::init(&lbl, CTRL_LABEL, name);
 
 		// common

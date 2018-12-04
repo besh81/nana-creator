@@ -20,10 +20,10 @@ namespace ctrls
 {
 
 	//tabbar
-	tabbar::tabbar(nana::window wd, const std::string& name)
-		: ctrl()
+	tabbar::tabbar(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		tbb.create(wd);
+		tbb.create(*parent->nanawdg);
 		ctrl::init(&tbb, CTRL_TABBAR, name);
 
 		// common

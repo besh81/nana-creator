@@ -171,6 +171,12 @@
     <ClCompile Include="..\..\src\creator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\notebook.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\page.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -322,6 +328,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\creator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\page.h">
+      <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\notebook.h">
+      <Filter>Header Files\ctrls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

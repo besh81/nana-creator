@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		treebox(nana::window wd, const std::string& name);
+		treebox(ctrl* parent, const std::string& name);
 
 		void update() override;
 

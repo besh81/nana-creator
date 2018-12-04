@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//splitterbar
-	splitterbar::splitterbar(nana::window wd, const std::string& name)
-		: ctrl()
+	splitterbar::splitterbar(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		pnl.create(wd, true);
+		pnl.create(*parent->nanawdg, true);
 
 		
 		nana::drawing dw{ pnl };

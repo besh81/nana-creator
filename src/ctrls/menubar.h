@@ -21,7 +21,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		menubar(nana::window wd, const std::string& name);
+		menubar(ctrl* parent, const std::string& name);
 
 		void update() override;
 

@@ -76,17 +76,6 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 
 
 	// events
-	_objects.events().selected([this](const nana::arg_treebox& arg)
-	{
-		if(!_evt_emit)
-			return;
-
-		if(arg.operated)
-		{
-			g_gui_mgr.clickobjectspanel(arg.item.key());
-		}
-	});
-	//
 	_objects.events().mouse_down(nana::menu_popuper(_ctxmenu));
 
 
@@ -178,4 +167,17 @@ bool objectspanel::select(const std::string& name)
 	}
 
 	return ret;
+}
+
+
+void objectspanel::selected(std::function<void(const std::string&)> f)
+{
+	_objects.events().selected([this, f](const nana::arg_treebox& arg)
+	{
+		if(!_evt_emit)
+			return;
+
+		if(arg.operated)
+			f(arg.item.key());
+	});
 }

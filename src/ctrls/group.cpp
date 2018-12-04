@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//group
-	group::group(nana::window wd, const std::string& name)
-		: ctrl()
+	group::group(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		grp.create(wd);
+		grp.create(*parent->nanawdg);
 		grp.caption(CTRL_GROUP); //BUG: if removed the group caption is not displayed at the beginning !!!
 		boxmodel.bind(&grp);
 
@@ -113,54 +113,6 @@ namespace ctrls
 		ci->create = name;
 		ci->place = name;
 		ci->field = DEFAULT_FIELD;
-	}
-
-
-	void group::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
-	{
-		boxmodel.update_children_info(child, divtext, weight);
-	}
-
-
-	bool group::children()
-	{
-		return boxmodel.children();
-	}
-
-
-	bool group::children_fields()
-	{
-		return boxmodel.children_fields();
-	}
-
-
-	bool group::append(nana::window ctrl)
-	{
-		return boxmodel.append(ctrl);
-	}
-
-
-	bool group::insert(nana::window pos, nana::window ctrl, bool after)
-	{
-		return boxmodel.insert(pos, ctrl, after);
-	}
-
-
-	bool group::remove(nana::window ctrl)
-	{
-		return boxmodel.remove(ctrl);
-	}
-
-
-	bool group::moveup(nana::window ctrl)
-	{
-		return boxmodel.moveup(ctrl);
-	}
-
-
-	bool group::movedown(nana::window ctrl)
-	{
-		return boxmodel.movedown(ctrl);
 	}
 
 }//end namespace ctrls

@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		date_chooser(nana::window wd, const std::string& name);
+		date_chooser(ctrl* parent, const std::string& name);
 
 		void update() override;
 

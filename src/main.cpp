@@ -24,10 +24,10 @@ std::string		prj_name;
 	#ifdef __RELEASE
 	int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 	#else
-	void main()
+	int main()
 	#endif //__RELEASE
 #else
-	void main()
+	int main()
 #endif //NANA_WINDOWS
 {
 	// init ctrls images
@@ -53,6 +53,8 @@ std::string		prj_name;
 	g_img_mgr.add(CTRL_SLIDER, "icons/slider.png");
 	g_img_mgr.add(CTRL_TABBAR, "icons/tabbar.png");
 	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox.png");
+	g_img_mgr.add(CTRL_NOTEBOOK, "icons/notebook.png");
+	g_img_mgr.add(CTRL_PAGE, "icons/page.png");
 
 
 	creator fm(0, nana::size{ 1200, 700 });

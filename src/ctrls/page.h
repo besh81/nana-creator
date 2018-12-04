@@ -1,26 +1,27 @@
 /*
- *		ctrls::panel Implementation
+ *		ctrls::page Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_PANEL_H
-#define NANA_CREATOR_PANEL_H
+#ifndef NANA_CREATOR_PAGE_H
+#define NANA_CREATOR_PAGE_H
 
 #include <nana/gui/widgets/panel.hpp>
 #include "ctrls/ctrl.h"
 #include "ctrls/box_model.h"
+#include "codegenerator_data.h"
 
 
 namespace ctrls
 {
 
-	class panel
+	class page
 		: public ctrl
 	{
 	public:
-		panel(ctrl* parent, const std::string& name, bool visible = true);
+		page(ctrl* parent, const std::string& name, bool visible = true);
 
 		// relationship management
 		bool append(ctrl* child) override { return boxmodel.append(child); }
@@ -35,6 +36,7 @@ namespace ctrls
 
 
 		void update() override;
+		void select(bool state) override;
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
@@ -46,4 +48,4 @@ namespace ctrls
 
 }//end namespace ctrls
 
-#endif //NANA_CREATOR_PANEL_H
+#endif //NANA_CREATOR_PAGE_H

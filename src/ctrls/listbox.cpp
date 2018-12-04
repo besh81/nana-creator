@@ -16,10 +16,10 @@ namespace ctrls
 {
 
 	//listbox
-	listbox::listbox(nana::window wd, const std::string& name)
-		: ctrl()
+	listbox::listbox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		lst.create(wd);
+		lst.create(*parent->nanawdg);
 		ctrl::init(&lst, CTRL_LISTBOX, name);
 
 		// common

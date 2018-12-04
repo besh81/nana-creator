@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		splitterbar(nana::window wd, const std::string& name);
+		splitterbar(ctrl* parent, const std::string& name);
 
 		void update() override;
 

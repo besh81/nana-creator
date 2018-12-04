@@ -16,10 +16,10 @@ namespace ctrls
 {
 
 	//field
-	field::field(nana::window wd, const std::string& name, bool grid)
-		: ctrl(), _grid(grid)
+	field::field(ctrl* parent, const std::string& name, bool grid)
+		: ctrl(parent), _grid(grid)
 	{
-		fld.create(wd, true);
+		fld.create(*parent->nanawdg, true);
 		boxmodel.bind(fld);
 
 
@@ -124,57 +124,9 @@ namespace ctrls
 	}
 
 
-	void field::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
-	{
-		boxmodel.update_children_info(child, divtext, weight);
-	}
-
-
 	std::string field::get_divtext()
 	{
 		return "<" + boxmodel.get(properties.property("name").as_string(), true) + ">";
-	}
-
-
-	bool field::children()
-	{
-		return boxmodel.children();
-	}
-
-
-	bool field::children_fields()
-	{
-		return boxmodel.children_fields();
-	}
-
-
-	bool field::append(nana::window ctrl)
-	{
-		return boxmodel.append(ctrl);
-	}
-	
-
-	bool field::insert(nana::window pos, nana::window ctrl, bool after)
-	{
-		return boxmodel.insert(pos, ctrl, after);
-	}
-
-
-	bool field::remove(nana::window ctrl)
-	{
-		return boxmodel.remove(ctrl);
-	}
-
-
-	bool field::moveup(nana::window ctrl)
-	{
-		return boxmodel.moveup(ctrl);
-	}
-
-
-	bool field::movedown(nana::window ctrl)
-	{
-		return boxmodel.movedown(ctrl);
 	}
 
 }//end namespace ctrls

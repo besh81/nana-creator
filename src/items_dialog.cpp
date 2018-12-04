@@ -128,7 +128,7 @@ void items_dialog::init()
 			}
 			_selected->text = arg.item.value();
 
-			update_text(items_tree.selected(), _selected->text);
+			update_text(*items_tree.selected(), _selected->text);
 		}
 		else if(arg.item.label() == "Image")
 		{
@@ -138,7 +138,7 @@ void items_dialog::init()
 
 			_selected->img = arg.item.value();
 
-			update_image(items_tree.selected(), _selected->img);
+			update_image(*items_tree.selected(), _selected->img);
 		}
 		else if(arg.item.label() == "Separator")
 		{
@@ -419,7 +419,7 @@ void items_dialog::select_item(const std::string& key)
 	{
 		if(i->key == key)
 		{
-			_selected = i._Ptr;
+			_selected = &(*i);
 			update_selected();
 			break;
 		}
@@ -442,7 +442,7 @@ void items_dialog::erase_item(const std::string& key)
 
 void items_dialog::update_selected()
 {
-	_propgrid.enabled(_selected);
+	_propgrid.enabled(_selected ? true : false);
 
 	if(_type == ctrls::pg_type::collection_combox)
 	{
@@ -535,7 +535,7 @@ void items_dialog::update_selected()
 	}
 	else if(_type == ctrls::pg_type::collection_collapse)
 	{
-		_propgrid.enabled(_selected);
+		_propgrid.enabled(_selected ? true : false);
 		if(_selected)
 		{
 			_propgrid.at(nana::propertygrid::index_pair(1, 0)).value(_selected->left);

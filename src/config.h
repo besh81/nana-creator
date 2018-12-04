@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.15.0"
+#define CREATOR_VERSION			"0.16.0"
 
 
 
@@ -49,6 +49,8 @@
 #define CTRL_SLIDER				"slider"
 #define CTRL_TABBAR				"tabbar"
 #define CTRL_TREEBOX			"treebox"
+#define CTRL_NOTEBOOK			"notebook"
+#define CTRL_PAGE				"page"
 
 
 
@@ -91,7 +93,6 @@
 // code-generator
 //--------------------------------------------------------
 #define CTRL_NAMESPACE			"nana::"
-#define DEFAULT_FILENAME		"code"
 
 #define DEFAULT_FIELD			"_field_"
 

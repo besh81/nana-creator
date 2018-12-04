@@ -17,67 +17,106 @@
 
 namespace ctrls
 {
+	enum class highlight_mode
+	{
+		none,
+		before_after,
+		into
+	};
+
+	enum class mouse_position
+	{
+		up_left,
+		up_right,
+		down_left,
+		down_right
+	};
+
 
 	class ctrl
 	{
 	public:
+		ctrl(ctrl* parent)
+			: _parent(parent)
+		{ }
+
+
+		// public vars
 		properties_collection	properties;
 		nana::widget*			nanawdg;
 
+		// relationship management
+		ctrl* parent() { return _parent; }
+		//
+		virtual bool append(ctrl* child) { return false; }
+		virtual bool insert(ctrl* child, ctrl* pos, bool after) { return false; }
+		virtual bool remove(ctrl* child) { return false; }
+		//
+		virtual bool moveup(ctrl* child) { return false; }
+		virtual bool movedown(ctrl* child) { return false; }
+		//
+		virtual bool children() { return false; }
+		virtual bool children_fields() { return false; }
 
-		ctrl() = default;
 
+		// creator modifiers
 		virtual void update();
-
-		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
-		void generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name = "");
-
+		virtual void refresh();
+		//
+		bool highlighted() { return _highlighted == highlight_mode::none ? false : true; }
+		virtual void highlight(highlight_mode mode) { _highlighted = mode; }
+		virtual highlight_mode highlight() { return _highlighted; }
+		//
+		bool selected() { return _selected; }
+		virtual void select(bool state) { _selected = state; }
+		//
 		virtual std::string get_type();
 		virtual std::string get_weight();
 		virtual std::string get_divtext() { return ""; }
-		virtual void update_children_info(nana::window child, const std::string& divtext, const std::string& weight) { return; }
+		//
+		mouse_position		get_cursor_pos() { return _cursor_pos; }
 
-		virtual bool children() { return false; }
-		virtual bool children_fields() { return false; }
-		virtual bool append(nana::window ctrl) { return false; }
-		virtual bool insert(nana::window pos, nana::window ctrl, bool after = true) { return false; }
-		virtual bool remove(nana::window ctrl) { return false; }
 
-		virtual bool moveup(nana::window ctrl) { return false; }
-		virtual bool movedown(nana::window ctrl) { return false; }
+		// mouse events
+		virtual void connect_mouse_enter(std::function<void(const nana::arg_mouse&)> f);
+		virtual void connect_mouse_leave(std::function<void(const nana::arg_mouse&)> f);
+		virtual void connect_mouse_move(std::function<void(const nana::arg_mouse&)> f);
+		virtual void connect_mouse_down(std::function<void(const nana::arg_mouse&)> f);
 
-		bool highlighted() { return _highlighted; }
-		virtual void set_highlight() { _highlighted = true; }
-		virtual void reset_highlight() { _highlighted = false; }
 
-		bool selected() { return _selected; }
-		virtual void set_select() { _selected = true; }
-		virtual void reset_select() { _selected = false; }
+		// code generation
+		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
+		void generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name = "");
 
 
 	protected:
 		void init(nana::widget* wdg, const std::string& type, const std::string& name, bool font = true);
 
-		nana::paint::font	_defaultfont;
-		bool				_use_font{ true };
+		// drawing functions
+		void draw_highlight(nana::paint::graphics& graph, highlight_mode mode, mouse_position pos);
+		void draw_selection(nana::paint::graphics& graph);
+		
+		// mouse position inside the control
+		mouse_position mouse_pos(nana::point pos, nana::size size);
 
-		bool				_highlighted{ false };
+
+		ctrl*				_parent{ 0 };
+
+		highlight_mode		_highlighted{ highlight_mode::none };
+		mouse_position		_cursor_pos{ mouse_position::up_left };
 		bool				_selected{ false };
 
 		struct def_values
 		{
-			nana::color		bgcolor;
-			nana::color		fgcolor;
+			nana::color			bgcolor;
+			nana::color			fgcolor;
+			nana::paint::font	font;
+			bool				use_font{ true };
 		};
-		
 		def_values			_defaults;
 	};
 
 }//end namespace ctrls
-
-
-typedef std::shared_ptr<ctrls::ctrl>	control_obj;
-typedef std::weak_ptr<ctrls::ctrl>		control_obj_ptr;
 
 
 #endif //NANA_CREATOR_CTRL_H

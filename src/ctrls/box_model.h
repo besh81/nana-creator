@@ -10,6 +10,7 @@
 
 #include <nana/gui/place.hpp>
 #include <nana/gui/widgets/group.hpp>
+#include "ctrls/ctrl.h"
 
 
 namespace ctrls
@@ -86,6 +87,15 @@ namespace ctrls
 		void bind(nana::window handle);
 		void bind(nana::group* handle);
 
+		bool append(ctrl* child);
+		bool insert(ctrl* child, ctrl* pos, bool after);
+		bool remove(ctrl* child);
+		bool moveup(ctrl* child);
+		bool movedown(ctrl* child);
+		//
+		bool children() { return !_children.empty(); }
+		bool children_fields();
+
 		void update();
 
 		void set_type(layout_orientation orientation);
@@ -95,18 +105,6 @@ namespace ctrls
 		void clear_collapse();
 		std::string get(const std::string& field, bool generate_code);
 
-		void update_children_info(nana::window child, const std::string& divtext, const std::string& weight);
-
-		bool children() { return !_children.empty(); }
-		bool children_fields();
-		bool append(nana::window ctrl);
-		bool insert(nana::window pos, nana::window ctrl, bool after = true);
-		bool remove(nana::window ctrl);
-
-		bool moveup(nana::window ctrl);
-		bool movedown(nana::window ctrl);
-
-
 	protected:
 		std::string		_type_str;
 		std::string		_weight_str;
@@ -115,13 +113,8 @@ namespace ctrls
 		bool			_is_grid{ false };
 
 		std::vector<std::string> _collapse;
-
-		struct child_info
-		{
-			std::string divtext;
-			std::string weight{ "variable" };
-		};
-		std::vector<std::pair<child_info, nana::window>>	_children;
+		
+		std::vector<ctrl*>	_children;
 
 		boxmodel_place	_place;
 	};

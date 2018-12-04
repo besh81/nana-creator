@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//progress
-	progress::progress(nana::window wd, const std::string& name)
-		: ctrl()
+	progress::progress(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		prg.create(wd);
+		prg.create(*parent->nanawdg);
 		ctrl::init(&prg, CTRL_PROGRESS, name);
 
 		// common

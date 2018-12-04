@@ -24,6 +24,139 @@ namespace ctrls
 	}
 
 
+	bool box_model::append(ctrl* child)
+	{
+		if(!child)
+			return false;
+
+		_children.push_back(child);
+
+		_place.div(get(DEFAULT_FIELD, false));
+		_place[DEFAULT_FIELD] << *child->nanawdg;
+
+		_place.collocate();
+		return true;
+	}
+
+
+	bool box_model::insert(ctrl* child, ctrl* pos, bool after)
+	{
+		if(!child)
+			return false;
+
+		for(auto i = _children.begin(); i < _children.end(); ++i)
+		{
+			if(*i == pos)
+			{
+				if(after)
+					++i;
+
+				// remove from place all ctrls after i
+				for(auto r = i; r < _children.end(); ++r)
+					_place.erase(*(*r)->nanawdg);
+
+				i = _children.insert(i, child);
+
+				_place.div(get(DEFAULT_FIELD, false));
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << *(*r)->nanawdg;
+
+				_place.collocate();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	bool box_model::remove(ctrl* child)
+	{
+		if(!child)
+			return false;
+
+		_place.erase(*child->nanawdg);
+
+		for(auto i = _children.begin(); i < _children.end(); ++i)
+		{
+			if(*i == child)
+			{
+				_children.erase(i);
+
+				update();
+				return true;
+			}
+		}
+
+		update();
+		return false;
+	}
+
+
+	bool box_model::moveup(ctrl* child)
+	{
+		if(!child)
+			return false;
+
+		for(auto i = _children.begin(); i < _children.end(); ++i)
+		{
+			if(*i == child)
+			{
+				if(i == _children.begin())
+					return false;
+
+				std::iter_swap(i, i - 1);
+
+				// remove from place all ctrls after i-1
+				for(auto r = i - 1; r < _children.end(); ++r)
+					_place.erase(*(*r)->nanawdg);
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i - 1; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << *(*r)->nanawdg;
+
+				update();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	bool box_model::movedown(ctrl* child)
+	{
+		if(!child)
+			return false;
+
+		for(auto i = _children.begin(); i < _children.end(); ++i)
+		{
+			if(*i == child)
+			{
+				if(i + 1 == _children.end())
+					return false;
+
+				std::iter_swap(i, i + 1);
+
+				// remove from place all ctrls after i
+				for(auto r = i; r < _children.end(); ++r)
+					_place.erase(*(*r)->nanawdg);
+
+				// add to place the previously removed controls using the new sequence
+				for(auto r = i; r < _children.end(); ++r)
+					_place[DEFAULT_FIELD] << *(*r)->nanawdg;
+
+				update();
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
 	void box_model::update()
 	{
 		_place.div(get(DEFAULT_FIELD, false));
@@ -89,10 +222,10 @@ namespace ctrls
 
 		// children divtext
 		//-----------------------------
-		for(auto f : _children)
+		for(auto c : _children)
 		{
-			if(!f.first.divtext.empty())
-				divtext.append(f.first.divtext);
+			if(!c->get_divtext().empty())
+				divtext.append(c->get_divtext());
 		}
 
 		bool _fields = divtext.empty() ? false : true;
@@ -112,14 +245,17 @@ namespace ctrls
 				if(!_children.empty())
 				{
 					arrange = "arrange=[";
-					for(auto f : _children)
+					for(auto c : _children)
 					{
-						if(!f.first.weight.empty())
+						if(!c->get_weight().empty())
 						{
-							arrange.append(f.first.weight + ",");
-
-							if(f.first.weight[0] != 'v')
+							std::string weight = c->get_weight();
+							if(weight[0] == '-')
+								weight = "variable";
+							else
 								all_variable = false;
+
+							arrange.append(weight + ",");
 						}
 					}
 					if(arrange[arrange.size() - 1] == ',')
@@ -148,26 +284,6 @@ namespace ctrls
 	}
 
 
-	void box_model::update_children_info(nana::window child, const std::string& divtext, const std::string& weight)
-	{
-		for(auto& f : _children)
-		{
-			if(f.second == child)
-			{
-				f.first.divtext = divtext;
-
-				if(weight[0] == '-')
-					f.first.weight = "variable";
-				else
-					f.first.weight = weight;
-
-				update();
-				return;
-			}
-		}
-	}
-
-
 	bool box_model::children_fields()
 	{
 		if(!children())
@@ -175,130 +291,13 @@ namespace ctrls
 
 		std::string divtext;
 
-		for(auto f : _children)
+		for(auto c : _children)
 		{
-			if(!f.first.divtext.empty())
-				divtext.append(f.first.divtext);
-		}
-
-		return divtext.empty() ? false : true;
-	}
-	
-
-	bool box_model::append(nana::window ctrl)
-	{
-		_children.push_back(std::pair<child_info, nana::window>({}, ctrl));
-
-		_place.div(get(DEFAULT_FIELD, false));
-		_place[DEFAULT_FIELD] << ctrl;
-
-		_place.collocate();
-		return true;
-	}
-
-
-	bool box_model::insert(nana::window pos, nana::window ctrl, bool after)
-	{
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == pos)
-			{
-				if(after)
-					++i;
-
-				// remove from place all ctrls after i
-				for(auto r = i; r < _children.end(); ++r)
-					_place.erase(r->second);
-
-				i = _children.insert(i, std::pair<child_info, nana::window>({}, ctrl));
-
-				_place.div(get(DEFAULT_FIELD, false));
-
-				// add to place the previously removed controls using the new sequence
-				for(auto r = i; r < _children.end(); ++r)
-					_place[DEFAULT_FIELD] << r->second;
-
-				_place.collocate();
+			if(!c->get_divtext().empty())
 				return true;
-			}
 		}
 
 		return false;
 	}
-
-
-	bool box_model::remove(nana::window ctrl)
-	{
-		_place.erase(ctrl);
-
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == ctrl)
-			{
-				_children.erase(i);
-
-				update();
-				return true;
-			}
-		}
-
-		update();
-		return false;
-	}
-
-	bool box_model::moveup(nana::window ctrl)
-	{
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == ctrl)
-			{
-				if(i == _children.begin())
-					return false;
-
-				std::iter_swap(i, i - 1);
-
-				// remove from place all ctrls after i-1
-				for(auto r = i-1; r < _children.end(); ++r)
-					_place.erase(r->second);
-
-				// add to place the previously removed controls using the new sequence
-				for(auto r = i - 1; r < _children.end(); ++r)
-					_place[DEFAULT_FIELD] << r->second;
-
-				update();
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	bool box_model::movedown(nana::window ctrl)
-	{
-		for(auto i = _children.begin(); i < _children.end(); ++i)
-		{
-			if(i->second == ctrl)
-			{
-				if(i + 1 == _children.end())
-					return false;
-
-				std::iter_swap(i, i + 1);
-
-				// remove from place all ctrls after i
-				for(auto r = i; r < _children.end(); ++r)
-					_place.erase(r->second);
-
-				// add to place the previously removed controls using the new sequence
-				for(auto r = i; r < _children.end(); ++r)
-					_place[DEFAULT_FIELD] << r->second;
-
-				update();
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 
 }//end namespace ctrls

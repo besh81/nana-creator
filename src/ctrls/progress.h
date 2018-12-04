@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		progress(nana::window wd, const std::string& name);
+		progress(ctrl* parent, const std::string& name);
 
 		void update() override;
 

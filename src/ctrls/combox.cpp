@@ -19,10 +19,10 @@ namespace ctrls
 {
 
 	//combox
-	combox::combox(nana::window wd, const std::string& name)
-		: ctrl()
+	combox::combox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		cmb.create(wd);
+		cmb.create(*parent->nanawdg);
 		ctrl::init(&cmb, CTRL_COMBOX, name);
 
 		// common

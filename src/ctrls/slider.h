@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		slider(nana::window wd, const std::string& name);
+		slider(ctrl* parent, const std::string& name);
 
 		void update() override;
 

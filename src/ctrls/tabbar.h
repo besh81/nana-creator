@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		tabbar(nana::window wd, const std::string& name);
+		tabbar(ctrl* parent, const std::string& name);
 
 		void update() override;
 
@@ -29,6 +29,7 @@ namespace ctrls
 
 	protected:
 		nana::tabbar<size_t> tbb;
+
 		bool internal_use{ false };
 	};
 

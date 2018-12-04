@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		picture(nana::window wd, const std::string& name);
+		picture(ctrl* parent, const std::string& name);
 
 		void update() override;
 

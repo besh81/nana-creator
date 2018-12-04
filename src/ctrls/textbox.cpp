@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//textbox
-	textbox::textbox(nana::window wd, const std::string& name)
-		: ctrl()
+	textbox::textbox(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		txt.create(wd);
+		txt.create(*parent->nanawdg);
 		ctrl::init(&txt, CTRL_TEXTBOX, name);
 
 		// common

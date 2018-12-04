@@ -149,7 +149,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		}
 		else if(prop.type() == ctrls::pg_type::spin)
 		{
-			auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label(), prop.value())));
+			cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label(), prop.value())));
 		}
 		else if(prop.type() == ctrls::pg_type::color)
 		{

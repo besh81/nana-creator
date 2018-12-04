@@ -22,27 +22,30 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		form(nana::window wd, const std::string& name, bool visible = true);
+		form(nana::window wd, const std::string& name, bool panel = false, bool visible = true);
+		
+		// relationship management
+		bool append(ctrl* child) override { return boxmodel.append(child); }
+		bool insert(ctrl* child, ctrl* pos, bool after) override { return boxmodel.insert(child, pos, after); }
+		bool remove(ctrl* child) override { return boxmodel.remove(child); }
+		//
+		bool moveup(ctrl* child) override { return boxmodel.moveup(child); }
+		bool movedown(ctrl* child) override { return boxmodel.movedown(child); }
+		//
+		bool children() override { return boxmodel.children(); }
+		bool children_fields() override { return boxmodel.children_fields(); }
+
 
 		void update() override;
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;
 
-		void update_children_info(nana::window child, const std::string& divtext, const std::string& weight);
-
-		bool children();
-		bool children_fields();
-		bool append(nana::window child);
-		bool insert(nana::window pos, nana::window ctrl, bool after = true);
-		bool remove(nana::window child);
-
-		bool moveup(nana::window child);
-		bool movedown(nana::window child);
-
 
 	protected:
 		nana::panel<true>	frm;
 		box_model			boxmodel;
+
+		bool				ispanel{ false };
 	};
 
 }//end namespace ctrls

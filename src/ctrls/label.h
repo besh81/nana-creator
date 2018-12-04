@@ -20,7 +20,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		label(nana::window wd, const std::string& name);
+		label(ctrl* parent, const std::string& name);
 
 		void update() override;
 

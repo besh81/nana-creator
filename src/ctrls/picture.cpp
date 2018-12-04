@@ -18,10 +18,10 @@ namespace ctrls
 {
 
 	//picture
-	picture::picture(nana::window wd, const std::string& name)
-		: ctrl()
+	picture::picture(ctrl* parent, const std::string& name)
+		: ctrl(parent)
 	{
-		pct.create(wd);
+		pct.create(*parent->nanawdg);
 		ctrl::init(&pct, CTRL_PICTURE, name, false);
 
 		// common
