@@ -88,8 +88,10 @@ guimanager::guimanager()
 }
 
 
-void guimanager::init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, nana::toolbar* tb, statusbar* sb)
+void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb)
 {
+	_ct = ct;
+
 	_pp = pp;
 	
 	_ap = ap;
@@ -108,10 +110,9 @@ void guimanager::init(propertiespanel* pp, assetspanel* ap, objectspanel* op, re
 	});
 
 	_main_wd = main_wd;
-	_tb = tb;
 	_sb = sb;
 	
-	enableGUI(false);
+	enableGUI(false, true);
 }
 
 
@@ -136,11 +137,11 @@ void guimanager::clear()
 	_pp->set(0);
 	_name_mgr.clear();
 
-	enableGUI(false);
+	enableGUI(false, true);
 }
 
 
-void guimanager::enableGUI(bool state)
+void guimanager::enableGUI(bool state, bool new_load)
 {
 	nana::API::enum_widgets(*_ap, true, [state](nana::widget &w)
 	{
@@ -151,15 +152,7 @@ void guimanager::enableGUI(bool state)
 		w.enabled(state);
 	});
 
-	_tb->enable(TB_SAVE, state);
-	_tb->enable(TB_SAVE_AS, state);
-	_tb->enable(TB_GENERATE, state);
-	_tb->enable(TB_DELETE, state);
-	_tb->enable(TB_UP, state);
-	_tb->enable(TB_DOWN, state);
-	_tb->enable(TB_CUT, state);
-	_tb->enable(TB_COPY, state);
-	_tb->enable(TB_PASTE, state);
+	_ct->enableGUI(state, new_load);
 }
 
 
@@ -175,12 +168,12 @@ void guimanager::cursor(cursor_state state)
 }
 
 
-void guimanager::new_project(const std::string& type)
+void guimanager::new_project(const std::string& type, const std::string& name)
 {
-	if(!addmainctrl(type))
+	if(!addmainctrl(type, name))
 		return;
 
-	enableGUI(true);
+	enableGUI(true, true);
 }
 
 
@@ -266,15 +259,15 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type, const std::string& name)
 {
 	if(type == CTRL_FIELD)
-		return control_obj(new ctrls::field(parent.get(), name));
+		return control_obj(new ctrls::field(parent.get(), name, false, _deserializing ? false : true));
 	else if(type == CTRL_GRID)
-		return control_obj(new ctrls::field(parent.get(), name, true));
+		return control_obj(new ctrls::field(parent.get(), name, true, _deserializing ? false : true));
 	else if(type == CTRL_SPLITTERBAR)
 		return control_obj(new ctrls::splitterbar(parent.get(), name));
 	else if(type == CTRL_PANEL)
-		return control_obj(new ctrls::panel(parent.get(), name));
+		return control_obj(new ctrls::panel(parent.get(), name, _deserializing ? false : true));
 	else if(type == CTRL_GROUP)
-		return control_obj(new ctrls::group(parent.get(), name));
+		return control_obj(new ctrls::group(parent.get(), name, _deserializing ? false : true));
 	else if(type == CTRL_BUTTON)
 		return control_obj(new ctrls::button(parent.get(), name));
 	else if(type == CTRL_LABEL)
@@ -310,7 +303,7 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 	else if(type == CTRL_NOTEBOOK)
 		return control_obj(new ctrls::notebook(parent.get(), name));
 	else if(type == CTRL_PAGE)
-		return control_obj(new ctrls::page(parent.get(), name));
+		return control_obj(new ctrls::page(parent.get(), name, _deserializing ? false : true));
 	
 	return 0;
 }
@@ -618,6 +611,7 @@ void guimanager::pasteselected()
 	}
 
 	// deserialize the XML structure and avoid window update
+	enableGUI(false, false);
 	lock_guard des_lock(&_deserializing, true);
 	_op->emit_events(false);
 	_op->auto_draw(false);
@@ -631,6 +625,7 @@ void guimanager::pasteselected()
 	_op->auto_draw(true);
 	_op->emit_events(true);
 	_update_op();
+	enableGUI(true, true);
 
 	if(!_copied && paste_ok)
 		_cut_copy_doc.reset(); // cut items can be paste only once
@@ -833,6 +828,7 @@ void guimanager::_serialize(tree_node<control_obj>* node, pugi::xml_node* xml_pa
 
 bool guimanager::deserialize(pugi::xml_node* xml_parent)
 {
+	enableGUI(false, false);
 	lock_guard des_lock(&_deserializing, true);
 	_op->emit_events(false);
 	_op->auto_draw(false);
@@ -842,6 +838,7 @@ bool guimanager::deserialize(pugi::xml_node* xml_parent)
 	_op->auto_draw(true);
 	_op->emit_events(true);
 	_update_op();
+	enableGUI(true, true);
 
 	if(!ret_val)
 		return false;
@@ -907,7 +904,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			node->value->properties.property("name") = ctrl_name;
 
 		// update nana::widget
-		_updatectrl(node); //XXX probabimente non serve aggiornare parent e children -> controllare
+		_updatectrl(node);
 
 
 		// deserialize children
@@ -915,7 +912,6 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			return false;
 	}
 
-	enableGUI(true);
 	return true;
 }
 

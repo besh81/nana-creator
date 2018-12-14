@@ -26,6 +26,7 @@ namespace ctrls
 		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection_listbox) = "";
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
 		properties.append("single_selection").label("Single selection").category(CAT_COMMON).type(pg_type::check) = false;
+		properties.append("sortable").label("Sortable").category(CAT_COMMON).type(pg_type::check) = lst.sortable();
 		// appearance
 		properties.append("show_header").label("Show header").category(CAT_APPEARANCE).type(pg_type::check) = lst.visible_header();
 		// layout
@@ -60,6 +61,7 @@ namespace ctrls
 		}
 		// columns - END
 
+		lst.sortable(properties.property("sortable").as_bool());
 		lst.show_header(properties.property("show_header").as_bool());
 	}
 
@@ -75,10 +77,14 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::listbox " + name + ";");
 		// init
-		cd->init.push_back(name + ".checkable(" + properties.property("checkable").as_string() + ");");
+		if(properties.property("checkable").as_bool())
+			cd->init.push_back(name + ".checkable(true);");
+		if(!properties.property("sortable").as_bool())
+			cd->init.push_back(name + ".sortable(false);");
 		if(properties.property("single_selection").as_bool())
 			cd->init.push_back(name + ".enable_single(true, true);");
-		cd->init.push_back(name + ".show_header(" + properties.property("show_header").as_string() + ");");
+		if(!properties.property("show_header").as_bool())
+			cd->init.push_back(name + ".show_header(false);");
 
 		// columns - START
 		// split columns into item (delimiter = CITEM_TKN)

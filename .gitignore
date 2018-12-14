@@ -240,6 +240,7 @@ _Pvt_Extensions
 nana_creator.VC.db
 wdir/*.h
 wdir/*.ncp
+wdir/*.exe
 wdir/icons/*.db
 wdir/nc.ini
 docs/img/Thumbs.db

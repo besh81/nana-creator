@@ -134,6 +134,7 @@ protected:
 public:
 	std::string get_ctrl_type() { return _ctrltype; }
 	std::string get_filename() { return _filename; }
+	std::string get_projectname() { return _projectname; }
 
 	nana::msgbox::pick_t return_val() { return _retval; }
 
@@ -144,6 +145,7 @@ protected:
 
 	std::string				_ctrltype;
 	std::string				_filename;
+	std::string				_projectname;
 	nana::msgbox::pick_t	_retval;
 	//*>
 };

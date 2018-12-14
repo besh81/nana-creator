@@ -12,6 +12,8 @@
 #include "tokenizer/Tokenizer.h"
 
 
+#define DEF_TABS_WEIGHT		"30"
+
 
 namespace ctrls
 {
@@ -22,7 +24,7 @@ namespace ctrls
 	{
 		pnl.create(*parent->nanawdg);
 		plc.bind(pnl);
-		plc.div("vert margin=1 <vert weight=30 tabs><pages>");
+		plc.div("vert margin=1 <vert weight=" DEF_TABS_WEIGHT " tabs><pages>");
 
 		tbb.create(pnl);
 		plc["tabs"] << tbb;
@@ -63,6 +65,7 @@ namespace ctrls
 		properties.append("closefly").label("Close fly").category(CAT_APPEARANCE).type(pg_type::check).enabled("closebtn", true) = false;
 		properties.append("listbtn").label("List button").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		properties.append("scrollbtn").label("Scroll button").category(CAT_APPEARANCE).type(pg_type::check) = true;
+		properties.append("tabweight").label("Tabs weight").category(CAT_APPEARANCE).type(pg_type::string_weight) = DEF_TABS_WEIGHT;
 		// layout
 		// ...
 
@@ -252,6 +255,15 @@ namespace ctrls
 		tbb.close_fly(properties.property("closefly").as_bool());
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::list, properties.property("listbtn").as_bool());
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::scroll, properties.property("scrollbtn").as_bool());
+
+		// tabs weight
+		auto tabw = properties.property("tabweight").as_string();
+		if(tabw.empty())
+			tabw = DEF_TABS_WEIGHT;
+		else if(tabw[0] == '-')
+			tabw = DEF_TABS_WEIGHT;
+		plc.div("vert margin=1 <vert weight=" + tabw + " tabs><pages>");
+		plc.collocate();
 	}
 
 
@@ -268,6 +280,15 @@ namespace ctrls
 
 		std::string name = properties.property("name").as_string();
 
+
+		// tabs weight
+		auto tabw = properties.property("tabweight").as_string();
+		if(tabw.empty())
+			tabw = DEF_TABS_WEIGHT;
+		else if(tabw[0] == '-')
+			tabw = DEF_TABS_WEIGHT;
+
+
 		// headers
 		cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 		cd->hpps.add("#include <nana/gui/widgets/tabbar.hpp>");
@@ -281,7 +302,7 @@ namespace ctrls
 		cd->init.push_back(name + "_tbb.create(" + name + "_pnl);");
 
 		cd->init.push_back(name + "_plc.bind(" + name + "_pnl);");
-		cd->init.push_back(name + "_plc.div(\"vert margin=1 <vert weight=30 tabs><pages>\");");
+		cd->init.push_back(name + "_plc.div(\"vert margin=1 <vert weight=" + tabw + " tabs><pages>\");");
 		cd->init.push_back(name + "_plc[\"tabs\"] << " + name + "_tbb;");
 		
 		if(properties.property("addbtn").as_bool())

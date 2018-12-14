@@ -13,9 +13,43 @@
 #include "new_project.h"
 
 
+ // toolbar
+#define TB_NEW					0
+#define TB_LOAD					1
+#define TB_SAVE					2
+#define TB_SAVE_AS				3
+ //
+#define TB_GENERATE				5
+ //
+#define TB_DELETE				7
+ //
+#define TB_UP					9
+#define TB_DOWN					10
+ //
+#define TB_CUT					12
+#define TB_COPY					13
+#define TB_PASTE				14
+
+
 extern guimanager		g_gui_mgr;
 extern inifile			g_inifile;
 extern std::string		prj_name;
+
+
+void creator::enableGUI(bool state, bool new_load)
+{
+	_tb.enable(TB_NEW, state ? true : new_load);
+	_tb.enable(TB_LOAD, state ? true : new_load);
+	_tb.enable(TB_SAVE, state);
+	_tb.enable(TB_SAVE_AS, state);
+	_tb.enable(TB_GENERATE, state);
+	_tb.enable(TB_DELETE, state);
+	_tb.enable(TB_UP, state);
+	_tb.enable(TB_DOWN, state);
+	_tb.enable(TB_CUT, state);
+	_tb.enable(TB_COPY, state);
+	_tb.enable(TB_PASTE, state);
+}
 
 
 bool creator::load_xml(const std::string& filename)
@@ -104,7 +138,9 @@ void creator::_init_ctrls()
 			if(dlg.return_val() == nana::msgbox::pick_ok)
 			{
 				prj_name = dlg.get_filename();
-				g_gui_mgr.new_project(dlg.get_ctrl_type());
+
+				g_gui_mgr.new_project(dlg.get_ctrl_type(), dlg.get_projectname());
+				
 				// crea file di progetto
 				save_xml(prj_name);
 			}
@@ -224,7 +260,7 @@ void creator::_init_ctrls()
 	_place.collocate();
 
 	g_gui_mgr.root_wd(*this);
-	g_gui_mgr.init(&_properties, &_assets, &_objects, &_canvas, &_tb, &_statusbar);
+	g_gui_mgr.init(this, &_properties, &_assets, &_objects, &_canvas, &_statusbar);
 }
 
 

@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.16.0)
+ *	C++ code generated with Nana Creator (0.17.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -13,6 +13,8 @@
 
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
+#include <nana/gui/widgets/menubar.hpp>
+#include <nana/gui/widgets/toolbar.hpp>
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/categorize.hpp>
@@ -25,7 +27,6 @@
 #include <nana/gui/widgets/spinbox.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/panel.hpp>
-#include <nana/gui/widgets/toolbar.hpp>
 #include <nana/gui/widgets/tabbar.hpp>
 #include <nana/gui/widgets/date_chooser.hpp>
 #include <nana/gui/widgets/listbox.hpp>
@@ -61,8 +62,24 @@ public:
 private:
 	void init_()
 	{
-		_place.div("margin=3 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1>|<margin=2 gap=2 field2>");
+		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1>|<margin=2 gap=2 field2>>");
 		caption("Nana-Creator test");
+		// menubar1
+		menubar1.create(*this);
+		_place["menuf"] << menubar1;
+		menubar1.push_back("M&enu1");
+		auto* menubar1_1 = &menubar1.push_back("Me&nu2");
+		menubar1_1->append("&Item1");
+		menubar1_1->append("I&tem2");
+		menubar1.push_back("Men&u3");
+		// toolbar1
+		toolbar1.create(*this);
+		_place["menuf"] << toolbar1;
+		toolbar1.bgcolor(this->bgcolor());
+		toolbar1.scale(21);
+		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
+		toolbar1.separate();
+		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
 		// label1
 		label1.create(*this);
 		_place["field1"] << label1;
@@ -82,8 +99,6 @@ private:
 		_place["field1"] << checkbox1;
 		checkbox1.typeface(nana::paint::font("", 12, {600, true, false, false}));
 		checkbox1.caption("checkbox");
-		checkbox1.check(false);
-		checkbox1.radio(false);
 		// group1
 		group1.create(*this);
 		group1.caption_align(static_cast<nana::align>(0));
@@ -94,16 +109,17 @@ private:
 		checkbox2.create(group1);
 		group1["_field_"] << checkbox2;
 		checkbox2.caption("radio1");
-		checkbox2.check(false);
+		rg_group1.add(checkbox2);
 		checkbox2.radio(true);
-		rg_gruppo1.add(checkbox2);
+		checkbox2.transparent(true);
 		// checkbox3
 		checkbox3.create(group1);
 		group1["_field_"] << checkbox3;
 		checkbox3.caption("radio2");
+		rg_group1.add(checkbox3);
 		checkbox3.check(true);
 		checkbox3.radio(true);
-		rg_gruppo1.add(checkbox3);
+		checkbox3.transparent(true);
 		// combox1
 		combox1.create(*this);
 		_place["field1"] << combox1;
@@ -112,15 +128,13 @@ private:
 		combox1.image(1, nana::paint::image("icons/up.png"));
 		combox1.push_back("DUE");
 		combox1.option(0);
-		combox1.editable(false);
+		combox1.image_pixels(21);
 		// picture1
 		picture1.create(*this);
 		_place["field1"] << picture1;
 		picture1.bgcolor(this->bgcolor());
 		picture1.load(nana::paint::image("icons/save.png"));
-		picture1.transparent(false);
-		picture1.align(static_cast<nana::align>(0), static_cast<nana::align_v>(0));
-		picture1.stretchable(false);
+		picture1.align(static_cast<nana::align>(1), static_cast<nana::align_v>(0));
 		// progress1
 		progress1.create(*this);
 		_place["field1"] << progress1;
@@ -149,18 +163,10 @@ private:
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
-		panel1_place.div("vert margin=5 gap=2 arrange=[30,variable] _field_");
+		panel1_place.div("vert margin=5 gap=2 _field_");
 		panel1.bgcolor(nana::color(120,208,200));
 		panel1.fgcolor(this->fgcolor());
 		_place["field2"] << panel1;
-		// toolbar1
-		toolbar1.create(panel1);
-		panel1_place["_field_"] << toolbar1;
-		toolbar1.bgcolor(panel1.bgcolor());
-		toolbar1.scale(21);
-		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
-		toolbar1.separate();
-		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
 		// notebook1
 		notebook1_pnl.create(panel1);
 		notebook1_tbb.create(notebook1_pnl);
@@ -197,8 +203,8 @@ private:
 		// listbox1
 		listbox1.create(page2);
 		page2_place["_field_"] << listbox1;
-		listbox1.checkable(false);
-		listbox1.show_header(true);
+		listbox1.append_header("Col 1", 200);
+		listbox1.append_header("Col 2");
 		// treebox1
 		treebox1.create(page2);
 		page2_place["_field_"] << treebox1;
@@ -214,13 +220,15 @@ private:
 
 protected:
 	nana::place _place{ *this };
+	nana::menubar menubar1;
+	nana::toolbar toolbar1;
 	nana::label label1;
 	nana::button button1;
 	nana::categorize<int> categorize1;
 	nana::checkbox checkbox1;
 	nana::group group1;
 	nana::checkbox checkbox2;
-	nana::radio_group rg_gruppo1;
+	nana::radio_group rg_group1;
 	nana::checkbox checkbox3;
 	nana::combox combox1;
 	nana::picture picture1;
@@ -230,7 +238,6 @@ protected:
 	nana::textbox textbox1;
 	nana::panel<true> panel1;
 	nana::place panel1_place;
-	nana::toolbar toolbar1;
 	nana::panel<true> notebook1_pnl;
 	nana::tabbar<size_t> notebook1_tbb;
 	nana::place notebook1_plc;

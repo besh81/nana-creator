@@ -80,9 +80,9 @@ namespace ctrls
 		// init
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
 		if(properties.property("format").as_bool())
-			cd->init.push_back(name + ".format(" + properties.property("format").as_string() + ");");
+			cd->init.push_back(name + ".format(true);");
 		if(properties.property("transparent").as_bool())
-			cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
+			cd->init.push_back(name + ".transparent(true);");
 		cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "), static_cast<nana::align_v>(" + properties.property("valign").as_string() + "));");
 	}
 

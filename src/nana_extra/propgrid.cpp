@@ -694,6 +694,10 @@ namespace nana
 				// background
 				graph->rectangle(label_r, true, bgcolor);
 				// text
+
+				if(!en_)
+					fgcolor = colors::gray;
+
 				if(label_r.width > 5)
 				{
 					int content_pos = 20;
@@ -721,7 +725,6 @@ namespace nana
 				// background
 				graph->rectangle(value_r, true, bgcolor);
 
-				//if(false == draw_value(graph, rectangle{ value_r.x+1, value_r.y+2, value_r.width-2, value_r.height-4 }, bgcolor, fgcolor))
 				if(false == draw_value(graph, value_r, bgcolor, fgcolor))
 					return;
 
@@ -1167,8 +1170,7 @@ namespace nana
 			{}
 
 			item_proxy::item_proxy(essence_t * ess, const index_pair& pos)
-				: ess_(ess),
-				pos_(pos)
+				: ess_(ess), pos_(pos)
 			{
 				if(ess)
 				{

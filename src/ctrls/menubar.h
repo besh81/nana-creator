@@ -36,8 +36,8 @@ namespace ctrls
 		struct menu_data
 		{
 			std::string key;
-			std::string text;
 			bool		separator{ false };
+			std::string text;
 
 			nana::menu*	submenu{ 0 };
 			std::string submenu_name;

@@ -24,7 +24,7 @@ namespace ctrls
 	page::page(ctrl* parent, const std::string& name, bool visible)
 		: ctrl(parent)
 	{
-		pnl.create(*parent->nanawdg, false);
+		pnl.create(*parent->nanawdg, visible);
 		boxmodel.bind(pnl);
 
 		ctrl::init(&pnl, CTRL_PAGE, name, false);

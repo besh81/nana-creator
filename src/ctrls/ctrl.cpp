@@ -166,7 +166,7 @@ namespace ctrls
 		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		// init
 		if(!properties.property("enabled").as_bool())
-			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+			cd->init.push_back(name + ".enabled(false);");
 
 		generatecode_colors(cd, ci, name);
 

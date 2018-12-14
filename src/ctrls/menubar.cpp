@@ -38,7 +38,7 @@ namespace ctrls
 		mnb.clear();
 		create_menu_tree();
 
-		// Generate menus code
+		// Create menus
 		//--------------------------------
 		auto pmnb = &mnb;
 		menu_tree.for_each([&pmnb](tree_node<menu_data>* node) -> bool
@@ -60,7 +60,10 @@ namespace ctrls
 			{
 				//this is a menu item
 				auto* pval_parent = &node->owner->value;
-				pval_parent->submenu->append(pval->text);
+				if(pval->separator)
+					pval_parent->submenu->append_splitter();
+				else
+					pval_parent->submenu->append(pval->text);
 
 				if(node->child)
 					pval->submenu = pval_parent->submenu->create_sub_menu(pval_parent->submenu->size()-1);
@@ -112,7 +115,10 @@ namespace ctrls
 			{
 				//this is a menu item
 				auto* pval_parent = &node->owner->value;
-				cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->text + "\");");
+				if(pval->separator)
+					cd->init.push_back(pval_parent->submenu_name + "->append_splitter();");
+				else
+					cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->text + "\");");
 
 				if(node->child)
 				{
@@ -150,6 +156,14 @@ namespace ctrls
 			md.key = item_tkn.next();
 			auto owner = item_tkn.next();
 			md.text = item_tkn.next();
+			if(md.text == CITEM_SEPARATOR)
+			{
+				md.separator = true;
+			}
+			else
+			{
+				//
+			}
 
 			menu_tree.for_each([&owner, &md](tree_node<menu_data>* node) -> bool
 			{

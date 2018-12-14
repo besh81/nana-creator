@@ -174,6 +174,7 @@ void pg_collection::create(nana::window wd)
 {
 	pg_string_button::create(wd);
 	txt_.caption("(Collection)");
+	editable(false);
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)

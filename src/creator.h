@@ -82,6 +82,7 @@ protected:
 
 	//<*declarations
 public:
+	void enableGUI(bool state, bool new_load = false);
 	bool load_xml(const std::string& filename);
 	bool save_xml(const std::string& filename);
 

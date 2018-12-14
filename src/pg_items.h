@@ -79,7 +79,7 @@ protected:
 
 /// class pg_collection
 class pg_collection
-	: public nana:: pg_string_button
+	: public nana::pg_string_button
 {
 public:
 	pg_collection() = default;

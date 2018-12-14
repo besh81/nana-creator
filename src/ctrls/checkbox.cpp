@@ -27,6 +27,7 @@ namespace ctrls
 		properties.append("group").label("Group name").category(CAT_COMMON).type(pg_type::string) = "";
 		// appearance
 		properties.append("radio").label("Radio").category(CAT_APPEARANCE).type(pg_type::check) = false;
+		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = chk.transparent();
 		// layout
 		// ...
 	}
@@ -39,6 +40,7 @@ namespace ctrls
 		chk.caption(properties.property("caption").as_string());
 		chk.check(properties.property("check").as_bool());
 		chk.radio(properties.property("radio").as_bool());
+		chk.transparent(properties.property("transparent").as_bool());
 
 		chk.react(false); // needs to avoid user can change the state clicking on control
 	}
@@ -56,8 +58,6 @@ namespace ctrls
 		cd->decl.push_back("nana::checkbox " + name + ";");
 		// init
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
-		cd->init.push_back(name + ".check(" + properties.property("check").as_string() + ");");
-		cd->init.push_back(name + ".radio(" + properties.property("radio").as_string() + ");");
 
 		if(!properties.property("group").as_string().empty())
 		{
@@ -78,6 +78,13 @@ namespace ctrls
 
 			cd->init.push_back(group + ".add(" + name + ");");
 		}
+
+		if(properties.property("check").as_bool())
+			cd->init.push_back(name + ".check(true);");
+		if(properties.property("radio").as_bool())
+			cd->init.push_back(name + ".radio(true);");
+		if(properties.property("transparent").as_bool())
+			cd->init.push_back(name + ".transparent(true);");
 	}
 
 }//end namespace ctrls

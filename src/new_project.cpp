@@ -107,7 +107,8 @@ void new_project::init()
 		}
 
 		// check if file already exists
-		_filename = equalize_path(folder_txt.caption() + "/" + name_txt.caption() + "." PROJECT_EXT);
+		_projectname = name_txt.caption();
+		_filename = equalize_path(folder_txt.caption() + "/" + _projectname + "." PROJECT_EXT);
 		if(file_exists(_filename))
 		{
 			nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::yes_no);

@@ -251,6 +251,7 @@ void propertiespanel::enabled_bonds(const std::string& name, bool value)
 				if(c.label() == prop.label())
 				{
 					c._m_pgitem()->enabled(value == prop.enabled_value());
+					c._m_pgitem()->update();
 					break;
 				}
 			}

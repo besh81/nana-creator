@@ -11,6 +11,8 @@
 #include "filemanager.h"
 #include "tokenizer/Tokenizer.h"
 
+#define DEF_IMG_SIZE	16 // get from nana source
+
 
 extern filemanager		g_file_mgr;
 
@@ -27,10 +29,10 @@ namespace ctrls
 
 		// common
 		properties.append("options").label("Options").category(CAT_COMMON).type(pg_type::collection_combox) = "";
-		properties.append("option").label("Option").category(CAT_COMMON).type(pg_type::string_uint) = 0; //cmb.option();
+		properties.append("option").label("Option").category(CAT_COMMON).type(pg_type::string_uint) = 0;
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = cmb.editable();
 		// appearance
-		// ...
+		properties.append("image_pixels").label("Image pixels").category(CAT_APPEARANCE).type(pg_type::string_uint) = DEF_IMG_SIZE;
 		// layout
 		// ...
 	}
@@ -43,6 +45,7 @@ namespace ctrls
 		//options: I don't think it's usefull to add options here
 
 		cmb.editable(properties.property("editable").as_bool());
+		cmb.image_pixels(properties.property("image_pixels").as_uint());
 	}
 
 
@@ -82,7 +85,10 @@ namespace ctrls
 		// options - END
 
 		cd->init.push_back(name + ".option(" + properties.property("option").as_string() + ");");
-		cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
+		if(properties.property("editable").as_bool())
+			cd->init.push_back(name + ".editable(true);");
+		if(properties.property("image_pixels").as_uint() != DEF_IMG_SIZE)
+			cd->init.push_back(name + ".image_pixels(" + properties.property("image_pixels").as_string() + ");");
 	}
 
 }//end namespace ctrls

@@ -132,7 +132,7 @@ namespace ctrls
 		// init
 		cd->init.push_back("_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 		if(!properties.property("enabled").as_bool())
-			cd->init.push_back("enabled(" + properties.property("enabled").as_string() + ");");
+			cd->init.push_back("enabled(false);");
 		if(!ispanel)
 			cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
 		generatecode_colors(cd, ci);

@@ -21,7 +21,7 @@ namespace ctrls
 		: public ctrl
 	{
 	public:
-		field(ctrl* parent, const std::string& name, bool grid = false);
+		field(ctrl* parent, const std::string& name, bool grid, bool visible = true);
 
 		// relationship management
 		bool append(ctrl* child) override { return boxmodel.append(child); }

@@ -115,9 +115,6 @@ public:
 protected:
 	void init();
 
-	void select_item(const std::string& key);
-	void erase_item(const std::string& key);
-
 	void update_selected();
 	void update_text(nana::drawerbase::treebox::item_proxy& ip, const std::string& text);
 	void update_image(nana::drawerbase::treebox::item_proxy& ip, const std::string& filename);
@@ -130,7 +127,7 @@ protected:
 	struct _data_struct
 	{
 		std::string key;
-		std::string owner;
+		std::string owner{ CITEM_EMPTY };
 
 		std::string text;
 		std::string img;
@@ -145,6 +142,10 @@ protected:
 	};
 	std::vector<_data_struct>	_data;
 	_data_struct*				_selected{ 0 };
+
+	void select_item(const std::string& key);
+	void erase_item(const std::string& key);
+	_data_struct* find_item(const std::string& key);
 
 	namemanager					_node_mgr;
 

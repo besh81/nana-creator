@@ -15,10 +15,10 @@ namespace ctrls
 {
 
 	//group
-	group::group(ctrl* parent, const std::string& name)
+	group::group(ctrl* parent, const std::string& name, bool visible)
 		: ctrl(parent)
 	{
-		grp.create(*parent->nanawdg);
+		grp.create(*parent->nanawdg, visible);
 		grp.caption(CTRL_GROUP); //BUG: if removed the group caption is not displayed at the beginning !!!
 		boxmodel.bind(&grp);
 
@@ -102,7 +102,7 @@ namespace ctrls
 		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
 
 		if(!properties.property("enabled").as_bool())
-			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+			cd->init.push_back(name + ".enabled(false);");
 		generatecode_colors(cd, ci, name);
 		// placement
 		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");

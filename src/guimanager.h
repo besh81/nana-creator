@@ -9,11 +9,11 @@
 #define NANA_CREATOR_GUIMANAGER_H
 
 #include "config.h"
-#include <nana/gui/widgets/toolbar.hpp>
 #include "pugixml/pugixml.hpp"
 #include "tree.h"
 #include "ctrls/ctrl.h"
 #include "namemanager.h"
+#include "creator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
@@ -56,15 +56,15 @@ public:
 	{
 		_root_wd = wd;
 	}
-	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, nana::toolbar* tb, statusbar* sb);
+	void init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb);
 	void clear();
 
-	void enableGUI(bool state);
+	void enableGUI(bool state, bool new_load);
 
 	void cursor(cursor_state state);
 	cursor_state cursor() { return _cursor_state; }
 
-	void new_project(const std::string& type);
+	void new_project(const std::string& type, const std::string& name);
 
 	tree_node<control_obj>* addmainctrl(const std::string& type, const std::string& name = "");
 	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* node, const std::string& type, insert_mode mode, const std::string& name = "");
@@ -131,11 +131,11 @@ private:
 
 	cursor_state			_cursor_state{ cursor_action::select };
 
+	creator*				_ct{ 0 };
 	propertiespanel*		_pp{ 0 };
 	assetspanel*			_ap{ 0 };
 	objectspanel*			_op{ 0 };
 	resizablecanvas*		_main_wd{ 0 };
-	nana::toolbar*			_tb{ 0 };
 	statusbar*				_sb{ 0 };
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator

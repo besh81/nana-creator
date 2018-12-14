@@ -11,6 +11,8 @@
 #include "filemanager.h"
 #include "tokenizer/Tokenizer.h"
 
+#define DEF_IMG_SIZE	16 // get from nana source
+
 
 extern filemanager		g_file_mgr;
 
@@ -28,7 +30,7 @@ namespace ctrls
 		// common
 		properties.append("buttons").label("Buttons").category(CAT_COMMON).type(pg_type::collection_toolbar) = "";
 		// appearance
-		properties.append("scale").label("Scale").category(CAT_APPEARANCE).type(pg_type::string_uint) = 16; // get from nana source
+		properties.append("scale").label("Scale").category(CAT_APPEARANCE).type(pg_type::string_uint) = DEF_IMG_SIZE;
 		// layout
 		// ...
 	}
@@ -81,7 +83,8 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::toolbar " + name + ";");
 		// init
-		cd->init.push_back(name + ".scale(" + properties.property("scale").as_string() + ");");
+		if(properties.property("scale").as_uint() != DEF_IMG_SIZE)
+			cd->init.push_back(name + ".scale(" + properties.property("scale").as_string() + ");");
 
 		// buttons - START
 		// split buttons into item (delimiter = CITEM_TKN)

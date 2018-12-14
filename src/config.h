@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.16.0"
+#define CREATOR_VERSION			"0.17.0"
 
 
 
@@ -109,24 +109,6 @@
 //--------------------------------------------------------
 #define MAIN_WDG_W				640
 #define MAIN_WDG_H				480
-
-
-// main toolbar
-#define TB_NEW					0
-#define TB_LOAD					1
-#define TB_SAVE					2
-#define TB_SAVE_AS				3
-//
-#define TB_GENERATE				5
-//
-#define TB_DELETE				7
-//
-#define TB_UP					9
-#define TB_DOWN					10
-//
-#define TB_CUT					12
-#define TB_COPY					13
-#define TB_PASTE				14
 
 
 #endif //NANA_CREATOR_CONFIG_H

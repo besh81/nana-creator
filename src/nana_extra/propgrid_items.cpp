@@ -267,15 +267,27 @@ namespace nana
 		txt_.create(wd);
 		txt_.multi_lines(false);
 		txt_.caption(value_);
-		txt_.editable(false);
 
+
+		txt_.set_accept([this](wchar_t c) -> bool
+		{
+			return (((c == nana::keyboard::cancel || c == nana::keyboard::backspace) && txt_.selected()) || c == nana::keyboard::enter) ? true : false;
+		});
 		txt_.events().click.connect_front([this](const nana::arg_click& arg)
 		{
-			scroll();
+			txt_.select(true);
 		});
 		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
 		{
 			txt_.select(true);
+		});
+		txt_.events().key_press([this](const nana::arg_keyboard& arg)
+		{
+			if(arg.key == nana::keyboard::enter && txt_.editable())
+			{
+				value_ = txt_.caption();
+				emit_event();
+			}
 		});
 
 

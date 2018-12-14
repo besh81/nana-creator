@@ -16,10 +16,10 @@ namespace ctrls
 {
 
 	//field
-	field::field(ctrl* parent, const std::string& name, bool grid)
+	field::field(ctrl* parent, const std::string& name, bool grid, bool visible)
 		: ctrl(parent), _grid(grid)
 	{
-		fld.create(*parent->nanawdg, true);
+		fld.create(*parent->nanawdg, visible);
 		boxmodel.bind(fld);
 
 
