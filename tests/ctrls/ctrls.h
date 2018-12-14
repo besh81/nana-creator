@@ -70,7 +70,13 @@ private:
 		menubar1.push_back("M&enu1");
 		auto* menubar1_1 = &menubar1.push_back("Me&nu2");
 		menubar1_1->append("&Item1");
+		menubar1_1->image(0, nana::paint::image("icons/vertical_layout.png"));
+		menubar1_1->append_splitter();
 		menubar1_1->append("I&tem2");
+		menubar1_1->image(2, nana::paint::image("icons/grid_layout.png"));
+		auto* menubar1_1_2 = menubar1_1->create_sub_menu(2);
+		menubar1_1_2->append("&Sub item");
+		menubar1_1_2->append("Su&b item");
 		menubar1.push_back("Men&u3");
 		// toolbar1
 		toolbar1.create(*this);

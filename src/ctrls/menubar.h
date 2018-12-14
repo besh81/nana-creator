@@ -38,6 +38,7 @@ namespace ctrls
 			std::string key;
 			bool		separator{ false };
 			std::string text;
+			std::string img;
 
 			nana::menu*	submenu{ 0 };
 			std::string submenu_name;

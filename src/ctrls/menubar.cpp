@@ -8,7 +8,11 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/menubar.h"
+#include "filemanager.h"
 #include "tokenizer/Tokenizer.h"
+
+
+extern filemanager		g_file_mgr;
 
 
 namespace ctrls
@@ -63,7 +67,12 @@ namespace ctrls
 				if(pval->separator)
 					pval_parent->submenu->append_splitter();
 				else
+				{
 					pval_parent->submenu->append(pval->text);
+
+					if(!pval->img.empty())
+						pval_parent->submenu->image(pval_parent->submenu->size()-1, nana::paint::image(g_file_mgr.to_relative(pval->img)));
+				}
 
 				if(node->child)
 					pval->submenu = pval_parent->submenu->create_sub_menu(pval_parent->submenu->size()-1);
@@ -118,7 +127,12 @@ namespace ctrls
 				if(pval->separator)
 					cd->init.push_back(pval_parent->submenu_name + "->append_splitter();");
 				else
+				{
 					cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->text + "\");");
+
+					if(!pval->img.empty())
+						cd->init.push_back(pval_parent->submenu_name + "->image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(pval->img) + "\"));");
+				}
 
 				if(node->child)
 				{
@@ -162,7 +176,7 @@ namespace ctrls
 			}
 			else
 			{
-				//
+				md.img = item_tkn.next();
 			}
 
 			menu_tree.for_each([&owner, &md](tree_node<menu_data>* node) -> bool

@@ -62,7 +62,7 @@ namespace ctrls
 				auto text = item_tkn.next();
 				auto img = item_tkn.next();
 
-				if(img == "")
+				if(img.empty())
 					tlb.append(text);
 				else
 					tlb.append(text, nana::paint::image(g_file_mgr.to_relative(img)));
