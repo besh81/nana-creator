@@ -86,6 +86,10 @@
 #define CITEM_FORWD				"Forward"
 #define CITEM_BACKWD			"Backward"
 //
+#define CITEM_NONE				"None"
+#define CITEM_OPTION			"Option"
+#define CITEM_HIGHLIGHT			"Highlight"
+//
 #define CITEM_PIXELS			"px"
 #define CITEM_PERCENT			"%"
 

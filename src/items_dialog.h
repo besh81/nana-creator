@@ -129,9 +129,9 @@ protected:
 		std::string key;
 		std::string owner{ CITEM_EMPTY };
 
+		bool		separator{ false };
 		std::string text;
 		std::string img;
-		bool		separator{ false };
 		std::string width;
 		std::string left{ "0" };
 		std::string top{ "0" };
@@ -139,6 +139,9 @@ protected:
 		std::string rows{ "0" };
 		std::string bgcolor;
 		std::string fgcolor;
+		std::string enabled{ "true" };
+		std::string check_style{ "0" }; //CITEM_NONE
+		std::string checked{ "false" };
 	};
 	std::vector<_data_struct>	_data;
 	_data_struct*				_selected{ 0 };

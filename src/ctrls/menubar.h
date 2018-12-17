@@ -39,6 +39,9 @@ namespace ctrls
 			bool		separator{ false };
 			std::string text;
 			std::string img;
+			std::string enabled{ "true" };
+			std::string check_style{ "0" }; //CITEM_NONE
+			std::string checked{ "false" };
 
 			nana::menu*	submenu{ 0 };
 			std::string submenu_name;

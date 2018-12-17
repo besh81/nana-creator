@@ -70,8 +70,12 @@ namespace ctrls
 				{
 					pval_parent->submenu->append(pval->text);
 
-					if(!pval->img.empty())
+					if(!pval->img.empty() && pval->img != CITEM_EMPTY)
 						pval_parent->submenu->image(pval_parent->submenu->size()-1, nana::paint::image(g_file_mgr.to_relative(pval->img)));
+
+					pval_parent->submenu->enabled(pval_parent->submenu->size() - 1, pval->enabled == "true" ? true : false);
+					pval_parent->submenu->check_style(pval_parent->submenu->size() - 1, static_cast<nana::drawerbase::menu::checks>(std::stoul(pval->check_style.c_str())));
+					pval_parent->submenu->checked(pval_parent->submenu->size() - 1, pval->checked == "true" ? true : false);
 				}
 
 				if(node->child)
@@ -130,8 +134,15 @@ namespace ctrls
 				{
 					cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->text + "\");");
 
-					if(!pval->img.empty())
+					if(!pval->img.empty() && pval->img != CITEM_EMPTY)
 						cd->init.push_back(pval_parent->submenu_name + "->image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(pval->img) + "\"));");
+					
+					if(pval->enabled == "false")
+						cd->init.push_back(pval_parent->submenu_name + "->enabled(" + std::to_string(node->pos()) + ", false);");
+					if(pval->check_style != "0")
+						cd->init.push_back(pval_parent->submenu_name + "->check_style(" + std::to_string(node->pos()) + ", static_cast<nana::drawerbase::menu::checks>(" + pval->check_style + "));");
+					if(pval->checked == "true")
+						cd->init.push_back(pval_parent->submenu_name + "->checked(" + std::to_string(node->pos()) + ", true);");
 				}
 
 				if(node->child)
@@ -177,6 +188,15 @@ namespace ctrls
 			else
 			{
 				md.img = item_tkn.next();
+				auto it = item_tkn.next();
+				if(!it.empty())
+					md.enabled = it;
+				it = item_tkn.next();
+				if(!it.empty())
+					md.check_style = it;
+				it = item_tkn.next();
+				if(!it.empty())
+					md.checked = it;
 			}
 
 			menu_tree.for_each([&owner, &md](tree_node<menu_data>* node) -> bool

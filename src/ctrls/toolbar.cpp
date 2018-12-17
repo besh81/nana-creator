@@ -62,7 +62,7 @@ namespace ctrls
 				auto text = item_tkn.next();
 				auto img = item_tkn.next();
 
-				if(img.empty())
+				if(img == CITEM_EMPTY || img.empty())
 					tlb.append(text);
 				else
 					tlb.append(text, nana::paint::image(g_file_mgr.to_relative(img)));
@@ -105,7 +105,7 @@ namespace ctrls
 
 				ln = name + ".append(\"" + item_tkn.next() + "\"";
 				auto img = item_tkn.next();
-				if(img == "")
+				if(img == CITEM_EMPTY || img.empty())
 					ln.append(");");
 				else
 					ln.append(", nana::paint::image(\"" + g_file_mgr.to_relative(img) + "\"));");
