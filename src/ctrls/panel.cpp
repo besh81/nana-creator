@@ -25,7 +25,7 @@ namespace ctrls
 		// common
 		// ...
 		// appearance
-		// ...
+		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = pnl.transparent();
 		// layout
 		properties.remove("weight");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
@@ -39,6 +39,7 @@ namespace ctrls
 	{
 		ctrl::update();
 		
+		pnl.transparent(properties.property("transparent").as_bool());
 
 		boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
 		boxmodel.set_attributes(properties.property("weight").as_string(), properties.property("margin").as_string(), properties.property("gap").as_string());
@@ -70,8 +71,10 @@ namespace ctrls
 		}
 
 		if(!properties.property("enabled").as_bool())
-			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+			cd->init.push_back(name + ".enabled(false);");
 		generatecode_colors(cd, ci, name);
+		if(properties.property("transparent").as_bool())
+			cd->init.push_back(name + ".transparent(true);");
 		// placement
 		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		// collocate

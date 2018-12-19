@@ -93,6 +93,14 @@ void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objects
 	_ct = ct;
 
 	_pp = pp;
+	_pp->name_changed([this](const std::string& arg)
+	{
+		_updatectrlname(_selected, arg);
+	});
+	_pp->property_changed([this](const std::string& arg)
+	{
+		updateselected();
+	});
 	
 	_ap = ap;
 	_ap->selected([this](const std::string& arg)
@@ -108,6 +116,7 @@ void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objects
 	{
 		click_objectspanel(arg);
 	});
+	_op->contex_menu(&_ctxmenu);
 
 	_main_wd = main_wd;
 	_sb = sb;
@@ -897,7 +906,9 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 
 		// deserialize properties
-		_deserializeproperties(&node->value->properties, &xml_node);
+		for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
+			node->value->properties.property(i->name()) = i->value();
+
 
 		// align control name
 		if(ctrl_name_changed)
@@ -952,19 +963,6 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<
 	}
 
 	return _selected;
-}
-
-
-void guimanager::_deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node)
-{
-	for(auto i = xml_node->attributes_begin(); i != xml_node->attributes_end(); ++i)
-	{
-		std::string name(i->name());
-		if(name.find("item") == 0)
-			properties->append(name) = i->value();
-		else
-			properties->property(name) = i->value();
-	}
 }
 
 

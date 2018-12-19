@@ -22,6 +22,7 @@ namespace ctrls
 		fld.create(*parent->nanawdg, visible);
 		boxmodel.bind(fld);
 
+		fld.transparent(true);
 
 		nana::drawing dw{ fld };
 		dw.draw([this](nana::paint::graphics& graph)
@@ -57,10 +58,6 @@ namespace ctrls
 	void field::update()
 	{
 		//ctrl::update();
-		
-		// has the same bg color of parent control
-		auto pw = nana::API::get_widget(nanawdg->parent());
-		nanawdg->bgcolor(pw->bgcolor());
 
 		// update boxmodel
 		if(_grid)

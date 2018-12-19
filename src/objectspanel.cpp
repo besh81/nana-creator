@@ -7,12 +7,10 @@
 
 #include <iostream>
 #include "objectspanel.h"
-#include "guimanager.h"
 #include "imagemanager.h"
 #include "style.h"
 
 
-extern guimanager	g_gui_mgr;
 extern imagemanager	g_img_mgr;
 
 
@@ -30,53 +28,6 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	_caption.caption("  Objects");
 	_caption.text_align(nana::align::left, nana::align_v::center);
 	_place.field("caption") << _caption;
-
-
-	// context menu
-	// 0. move up
-	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.moveupselected();
-	});
-	_ctxmenu.image(0, nana::paint::image("icons/up.png"));
-	// 1. move down
-	_ctxmenu.append("Move Down", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.movedownselected();
-	});
-	_ctxmenu.image(1, nana::paint::image("icons/down.png"));
-	// 2. -----
-	_ctxmenu.append_splitter();
-	// 3. delete
-	_ctxmenu.append("Delete", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.deleteselected();
-	});
-	_ctxmenu.image(3, nana::paint::image("icons/delete.png"));
-	// 4. -----
-	_ctxmenu.append_splitter();
-	// 5. cut
-	_ctxmenu.append("Cut", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.copyselected(true);
-	});
-	_ctxmenu.image(5, nana::paint::image("icons/cut.png"));
-	// 6. copy
-	_ctxmenu.append("Copy", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.copyselected();
-	});
-	_ctxmenu.image(6, nana::paint::image("icons/copy.png"));
-	// 7. paste
-	_ctxmenu.append("Paste", [this](const nana::menu::item_proxy& ip)
-	{
-		g_gui_mgr.pasteselected();
-	});
-	_ctxmenu.image(7, nana::paint::image("icons/paste.png"));
-
-
-	// events
-	_objects.events().mouse_down(nana::menu_popuper(_ctxmenu));
 
 
 	_objects.bgcolor(CREATOR_WINDOW_BG);
@@ -180,4 +131,11 @@ void objectspanel::selected(std::function<void(const std::string&)> f)
 		if(arg.operated)
 			f(arg.item.key());
 	});
+}
+
+
+void objectspanel::contex_menu(nana::menu* ctx)
+{
+	_ctxmenu = ctx;
+	_objects.events().mouse_down(nana::menu_popuper(*_ctxmenu));
 }

@@ -10,7 +10,6 @@
 
 #include <string>
 #include <vector>
-#include <nana/any.hpp>
 
 
 namespace ctrls
@@ -43,6 +42,7 @@ namespace ctrls
 		string_weight
 	};
 
+
 	struct property_t
 	{
 		std::string		name;
@@ -52,7 +52,6 @@ namespace ctrls
 		std::string		label;
 		std::string		category;
 		pg_type			type;
-		nana::any		type_hints;
 
 		std::string		enabled_prop;
 		bool			enabled_value;
@@ -85,12 +84,9 @@ namespace ctrls
 		property_proxy& type(const pg_type type);
 		pg_type type() const;
 
-		property_proxy& type_hints(const nana::any type);
-		nana::any type_hints() const;
-
 		property_proxy& enabled(const std::string& property, bool value);
-		std::string enabled();
-		bool enabled_value();
+		std::string enabled() const;
+		bool enabled_value() const;
 
 
 		// Comparison operators (compares wrapped property pointers)
@@ -125,9 +121,6 @@ namespace ctrls
 		property_proxy& operator=(float value);
 		property_proxy& operator=(bool value);
 
-
-		// Undocumentated methods for internal use
-		property_t* _m_prop() const;
 
 	private:
 		property_t*		_prop{ 0 };

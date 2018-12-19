@@ -26,6 +26,12 @@ public:
 	propertiespanel(nana::window wd, bool visible = true);
 	~propertiespanel() {}
 
+	void name_changed(std::function<void(const std::string&)> f);
+	void property_changed(std::function<void(const std::string&)> f)
+	{
+		_property_changed_f = f;
+	}
+
 	void set(ctrls::properties_collection* properties);
 
 
@@ -47,6 +53,8 @@ private:
 	nana::textbox			_name_txt{ *this };
 
 	nana::propertygrid		_propgrid{ *this };
+
+	std::function<void(const std::string&)> _property_changed_f;
 };
 
 

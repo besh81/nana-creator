@@ -89,7 +89,7 @@ namespace ctrls
 		}
 
 		if(!properties.property("enabled").as_bool())
-			cd->init.push_back(name + ".enabled(" + properties.property("enabled").as_string() + ");");
+			cd->init.push_back(name + ".enabled(false);");
 		generatecode_colors(cd, ci, name);
 
 

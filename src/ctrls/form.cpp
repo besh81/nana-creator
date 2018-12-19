@@ -54,6 +54,8 @@ namespace ctrls
 			properties.append("max").label("Max").category(CAT_APPEARANCE).type(pg_type::check) = false;
 			properties.append("sizable").label("Sizable").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		}
+		else
+			properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = frm.transparent();
 		// layout
 		properties.remove("weight");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
@@ -84,6 +86,8 @@ namespace ctrls
 
 		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
 
+		if(ispanel)
+			frm.transparent(properties.property("transparent").as_bool());
 
 		boxmodel.set_type(static_cast<layout_orientation>(properties.property("layout").as_int()));
 		boxmodel.set_attributes("", properties.property("margin").as_string(), properties.property("gap").as_string());
@@ -135,6 +139,11 @@ namespace ctrls
 			cd->init.push_back("enabled(false);");
 		if(!ispanel)
 			cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
+		else
+		{
+			if(properties.property("transparent").as_bool())
+				cd->init.push_back("transparent(true);");
+		}
 		generatecode_colors(cd, ci);
 		// placement
 		// ...

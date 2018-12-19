@@ -213,7 +213,7 @@ namespace ctrls
 
 	void notebook::show_page(ctrl* page)
 	{
-		for(int i = 0; i < pages.size(); i++)
+		for(std::size_t i = 0; i < pages.size(); i++)
 		{
 			if(page == pages[i])
 			{

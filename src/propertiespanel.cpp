@@ -9,13 +9,11 @@
 #include "propertiespanel.h"
 #include "ctrls/panel.h"
 #include "pg_items.h"
-#include "guimanager.h"
 #include "imagemanager.h"
 #include "lock_guard.h"
 #include "style.h"
 
 
-extern guimanager		g_gui_mgr;
 extern imagemanager		g_img_mgr;
 
 
@@ -54,12 +52,6 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 
 
 	// events
-	_name_txt.events().key_press([this](const nana::arg_keyboard& arg)
-	{
-		if(arg.key == nana::keyboard::enter && _properties)
-			g_gui_mgr.updateselectedname(_name_txt.caption());
-	});
-
 	_propgrid.events().property_changed([this](const nana::arg_propertygrid& arg)
 	{
 		if(_grid_setup)
@@ -77,10 +69,22 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 				// look for properties bonds
 				enabled_bonds(pi.name(), pi.as_bool());
 
-				g_gui_mgr.updateselected();
+				if(_property_changed_f)
+					_property_changed_f(pi.name());
 				break;
 			}
 		}
+	});
+}
+
+
+void propertiespanel::name_changed(std::function<void(const std::string&)> f)
+{
+	// events
+	_name_txt.events().key_press([this, f](const nana::arg_keyboard& arg)
+	{
+		if(arg.key == nana::keyboard::enter && _properties)
+			f(_name_txt.caption());
 	});
 }
 

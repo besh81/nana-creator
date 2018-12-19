@@ -74,28 +74,17 @@ namespace ctrls
 		return _prop->type;
 	}
 
-	property_proxy& property_proxy::type_hints(const nana::any hints)
-	{
-		_prop->type_hints = hints;
-		return *this;
-	}
-	nana::any property_proxy::type_hints() const
-	{
-		return _prop->type_hints;
-	}
-
-
 	property_proxy& property_proxy::enabled(const std::string& property, bool value)
 	{
 		_prop->enabled_prop = property;
 		_prop->enabled_value = value;
 		return *this;
 	}
-	std::string property_proxy::enabled()
+	std::string property_proxy::enabled() const
 	{
 		return _prop->enabled_prop;
 	}
-	bool property_proxy::enabled_value()
+	bool property_proxy::enabled_value() const
 	{
 		return _prop->enabled_value;
 	}
@@ -217,12 +206,6 @@ namespace ctrls
 		value(value_);
 		return *this;
 	}
-
-	property_t* property_proxy::_m_prop() const
-	{
-		return _prop;
-	}
-
 
 
 	properties_collection::~properties_collection()

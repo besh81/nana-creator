@@ -84,10 +84,6 @@ public:
 	}
 
 
-	void updateselectedname(const std::string& name)
-	{
-		_updatectrlname(_selected, name);
-	}
 	void updateselected()
 	{
 		_updatectrl(_selected);
@@ -112,7 +108,6 @@ private:
 
 	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
 	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool paste = false);
-	void _deserializeproperties(ctrls::properties_collection* properties, pugi::xml_node* xml_node);
 
 	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
