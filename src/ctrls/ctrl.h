@@ -42,8 +42,9 @@ namespace ctrls
 
 
 		// public vars
-		properties_collection	properties;
-		nana::widget*			nanawdg;
+		properties_collection				properties;
+		std::vector<properties_collection>	items;
+		nana::widget*						nanawdg;
 
 		// relationship management
 		ctrl* parent() { return _parent; }
@@ -57,6 +58,10 @@ namespace ctrls
 		//
 		virtual bool children() { return false; }
 		virtual bool children_fields() { return false; }
+
+
+		// items management
+		virtual properties_collection& append_item();
 
 
 		// creator modifiers

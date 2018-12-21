@@ -180,12 +180,13 @@
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\namemanager.cpp" />
     <ClCompile Include="..\..\src\nana_extra\color_helper.cpp" />
-    <ClCompile Include="..\..\src\nana_extra\propgrid_items.cpp" />
-    <ClCompile Include="..\..\src\nana_extra\propgrid.cpp" />
+    <ClCompile Include="..\..\src\nana_extra\pgitems.cpp" />
+    <ClCompile Include="..\..\src\nana_extra\propertygrid.cpp" />
     <ClCompile Include="..\..\src\new_project.cpp" />
     <ClCompile Include="..\..\src\objectspanel.cpp" />
     <ClCompile Include="..\..\src\pg_items.cpp" />
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
+    <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
     <ClCompile Include="..\..\src\resizablecanvas.cpp" />
     <ClCompile Include="..\..\src\statusbar.cpp" />
   </ItemGroup>
@@ -232,12 +233,13 @@
     <ClInclude Include="..\..\src\lock_guard.h" />
     <ClInclude Include="..\..\src\namemanager.h" />
     <ClInclude Include="..\..\src\nana_extra\color_helper.h" />
-    <ClInclude Include="..\..\src\nana_extra\propgrid_items.h" />
-    <ClInclude Include="..\..\src\nana_extra\propgrid.h" />
+    <ClInclude Include="..\..\src\nana_extra\pgitems.h" />
+    <ClInclude Include="..\..\src\nana_extra\propertygrid.h" />
     <ClInclude Include="..\..\src\new_project.h" />
     <ClInclude Include="..\..\src\objectspanel.h" />
     <ClInclude Include="..\..\src\pg_items.h" />
     <ClInclude Include="..\..\src\propertiespanel.h" />
+    <ClInclude Include="..\..\src\propertygrid_helper.h" />
     <ClInclude Include="..\..\src\resizablecanvas.h" />
     <ClInclude Include="..\..\src\statusbar.h" />
     <ClInclude Include="..\..\src\style.h" />

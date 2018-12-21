@@ -5,8 +5,8 @@
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_PROPGRID_H
-#define NANA_CREATOR_PROPGRID_H
+#ifndef NANA_CREATOR_PROPERTYGRID_H
+#define NANA_CREATOR_PROPERTYGRID_H
 
 #include <nana/gui/widgets/widget.hpp>
 #include <nana/gui/widgets/detail/inline_widget.hpp>
@@ -403,4 +403,4 @@ namespace nana
 	};
 }//end namespace nana
 
-#endif //NANA_CREATOR_PROPGRID_H
+#endif //NANA_CREATOR_PROPERTYGRID_H

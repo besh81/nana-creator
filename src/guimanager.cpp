@@ -143,7 +143,7 @@ void guimanager::clear()
 
 	_ctrls.clear();
 	_op->clear();
-	_pp->set(0);
+	_pp->set(0, 0);
 	_name_mgr.clear();
 
 	enableGUI(false, true);
@@ -497,7 +497,7 @@ void guimanager::deleteselected()
 	if(toremove == _ctrls.get_root()->child)
 	{
 		parent = 0;
-		_pp->set(0);
+		_pp->set(0, 0);
 		_main_wd->remove(*toremove->value->nanawdg);
 	}
 
@@ -675,7 +675,7 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 		_op->emit_events(true);
 
 		// set properties panel
-		_pp->set(&ctrl->properties);
+		_pp->set(&ctrl->properties, &ctrl->items);
 
 		if(arg.left_button)
 			return true; // stop propagation
@@ -793,7 +793,7 @@ void guimanager::click_objectspanel(const std::string& name)
 			_select_ctrl(node);
 
 			// set properties panel
-			_pp->set(&node->value->properties);
+			_pp->set(&node->value->properties, &node->value->items);
 
 			// set focus to new object
 			node->value->nanawdg->focus();
@@ -823,8 +823,18 @@ void guimanager::_serialize(tree_node<control_obj>* node, pugi::xml_node* xml_pa
 	{
 		xml_child = xml_parent->append_child(node->value->properties.property("type").as_string().c_str());
 
+		// serialize attributes
 		for(size_t i = 0; i < node->value->properties.count(); ++i)
 			xml_child.append_attribute(node->value->properties[i].name().c_str()) = node->value->properties[i].as_string().c_str();
+
+		// serialize items
+		for(auto& item : node->value->items)
+		{
+			auto xml_item = xml_child.append_child(NODE_ITEM);
+
+			for(size_t i = 0; i < item.count(); ++i)
+				xml_item.append_attribute(item[i].name().c_str()) = item[i].as_string().c_str();
+		}
 	}
 
 	if(node->child)
@@ -865,8 +875,6 @@ bool guimanager::deserialize(pugi::xml_node* xml_parent)
 
 bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xml_parent, bool paste)
 {
-	//ATTENTION !!! No check on deserialize
-
 	// read children
 	for(pugi::xml_node xml_node = xml_parent->first_child(); xml_node; xml_node = xml_node.next_sibling())
 	{
@@ -874,6 +882,23 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 		std::string node_name = xml_node.name();
 		std::string ctrl_name = xml_node.attribute("name").as_string();
+
+
+		if(node_name == NODE_ITEM)
+		{
+			parent->value->items.push_back(ctrls::properties_collection{});
+			auto& item = parent->value->items.back();
+
+			// init item properties
+			if(parent->value->get_type() == CTRL_MENUBAR)
+				ctrls::menubar::init_item(item);
+
+			// deserialize attributes
+			for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
+				item.property(i->name()) = i->value();
+
+			continue;
+		}
 
 		// add name to name manager (and check)
 		bool ctrl_name_changed = false;
@@ -904,23 +929,20 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			continue;
 		}
 
-
-		// deserialize properties
+		// deserialize attributes
 		for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
 			node->value->properties.property(i->name()) = i->value();
-
 
 		// align control name
 		if(ctrl_name_changed)
 			node->value->properties.property("name") = ctrl_name;
 
-		// update nana::widget
-		_updatectrl(node);
-
-
 		// deserialize children
 		if(!_deserialize(node, &xml_node))
 			return false;
+
+		// update nana::widget
+		_updatectrl(node);
 	}
 
 	return true;
@@ -953,7 +975,7 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<
 		_update_op();
 
 		// set properties panel
-		_pp->set(&ctrl->properties);
+		_pp->set(&ctrl->properties, &ctrl->items);
 
 		// set focus to new object
 		ctrl->nanawdg->focus();

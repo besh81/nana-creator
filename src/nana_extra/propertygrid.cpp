@@ -6,7 +6,7 @@
  */
 
 #include <iostream>
-#include "propgrid.h"
+#include "propertygrid.h"
 #include <nana/gui/widgets/scroll.hpp>
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/layout_utility.hpp>

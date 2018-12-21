@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\nana_extra\propgrid.cpp">
-      <Filter>Source Files\nana_extra</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ctrls\button.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
@@ -138,9 +135,6 @@
     <ClCompile Include="..\..\src\ctrls\treebox.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\nana_extra\propgrid_items.cpp">
-      <Filter>Source Files\nana_extra</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\pg_items.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -176,6 +170,15 @@
     </ClCompile>
     <ClCompile Include="..\..\src\ctrls\page.cpp">
       <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\nana_extra\propertygrid.cpp">
+      <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\nana_extra\pgitems.cpp">
+      <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\propertygrid_helper.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -217,9 +220,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\toolbar.h">
       <Filter>Header Files\ctrls</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\nana_extra\propgrid.h">
-      <Filter>Header Files\nana_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\assetspanel.h">
       <Filter>Header Files</Filter>
@@ -296,9 +296,6 @@
     <ClInclude Include="..\..\src\ctrls\treebox.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\nana_extra\propgrid_items.h">
-      <Filter>Header Files\nana_extra</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\pg_items.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -334,6 +331,15 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\notebook.h">
       <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\nana_extra\propertygrid.h">
+      <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\nana_extra\pgitems.h">
+      <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\propertygrid_helper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

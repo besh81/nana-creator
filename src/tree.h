@@ -266,7 +266,8 @@ public:
 
 	void clear()
 	{
-		remove(_root.child);
+		while(_root.child)
+			remove(_root.child);
 	}
 
 

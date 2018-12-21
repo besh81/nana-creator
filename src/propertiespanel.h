@@ -16,7 +16,7 @@
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/picture.hpp>
 #include "ctrls/property.h"
-#include "nana_extra/propgrid.h"
+#include "nana_extra/propertygrid.h"
 
 
 class propertiespanel
@@ -32,12 +32,10 @@ public:
 		_property_changed_f = f;
 	}
 
-	void set(ctrls::properties_collection* properties);
+	void set(ctrls::properties_collection* properties, std::vector<ctrls::properties_collection>* items);
 
 
 private:
-	void enabled_bonds(const std::string& name, bool value);
-
 	bool					_grid_setup{ false };
 
 	ctrls::properties_collection*	_properties;

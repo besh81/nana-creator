@@ -81,6 +81,13 @@ namespace ctrls
 	}
 
 
+	properties_collection& ctrl::append_item()
+	{
+		items.push_back(properties_collection{});
+		return items.back();
+	}
+
+
 	void ctrl::update()
 	{
 		auto pw = nana::API::get_widget(nanawdg->parent());
@@ -278,16 +285,16 @@ namespace ctrls
 	
 	mouse_position ctrl::mouse_pos(nana::point pos, nana::size size)
 	{
-		if(pos.y > size.height / 2)
+		if(pos.y > static_cast<int>(size.height) / 2)
 		{
-			if(pos.x > size.width / 2)
+			if(pos.x > static_cast<int>(size.width) / 2)
 				return  mouse_position::up_right;
 			else
 				return  mouse_position::up_left;
 		}
 		else
 		{
-			if(pos.x > size.width / 2)
+			if(pos.x > static_cast<int>(size.width) / 2)
 				return  mouse_position::down_right;
 			else
 				return  mouse_position::down_left;

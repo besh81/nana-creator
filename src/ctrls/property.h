@@ -39,7 +39,8 @@ namespace ctrls
 		collection_menubar,
 		collection_categorize,
 		collection_collapse,
-		string_weight
+		string_weight,
+		check_style
 	};
 
 

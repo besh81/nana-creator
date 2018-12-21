@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <algorithm>
-#include "propgrid_items.h"
+#include "nana_extra/pgitems.h"
 #include "color_helper.h"
 #include "lock_guard.h"
 

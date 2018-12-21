@@ -8,7 +8,7 @@
 #ifndef NANA_CREATOR_PG_ITEMS_H
 #define NANA_CREATOR_PG_ITEMS_H
 
-#include "nana_extra/propgrid_items.h"
+#include "nana_extra/pgitems.h"
 #include "ctrls/property.h"
 
 
@@ -88,12 +88,18 @@ public:
 		: pg_string_button(label, value), type_(type)
 	{}
 
+	pg_collection(const std::string& label, ctrls::pg_type type, std::vector<ctrls::properties_collection>* items)
+		: pg_string_button(label, ""), type_(type), items_(items)
+	{}
+
 	virtual void value(const std::string& value) override;
+	virtual void value(std::vector<ctrls::properties_collection>* items) { items_ = items; }
 
 protected:
 	virtual void create(nana::window wd) override;
 
 	ctrls::pg_type type_;
+	std::vector<ctrls::properties_collection>* items_{ 0 };
 };
 
 

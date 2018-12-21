@@ -1,19 +1,19 @@
 /*
- *		nana::propgrid_items Implementation
+ *		nana::pgitems Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
-#ifndef NANA_CREATOR_PROPGRID_ITEMS_H
-#define NANA_CREATOR_PROPGRID_ITEMS_H
+#ifndef NANA_CREATOR_PGITEMS_H
+#define NANA_CREATOR_PGITEMS_H
 
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/spinbox.hpp>
-#include "propgrid.h"
+#include "propertygrid.h"
 
 
 #define PG_BORDER_X		1
@@ -264,4 +264,4 @@ namespace nana
 
 }//end namespace nana
 
-#endif //NANA_CREATOR_PROPGRID_ITEMS_H
+#endif //NANA_CREATOR_PGITEMS_H

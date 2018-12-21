@@ -180,14 +180,17 @@ void pg_collection::create(nana::window wd)
 	set_button_click([this](const nana::arg_click& arg)
 	{
 		//items dialog
-		items_dialog dlg(arg.window_handle, type_);
-		dlg.value(value_);
-		dlg.modality();
-
-		if(dlg.return_val() == nana::msgbox::pick_ok)
+		if(items_)
 		{
-			value_ = dlg.value();
-			emit_event();
+			items_dialog dlg(arg.window_handle, type_);
+			dlg.set_items(*items_);
+			dlg.modality();
+
+			if(dlg.return_val() == nana::msgbox::pick_ok)
+			{
+				*items_ = dlg.get_items();
+				emit_event();
+			}
 		}
 	});
 }

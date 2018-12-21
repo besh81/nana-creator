@@ -60,6 +60,7 @@
 
 // nodes name
 #define NODE_ROOT				"nana-creator"
+#define NODE_ITEM				"item"
 
 
 
