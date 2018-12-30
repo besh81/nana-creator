@@ -31,9 +31,6 @@
     <Filter Include="Header Files\nana_extra">
       <UniqueIdentifier>{c7c226d8-ce52-45ff-8bab-4ba102d6bd7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\tokenizer">
-      <UniqueIdentifier>{a3b7cd62-d7b8-4b05-a427-bf9786240304}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\ctrls\button.cpp">
@@ -98,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="..\..\libs\pugixml\pugixml.cpp">
       <Filter>libs\pugixml</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\libs\tokenizer\Tokenizer.cpp">
-      <Filter>libs\tokenizer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ctrls\categorize.cpp">
       <Filter>Source Files\ctrls</Filter>
@@ -259,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="..\..\libs\pugixml\pugixml.hpp">
       <Filter>libs\pugixml</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libs\tokenizer\Tokenizer.h">
-      <Filter>libs\tokenizer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\categorize.h">
       <Filter>Header Files\ctrls</Filter>

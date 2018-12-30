@@ -890,8 +890,18 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			auto& item = parent->value->items.back();
 
 			// init item properties
-			if(parent->value->get_type() == CTRL_MENUBAR)
+			if(parent->value->get_type() == CTRL_GRID)
+				ctrls::field::init_item(item);
+			else if(parent->value->get_type() == CTRL_COMBOX)
+				ctrls::combox::init_item(item);
+			else if(parent->value->get_type() == CTRL_LISTBOX)
+				ctrls::listbox::init_item(item);
+			else if(parent->value->get_type() == CTRL_MENUBAR)
 				ctrls::menubar::init_item(item);
+			else if(parent->value->get_type() == CTRL_TABBAR)
+				ctrls::tabbar::init_item(item);
+			else if(parent->value->get_type() == CTRL_TOOLBAR)
+				ctrls::toolbar::init_item(item);
 
 			// deserialize attributes
 			for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)

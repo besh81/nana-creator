@@ -9,7 +9,6 @@
 #include <iostream>
 #include "ctrls/toolbar.h"
 #include "filemanager.h"
-#include "tokenizer/Tokenizer.h"
 
 #define DEF_IMG_SIZE	16 // get from nana source
 
@@ -36,6 +35,17 @@ namespace ctrls
 	}
 
 
+	void toolbar::init_item(properties_collection& item)
+	{
+		ctrl::init_item(item);
+		item.property("type") = "button";
+		//
+		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
+		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
+		item.append("separator") = false;
+	}
+
+
 	void toolbar::update()
 	{
 		ctrl::update();
@@ -44,28 +54,16 @@ namespace ctrls
 
 		// buttons - START
 		tlb.clear();
-		// split buttons into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("buttons").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
-
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			if(item == CITEM_TLB_SEPARATOR)
+			if(i.property("separator").as_bool())
 				tlb.separate();
 			else
 			{
-				// split item into properties (delimiter = CITEM_INNER_TKN)
-				Tokenizer item_tkn(item);
-				item_tkn.setDelimiter(CITEM_INNER_TKN);
-
-				auto text = item_tkn.next();
-				auto img = item_tkn.next();
-
-				if(img == CITEM_EMPTY || img.empty())
-					tlb.append(text);
+				if(i.property("image").as_string().empty())
+					tlb.append(i.property("text").as_string());
 				else
-					tlb.append(text, nana::paint::image(g_file_mgr.to_relative(img)));
+					tlb.append(i.property("text").as_string(), nana::paint::image(g_file_mgr.to_relative(i.property("image").as_string())));
 			}
 		}
 		// buttons - END
@@ -87,30 +85,20 @@ namespace ctrls
 			cd->init.push_back(name + ".scale(" + properties.property("scale").as_string() + ");");
 
 		// buttons - START
-		// split buttons into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("buttons").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
-
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			std::string ln;
-			if(item == CITEM_TLB_SEPARATOR)
-				ln = name + ".separate();";
+			if(i.property("separator").as_bool())
+				cd->init.push_back(name + ".separate();");
 			else
 			{
-				// split item into properties (delimiter = CITEM_INNER_TKN)
-				Tokenizer item_tkn(item);
-				item_tkn.setDelimiter(CITEM_INNER_TKN);
+				auto str = name + ".append(\"" + i.property("text").as_string() + "\"";
 
-				ln = name + ".append(\"" + item_tkn.next() + "\"";
-				auto img = item_tkn.next();
-				if(img == CITEM_EMPTY || img.empty())
-					ln.append(");");
+				if(i.property("image").as_string().empty())
+					str.append(");");
 				else
-					ln.append(", nana::paint::image(\"" + g_file_mgr.to_relative(img) + "\"));");
+					str.append(", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
+				cd->init.push_back(str);
 			}
-			cd->init.push_back(ln);
 		}
 		// buttons - END
 	}

@@ -142,7 +142,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\libs\pugixml\pugixml.cpp" />
-    <ClCompile Include="..\..\libs\tokenizer\Tokenizer.cpp" />
     <ClCompile Include="..\..\src\assetspanel.cpp" />
     <ClCompile Include="..\..\src\codegenerator.cpp" />
     <ClCompile Include="..\..\src\creator.cpp" />
@@ -193,7 +192,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\libs\pugixml\pugiconfig.hpp" />
     <ClInclude Include="..\..\libs\pugixml\pugixml.hpp" />
-    <ClInclude Include="..\..\libs\tokenizer\Tokenizer.h" />
     <ClInclude Include="..\..\src\assetspanel.h" />
     <ClInclude Include="..\..\src\codegenerator_data.h" />
     <ClInclude Include="..\..\src\codegenerator.h" />

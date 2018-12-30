@@ -8,7 +8,6 @@
 #include <iostream>
 #include <algorithm>
 #include "ctrls/field.h"
-#include "tokenizer/Tokenizer.h"
 #include "style.h"
 
 
@@ -55,6 +54,18 @@ namespace ctrls
 	}
 
 
+	void field::init_item(properties_collection& item)
+	{
+		ctrl::init_item(item);
+		item.property("type") = "collapse";
+		//
+		item.append("left").label("Left").category(CAT_COMMON).type(pg_type::string_uint) = 0;
+		item.append("top").label("Top").category(CAT_COMMON).type(pg_type::string_uint) = 0;
+		item.append("cols").label("Columns").category(CAT_COMMON).type(pg_type::string_uint) = 0;
+		item.append("rows").label("Rows").category(CAT_COMMON).type(pg_type::string_uint) = 0;
+	}
+
+
 	void field::update()
 	{
 		//ctrl::update();
@@ -71,27 +82,9 @@ namespace ctrls
 		{
 			// collapse - START
 			boxmodel.clear_collapse();
-			// split columns into item (delimiter = CITEM_TKN)
-			Tokenizer items_tkn(properties.property("collapse").as_string());
-			items_tkn.setDelimiter(CITEM_TKN);
-
-			std::string item;
-			while((item = items_tkn.next()) != "")
+			for(auto& i : items)
 			{
-				// split item into properties (delimiter = CITEM_INNER_TKN)
-				Tokenizer item_tkn(item);
-				item_tkn.setDelimiter(CITEM_INNER_TKN);
-
-				auto left = item_tkn.next();
-				if(left == CITEM_EMPTY) left = "0";
-				auto top = item_tkn.next();
-				if(top == CITEM_EMPTY) top = "0";
-				auto cols = item_tkn.next();
-				if(cols == CITEM_EMPTY) cols = "0";
-				auto rows = item_tkn.next();
-				if(rows == CITEM_EMPTY) rows = "0";
-
-				boxmodel.add_collapse(left + "," + top + "," + cols + "," + rows);
+				boxmodel.add_collapse(i.property("left").as_string() + "," + i.property("top").as_string() + "," + i.property("cols").as_string() + "," + i.property("rows").as_string());
 			}
 			// collapse - END
 		}

@@ -9,8 +9,8 @@
 #include <iostream>
 #include "ctrls/tabbar.h"
 #include "nana_extra/color_helper.h"
-#include "tokenizer/Tokenizer.h"
 #include "filemanager.h"
+#include "style.h"
 
 
 extern filemanager		g_file_mgr;
@@ -61,6 +61,19 @@ namespace ctrls
 	}
 
 
+	void tabbar::init_item(properties_collection& item)
+	{
+		ctrl::init_item(item);
+		item.property("type") = "tab";
+		//
+		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Tab";
+		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
+		
+		item.append("bgcolor").label("Background").category(CAT_COMMON).type(pg_type::color_inherited) = nana::to_string(ITEMS_DEF_BGCOL, false);
+		item.append("fgcolor").label("Foreground").category(CAT_COMMON).type(pg_type::color_inherited) = nana::to_string(ITEMS_DEF_FGCOL, false);
+	}
+
+
 	void tabbar::update()
 	{
 		ctrl::update();
@@ -69,35 +82,26 @@ namespace ctrls
 		internal_use = true;
 		while(tbb.length())
 			tbb.erase(0);
-		// split columns into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("tabs").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
 
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			// split item into properties (delimiter = CITEM_INNER_TKN)
-			Tokenizer item_tkn(item);
-			item_tkn.setDelimiter(CITEM_INNER_TKN);
+			tbb.push_back(i.property("text").as_string());
 
-			auto text = item_tkn.next();
-			tbb.push_back(text);
-
-			auto img = item_tkn.next();
-			if(img != CITEM_EMPTY)
-				tbb.tab_image(tbb.length()-1, nana::paint::image(img));
+			if(!i.property("image").as_string().empty())
+				tbb.tab_image(tbb.length() - 1, nana::paint::image(i.property("image").as_string()));
 
 			bool inherited;
-			auto bgcolor_txt = item_tkn.next();
+			auto bgcolor_txt = i.property("bgcolor").as_string();
 			auto bgcolor = nana::to_color(bgcolor_txt, inherited);
 			if(!inherited)
-				tbb.tab_bgcolor(tbb.length()-1, bgcolor);
+				tbb.tab_bgcolor(tbb.length() - 1, bgcolor);
 
-			auto fgcolor_txt = item_tkn.next();
+			auto fgcolor_txt = i.property("fgcolor").as_string();
 			auto fgcolor = nana::to_color(fgcolor_txt, inherited);
 			if(!inherited)
-				tbb.tab_fgcolor(tbb.length()-1, fgcolor);
+				tbb.tab_fgcolor(tbb.length() - 1, fgcolor);
 		}
+
 		internal_use = false;
 		// tabs - END
 
@@ -122,36 +126,26 @@ namespace ctrls
 		// init
 
 		// tabs - START
-		// split columns into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("tabs").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
-
-		int i = 0;
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		std::size_t pos = 0;
+		for(auto& i : items)
 		{
-			// split item into properties (delimiter = CITEM_INNER_TKN)
-			Tokenizer item_tkn(item);
-			item_tkn.setDelimiter(CITEM_INNER_TKN);
+			cd->init.push_back(name + ".push_back(\"" + i.property("text").as_string() + "\");");
 
-			cd->init.push_back(name + ".push_back(\"" + item_tkn.next() + "\");");
-
-			auto img = item_tkn.next();
-			if(img != CITEM_EMPTY)
-				cd->init.push_back(name + ".tab_image(" + std::to_string(i) + ", nana::paint::image(\"" + g_file_mgr.to_relative(img) + "\"));");
+			if(!i.property("image").as_string().empty())
+				cd->init.push_back(name + ".tab_image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
 
 			bool inherited;
-			auto bgcolor_txt = item_tkn.next();
+			auto bgcolor_txt = i.property("bgcolor").as_string();
 			auto bgcolor = nana::to_color(bgcolor_txt, inherited);
 			if(!inherited)
-				cd->init.push_back(name + ".tab_bgcolor(" + std::to_string(i) + ", nana::color(" + bgcolor_txt + "));");
+				cd->init.push_back(name + ".tab_bgcolor(" + std::to_string(pos) + ", nana::color(" + bgcolor_txt + "));");
 
-			auto fgcolor_txt = item_tkn.next();
+			auto fgcolor_txt = i.property("fgcolor").as_string();
 			auto fgcolor = nana::to_color(fgcolor_txt, inherited);
 			if(!inherited)
-				cd->init.push_back(name + ".tab_fgcolor(" + std::to_string(i) + ", nana::color(" + fgcolor_txt + "));");
+				cd->init.push_back(name + ".tab_fgcolor(" + std::to_string(pos) + ", nana::color(" + fgcolor_txt + "));");
 
-			i++;
+			++pos;
 		}
 		// tabs - END
 

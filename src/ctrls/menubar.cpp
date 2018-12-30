@@ -33,21 +33,12 @@ namespace ctrls
 	}
 
 
-	properties_collection& menubar::append_item()
-	{
-		auto& item = ctrl::append_item();
-		init_item(item);
-		return item;
-	}
-
-
 	void menubar::init_item(properties_collection& item)
 	{
-		item.append("type") = "menu";
-		item.append("key");
-		item.append("owner");
-		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Menu";
+		ctrl::init_item(item);
+		item.property("type") = "menu";
 		//
+		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Menu";
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
 		item.append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = true;
 		item.append("check_style").label("Check style").category(CAT_COMMON).type(pg_type::check_style) = static_cast<int>(nana::menu::checks::none);

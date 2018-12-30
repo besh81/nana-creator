@@ -26,8 +26,8 @@
 #include <nana/gui/widgets/slider.hpp>
 #include <nana/gui/widgets/spinbox.hpp>
 #include <nana/gui/widgets/textbox.hpp>
-#include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/tabbar.hpp>
+#include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/date_chooser.hpp>
 #include <nana/gui/widgets/listbox.hpp>
 #include <nana/gui/widgets/treebox.hpp>
@@ -41,7 +41,7 @@ class form1
 	: public nana::form
 {
 public:
-	form1(nana::window wd, const ::nana::size& sz = {640, 480}, const nana::appearance& apr = {true, true, false, false, true, true, true})
+	form1(nana::window wd, const ::nana::size& sz = {640, 500}, const nana::appearance& apr = {true, true, false, false, true, true, true})
 		: nana::form(wd, sz, apr)
 	{
 		init_();
@@ -62,33 +62,33 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26] field1>|<margin=2 gap=2 field2>>");
+		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
 		caption("Nana-Creator test");
 		// menubar1
 		menubar1.create(*this);
 		_place["menuf"] << menubar1;
 		menubar1.push_back("M&enu1");
 		auto* menubar1_1 = &menubar1.push_back("Me&nu2");
-		menubar1_1->append("&Disabled");
-		menubar1_1->image(0, nana::paint::image("icons/vertical_layout.png"));
+		menubar1_1->append("Disabled");
+		menubar1_1->image(0, nana::paint::image("icons/grid_layout.png"));
 		menubar1_1->enabled(0, false);
 		menubar1_1->append_splitter();
-		menubar1_1->append("&Options");
-		menubar1_1->image(2, nana::paint::image("icons/grid_layout.png"));
+		menubar1_1->append("Options");
+		menubar1_1->image(2, nana::paint::image("icons/categorize.png"));
 		auto* menubar1_1_2 = menubar1_1->create_sub_menu(2);
 		menubar1_1_2->append("Option1");
-		menubar1_1_2->check_style(0, static_cast<nana::drawerbase::menu::checks>(1));
-		menubar1_1_2->checked(0, true);
+		menubar1_1_2->check_style(0, static_cast<nana::menu::checks>(1));
 		menubar1_1_2->append("Option2");
-		menubar1_1_2->check_style(1, static_cast<nana::drawerbase::menu::checks>(1));
-		menubar1_1->append("&Highlights");
+		menubar1_1_2->check_style(1, static_cast<nana::menu::checks>(1));
+		menubar1_1_2->checked(1, true);
+		menubar1_1->append("Highlights");
 		menubar1_1->image(3, nana::paint::image("icons/checkbox.png"));
 		auto* menubar1_1_3 = menubar1_1->create_sub_menu(3);
 		menubar1_1_3->append("Highlight1");
-		menubar1_1_3->check_style(0, static_cast<nana::drawerbase::menu::checks>(2));
+		menubar1_1_3->check_style(0, static_cast<nana::menu::checks>(2));
+		menubar1_1_3->checked(0, true);
 		menubar1_1_3->append("Highlight2");
-		menubar1_1_3->check_style(1, static_cast<nana::drawerbase::menu::checks>(2));
-		menubar1_1_3->checked(1, true);
+		menubar1_1_3->check_style(1, static_cast<nana::menu::checks>(2));
 		menubar1.push_back("Men&u3");
 		// toolbar1
 		toolbar1.create(*this);
@@ -142,9 +142,9 @@ private:
 		combox1.create(*this);
 		_place["field1"] << combox1;
 		combox1.push_back("UNO");
-		combox1.push_back("tre");
+		combox1.push_back("Tre");
 		combox1.image(1, nana::paint::image("icons/up.png"));
-		combox1.push_back("DUE");
+		combox1.push_back("due");
 		combox1.option(0);
 		combox1.image_pixels(21);
 		// picture1
@@ -178,6 +178,19 @@ private:
 		textbox1.caption("");
 		textbox1.tip_string("insert text");
 		textbox1.multi_lines(false);
+		// tabbar1
+		tabbar1.create(*this);
+		_place["field1"] << tabbar1;
+		tabbar1.push_back("tab1");
+		tabbar1.tab_bgcolor(0, nana::color(212,208,200));
+		tabbar1.tab_fgcolor(0, nana::color(220,0,0));
+		tabbar1.push_back("tab2");
+		tabbar1.tab_image(1, nana::paint::image("icons/down.png"));
+		tabbar1.tab_bgcolor(1, nana::color(212,208,200));
+		tabbar1.tab_fgcolor(1, nana::color(0,0,0));
+		tabbar1.push_back("tab3");
+		tabbar1.tab_bgcolor(2, nana::color(212,208,200));
+		tabbar1.tab_fgcolor(2, nana::color(0,0,0));
 		// panel1
 		panel1.create(*this);
 		panel1_place.bind(panel1);
@@ -199,6 +212,7 @@ private:
 		page1_place.bind(page1);
 		page1_place.div("margin=5 gap=2 _field_");
 		notebook1_tbb.push_back("page");
+		notebook1_tbb.tab_image(notebook1_tbb.length()-1, nana::paint::image("icons/datechooser.png"));
 		notebook1_tbb.tab_bgcolor(notebook1_tbb.length()-1, page1.bgcolor());
 		notebook1_tbb.tab_fgcolor(notebook1_tbb.length()-1, page1.fgcolor());
 		notebook1_tbb.attach(notebook1_tbb.length()-1, page1);
@@ -213,7 +227,6 @@ private:
 		page2.bgcolor(nana::color(212,208,20));
 		page2.fgcolor(nana::color(0,0,255));
 		notebook1_tbb.push_back("page");
-		notebook1_tbb.tab_image(notebook1_tbb.length()-1, nana::paint::image("icons/datechooser.png"));
 		notebook1_tbb.tab_bgcolor(notebook1_tbb.length()-1, page2.bgcolor());
 		notebook1_tbb.tab_fgcolor(notebook1_tbb.length()-1, page2.fgcolor());
 		notebook1_tbb.attach(notebook1_tbb.length()-1, page2);
@@ -221,8 +234,8 @@ private:
 		// listbox1
 		listbox1.create(page2);
 		page2_place["_field_"] << listbox1;
-		listbox1.append_header("Col 1", 200);
-		listbox1.append_header("Col 2");
+		listbox1.append_header("Col1", 70);
+		listbox1.append_header("Col2");
 		// treebox1
 		treebox1.create(page2);
 		page2_place["_field_"] << treebox1;
@@ -254,6 +267,7 @@ protected:
 	nana::slider slider1;
 	nana::spinbox spinbox1;
 	nana::textbox textbox1;
+	nana::tabbar<size_t> tabbar1;
 	nana::panel<true> panel1;
 	nana::place panel1_place;
 	nana::panel<true> notebook1_pnl;

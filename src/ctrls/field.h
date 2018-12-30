@@ -34,6 +34,7 @@ namespace ctrls
 		bool children() override { return boxmodel.children(); }
 		bool children_fields() override { return boxmodel.children_fields(); }
 
+		static void init_item(properties_collection& item);
 
 		void update() override;
 

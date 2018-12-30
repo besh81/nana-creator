@@ -9,7 +9,6 @@
 #include <iostream>
 #include "ctrls/notebook.h"
 #include "nana_extra/color_helper.h"
-#include "tokenizer/Tokenizer.h"
 
 
 #define DEF_TABS_WEIGHT		"30"

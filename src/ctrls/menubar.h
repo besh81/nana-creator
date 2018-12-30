@@ -23,7 +23,6 @@ namespace ctrls
 	public:
 		menubar(ctrl* parent, const std::string& name);
 
-		properties_collection& append_item() override;
 		static void init_item(properties_collection& item);
 
 		void update() override;

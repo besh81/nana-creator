@@ -9,7 +9,6 @@
 #include <iostream>
 #include "ctrls/combox.h"
 #include "filemanager.h"
-#include "tokenizer/Tokenizer.h"
 
 #define DEF_IMG_SIZE	16 // get from nana source
 
@@ -38,6 +37,16 @@ namespace ctrls
 	}
 
 
+	void combox::init_item(properties_collection& item)
+	{
+		ctrl::init_item(item);
+		item.property("type") = "item";
+		//
+		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
+		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
+	}
+
+
 	void combox::update()
 	{
 		ctrl::update();
@@ -62,24 +71,14 @@ namespace ctrls
 		// init
 		
 		// options - START
-		// split options into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("options").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
-
 		std::size_t pos = 0;
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			// split item into properties (delimiter = CITEM_INNER_TKN)
-			Tokenizer item_tkn(item);
-			item_tkn.setDelimiter(CITEM_INNER_TKN);
+			cd->init.push_back(name + ".push_back(\"" + i.property("text").as_string() + "\");");
 
-			cd->init.push_back(name + ".push_back(\"" + item_tkn.next() + "\");");
+			if(!i.property("image").as_string().empty())
+				cd->init.push_back(name + ".image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
 
-			// load image if any
-			auto img = item_tkn.next();
-			if(img != "")
-				cd->init.push_back(name + ".image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(img) + "\"));");
 			++pos;
 		}
 		// options - END

@@ -61,7 +61,7 @@ namespace ctrls
 
 
 		// items management
-		virtual properties_collection& append_item();
+		static void init_item(properties_collection& item);
 
 
 		// creator modifiers

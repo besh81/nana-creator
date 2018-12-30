@@ -121,8 +121,6 @@ namespace propertygrid_helper
 				|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize
 				|| prop.type() == ctrls::pg_type::collection_collapse)
 			{
-				//XXX
-				//cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value(), prop.type())));
 				auto item = cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value(), prop.type())));
 				auto pgc = static_cast<pg_collection*>(item._m_pgitem());
 

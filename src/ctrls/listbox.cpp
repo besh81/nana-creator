@@ -8,7 +8,6 @@
 #include "config.h"
 #include <iostream>
 #include "ctrls/listbox.h"
-#include "tokenizer/Tokenizer.h"
 #include "nana_extra/color_helper.h"
 
 
@@ -34,30 +33,29 @@ namespace ctrls
 	}
 
 
+	void listbox::init_item(properties_collection& item)
+	{
+		ctrl::init_item(item);
+		item.property("type") = "column";
+		//
+		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
+		item.append("width").label("Width").category(CAT_COMMON).type(pg_type::string_int) = -1;
+	}
+
+
 	void listbox::update()
 	{
 		ctrl::update();
 
 		// columns - START
 		lst.clear_headers();
-		// split columns into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("columns").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
 
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			// split item into properties (delimiter = CITEM_INNER_TKN)
-			Tokenizer item_tkn(item);
-			item_tkn.setDelimiter(CITEM_INNER_TKN);
-
-			auto text = item_tkn.next();
-			auto width = item_tkn.next();
-
-			if(width == "")
-				lst.append_header(text);
+			if(i.property("width").as_int() < 0)
+				lst.append_header(i.property("text").as_string());
 			else
-				lst.append_header(text, std::stoul(width));
+				lst.append_header(i.property("text").as_string(), i.property("width").as_uint());
 		}
 		// columns - END
 
@@ -87,24 +85,16 @@ namespace ctrls
 			cd->init.push_back(name + ".show_header(false);");
 
 		// columns - START
-		// split columns into item (delimiter = CITEM_TKN)
-		Tokenizer items_tkn(properties.property("columns").as_string());
-		items_tkn.setDelimiter(CITEM_TKN);
-
-		std::string item;
-		while((item = items_tkn.next()) != "")
+		for(auto& i : items)
 		{
-			// split item into properties (delimiter = CITEM_INNER_TKN)
-			Tokenizer item_tkn(item);
-			item_tkn.setDelimiter(CITEM_INNER_TKN);
+			std::string str = name + ".append_header(\"" + i.property("text").as_string() + "\"";
 
-			std::string ln = name + ".append_header(\"" + item_tkn.next() + "\"";
-			auto width = item_tkn.next();
-			if(width == "")
-				ln.append(");");
+			if(i.property("width").as_int() < 0)
+				str.append(");");
 			else
-				ln.append(", " + width + ");");
-			cd->init.push_back(ln);
+				str.append(", " + i.property("width").as_string() + ");");
+
+			cd->init.push_back(str);
 		}
 		// columns - END
 	}

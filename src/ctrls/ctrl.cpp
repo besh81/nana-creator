@@ -81,10 +81,11 @@ namespace ctrls
 	}
 
 
-	properties_collection& ctrl::append_item()
+	void ctrl::init_item(properties_collection& item)
 	{
-		items.push_back(properties_collection{});
-		return items.back();
+		item.append("type");
+		item.append("key");
+		item.append("owner");
 	}
 
 

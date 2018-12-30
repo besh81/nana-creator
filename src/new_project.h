@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.13.0)
+ *	C++ code generated with Nana Creator (0.17.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -59,15 +59,12 @@ private:
 		// type_lst
 		type_lst.create(*this);
 		_place["field2"] << type_lst;
-		type_lst.bgcolor(nana::color(255,255,255));
-		type_lst.checkable(false);
 		type_lst.enable_single(true, true);
 		type_lst.show_header(false);
-		type_lst.append_header("Widget type", 150);
+		type_lst.append_header("Widget", 150);
 		// type_txt
 		type_txt.create(*this);
 		_place["field2"] << type_txt;
-		type_txt.bgcolor(nana::color(255,255,255));
 		type_txt.caption("");
 		type_txt.editable(false);
 		type_txt.line_wrapped(true);
@@ -80,7 +77,6 @@ private:
 		// name_txt
 		name_txt.create(*this);
 		_place["field3"] << name_txt;
-		name_txt.bgcolor(nana::color(255,255,255));
 		name_txt.caption("");
 		name_txt.multi_lines(false);
 		// label2
@@ -91,7 +87,6 @@ private:
 		// folder_txt
 		folder_txt.create(*this);
 		_place["field4"] << folder_txt;
-		folder_txt.bgcolor(nana::color(255,255,255));
 		folder_txt.caption("");
 		folder_txt.editable(false);
 		folder_txt.multi_lines(false);
@@ -101,6 +96,7 @@ private:
 		folder_btn.caption("...");
 		// panel1
 		panel1.create(*this);
+		panel1.transparent(true);
 		_place["field5"] << panel1;
 		// create_btn
 		create_btn.create(*this);

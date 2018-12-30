@@ -22,6 +22,8 @@ namespace ctrls
 	public:
 		listbox(ctrl* parent, const std::string& name);
 
+		static void init_item(properties_collection& item);
+
 		void update() override;
 
 		void generatecode(code_data_struct* cd, code_info_struct* ci) override;

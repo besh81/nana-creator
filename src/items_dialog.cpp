@@ -12,11 +12,17 @@
 #include "pg_items.h"
 #include "propertygrid_helper.h"
 #include "style.h"
+#include "ctrls/combox.h"
+#include "ctrls/listbox.h"
+#include "ctrls/field.h"
 #include "ctrls/menubar.h"
+#include "ctrls/tabbar.h"
+#include "ctrls/toolbar.h"
 
 
 #define NODE_NAME		"n"
 #define SEPARATOR_TXT	"-----"
+#define COLLAPSE_TXT	"Collapse"
 
 
 
@@ -34,17 +40,16 @@ void items_dialog::init()
 	_place["right_lyt"] << _propgrid;
 	_place.collocate();
 
-
+	// toolbar: add separator button
+	if(_type != ctrls::pg_type::collection_toolbar && _type != ctrls::pg_type::collection_menubar)
+	{
+		toolbar.enable(1, false);
+	}
 	// toolbar: left/right buttons
 	if(_type != ctrls::pg_type::collection_menubar)
 	{
 		toolbar.enable(7, false);
 		toolbar.enable(8, false);
-	}
-	// toolbar: add separator button
-	if(_type != ctrls::pg_type::collection_toolbar && _type != ctrls::pg_type::collection_menubar)
-	{
-		toolbar.enable(1, false);
 	}
 	//ctrls - END
 
@@ -163,10 +168,18 @@ void items_dialog::tb_add_item(bool separator)
 	auto& item = _items.back();
 
 	// init item properties
-	if(_type == ctrls::pg_type::collection_menubar)
-	{
+	if(_type == ctrls::pg_type::collection_collapse)
+		ctrls::field::init_item(item);
+	else if(_type == ctrls::pg_type::collection_combox)
+		ctrls::combox::init_item(item);
+	else if(_type == ctrls::pg_type::collection_listbox)
+		ctrls::listbox::init_item(item);
+	else if(_type == ctrls::pg_type::collection_menubar)
 		ctrls::menubar::init_item(item);
-	}
+	else if(_type == ctrls::pg_type::collection_tabbar)
+		ctrls::tabbar::init_item(item);
+	else if(_type == ctrls::pg_type::collection_toolbar)
+		ctrls::toolbar::init_item(item);
 
 	if(separator)
 	{
@@ -175,7 +188,10 @@ void items_dialog::tb_add_item(bool separator)
 	}
 
 	// append to treebox
-	auto ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), item.property("text").as_string());
+	auto text = item.property("text").as_string();
+	if(_type == ctrls::pg_type::collection_collapse)
+		text = COLLAPSE_TXT;
+	auto ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), text);
 	if(_root.empty())
 		_root = ip.owner();
 
@@ -464,6 +480,24 @@ void items_dialog::update_selected()
 	{
 		if(_selected->property("separator").as_bool() == false)
 			propertygrid_helper::append(&_propgrid, _selected, 0);
+
+		if(_type == ctrls::pg_type::collection_menubar)
+		{
+			auto sel = items_tree.selected();
+			if(!sel.empty())
+				if(sel.level() == 1)
+				{
+					//TODO: find a better way to disable properties -> hide ???
+					_propgrid.at(nana::propertygrid::index_pair(1, 1)).enabled(false);
+					_propgrid.at(nana::propertygrid::index_pair(1, 1)).value("");
+					_propgrid.at(nana::propertygrid::index_pair(1, 2)).enabled(false);
+					_propgrid.at(nana::propertygrid::index_pair(1, 2)).value("true");
+					_propgrid.at(nana::propertygrid::index_pair(1, 3)).enabled(false);
+					_propgrid.at(nana::propertygrid::index_pair(1, 3)).value("0");
+					_propgrid.at(nana::propertygrid::index_pair(1, 4)).enabled(false);
+					_propgrid.at(nana::propertygrid::index_pair(1, 4)).value("false");
+				}
+		}
 	}	
 
 	_propgrid.enabled(_selected ? true : false);
@@ -509,7 +543,10 @@ void items_dialog::set_items(const std::vector<ctrls::properties_collection>& it
 
 		if(i.property("owner").as_string().empty())
 		{
-			auto ip = items_tree.insert(i.property("key").as_string(), i.property("text").as_string());
+			auto text = i.property("text").as_string();
+			if(_type == ctrls::pg_type::collection_collapse)
+				text = COLLAPSE_TXT;
+			auto ip = items_tree.insert(i.property("key").as_string(), text);
 			if(_root.empty())
 				_root = ip.owner();
 
@@ -541,6 +578,11 @@ void items_dialog::set_items(const std::vector<ctrls::properties_collection>& it
 			}
 		}
 	}
+
+	// select first item
+	if(!_root.empty())
+		if(!_root.child().empty())
+			_root.child().select(true);
 }
 
 

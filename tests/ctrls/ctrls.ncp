@@ -1,9 +1,25 @@
 <?xml version="1.0"?>
 <nana-creator version="0.17.0">
-	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" width="640" height="480" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="F:\C++ Projects\nana-creator\wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" width="640" height="500" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
-			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="n1&#13; &#13;M&amp;enu1&#13; &#13;true&#13;0&#13;false&#10;n2&#13; &#13;Me&amp;nu2&#13; &#13;true&#13;0&#13;false&#10;n4&#13;n2&#13;&amp;Disabled&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\vertical_layout.png&#13;false&#13;0&#13;false&#10;n6&#13;n2&#13;{sep}&#10;n5&#13;n2&#13;&amp;Options&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\grid_layout.png&#13;true&#13;0&#13;false&#10;n7&#13;n5&#13;Option1&#13; &#13;true&#13;1&#13;true&#10;n8&#13;n5&#13;Option2&#13; &#13;true&#13;1&#13;false&#10;n9&#13;n2&#13;&amp;Highlights&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\checkbox.png&#13;true&#13;0&#13;false&#10;n10&#13;n9&#13;Highlight1&#13; &#13;true&#13;2&#13;false&#10;n11&#13;n9&#13;Highlight2&#13; &#13;true&#13;2&#13;true&#10;n3&#13; &#13;Men&amp;u3&#13; &#13;true&#13;0&#13;false" />
-			<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" buttons="Add&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_add.png&#10;{sep}&#13;{sep}&#10;Delete&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\item_delete.png" scale="21" />
+			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
+				<item type="menu" key="n1" owner="" text="M&amp;enu1" image="" enabled="true" check_style="0" checked="false" separator="false" />
+				<item type="menu" key="n3" owner="" text="Me&amp;nu2" image="" enabled="true" check_style="0" checked="false" separator="false" />
+				<item type="menu" key="n5" owner="n3" text="Disabled" image="F:\C++ Projects\nana-creator\wdir\icons\grid_layout.png" enabled="false" check_style="0" checked="false" separator="false" />
+				<item type="menu" key="n2" owner="n3" text="-----" image="" enabled="true" check_style="0" checked="false" separator="true" />
+				<item type="menu" key="n6" owner="n3" text="Options" image="F:\C++ Projects\nana-creator\wdir\icons\categorize.png" enabled="true" check_style="0" checked="false" separator="false" />
+				<item type="menu" key="n7" owner="n6" text="Option1" image="" enabled="true" check_style="1" checked="false" separator="false" />
+				<item type="menu" key="n8" owner="n6" text="Option2" image="" enabled="true" check_style="1" checked="true" separator="false" />
+				<item type="menu" key="n9" owner="n3" text="Highlights" image="F:\C++ Projects\nana-creator\wdir\icons\checkbox.png" enabled="true" check_style="0" checked="false" separator="false" />
+				<item type="menu" key="n10" owner="n9" text="Highlight1" image="" enabled="true" check_style="2" checked="true" separator="false" />
+				<item type="menu" key="n11" owner="n9" text="Highlight2" image="" enabled="true" check_style="2" checked="false" separator="false" />
+				<item type="menu" key="n4" owner="" text="Men&amp;u3" image="" enabled="true" check_style="0" checked="false" separator="false" />
+			</menubar>
+			<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" buttons="" scale="21">
+				<item type="button" key="n1" owner="" text="Add" image="F:\C++ Projects\nana-creator\wdir\icons\item_add.png" separator="false" />
+				<item type="button" key="n2" owner="" text="-----" image="" separator="true" />
+				<item type="button" key="n3" owner="" text="Delete" image="F:\C++ Projects\nana-creator\wdir\icons\item_delete.png" separator="false" />
+			</toolbar>
 		</field>
 		<field type="field" name="bodyf" weight="-1" layout="0" margin="5" gap="2">
 			<field type="field" name="field1" weight="300" layout="1" margin="5" gap="2">
@@ -15,22 +31,34 @@
 					<checkbox type="checkbox" name="checkbox2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="radio1" check="false" group="group1" radio="true" transparent="true" />
 					<checkbox type="checkbox" name="checkbox3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="radio2" check="true" group="group1" radio="true" transparent="true" />
 				</group>
-				<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" options="UNO&#13;&#10;tre&#13;C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\up.png&#10;DUE&#13;" option="0" editable="false" image_pixels="21" />
-				<picture type="picture" name="picture1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" weight="-1" image="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\save.png" transparent="false" halign="1" valign="0" stretchable="false" />
+				<combox type="combox" name="combox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" options="" option="0" editable="false" image_pixels="21">
+					<item type="item" key="n1" owner="" text="UNO" image="" />
+					<item type="item" key="n2" owner="" text="Tre" image="F:\C++ Projects\nana-creator\wdir\icons\up.png" />
+					<item type="item" key="n3" owner="" text="due" image="" />
+				</combox>
+				<picture type="picture" name="picture1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" weight="-1" image="F:\C++ Projects\nana-creator\wdir\icons\save.png" transparent="false" halign="1" valign="0" stretchable="false" />
 				<progress type="progress" name="progress1" enabled="true" bgcolor="212,208,200" fgcolor="16,117,21" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="25" value="25" unknown="false" />
 				<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" value="4" maximum="10" seek="0" vertical="false" transparent="false" />
 				<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" value="55" begin="0" last="100" step="5" editable="true" prefix="" suffix="" />
 				<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" caption="" tip_string="insert text" line_wrapped="false" multi_lines="false" editable="true" />
+				<tabbar type="tabbar" name="tabbar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" tabs="" addbtn="false" closebtn="false" closefly="false" listbtn="false" scrollbtn="true">
+					<item type="tab" key="n1" owner="" text="tab1" image="" bgcolor="212,208,200" fgcolor="220,0,0" />
+					<item type="tab" key="n2" owner="" text="tab2" image="F:\C++ Projects\nana-creator\wdir\icons\down.png" bgcolor="212,208,200" fgcolor="0,0,0" />
+					<item type="tab" key="n3" owner="" text="tab3" image="" bgcolor="212,208,200" fgcolor="0,0,0" />
+				</tabbar>
 			</field>
 			<splitterbar type="splitterbar" name="splitterbar1" />
 			<field type="field" name="field2" weight="-1" layout="0" margin="2" gap="2">
-				<panel type="panel" name="panel1" enabled="true" bgcolor="120,208,200" fgcolor="[inherited],0,0,0" layout="1" weight="-1" margin="5" gap="2">
+				<panel type="panel" name="panel1" enabled="true" bgcolor="120,208,200" fgcolor="[inherited],0,0,0" transparent="false" layout="1" weight="-1" margin="5" gap="2">
 					<notebook type="notebook" name="notebook1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" addbtn="false" closebtn="true" closefly="true" listbtn="false" scrollbtn="true" tabweight="30">
-						<page type="page" name="page1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" caption="page" image="" layout="0" margin="5" gap="2">
+						<page type="page" name="page1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" caption="page" image="F:\C++ Projects\nana-creator\wdir\icons\datechooser.png" layout="0" margin="5" gap="2">
 							<datechooser type="datechooser" name="datechooser1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1%" />
 						</page>
-						<page type="page" name="page2" enabled="true" bgcolor="212,208,20" fgcolor="0,0,255" caption="page" image="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir\icons\datechooser.png" layout="1" margin="5" gap="2">
-							<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" columns="Col 1&#13;200&#10;Col 2&#13;" checkable="false" single_selection="false" sortable="true" show_header="true" />
+						<page type="page" name="page2" enabled="true" bgcolor="212,208,20" fgcolor="0,0,255" caption="page" image="" layout="1" margin="5" gap="2">
+							<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" columns="" checkable="false" single_selection="false" sortable="true" show_header="true">
+								<item type="column" key="n1" owner="" text="Col1" width="70" />
+								<item type="column" key="n2" owner="" text="Col2" width="-1" />
+							</listbox>
 							<treebox type="treebox" name="treebox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" />
 						</page>
 					</notebook>
