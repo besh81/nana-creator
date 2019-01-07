@@ -29,7 +29,7 @@ class items_dialog
 	: public nana::form
 {
 public:
-	items_dialog(nana::window wd, const ::nana::size& sz = {600, 480}, const nana::appearance& apr = {true, true, false, false, false, false, false})
+	items_dialog(nana::window wd, const ::nana::size& sz = {660, 480}, const nana::appearance& apr = {true, true, false, false, false, false, false})
 		: nana::form(wd, sz, apr)
 	{
 		init_();

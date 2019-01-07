@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <nana-creator version="0.17.0">
-	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="F:\C++ Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" caption="Form" width="600" height="480" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
+	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="F:\C++ Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" caption="Form" width="660" height="480" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
 		<field type="field" name="body_lyt" weight="-1" layout="0" margin="0" gap="2">
 			<field type="field" name="left_lyt" weight="-1" layout="1" margin="3" gap="2">
 				<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" />

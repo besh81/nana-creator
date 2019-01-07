@@ -479,24 +479,26 @@ void items_dialog::update_selected()
 	if(_selected)
 	{
 		if(_selected->property("separator").as_bool() == false)
+		{
 			propertygrid_helper::append(&_propgrid, _selected, 0);
 
-		if(_type == ctrls::pg_type::collection_menubar)
-		{
-			auto sel = items_tree.selected();
-			if(!sel.empty())
-				if(sel.level() == 1)
-				{
-					//TODO: find a better way to disable properties -> hide ???
-					_propgrid.at(nana::propertygrid::index_pair(1, 1)).enabled(false);
-					_propgrid.at(nana::propertygrid::index_pair(1, 1)).value("");
-					_propgrid.at(nana::propertygrid::index_pair(1, 2)).enabled(false);
-					_propgrid.at(nana::propertygrid::index_pair(1, 2)).value("true");
-					_propgrid.at(nana::propertygrid::index_pair(1, 3)).enabled(false);
-					_propgrid.at(nana::propertygrid::index_pair(1, 3)).value("0");
-					_propgrid.at(nana::propertygrid::index_pair(1, 4)).enabled(false);
-					_propgrid.at(nana::propertygrid::index_pair(1, 4)).value("false");
-				}
+			if(_type == ctrls::pg_type::collection_menubar)
+			{
+				auto sel = items_tree.selected();
+				if(!sel.empty())
+					if(sel.level() == 1)
+					{
+						//TODO: find a better way to disable properties -> hide ???
+						_propgrid.at(nana::propertygrid::index_pair(1, 1)).enabled(false);
+						_propgrid.at(nana::propertygrid::index_pair(1, 1)).value("");
+						_propgrid.at(nana::propertygrid::index_pair(1, 2)).enabled(false);
+						_propgrid.at(nana::propertygrid::index_pair(1, 2)).value("true");
+						_propgrid.at(nana::propertygrid::index_pair(1, 3)).enabled(false);
+						_propgrid.at(nana::propertygrid::index_pair(1, 3)).value("None");
+						_propgrid.at(nana::propertygrid::index_pair(1, 4)).enabled(false);
+						_propgrid.at(nana::propertygrid::index_pair(1, 4)).value("false");
+					}
+			}
 		}
 	}	
 
