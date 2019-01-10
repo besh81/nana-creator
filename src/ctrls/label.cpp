@@ -83,7 +83,8 @@ namespace ctrls
 			cd->init.push_back(name + ".format(true);");
 		if(properties.property("transparent").as_bool())
 			cd->init.push_back(name + ".transparent(true);");
-		cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "), static_cast<nana::align_v>(" + properties.property("valign").as_string() + "));");
+		if(properties.property("halign").as_int() != static_cast<int>(nana::align::left) || properties.property("valign").as_int() != static_cast<int>(nana::align_v::top))
+			cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "), static_cast<nana::align_v>(" + properties.property("valign").as_string() + "));");
 	}
 
 }//end namespace ctrls

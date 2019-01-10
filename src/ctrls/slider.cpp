@@ -21,8 +21,8 @@ namespace ctrls
 		ctrl::init(&sld, CTRL_SLIDER, name);
 
 		// common
-		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint) = sld.value();
-		properties.append("maximum").label("Maximum").category(CAT_COMMON).type(pg_type::string_uint) = sld.maximum();
+		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint) = _def_value = sld.value();
+		properties.append("maximum").label("Maximum").category(CAT_COMMON).type(pg_type::string_uint) = _def_maximum = sld.maximum();
 		properties.append("seek").label("Seek").category(CAT_COMMON).type(pg_type::seekdir) = static_cast<int>(nana::drawerbase::slider::seekdir::bilateral);
 		// appearance
 		properties.append("vertical").label("Vertical").category(CAT_APPEARANCE).type(pg_type::check) = sld.vertical();
@@ -39,7 +39,6 @@ namespace ctrls
 		sld.maximum(properties.property("maximum").as_uint());
 		sld.value(properties.property("value").as_uint());
 		sld.seek(static_cast<nana::drawerbase::slider::seekdir>(properties.property("seek").as_int()));
-
 		sld.vertical(properties.property("vertical").as_bool());
 		sld.transparent(properties.property("transparent").as_bool());
 	}
@@ -56,11 +55,16 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::slider " + name + ";");
 		// init
-		cd->init.push_back(name + ".maximum(" + properties.property("maximum").as_string() + ");");
-		cd->init.push_back(name + ".value(" + properties.property("value").as_string() + ");");
-		cd->init.push_back(name + ".seek(static_cast<nana::drawerbase::slider::seekdir>(" + properties.property("seek").as_string() + "));");
-		cd->init.push_back(name + ".vertical(" + properties.property("vertical").as_string() + ");");
-		cd->init.push_back(name + ".transparent(" + properties.property("transparent").as_string() + ");");
+		if(properties.property("maximum").as_uint() != _def_maximum)
+			cd->init.push_back(name + ".maximum(" + properties.property("maximum").as_string() + ");");
+		if(properties.property("value").as_uint() != _def_value)
+			cd->init.push_back(name + ".value(" + properties.property("value").as_string() + ");");
+		if(properties.property("seek").as_int() != static_cast<int>(nana::drawerbase::slider::seekdir::bilateral))
+			cd->init.push_back(name + ".seek(static_cast<nana::drawerbase::slider::seekdir>(" + properties.property("seek").as_string() + "));");
+		if(properties.property("vertical").as_bool())
+			cd->init.push_back(name + ".vertical(true);");
+		if(properties.property("transparent").as_bool())
+			cd->init.push_back(name + ".transparent(true);");
 	}
 
 }//end namespace ctrls

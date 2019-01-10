@@ -98,6 +98,7 @@ private:
 		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
 		toolbar1.separate();
 		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
+		toolbar1.enable(2, false);
 		// label1
 		label1.create(*this);
 		_place["field1"] << label1;
@@ -152,30 +153,27 @@ private:
 		_place["field1"] << picture1;
 		picture1.bgcolor(this->bgcolor());
 		picture1.load(nana::paint::image("icons/save.png"));
-		picture1.align(static_cast<nana::align>(1), static_cast<nana::align_v>(0));
+		picture1.align(static_cast<nana::align>(1), static_cast<nana::align_v>(1));
+		picture1.set_gradual_background(nana::color(255,255,0), nana::color(0,155,0), true);
 		// progress1
 		progress1.create(*this);
 		_place["field1"] << progress1;
-		progress1.value(25);
+		progress1.amount(30);
+		progress1.value(10);
 		// slider1
 		slider1.create(*this);
 		_place["field1"] << slider1;
-		slider1.maximum(10);
 		slider1.value(4);
-		slider1.seek(static_cast<nana::drawerbase::slider::seekdir>(0));
-		slider1.vertical(false);
-		slider1.transparent(false);
 		// spinbox1
 		spinbox1.create(*this);
 		_place["field1"] << spinbox1;
-		spinbox1.range(0, 100, 5);
-		spinbox1.value("55");
-		spinbox1.editable(true);
-		spinbox1.modifier("", "");
+		spinbox1.range(-20, 20, 5);
+		spinbox1.value("-5");
+		spinbox1.editable(false);
+		spinbox1.modifier("", " Km");
 		// textbox1
 		textbox1.create(*this);
 		_place["field1"] << textbox1;
-		textbox1.caption("");
 		textbox1.tip_string("insert text");
 		textbox1.multi_lines(false);
 		// tabbar1

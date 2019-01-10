@@ -29,6 +29,9 @@ namespace ctrls
 
 	protected:
 		nana::slider sld;
+
+		unsigned int _def_maximum;
+		unsigned int _def_value;
 	};
 
 }//end namespace ctrls

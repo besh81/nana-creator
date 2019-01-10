@@ -22,7 +22,7 @@ namespace ctrls
 		ctrl::init(&trb, CTRL_TREEBOX, name);
 
 		// common
-		// ...
+		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = trb.checkable();
 		// appearance
 		// ...
 		// layout
@@ -33,6 +33,8 @@ namespace ctrls
 	void treebox::update()
 	{
 		ctrl::update();
+
+		trb.checkable(properties.property("checkable").as_bool());
 	}
 
 
@@ -47,7 +49,8 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::treebox " + name + ";");
 		// init
-		// ...
+		if(properties.property("checkable").as_bool())
+			cd->init.push_back(name + ".checkable(true);");
 	}
 
 }//end namespace ctrls

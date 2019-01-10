@@ -42,6 +42,7 @@ namespace ctrls
 		//
 		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
+		item.append("enable").label("Enable").category(CAT_COMMON).type(pg_type::check) = true;
 		item.append("separator") = false;
 	}
 
@@ -54,6 +55,8 @@ namespace ctrls
 
 		// buttons - START
 		tlb.clear();
+
+		std::size_t pos = 0;
 		for(auto& i : items)
 		{
 			if(i.property("separator").as_bool())
@@ -64,7 +67,11 @@ namespace ctrls
 					tlb.append(i.property("text").as_string());
 				else
 					tlb.append(i.property("text").as_string(), nana::paint::image(g_file_mgr.to_relative(i.property("image").as_string())));
+
+				tlb.enable(pos, i.property("enable").as_bool());
 			}
+
+			++pos;
 		}
 		// buttons - END
 	}
@@ -85,6 +92,7 @@ namespace ctrls
 			cd->init.push_back(name + ".scale(" + properties.property("scale").as_string() + ");");
 
 		// buttons - START
+		std::size_t pos = 0;
 		for(auto& i : items)
 		{
 			if(i.property("separator").as_bool())
@@ -98,7 +106,12 @@ namespace ctrls
 				else
 					str.append(", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
 				cd->init.push_back(str);
+
+				if(!i.property("enable").as_bool())
+					cd->init.push_back(name + ".enable(" + std::to_string(pos) + ", false);");
 			}
+
+			++pos;
 		}
 		// buttons - END
 	}

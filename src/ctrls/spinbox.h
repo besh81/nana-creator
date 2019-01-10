@@ -29,6 +29,10 @@ namespace ctrls
 
 	protected:
 		nana::spinbox spn;
+
+		int _def_begin;
+		int _def_last;
+		int _def_value;
 	};
 
 }//end namespace ctrls

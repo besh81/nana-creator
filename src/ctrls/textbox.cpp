@@ -10,6 +10,9 @@
 #include "ctrls/textbox.h"
 #include "nana_extra/color_helper.h"
 
+#define DEF_SELECT_BEHAVIOR	false // get from nana source
+#define DEF_UNDO_LENGHT		30 // get from nana source
+
 
 namespace ctrls
 {
@@ -24,11 +27,13 @@ namespace ctrls
 		// common
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("tip_string").label("Tip").category(CAT_COMMON).type(pg_type::string) = "";
-		properties.append("line_wrapped").label("Line Wrapped").category(CAT_COMMON).type(pg_type::check) = txt.line_wrapped();
-		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = false; // txt.multi_lines();
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = txt.editable();
+		properties.append("line_wrapped").label("Line Wrapped").category(CAT_COMMON).type(pg_type::check) = txt.line_wrapped();
+		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = txt.multi_lines();
+		properties.append("select_behavior").label("Select Behavior").category(CAT_COMMON).type(pg_type::check) = DEF_SELECT_BEHAVIOR;
+		properties.append("undo_length").label("Undo Length").category(CAT_COMMON).type(pg_type::string_uint) = DEF_UNDO_LENGHT;
 		// appearance
-		// ...
+		properties.append("halign").label("Text Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
 		// layout
 		// ...
 	}
@@ -43,6 +48,9 @@ namespace ctrls
 		txt.editable(properties.property("editable").as_bool());
 		txt.line_wrapped(properties.property("line_wrapped").as_bool());
 		txt.multi_lines(properties.property("multi_lines").as_bool());
+		txt.select_behavior(properties.property("select_behavior").as_bool());
+		txt.set_undo_queue_length(properties.property("undo_length").as_uint());
+		txt.text_align(static_cast<nana::align>(properties.property("halign").as_int()));
 	}
 
 
@@ -57,14 +65,22 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::textbox " + name + ";");
 		// init
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
-		if(properties.property("tip_string").as_string() != "")
+		if(!properties.property("caption").as_string().empty())
+			cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+		if(!properties.property("tip_string").as_string().empty())
 			cd->init.push_back(name + ".tip_string(\"" + properties.property("tip_string").as_string() + "\");");
 		if(!properties.property("editable").as_bool())
-			cd->init.push_back(name + ".editable(" + properties.property("editable").as_string() + ");");
+			cd->init.push_back(name + ".editable(false);");
 		if(properties.property("line_wrapped").as_bool())
-			cd->init.push_back(name + ".line_wrapped(" + properties.property("line_wrapped").as_string() + ");");
-		cd->init.push_back(name + ".multi_lines(" + properties.property("multi_lines").as_string() + ");");
+			cd->init.push_back(name + ".line_wrapped(true);");
+		if(!properties.property("multi_lines").as_bool())
+			cd->init.push_back(name + ".multi_lines(false);");
+		if(properties.property("select_behavior").as_bool() != DEF_SELECT_BEHAVIOR)
+			cd->init.push_back(name + ".select_behavior(\"" + properties.property("select_behavior").as_string() + "\");");
+		if(properties.property("undo_length").as_uint() != DEF_UNDO_LENGHT)
+			cd->init.push_back(name + ".set_undo_queue_length(" + properties.property("undo_length").as_string() + ");");
+		if(properties.property("halign").as_int() != static_cast<int>(nana::align::left))
+			cd->init.push_back(name + ".text_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "));");
 	}
 
 }//end namespace ctrls

@@ -11,6 +11,7 @@
 #include "nana_extra/color_helper.h"
 
 
+
 namespace ctrls
 {
 
@@ -22,7 +23,8 @@ namespace ctrls
 		ctrl::init(&prg, CTRL_PROGRESS, name);
 
 		// common
-		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint_0_100).enabled("unknown", false) = prg.value();
+		properties.append("value").label("Value").category(CAT_COMMON).type(pg_type::string_uint).enabled("unknown", false) = _def_value = prg.value();
+		properties.append("amount").label("Amount").category(CAT_COMMON).type(pg_type::string_uint).enabled("unknown", false) = _def_amount = prg.amount();
 		properties.append("unknown").label("Unknown").category(CAT_COMMON).type(pg_type::check) = prg.unknown();
 		// appearance
 		// ...
@@ -38,7 +40,10 @@ namespace ctrls
 		if(properties.property("unknown").as_bool())
 			prg.value(0);
 		else
+		{
 			prg.value(properties.property("value").as_uint());
+			prg.amount(properties.property("amount").as_uint());
+		}
 	}
 
 
@@ -56,7 +61,12 @@ namespace ctrls
 		if(properties.property("unknown").as_bool())
 			cd->init.push_back(name + ".unknown(" + properties.property("unknown").as_string() + ");");
 		else
-			cd->init.push_back(name + ".value(" + properties.property("value").as_string() + ");");
+		{
+			if(properties.property("amount").as_uint() != _def_amount)
+				cd->init.push_back(name + ".amount(" + properties.property("amount").as_string() + ");");
+			if(properties.property("value").as_uint() != _def_value)
+				cd->init.push_back(name + ".value(" + properties.property("value").as_string() + ");");
+		}
 	}
 
 }//end namespace ctrls

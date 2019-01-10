@@ -29,6 +29,9 @@ namespace ctrls
 
 	protected:
 		nana::progress prg;
+
+		unsigned int _def_amount;
+		unsigned int _def_value;
 	};
 
 }//end namespace ctrls

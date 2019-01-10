@@ -575,8 +575,7 @@ namespace nana
 					return;
 				}
 
-				bool fake;
-				color_ = ::nana::to_color(txt_.caption(), fake);
+				color_ = ::nana::to_color(txt_.caption());
 
 				txt_.caption(to_string(color_, false));
 				emit_event();

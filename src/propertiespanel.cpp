@@ -105,6 +105,7 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 
 	if(!_properties)
 	{
+		_pic.load(nana::paint::image(""));
 		_type_txt.caption("");
 		_name_txt.editable(false);
 		_name_txt.caption("");

@@ -10,7 +10,6 @@
 #include <streambuf>
 #include <cstring>
 #include "codegenerator.h"
-#include "guimanager.h"
 #include "filemanager.h"
 #include "ctrls/ctrl.h"
 
@@ -24,8 +23,6 @@
 #define DTOR_TAG			"dtor"
 #define DECLARATIONS_TAG	"declarations"
 
-
-extern guimanager	g_gui_mgr;
 
 
 codegenerator::codegenerator()

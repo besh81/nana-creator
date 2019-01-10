@@ -72,16 +72,15 @@ namespace ctrls
 		g_file_mgr.enable_relative(properties.property("rel_path").as_bool());
 		g_file_mgr.basedir(properties.property("work_dir").as_string());
 
-		bool inherited;
 		nana::color col;
 
 		if(!properties.property("enabled").as_bool())
 			nanawdg->enabled(properties.property("enabled").as_bool());
 
-		col = nana::to_color(properties.property("bgcolor").as_string(), inherited);
+		col = nana::to_color(properties.property("bgcolor").as_string());
 		nanawdg->bgcolor(col);
 
-		col = nana::to_color(properties.property("fgcolor").as_string(), inherited);
+		col = nana::to_color(properties.property("fgcolor").as_string());
 		nanawdg->fgcolor(col);
 
 		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
