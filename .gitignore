@@ -237,10 +237,15 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-nana_creator.VC.db
+*.VC.db
 wdir/*.h
 wdir/*.ncp
 wdir/*.exe
 wdir/icons/*.db
 wdir/nc.ini
 docs/img/Thumbs.db
+
+# CodeBlocks files
+*.layout
+*.cscope_file_list
+*.depend

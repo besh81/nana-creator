@@ -68,7 +68,7 @@ namespace ctrls
 		//
 		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Tab";
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
-		
+
 		item.append("bgcolor").label("Background").category(CAT_COMMON).type(pg_type::color_inherited) = nana::to_string(ITEMS_DEF_BGCOL, false);
 		item.append("fgcolor").label("Foreground").category(CAT_COMMON).type(pg_type::color_inherited) = nana::to_string(ITEMS_DEF_FGCOL, false);
 	}
@@ -136,12 +136,12 @@ namespace ctrls
 
 			bool inherited;
 			auto bgcolor_txt = i.property("bgcolor").as_string();
-			auto bgcolor = nana::to_color(bgcolor_txt, inherited);
+			nana::to_color(bgcolor_txt, inherited);
 			if(!inherited)
 				cd->init.push_back(name + ".tab_bgcolor(" + std::to_string(pos) + ", nana::color(" + bgcolor_txt + "));");
 
 			auto fgcolor_txt = i.property("fgcolor").as_string();
-			auto fgcolor = nana::to_color(fgcolor_txt, inherited);
+			nana::to_color(fgcolor_txt, inherited);
 			if(!inherited)
 				cd->init.push_back(name + ".tab_fgcolor(" + std::to_string(pos) + ", nana::color(" + fgcolor_txt + "));");
 

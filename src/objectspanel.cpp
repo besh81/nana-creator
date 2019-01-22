@@ -109,6 +109,7 @@ bool objectspanel::select(const std::string& name)
 			if(item.text().find(objname) == 0)
 			{
 				item->select(true);
+				//_objects.scroll_into_view(item); //TODO nanalib 1.7
 				ret = true;
 				return false;
 			}

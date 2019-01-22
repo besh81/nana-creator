@@ -228,7 +228,6 @@ namespace nana
 
 				bool expand(std::size_t cat) const
 				{
-					auto ex = get(cat)->expand;
 					return (good(cat) ? get(cat)->expand : false);
 				}
 
@@ -317,7 +316,7 @@ namespace nana
 				es_lister	lister;
 
 				index_pair	pointer_where;	//indicates the item where the mouse is placed
-				
+
 
 				struct scroll_part
 				{
@@ -422,7 +421,7 @@ namespace nana
 
 						scroll.h.amount(wd_sz.width);
 						scroll.h.range(width);
-						
+
 						if(h_offset() < static_cast<int>(width) - static_cast<int>(wd_sz.width))
 							h_offset(static_cast<int>(width) - static_cast<int>(wd_sz.width));
 
@@ -585,7 +584,7 @@ namespace nana
 								if(!i_categ->expand)
 									continue;
 							}
-							
+
 
 							// items
 							auto size = i_categ->items.size();
@@ -813,8 +812,6 @@ namespace nana
 				nana::rectangle rect;
 				ess_->rect_lister(rect);
 
-				auto xx = ess_->v_offset();
-
 				if(pos_offset < -ess_->v_offset() || as_first)
 					ess_->v_offset(-pos_offset);
 				if(pos_offset_end + ess_->v_offset() > static_cast<int>(rect.height))
@@ -922,7 +919,7 @@ namespace nana
 								// draw item
 								rectangle visible_r{ 0, 0, rect.width, rect.height };
 								rectangle value_min_r{ static_cast<int>(labels_width), y, values_width, item_size };
-								
+
 								rectangle pane_r;
 								if(::nana::overlap(visible_r, value_min_r, pane_r))
 								{

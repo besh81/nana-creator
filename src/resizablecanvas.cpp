@@ -198,7 +198,6 @@ namespace drawerbase
 
 			::nana::API::ignore_mouse_focus(wdg, true);
 
-			::nana::window wd = wdg;
 			::nana::API::effects_edge_nimbus(wdg, nana::effects::edge_nimbus::none);
 
 			essence_->graph = &graph;
@@ -236,7 +235,7 @@ namespace drawerbase
 			auto size = graph.size();
 			//Draw Border
 			graph.rectangle(false, static_cast<::nana::color_rgb>(0x9cb6c5));
-				
+
 			// Area betwen the scroll bars
 			if((essence_->scroll.h.empty() == false) && (essence_->scroll.v.empty() == false))
 				graph.rectangle({ static_cast<int>(size.width - 1 - essence_->scroll.scale),

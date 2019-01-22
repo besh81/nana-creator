@@ -6,6 +6,7 @@
  */
 
 #include <iostream>
+#include <cstring>
 #include "ctrls/field.h"
 #include "ctrls/panel.h"
 #include "ctrls/button.h"
