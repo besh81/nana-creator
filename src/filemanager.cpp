@@ -6,20 +6,22 @@
  */
 
 #include <nana/gui/wvl.hpp> // define OS version
-
+#include<iostream>
 #include <stdio.h>  /* defines FILENAME_MAX */
 #if defined(NANA_WINDOWS)
 #include <direct.h>
 #define GetCurrentDir _getcwd
+    #if defined(__MINGW32__) || defined(__MINGW64__)
+        #include <unistd.h>
+        #include <sys/stat.h>
+    #endif
 #else
-#include <unistd.h>
-#include <sys/stat.h>
-#define GetCurrentDir getcwd
+    #include <unistd.h>
+    #include <sys/stat.h>
+    #define GetCurrentDir getcwd
 #endif
-#include<iostream>
 
 #include "filemanager.h"
-
 
 
 //filemanager
@@ -165,6 +167,6 @@ std::string get_working_dir()
 //file_exists
 bool file_exists(const std::string& name)
 {
-	struct stat buffer;
+    struct stat buffer;
 	return (stat(name.c_str(), &buffer) == 0);
 }

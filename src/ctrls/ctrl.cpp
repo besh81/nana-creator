@@ -201,7 +201,6 @@ namespace ctrls
 
 	void ctrl::generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name)
 	{
-		auto pw = nana::API::get_widget(nanawdg->parent());
 		bool inherited;
 		std::string color_txt;
 		nana::color color;
@@ -282,8 +281,8 @@ namespace ctrls
 		graph.rectangle({ static_cast<int>(graph.width()) - SELECT_CTRL_SIZE - 1, 1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
 		graph.rectangle({ static_cast<int>(graph.width()) - SELECT_CTRL_SIZE - 1, static_cast<int>(graph.height()) - SELECT_CTRL_SIZE - 1, SELECT_CTRL_SIZE, SELECT_CTRL_SIZE }, true, SELECT_CTRL_COL);
 	}
-	
-	
+
+
 	mouse_position ctrl::mouse_pos(nana::point pos, nana::size size)
 	{
 		if(pos.y > static_cast<int>(size.height) / 2)

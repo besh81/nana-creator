@@ -9,6 +9,7 @@
 #include <fstream>
 #include <streambuf>
 #include <cstring>
+#include <algorithm>
 #include "codegenerator.h"
 #include "filemanager.h"
 #include "ctrls/ctrl.h"
@@ -238,7 +239,7 @@ void codegenerator::_generate(tree_node<control_obj>* node, const std::string& c
 	ci.field = field;
 
 	node->value->generatecode(&_code_data, &ci);
-	
+
 	// children
 	_generate(node->child, ci.create, ci.place, ci.field);
 	// siblings
@@ -379,7 +380,7 @@ bool codegenerator::_write_file()
 
 	_write_line("#endif //" + def_str);
 	_write_line();
-	
+
 	_buffer = _code;
 
 	return true;

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="nana_creator" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/nana_creator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/nana_creator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++11" />
+			<Add directory="../../src/ctrls" />
+			<Add directory="../../src/nana_extra" />
+			<Add directory="../../src" />
+			<Add directory="../../libs" />
+		</Compiler>
+		<Linker>
+			<Add library="jpeg" />
+			<Add library="zlib" />
+			<Add library="png" />
+			<Add library="nana" />
+			<Add library="gdi32" />
+			<Add library="comdlg32" />
+		</Linker>
+		<Unit filename="../../libs/pugixml/pugiconfig.hpp" />
+		<Unit filename="../../libs/pugixml/pugixml.cpp" />
+		<Unit filename="../../libs/pugixml/pugixml.hpp" />
+		<Unit filename="../../src/assetspanel.cpp" />
+		<Unit filename="../../src/assetspanel.h" />
+		<Unit filename="../../src/codegenerator.cpp" />
+		<Unit filename="../../src/codegenerator.h" />
+		<Unit filename="../../src/codegenerator_data.h" />
+		<Unit filename="../../src/config.h" />
+		<Unit filename="../../src/creator.cpp" />
+		<Unit filename="../../src/creator.h" />
+		<Unit filename="../../src/ctrls/box_model.cpp" />
+		<Unit filename="../../src/ctrls/box_model.h" />
+		<Unit filename="../../src/ctrls/button.cpp" />
+		<Unit filename="../../src/ctrls/button.h" />
+		<Unit filename="../../src/ctrls/categorize.cpp" />
+		<Unit filename="../../src/ctrls/categorize.h" />
+		<Unit filename="../../src/ctrls/checkbox.cpp" />
+		<Unit filename="../../src/ctrls/checkbox.h" />
+		<Unit filename="../../src/ctrls/combox.cpp" />
+		<Unit filename="../../src/ctrls/combox.h" />
+		<Unit filename="../../src/ctrls/ctrl.cpp" />
+		<Unit filename="../../src/ctrls/ctrl.h" />
+		<Unit filename="../../src/ctrls/date_chooser.cpp" />
+		<Unit filename="../../src/ctrls/date_chooser.h" />
+		<Unit filename="../../src/ctrls/field.cpp" />
+		<Unit filename="../../src/ctrls/field.h" />
+		<Unit filename="../../src/ctrls/form.cpp" />
+		<Unit filename="../../src/ctrls/form.h" />
+		<Unit filename="../../src/ctrls/group.cpp" />
+		<Unit filename="../../src/ctrls/group.h" />
+		<Unit filename="../../src/ctrls/label.cpp" />
+		<Unit filename="../../src/ctrls/label.h" />
+		<Unit filename="../../src/ctrls/listbox.cpp" />
+		<Unit filename="../../src/ctrls/listbox.h" />
+		<Unit filename="../../src/ctrls/menubar.cpp" />
+		<Unit filename="../../src/ctrls/menubar.h" />
+		<Unit filename="../../src/ctrls/notebook.cpp" />
+		<Unit filename="../../src/ctrls/notebook.h" />
+		<Unit filename="../../src/ctrls/page.cpp" />
+		<Unit filename="../../src/ctrls/page.h" />
+		<Unit filename="../../src/ctrls/panel.cpp" />
+		<Unit filename="../../src/ctrls/panel.h" />
+		<Unit filename="../../src/ctrls/picture.cpp" />
+		<Unit filename="../../src/ctrls/picture.h" />
+		<Unit filename="../../src/ctrls/progress.cpp" />
+		<Unit filename="../../src/ctrls/progress.h" />
+		<Unit filename="../../src/ctrls/property.cpp" />
+		<Unit filename="../../src/ctrls/property.h" />
+		<Unit filename="../../src/ctrls/slider.cpp" />
+		<Unit filename="../../src/ctrls/slider.h" />
+		<Unit filename="../../src/ctrls/spinbox.cpp" />
+		<Unit filename="../../src/ctrls/spinbox.h" />
+		<Unit filename="../../src/ctrls/splitterbar.cpp" />
+		<Unit filename="../../src/ctrls/splitterbar.h" />
+		<Unit filename="../../src/ctrls/tabbar.cpp" />
+		<Unit filename="../../src/ctrls/tabbar.h" />
+		<Unit filename="../../src/ctrls/textbox.cpp" />
+		<Unit filename="../../src/ctrls/textbox.h" />
+		<Unit filename="../../src/ctrls/toolbar.cpp" />
+		<Unit filename="../../src/ctrls/toolbar.h" />
+		<Unit filename="../../src/ctrls/treebox.cpp" />
+		<Unit filename="../../src/ctrls/treebox.h" />
+		<Unit filename="../../src/filemanager.cpp" />
+		<Unit filename="../../src/filemanager.h" />
+		<Unit filename="../../src/guimanager.cpp" />
+		<Unit filename="../../src/guimanager.h" />
+		<Unit filename="../../src/imagemanager.cpp" />
+		<Unit filename="../../src/imagemanager.h" />
+		<Unit filename="../../src/inifile.cpp" />
+		<Unit filename="../../src/inifile.h" />
+		<Unit filename="../../src/items_dialog.cpp" />
+		<Unit filename="../../src/items_dialog.h" />
+		<Unit filename="../../src/lock_guard.h" />
+		<Unit filename="../../src/main.cpp" />
+		<Unit filename="../../src/namemanager.cpp" />
+		<Unit filename="../../src/namemanager.h" />
+		<Unit filename="../../src/nana_extra/color_helper.cpp" />
+		<Unit filename="../../src/nana_extra/color_helper.h" />
+		<Unit filename="../../src/nana_extra/pgitems.cpp" />
+		<Unit filename="../../src/nana_extra/pgitems.h" />
+		<Unit filename="../../src/nana_extra/propertygrid.cpp" />
+		<Unit filename="../../src/nana_extra/propertygrid.h" />
+		<Unit filename="../../src/new_project.cpp" />
+		<Unit filename="../../src/new_project.h" />
+		<Unit filename="../../src/objectspanel.cpp" />
+		<Unit filename="../../src/objectspanel.h" />
+		<Unit filename="../../src/pg_items.cpp" />
+		<Unit filename="../../src/pg_items.h" />
+		<Unit filename="../../src/propertiespanel.cpp" />
+		<Unit filename="../../src/propertiespanel.h" />
+		<Unit filename="../../src/propertygrid_helper.cpp" />
+		<Unit filename="../../src/propertygrid_helper.h" />
+		<Unit filename="../../src/resizablecanvas.cpp" />
+		<Unit filename="../../src/resizablecanvas.h" />
+		<Unit filename="../../src/statusbar.cpp" />
+		<Unit filename="../../src/statusbar.h" />
+		<Unit filename="../../src/style.h" />
+		<Unit filename="../../src/tree.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
