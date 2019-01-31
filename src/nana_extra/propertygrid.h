@@ -10,6 +10,7 @@
 
 #include <nana/gui/widgets/widget.hpp>
 #include <nana/gui/widgets/detail/inline_widget.hpp>
+#include <nana/gui/widgets/panel.hpp>
 #include <nana/pat/abstract_factory.hpp>
 #include <functional>
 
@@ -26,8 +27,8 @@ namespace nana
 			/// usefull for both absolute and display (sorted) positions
 			struct index_pair
 			{
-				std::size_t cat;	//The pos of category
-				std::size_t item;	//the pos of item in a category.
+				std::size_t cat;	//pos of category
+				std::size_t item;	//pos of item inside category
 
 				index_pair(std::size_t cat_pos = npos, std::size_t item_pos = npos)
 					: cat(cat_pos), item(item_pos)
@@ -88,21 +89,15 @@ namespace nana
 				pgitem() = default;
 
 				pgitem(const std::string& label, const std::string& value = "")
-					: label_(label), value_(value)
-				{
-				}
+					: label_(label), value_(value), def_(value)
+				{}
 
-				virtual void label(const std::string& label);
-				virtual std::string label() const;
-				virtual void value(const std::string& value);
-				virtual std::string value() const;
+				void init(window wd);
 
-				virtual unsigned size() const;
-
-				void draw(paint::graphics* graph, rectangle label_r, rectangle value_r, const int txtoff, color bgcolor, color fgcolor) const;
-				
-				void update();
-				void scroll();
+				//Creates inline widget
+				//pgitem calls this method to create the widget
+				//position and size of widget can be ignored in this process
+				virtual void create(window wd) = 0;
 
 				//Activate inline widget
 				virtual void activate(essence_t* ess, const index_pair& idx)
@@ -111,42 +106,88 @@ namespace nana
 					idx_ = idx;
 				}
 
+				virtual void label(const std::string& label)
+				{
+					label_ = label;
+				}
+				virtual std::string label() const
+				{
+					return label_;
+				}
+				virtual void value(const std::string& value)
+				{
+					if(value_ == value)
+						return;
+					value_ = value;
+					update();
+				}
+				virtual std::string value() const
+				{
+					return value_;
+				}
+				virtual void defvalue(const std::string& value)
+				{
+					if(def_ == value)
+						return;
+					def_ = value;
+					update();
+				}
+				virtual std::string defvalue() const
+				{
+					return def_;
+				}
+				virtual bool isdefault() const
+				{
+					return def_ == value_;
+				}
+
+				virtual unsigned size() const
+				{
+					return size_;
+				}
+
 				virtual void typeface_changed(unsigned text_height)
 				{
 					size_ = text_height + 10;
 				}
 
+				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const;
+
+
+				void update();
+				void scroll();
+
 				//Emit event
 				virtual void emit_event();
 
-				//Creates inline widget
-				//propertygrid calls this method to create the widget
-				//The position and size of widget can be ignored in this process
-				virtual void create(window wd) = 0;
-
-				//Determines whether to draw the value of sub item
-				//e.g, when the inline widgets covers the whole background of the sub item,
-				//it should return false to avoid property useless drawing
-				virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const = 0;
-
-				virtual bool enabled()
-				{
-					return en_;
-				}
 				virtual void enabled(bool state)
 				{
 					en_ = state;
 				}
+				virtual bool enabled()
+				{
+					return en_;
+				}
 
 			protected:
-				std::string		label_;
-				std::string		value_;
+				//Draw the label of the sub item
+				virtual void draw_label(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;
+
+				//Draw the value of the sub item
+				virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;
+
+				//Draw the interaction box of the sub item
+				virtual void draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const;
+
+				std::string		label_, value_, def_;
 				unsigned		size_{ 24 };
 				bool			en_{ true };
-
 				bool			evt_emit_{ true };
+
 				essence_t*		ess_;
 				index_pair		idx_;
+
+				mutable nana::panel<true>	box_;
 			};
 
 			typedef std::unique_ptr<pgitem>	pgitem_ptr;
@@ -183,7 +224,7 @@ namespace nana
 				drawer_lister_impl* drawer_lister_;
 			};//end class trigger
 
-			  /// operate with absolute positions and contain only the position but montain pointers to parts of the real items 
+			  /// operate with absolute positions and contain only the position but mantain pointers to parts of the real items 
 			  /// item_proxy self, it references and iterators are not invalidated by sort()
 			class item_proxy
 				: public std::iterator<std::input_iterator_tag, item_proxy>
@@ -201,6 +242,9 @@ namespace nana
 
 				item_proxy& value(const std::string& value, bool emit = false);
 				std::string value() const;
+
+				item_proxy& defvalue(const std::string& value);
+				std::string defvalue() const;
 
 				bool enabled();
 				void enabled(bool state);
@@ -341,8 +385,8 @@ namespace nana
 			struct scheme
 				: public widget_geometrics
 			{
-				unsigned max_header_width{ 3000 },     /// \todo how to implement some geometrical parameters ??
-					ext_w = 5;
+				unsigned max_header_width{ 3000 };
+				unsigned ext_w{ 5 };
 			};
 		}
 	}//end namespace drawerbase

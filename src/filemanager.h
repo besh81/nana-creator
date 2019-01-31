@@ -54,7 +54,11 @@ private:
 //---------------------------------------------
 // equalize path characters (tolower) and and dir separators
 //---------------------------------------------
+#ifdef NANA_WINDOWS
+std::string equalize_path(const std::string& path, char div_from = '/', char div_to = '\\');
+#else
 std::string equalize_path(const std::string& path, char div_from = '\\', char div_to = '/');
+#endif
 
 
 //---------------------------------------------

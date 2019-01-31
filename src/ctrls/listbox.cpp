@@ -21,6 +21,8 @@ namespace ctrls
 		lst.create(*parent->nanawdg);
 		ctrl::init(&lst, CTRL_LISTBOX, name);
 
+		def_scheme = lst.scheme();
+
 		// common
 		properties.append("columns").label("Columns").category(CAT_COMMON).type(pg_type::collection_listbox) = "";
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = false;
@@ -30,6 +32,14 @@ namespace ctrls
 		properties.append("show_header").label("Show header").category(CAT_APPEARANCE).type(pg_type::check) = lst.visible_header();
 		// layout
 		// ...
+		//scheme
+		properties.append("header_bgcolor").label("Header bg").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.header_bgcolor);
+		properties.append("header_fgcolor").label("Header fg").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.header_fgcolor);
+		properties.append("header_grabbed").label("Header grabbed").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.header_grabbed);
+		properties.append("header_floated").label("Header floated").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.header_floated);
+		properties.append("item_selected").label("Item selected").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.item_selected);
+		properties.append("item_highlighted").label("Item highlighted").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.item_highlighted);
+		properties.append("selection_box").label("Selection box").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.selection_box);
 	}
 
 
@@ -61,6 +71,16 @@ namespace ctrls
 
 		lst.sortable(properties.property("sortable").as_bool());
 		lst.show_header(properties.property("show_header").as_bool());
+
+		//scheme
+		lst.scheme().header_bgcolor = nana::to_color(properties.property("header_bgcolor").as_string());
+		lst.scheme().header_fgcolor = nana::to_color(properties.property("header_fgcolor").as_string());
+		lst.scheme().header_grabbed = nana::to_color(properties.property("header_grabbed").as_string());
+		lst.scheme().header_floated = nana::to_color(properties.property("header_floated").as_string());
+		lst.scheme().item_selected = nana::to_color(properties.property("item_selected").as_string());
+		lst.scheme().item_highlighted = nana::to_color(properties.property("item_highlighted").as_string());
+		lst.scheme().selection_box = nana::to_color(properties.property("selection_box").as_string());
+		nana::API::refresh_window(lst);
 	}
 
 
@@ -83,6 +103,22 @@ namespace ctrls
 			cd->init.push_back(name + ".enable_single(true, true);");
 		if(!properties.property("show_header").as_bool())
 			cd->init.push_back(name + ".show_header(false);");
+
+		//scheme
+		if(properties.property("header_bgcolor").as_string() != nana::to_string(def_scheme.header_bgcolor))
+			cd->init.push_back(name + ".scheme().header_bgcolor = nana::color(" + properties.property("header_bgcolor").as_string() + ");");
+		if(properties.property("header_fgcolor").as_string() != nana::to_string(def_scheme.header_fgcolor))
+			cd->init.push_back(name + ".scheme().header_fgcolor = nana::color(" + properties.property("header_fgcolor").as_string() + ");");
+		if(properties.property("header_grabbed").as_string() != nana::to_string(def_scheme.header_grabbed))
+			cd->init.push_back(name + ".scheme().header_grabbed = nana::color(" + properties.property("header_grabbed").as_string() + ");");
+		if(properties.property("header_floated").as_string() != nana::to_string(def_scheme.header_floated))
+			cd->init.push_back(name + ".scheme().header_floated = nana::color(" + properties.property("header_floated").as_string() + ");");
+		if(properties.property("item_selected").as_string() != nana::to_string(def_scheme.item_selected))
+			cd->init.push_back(name + ".scheme().item_selected = nana::color(" + properties.property("item_selected").as_string() + ");");
+		if(properties.property("item_highlighted").as_string() != nana::to_string(def_scheme.item_highlighted))
+			cd->init.push_back(name + ".scheme().item_highlighted = nana::color(" + properties.property("item_highlighted").as_string() + ");");
+		if(properties.property("selection_box").as_string() != nana::to_string(def_scheme.selection_box))
+			cd->init.push_back(name + ".scheme().selection_box = nana::color(" + properties.property("selection_box").as_string() + ");");
 
 		// columns - START
 		for(auto& i : items)

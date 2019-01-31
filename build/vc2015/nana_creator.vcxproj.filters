@@ -129,9 +129,6 @@
     <ClCompile Include="..\..\src\ctrls\treebox.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\pg_items.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\items_dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -172,6 +169,9 @@
       <Filter>Source Files\nana_extra</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\propertygrid_helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\pgitems_creator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -287,9 +287,6 @@
     <ClInclude Include="..\..\src\ctrls\treebox.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\pg_items.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\items_dialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -330,6 +327,9 @@
       <Filter>Header Files\nana_extra</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\propertygrid_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\pgitems_creator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -167,13 +167,7 @@ void creator::_init_ctrls()
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 			fb.add_filter("All Files (*.*)", "*.*");
 
-			fb.init_path(equalize_path(g_inifile.load_project_dir(),
-#ifdef NANA_WINDOWS
-				'/', '\\'
-#else
-				'\\', '/'
-#endif // NANA_WINDOWS
-			));
+			fb.init_path(equalize_path(g_inifile.load_project_dir()));
 
 			if(fb())
 			{

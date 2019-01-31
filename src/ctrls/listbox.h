@@ -31,6 +31,8 @@ namespace ctrls
 
 	protected:
 		nana::listbox lst;
+
+		nana::drawerbase::listbox::scheme def_scheme;
 	};
 
 }//end namespace ctrls

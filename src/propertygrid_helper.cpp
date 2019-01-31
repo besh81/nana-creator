@@ -7,7 +7,7 @@
 
 #include "config.h"
 #include "propertygrid_helper.h"
-#include "pg_items.h"
+#include "pgitems_creator.h"
 
 
 namespace propertygrid_helper
@@ -53,10 +53,6 @@ namespace propertygrid_helper
 			else if(prop.type() == ctrls::pg_type::check)
 			{
 				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_check(prop.label(), prop.value() == "true" ? true : false)));
-			}
-			else if(prop.type() == ctrls::pg_type::spin)
-			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_spin(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::color)
 			{
@@ -104,10 +100,6 @@ namespace propertygrid_helper
 			
 				pgc->option(std::atoi(prop.value().c_str()));
 			}
-			else if(prop.type() == ctrls::pg_type::filename)
-			{
-				cat.append(nana::propertygrid::pgitem_ptr(new pg_filename(prop.label(), prop.value())));
-			}
 			else if(prop.type() == ctrls::pg_type::image)
 			{
 				cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.value())));
@@ -121,10 +113,7 @@ namespace propertygrid_helper
 				|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize
 				|| prop.type() == ctrls::pg_type::collection_collapse)
 			{
-				auto item = cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.value(), prop.type())));
-				auto pgc = static_cast<pg_collection*>(item._m_pgitem());
-
-				pgc->value(items);
+				cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.type(), items)));
 			}
 			else //nana::pg_type::string
 			{

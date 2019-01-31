@@ -27,13 +27,7 @@ void new_project::init()
 
 
 	// folder textbox
-	folder_txt.caption(equalize_path(g_inifile.new_project_dir(),
-#ifdef NANA_WINDOWS
-		'/', '\\'
-#else
-		'\\', '/'
-#endif //NANA_WINDOWS
-	));
+	folder_txt.caption(equalize_path(g_inifile.new_project_dir()));
 
 
 	//------------------
@@ -61,13 +55,7 @@ void new_project::init()
 	// folder button
 	folder_btn.events().click([this]()
 	{
-		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption(),
-#ifdef NANA_WINDOWS
-			'/', '\\'
-#else
-			'\\', '/'
-#endif //NANA_WINDOWS
-		));
+		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption()));
 
 		auto path = folder_picker.show();
 		if(path)

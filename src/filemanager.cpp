@@ -9,8 +9,8 @@
 #include<iostream>
 #include <stdio.h>  /* defines FILENAME_MAX */
 #if defined(NANA_WINDOWS)
-#include <direct.h>
-#define GetCurrentDir _getcwd
+	#include <direct.h>
+	#define GetCurrentDir _getcwd
     #if defined(__MINGW32__) || defined(__MINGW64__)
         #include <unistd.h>
         #include <sys/stat.h>

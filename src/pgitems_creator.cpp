@@ -1,12 +1,12 @@
 /*
- *		nana::pg_items Implementation
+ *		nana::pgitems_creator Implementation
  *
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
 
 #include "config.h"
-#include "pg_items.h"
+#include "pgitems_creator.h"
 #include <nana/gui/filebox.hpp>
 #include "items_dialog.h"
 #include "filemanager.h"
@@ -22,10 +22,10 @@ extern inifile			g_inifile;
 /// class pg_filename
 void pg_filename::value(const std::string& value)
 {
-	value_ = value;
-
 	lock_guard evt_lock(&evt_emit_, false);
 	txt_.caption(g_file_mgr.to_relative(value));
+
+	pgitem::value(value);
 }
 
 void pg_filename::add_filter(const std::string& description, const std::string& filetype)
@@ -38,7 +38,7 @@ void pg_filename::create(nana::window wd)
 	pg_string_button::create(wd);
 
 	//textbox
-	txt_.caption(g_file_mgr.to_relative(value_));
+	value(value_);
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)
@@ -53,8 +53,7 @@ void pg_filename::create(nana::window wd)
 
 		if(fb())
 		{
-			value_ = fb.file();
-			txt_.caption(g_file_mgr.to_relative(fb.file()));
+			value(fb.file());
 			emit_event();
 		}
 	});
@@ -66,16 +65,12 @@ void pg_filename::create(nana::window wd)
 /// class pg_image
 void pg_image::value(const std::string& value)
 {
-	value_ = equalize_path(value,
-#ifdef NANA_WINDOWS
-		'/', '\\'
-#else
-		'\\', '/'
-#endif //NANA_WINDOWS
-	);
+	auto ep = equalize_path(value);
 
 	lock_guard evt_lock(&evt_emit_, false);
-	txt_.caption(g_file_mgr.to_relative(value_));
+	txt_.caption(g_file_mgr.to_relative(ep));
+
+	pgitem::value(ep);
 }
 
 void pg_image::create(nana::window wd)
@@ -93,21 +88,14 @@ void pg_image::create(nana::window wd)
 		fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
 
 		if(value_.empty())
-			fb.init_path(equalize_path(g_inifile.image_dir(),
-#ifdef NANA_WINDOWS
-				'/', '\\'
-#else
-				'\\', '/'
-#endif // NANA_WINDOWS
-			));
+			fb.init_path(equalize_path(g_inifile.image_dir()));
 		else
 			fb.init_file(value_);
 
 		if(fb())
 		{
-			value_ = fb.file();
-			txt_.caption(g_file_mgr.to_relative(fb.file()));
-			
+			value(fb.file());
+
 			// save image folder
 			auto path = get_dir_path(equalize_path(fb.file()));
 			if(path != g_inifile.image_dir())
@@ -124,10 +112,12 @@ void pg_image::create(nana::window wd)
 /// class pg_folder
 void pg_folder::value(const std::string& value)
 {
-	value_ = value;
+	auto ep = equalize_path(value);
 
 	lock_guard evt_lock(&evt_emit_, false);
-	txt_.caption(equalize_path(value));
+	txt_.caption(ep);
+
+	pgitem::value(ep);
 }
 
 void pg_folder::create(nana::window wd)
@@ -135,24 +125,17 @@ void pg_folder::create(nana::window wd)
 	pg_string_button::create(wd);
 
 	//textbox
-	txt_.caption(equalize_path(value_));
+	value(value_);
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
-		nana::folderbox folder_picker(arg.window_handle, equalize_path(value_,
-#ifdef NANA_WINDOWS
-			'/', '\\'
-#else
-			'\\', '/'
-#endif //NANA_WINDOWS
-		));
+		nana::folderbox folder_picker(arg.window_handle, value_);
 
 		auto path = folder_picker.show();
 		if(path)
 		{
-			value_ = path.value().string();
-			txt_.caption(equalize_path(value_));
+			value(path.value().string());
 			emit_event();
 		}
 	});
@@ -162,18 +145,13 @@ void pg_folder::create(nana::window wd)
 
 
 /// class pg_collection
-void pg_collection::value(const std::string& value)
-{
-	value_ = value;
-
-	lock_guard evt_lock(&evt_emit_, false);
-	txt_.caption("(Collection)");
-}
-
 void pg_collection::create(nana::window wd)
 {
 	pg_string_button::create(wd);
-	txt_.caption("(Collection)");
+	{
+		lock_guard evt_lock(&evt_emit_, false);
+		txt_.caption("(Collection)");
+	}
 	editable(false);
 
 	//button
@@ -203,21 +181,56 @@ void pg_collection::create(nana::window wd)
 
 void pg_layout_weight::value(const std::string& value)
 {
+	lock_guard evt_lock(&evt_emit_, false);
+
 	cmb_.option((value.find('%') == std::string::npos) ? 0 : 1);
 
-	value_ = value;
-	pg_string_int::value(to_int());
-}
-std::string pg_layout_weight::value() const
-{
-	if(cmb_.option() == 1)
-		return value_ + "%";
-	return value_;
+	int int_val = -1;
+	try
+	{
+		int_val = std::stoi(value);
+	}
+	catch(...)
+	{
+	}
+	txt_.caption(std::to_string(int_val));
+
+	pgitem::value(value);
 }
 
 void pg_layout_weight::create(nana::window wd)
 {
-	pg_string_int::create(wd);
+	pg_string::create(wd);
+
+	// textbox
+	txt_.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
+	{
+		if(arg.key == nana::keyboard::enter)
+		{
+			int int_val = -1;
+			try
+			{
+				int_val = std::stoi(txt_.caption());
+			}
+			catch(...)
+			{
+				value(value_);
+				arg.stop_propagation();
+				return;
+			}
+
+			value(std::to_string(int_val) + (cmb_.option() == 1 ? "%" : ""));
+
+			emit_event();
+			arg.stop_propagation();
+		}
+	});
+
+	txt_.set_accept([](wchar_t c) -> bool
+	{
+		return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+	});
+
 
 	//combox
 	cmb_.create(wd);
@@ -228,22 +241,23 @@ void pg_layout_weight::create(nana::window wd)
 	});
 	cmb_.events().selected([this](const nana::arg_combox& arg)
 	{
+		value(txt_.caption() + (cmb_.option() == 1 ? "%" : ""));
 		emit_event();
+		arg.stop_propagation();
 	});
 
 	cmb_.push_back(CITEM_PIXELS);
 	cmb_.push_back(CITEM_PERCENT);
-	//cmb_.option(0);
-	pg_layout_weight::value(value_);
+
+	value(value_);
 }
 
-bool pg_layout_weight::draw_value(nana::paint::graphics* graph, nana::rectangle rect, nana::color bgcolor, nana::color fgcolor) const
+void pg_layout_weight::draw_value(nana::paint::graphics* graph, nana::rectangle rect, const int txtoff, nana::color bgcolor, nana::color fgcolor) const
 {
-	txt_.move(PG_BORDER_X, PG_BORDER_Y);
+	txt_.move(rect.x + PG_BORDER_X, PG_BORDER_Y);
 	txt_.size(nana::size(rect.width - 2 * PG_BORDER_X - STRING_CHOICE_SIZE, size_ - 2 * PG_BORDER_Y));
 
-	cmb_.move(PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
+	cmb_.move(rect.x + PG_BORDER_X + txt_.size().width, PG_BORDER_Y);
 	cmb_.size(nana::size(STRING_CHOICE_SIZE, size_ - 2 * PG_BORDER_Y));
-	return false;
 }
 /// class pg_layout_weight end

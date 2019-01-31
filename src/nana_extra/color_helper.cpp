@@ -58,6 +58,19 @@ namespace nana
 	}
 
 
+	nana::color to_color(const std::string& r, const std::string& g, const std::string& b, bool& inherited)
+	{
+		return to_color(r + "," + g + "," + b, inherited);
+	}
+
+
+	nana::color to_color(const std::string& r, const std::string& g, const std::string& b)
+	{
+		bool inherited;
+		return to_color(r, g, b, inherited);
+	}
+
+
 	std::string to_string(const nana::color& c, bool inherited)
 	{
 		return (inherited ? INHERITED_COLOR "," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
