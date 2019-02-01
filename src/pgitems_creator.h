@@ -29,31 +29,52 @@ public:
 
 	virtual void value(const std::string& value) override;
 
-	void add_filter(const std::string& description, const std::string& filetype);
+	void add_filter(const std::string& description, const std::string& filetype)
+	{
+		filters_.push_back({ description, filetype });
+	}
+	void init_path(const std::string& initial_directory)
+	{
+		init_dir_ = initial_directory;
+	}
 
 protected:
 	virtual void create(nana::window wd) override;
 
+	// return false to veto the dialog opening
+	virtual bool on_open_dlg()
+	{
+		return true;
+	}
+
+	// return false to veto the file choice
+	virtual bool on_close_dlg(bool state, const std::string& file)
+	{
+		return true;
+	}
+
 	std::vector<std::pair<std::string, std::string>> filters_;
+	std::string init_dir_;
 };
 
 
 
 /// class pg_image
 class pg_image
-	: public nana::pg_string_button
+	: public pg_filename
 {
 public:
 	pg_image() = default;
 
 	pg_image(const std::string& label, const std::string& value)
-		: pg_string_button(label, value)
+		: pg_filename(label, value)
 	{}
-
-	virtual void value(const std::string& value) override;
 
 protected:
 	virtual void create(nana::window wd) override;
+
+	virtual bool on_open_dlg() override;
+	virtual bool on_close_dlg(bool state, const std::string& file) override;
 };
 
 

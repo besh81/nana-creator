@@ -54,11 +54,7 @@ private:
 //---------------------------------------------
 // equalize path characters (tolower) and and dir separators
 //---------------------------------------------
-#ifdef NANA_WINDOWS
-std::string equalize_path(const std::string& path, char div_from = '/', char div_to = '\\');
-#else
 std::string equalize_path(const std::string& path, char div_from = '\\', char div_to = '/');
-#endif
 
 
 //---------------------------------------------
@@ -78,6 +74,12 @@ std::string get_dir_path(const std::string& filename);
 // get current working directory
 //---------------------------------------------
 std::string get_working_dir();
+
+
+//---------------------------------------------
+// set working directory
+//---------------------------------------------
+bool set_working_dir(const std::string& path);
 
 
 //---------------------------------------------

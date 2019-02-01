@@ -31,15 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
-			<Add directory="../../src/ctrls" />
-			<Add directory="../../src/nana_extra" />
 			<Add directory="../../src" />
 			<Add directory="../../libs" />
 		</Compiler>
 		<Linker>
 			<Add library="jpeg" />
-			<Add library="zlib" />
-			<Add library="png" />
 			<Add library="nana" />
 			<Add library="gdi32" />
 			<Add library="comdlg32" />
@@ -131,8 +127,8 @@
 		<Unit filename="../../src/new_project.h" />
 		<Unit filename="../../src/objectspanel.cpp" />
 		<Unit filename="../../src/objectspanel.h" />
-		<Unit filename="../../src/pg_items.cpp" />
-		<Unit filename="../../src/pg_items.h" />
+		<Unit filename="../../src/pgitems_creator.cpp" />
+		<Unit filename="../../src/pgitems_creator.h" />
 		<Unit filename="../../src/propertiespanel.cpp" />
 		<Unit filename="../../src/propertiespanel.h" />
 		<Unit filename="../../src/propertygrid_helper.cpp" />

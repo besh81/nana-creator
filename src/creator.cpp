@@ -167,7 +167,13 @@ void creator::_init_ctrls()
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
 			fb.add_filter("All Files (*.*)", "*.*");
 
+		#if defined(NANA_WINDOWS)
+			// solve the problem with lpstrinitialdir
+			auto p = equalize_path(g_inifile.load_project_dir(), '/', '\\');
+			fb.init_file(p.empty() ? "./" : p + "\\.");
+		#else
 			fb.init_path(equalize_path(g_inifile.load_project_dir()));
+		#endif
 
 			if(fb())
 			{
@@ -177,7 +183,8 @@ void creator::_init_ctrls()
 					g_inifile.load_project_dir(path, true);
 
 				prj_name = fb.file();
-				load_xml(prj_name);
+				if(!load_xml(prj_name))
+					prj_name = "";
 			}
 		}
 		else if(arg.button == TB_SAVE) // save project

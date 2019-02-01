@@ -430,7 +430,7 @@ namespace nana
 		if(show_inherited_)
 		{
 			inherited_ = is_color_inherited(value);
-			chk_.check(inherited_);
+			menu_.checked(2, inherited_);
 
 			r_.enabled(en_ && !inherited_);
 			g_.enabled(en_ && !inherited_);
@@ -447,9 +447,6 @@ namespace nana
 		r_.enabled(en_ && !inherited_);
 		g_.enabled(en_ && !inherited_);
 		b_.enabled(en_ && !inherited_);
-
-		if(show_inherited_)
-			chk_.enabled(en_);
 	}
 
 	void pg_color::value(::nana::color value)
@@ -470,6 +467,19 @@ namespace nana
 
 	void pg_color::create(window wd)
 	{
+		// ibox context menu
+		menu_.append_splitter();
+		// 2. Inherited
+		menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
+		{
+			pg_color::value(nana::to_string(color_, ip.checked()));
+			printf(ip.checked() ? "[X]\n" : "[ ]\n");
+			emit_event();
+		});
+		menu_.enabled(2, show_inherited_);
+		menu_.check_style(2, nana::menu::checks::highlight);
+
+
 		r_.create(wd);
 		r_.multi_lines(false);
 
@@ -544,24 +554,6 @@ namespace nana
 			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
 		});
 
-
-		// inherited checkbox
-		if(show_inherited_)
-		{
-			chk_.create(wd);
-			chk_.caption("Inherited");
-
-			chk_.events().click.connect_front([this](const nana::arg_click& arg)
-			{
-				scroll();
-			});
-			chk_.events().checked([this](const nana::arg_checkbox& arg)
-			{
-				pg_color::value(nana::to_string(color_, arg.widget->checked()));
-				emit_event();
-			});
-		}
-
 		pg_color::value(value_);
 	}
 
@@ -593,20 +585,6 @@ namespace nana
 		if(!en_)
 			fgcolor = colors::gray; //TODO: scheme
 
-		// inherited checkbox
-		if(show_inherited_ && valuew)
-		{
-			auto rect = area;
-			rect.x += labelw;
-			rect.width = valuew;
-
-			chk_.bgcolor(bgcolor);
-
-			auto txtsize = graph->text_extent_size("Inherited");
-			chk_.move(rect.x, PG_BORDER_Y + 2);
-			chk_.size(nana::size(valuew - 2 * PG_BORDER_X, txtsize.height + 2));
-		}
-
 		// colorbox R G B
 		int availw = labelw + valuew;
 		if(availw)
@@ -617,7 +595,7 @@ namespace nana
 			const int offset = 10;
 
 			// colorbox
-			rectangle colorbox{ area.x + 20, area.y + y + 2, static_cast<unsigned int>(availw - 50), 5 };
+			rectangle colorbox{ area.x + 20, area.y + y + 2, static_cast<unsigned int>(availw - 50), 6 };
 			graph->rectangle(colorbox, false, nana::colors::black);
 			graph->rectangle(colorbox.pare_off(1), true, color_);
 
@@ -627,14 +605,7 @@ namespace nana
 			availw -= x;
 
 			const unsigned txtw = txtsize.width + 5;
-			//const unsigned ctrlw = txtsize.width * 5;
 			const unsigned ctrlw = (availw - (3 * txtw) - (2 * offset)) / 3;
-			
-
-			/*if(availw > 3 * (ctrlw + txtw) + (2 * offset))
-			{
-				ctrlw = (availw - (3 * txtw) - (2 * offset)) / 3;
-			}*/
 
 			// R
 			graph->string(point{ area.x + x, area.y + y }, "R", fgcolor);

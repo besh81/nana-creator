@@ -22,15 +22,12 @@ extern inifile			g_inifile;
 /// class pg_filename
 void pg_filename::value(const std::string& value)
 {
+	auto ep = equalize_path(value);
+
 	lock_guard evt_lock(&evt_emit_, false);
 	txt_.caption(g_file_mgr.to_relative(value));
 
 	pgitem::value(value);
-}
-
-void pg_filename::add_filter(const std::string& description, const std::string& filetype)
-{
-	filters_.push_back({ description, filetype });
 }
 
 void pg_filename::create(nana::window wd)
@@ -43,15 +40,34 @@ void pg_filename::create(nana::window wd)
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
+		if(!on_open_dlg())
+			return;
+
 		nana::filebox fb(arg.window_handle, true);
 		
 		for(auto i : filters_)
 			fb.add_filter(i.first, i.second);
 		fb.add_filter("All Files", "*.*");
 
-		fb.init_file(value_);
+		if(value_.empty())
+#if defined(NANA_WINDOWS)
+		{
+			// solve the problem with lpstrinitialdir
+			auto p = equalize_path(init_dir_, '/', '\\');
+			fb.init_file(p.empty() ? "./" : p + "\\.");
+		}
+		#else
+			fb.init_path(init_dir_);
+		#endif
+		else
+			fb.init_file(value_);
 
-		if(fb())
+		auto state = fb();
+
+		if(!on_close_dlg(state, fb.file()))
+			return;
+		
+		if(state)
 		{
 			value(fb.file());
 			emit_event();
@@ -63,47 +79,29 @@ void pg_filename::create(nana::window wd)
 
 
 /// class pg_image
-void pg_image::value(const std::string& value)
-{
-	auto ep = equalize_path(value);
-
-	lock_guard evt_lock(&evt_emit_, false);
-	txt_.caption(g_file_mgr.to_relative(ep));
-
-	pgitem::value(ep);
-}
-
 void pg_image::create(nana::window wd)
 {
-	pg_string_button::create(wd);
+	pg_filename::create(wd);
 
-	//textbox
-	value(value_);
+	add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+}
 
-	//button
-	set_button_click([this](const nana::arg_click& arg)
+bool pg_image::on_open_dlg()
+{
+	init_path(equalize_path(g_inifile.image_dir()));
+	return true;
+}
+
+bool pg_image::on_close_dlg(bool state, const std::string& file)
+{
+	if(state)
 	{
-		nana::filebox fb(arg.window_handle, true);
-
-		fb.add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
-
-		if(value_.empty())
-			fb.init_path(equalize_path(g_inifile.image_dir()));
-		else
-			fb.init_file(value_);
-
-		if(fb())
-		{
-			value(fb.file());
-
-			// save image folder
-			auto path = get_dir_path(equalize_path(fb.file()));
-			if(path != g_inifile.image_dir())
-				g_inifile.image_dir(path, true);
-
-			emit_event();
-		}
-	});
+		// save image folder
+		auto path = get_dir_path(equalize_path(file));
+		if(path != g_inifile.image_dir())
+			g_inifile.image_dir(path, true);
+	}
+	return true;
 }
 /// class pg_image end
 

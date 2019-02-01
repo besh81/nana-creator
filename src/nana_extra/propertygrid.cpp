@@ -58,7 +58,7 @@ namespace nana
 
 					if(col == 0) // labels
 						return min_width_[0] + adj;
-					
+
 					if(col == 1) // values
 					{
 						if(width > width_())
@@ -299,8 +299,6 @@ namespace nana
 				}
 
 			private:
-				void bind_();
-
 				essence_t * ess_{ nullptr };
 				nana::propertygrid * widget_{ nullptr };
 
@@ -433,7 +431,7 @@ namespace nana
 					//The area to show the widget
 					auto graph_r = available_area();
 
-					bool h = false, v = false;
+					bool v = false;
 
 					if(graph_r.height < wd_sz.height)
 					{
@@ -582,12 +580,31 @@ namespace nana
 			/// class pgitem
 			void pgitem::init(window wd)
 			{
+				// ibox context menu
+				// 0. Reset
+				menu_.append("Reset", [this](const nana::menu::item_proxy& ip)
+				{
+					reset();
+					emit_event();
+				});
+
+
+				// ibox
 				box_.create(wd);
 
-				box_.events().mouse_down.connect_front([this]()
+				box_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
 				{
-					if(en_) // only if enabled
-						printf("Click\n");
+					if(!en_) // only if enabled
+						return;
+
+					if(arg.left_button)
+					{
+						// Reset
+						menu_.enabled(0, !isdefault());
+
+						menu_.popup(box_, arg.pos.x, arg.pos.y);
+						arg.stop_propagation();
+					}
 				});
 				box_.events().mouse_enter.connect_front([this]()
 				{
@@ -654,15 +671,16 @@ namespace nana
 
 					graph->string(point{ rect.x + content_pos, rect.y + txtoff }, label_, fgcolor);
 
-					if(static_cast<int>(ts.width) > static_cast<int>(rect.width) - (content_pos + rect.x)) // it was an excess
+					if(static_cast<int>(ts.width) > static_cast<int>(rect.width) - (content_pos + rect.x))
 					{
+						//The text is painted over the next col
+
 						auto suspension_width = graph->text_extent_size(L"...").width;
-
-						//The text is painted over the next subitem                // here beging the ...
 						int xpos = rect.x + static_cast<int>(rect.width) - static_cast<int>(suspension_width);
+						unsigned w = rect.width - suspension_width;
 
-						// litter rect with the item bg end ...
-						graph->rectangle(rectangle{ xpos, rect.y + 2, suspension_width, rect.height - 4 }, true, bgcolor);
+						// litter rect with the item bg and ...
+						graph->rectangle(rectangle{ xpos, rect.y + 2, w, rect.height - 4 }, true, bgcolor);
 						graph->string(point{ xpos, rect.y + 2 }, L"...");
 					}
 				}
@@ -1078,23 +1096,6 @@ namespace nana
 
 			void trigger::key_press(graph_reference graph, const arg_keyboard& arg)
 			{
-				/*
-				switch(arg.key)
-				{
-				case keyboard::os_pageup:
-				case keyboard::os_pagedown:
-					break;
-				case keyboard::os_home:
-					break;
-				case keyboard::os_end:
-					break;
-
-				default:
-					return;
-				}
-				refresh(graph);
-				API::dev::lazy_refresh();
-				*/
 			}
 			//end class trigger
 

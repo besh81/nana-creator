@@ -11,6 +11,7 @@
 #if defined(NANA_WINDOWS)
 	#include <direct.h>
 	#define GetCurrentDir _getcwd
+	#define SetCurrentDir _chdir
     #if defined(__MINGW32__) || defined(__MINGW64__)
         #include <unistd.h>
         #include <sys/stat.h>
@@ -19,6 +20,7 @@
     #include <unistd.h>
     #include <sys/stat.h>
     #define GetCurrentDir getcwd
+	#define SetCurrentDir chdir
 #endif
 
 #include "filemanager.h"
@@ -161,6 +163,13 @@ std::string get_working_dir()
 	GetCurrentDir(buff, FILENAME_MAX);
 	std::string current_working_dir(buff);
 	return current_working_dir;
+}
+
+
+//set_working_dir
+bool set_working_dir(const std::string& path)
+{
+	return SetCurrentDir(path.c_str()) == 0 ? true : false;
 }
 
 

@@ -9,11 +9,9 @@
 #define NANA_CREATOR_PROPERTYGRID_H
 
 #include <nana/gui/widgets/widget.hpp>
-#include <nana/gui/widgets/detail/inline_widget.hpp>
 #include <nana/gui/widgets/panel.hpp>
-#include <nana/pat/abstract_factory.hpp>
+#include <nana/gui/widgets/menu.hpp>
 #include <functional>
-
 
 
 namespace nana
@@ -141,6 +139,11 @@ namespace nana
 					return def_ == value_;
 				}
 
+				virtual void reset()
+				{
+					value(def_);
+				}
+
 				virtual unsigned size() const
 				{
 					return size_;
@@ -188,6 +191,7 @@ namespace nana
 				index_pair		idx_;
 
 				mutable nana::panel<true>	box_;
+				mutable nana::menu			menu_;
 			};
 
 			typedef std::unique_ptr<pgitem>	pgitem_ptr;

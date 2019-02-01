@@ -12,7 +12,6 @@
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
-#include <nana/gui/widgets/spinbox.hpp>
 #include "propertygrid.h"
 
 
@@ -235,7 +234,6 @@ namespace nana
 		mutable nana::textbox	r_;
 		mutable nana::textbox	g_;
 		mutable nana::textbox	b_;
-		mutable nana::checkbox	chk_;
 		
 		bool		show_inherited_{ false };
 
