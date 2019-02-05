@@ -1,7 +1,7 @@
 /*
  *		nana::pgitems Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -231,10 +231,9 @@ namespace nana
 
 		virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const override;
 
-		mutable nana::textbox	r_;
-		mutable nana::textbox	g_;
-		mutable nana::textbox	b_;
-		
+		mutable nana::textbox	colorbox_;
+		mutable nana::textbox	rgb_[3];
+		bool		expand_{ false };
 		bool		show_inherited_{ false };
 
 		nana::color	color_;

@@ -1,7 +1,7 @@
 /*
  *		ctrls::property Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -46,6 +46,7 @@ namespace ctrls
 	{
 		std::string		name;
 		std::string		value;
+		std::string		defvalue;
 
 		//
 		std::string		label;
@@ -73,6 +74,8 @@ namespace ctrls
 
 		property_proxy& value(const std::string& value);
 		std::string value() const;
+
+		std::string defvalue() const;
 
 		property_proxy& label(const std::string& label);
 		std::string label() const;
@@ -111,7 +114,7 @@ namespace ctrls
 		property_proxy& value(bool value);
 
 
-		// Set property value (equivalent to set_value without error checking)
+		// Set property value (equivalent to value() but set the defvalue too)
 		property_proxy& operator=(const std::string& value);
 		property_proxy& operator=(const char* value);
 		property_proxy& operator=(int value);
@@ -120,6 +123,9 @@ namespace ctrls
 		property_proxy& operator=(float value);
 		property_proxy& operator=(bool value);
 
+
+		// Set property defvalue
+		property_proxy& def_as_value();
 
 	private:
 		property_t*		_prop{ 0 };

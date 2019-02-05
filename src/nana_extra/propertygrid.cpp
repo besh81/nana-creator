@@ -1,7 +1,7 @@
 /*
  *		nana::propertygrid Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -11,10 +11,6 @@
 #include <nana/gui/layout_utility.hpp>
 #include <nana/gui/element.hpp>
 #include <nana/gui/drawing.hpp>
-#include <list>
-#include <stdexcept>
-#include <algorithm>
-#include <cassert>
 
 
 #define			IBOX_SIZE		13
@@ -590,9 +586,9 @@ namespace nana
 
 
 				// ibox
-				box_.create(wd);
+				ibox_.create(wd);
 
-				box_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
+				ibox_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
 				{
 					if(!en_) // only if enabled
 						return;
@@ -602,21 +598,21 @@ namespace nana
 						// Reset
 						menu_.enabled(0, !isdefault());
 
-						menu_.popup(box_, arg.pos.x, arg.pos.y);
+						menu_.popup(ibox_, arg.pos.x, arg.pos.y);
 						arg.stop_propagation();
 					}
 				});
-				box_.events().mouse_enter.connect_front([this]()
+				ibox_.events().mouse_enter.connect_front([this]()
 				{
 					if(en_) // only if enabled
-						box_.bgcolor(nana::color(201, 222, 245));
+						ibox_.bgcolor(nana::color(201, 222, 245));
 				});
-				box_.events().mouse_leave.connect_front([this]()
+				ibox_.events().mouse_leave.connect_front([this]()
 				{
-					box_.bgcolor(ess_->lister.wd_ptr()->bgcolor());
+					ibox_.bgcolor(ess_->lister.wd_ptr()->bgcolor());
 				});
 
-				nana::drawing dw{ box_ };
+				nana::drawing dw{ ibox_ };
 				dw.draw([this](nana::paint::graphics& graph)
 				{
 					int b = (IBOX_SIZE - IBOX_RECT_SIZE) / 2;
@@ -694,10 +690,10 @@ namespace nana
 
 			void pgitem::draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
 			{
-				box_.bgcolor(bgcolor);
-				box_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (rect.height - IBOX_SIZE) / 2);
-				box_.size(nana::size(IBOX_SIZE, IBOX_SIZE));
-				API::refresh_window(box_);
+				ibox_.bgcolor(bgcolor);
+				ibox_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (rect.height - IBOX_SIZE) / 2);
+				ibox_.size(nana::size(IBOX_SIZE, IBOX_SIZE));
+				API::refresh_window(ibox_);
 			}
 
 			void pgitem::update()

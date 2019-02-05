@@ -1,7 +1,7 @@
 /*
  *		nana::color_helper Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 

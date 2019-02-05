@@ -1,7 +1,7 @@
 /*
  *		ctrls::property Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -42,6 +42,11 @@ namespace ctrls
 	std::string property_proxy::value() const
 	{
 		return _prop->value;
+	}
+
+	std::string property_proxy::defvalue() const
+	{
+		return _prop->defvalue;
 	}
 
 	property_proxy& property_proxy::label(const std::string& label)
@@ -141,28 +146,24 @@ namespace ctrls
 			_prop->value = std::to_string(value);
 		return *this;
 	}
-
 	property_proxy& property_proxy::value(unsigned int value)
 	{
 		if(_prop)
 			_prop->value = std::to_string(value);
 		return *this;
 	}
-
 	property_proxy& property_proxy::value(double value)
 	{
 		if(_prop)
 			_prop->value = std::to_string(value);
 		return *this;
 	}
-
 	property_proxy& property_proxy::value(float value)
 	{
 		if(_prop)
 			_prop->value = std::to_string(value);
 		return *this;
 	}
-
 	property_proxy& property_proxy::value(bool value)
 	{
 		if(_prop)
@@ -174,38 +175,48 @@ namespace ctrls
 	property_proxy& property_proxy::operator=(const std::string& value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(const char* value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(int value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(unsigned int value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(double value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(float value_)
 	{
 		value(value_);
-		return *this;
+		return def_as_value();
 	}
 	property_proxy& property_proxy::operator=(bool value_)
 	{
 		value(value_);
+		return def_as_value();
+	}
+
+
+
+	property_proxy& property_proxy::def_as_value()
+	{
+		if(_prop)
+			_prop->defvalue = _prop->value;
 		return *this;
 	}
+
 
 
 	properties_collection::~properties_collection()

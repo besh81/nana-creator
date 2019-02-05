@@ -1,7 +1,7 @@
 /*
  *		nana::propertygrid Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -11,7 +11,6 @@
 #include <nana/gui/widgets/widget.hpp>
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/menu.hpp>
-#include <functional>
 
 
 namespace nana
@@ -190,7 +189,7 @@ namespace nana
 				essence_t*		ess_;
 				index_pair		idx_;
 
-				mutable nana::panel<true>	box_;
+				mutable nana::panel<true>	ibox_;
 				mutable nana::menu			menu_;
 			};
 

@@ -99,7 +99,7 @@ protected:
 
 
 /// class pg_collection
-class pg_collection //TODO
+class pg_collection
 	: public nana::pg_string_button
 {
 public:
@@ -110,13 +110,16 @@ public:
 	{}
 
 	virtual void value(const std::string& value) override {}
-	virtual void items(std::vector<ctrls::properties_collection>* items) { items_ = items; }
+	virtual void defvalue(const std::string& value) override;
+	virtual void reset() override;
+
+	virtual void items(std::vector<ctrls::properties_collection>* items);
 
 protected:
 	virtual void create(nana::window wd) override;
 
 	ctrls::pg_type type_;
-	std::vector<ctrls::properties_collection>* items_{ 0 };
+	std::vector<ctrls::properties_collection>* items_{ nullptr };
 };
 
 

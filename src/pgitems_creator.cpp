@@ -143,13 +143,36 @@ void pg_folder::create(nana::window wd)
 
 
 /// class pg_collection
+void pg_collection::defvalue(const std::string& value)
+{
+	if(items_)
+		if((*items_).size())
+		{
+			pgitem::defvalue("items");
+			return;
+		}
+
+	pgitem::defvalue(pgitem::value());
+}
+
+void pg_collection::items(std::vector<ctrls::properties_collection>* items)
+{
+	items_ = items;
+	defvalue("");
+}
+
+void pg_collection::reset()
+{
+	if(items_)
+		(*items_).clear();
+	defvalue("");
+}
+
 void pg_collection::create(nana::window wd)
 {
 	pg_string_button::create(wd);
-	{
-		lock_guard evt_lock(&evt_emit_, false);
-		txt_.caption("(Collection)");
-	}
+	pg_string_button::value("(Collection)");
+	defvalue("");
 	editable(false);
 
 	//button
@@ -159,12 +182,15 @@ void pg_collection::create(nana::window wd)
 		if(items_)
 		{
 			items_dialog dlg(arg.window_handle, type_);
-			dlg.set_items(*items_);
+			if(items_)
+				dlg.set_items(*items_);
 			dlg.modality();
 
 			if(dlg.return_val() == nana::msgbox::pick_ok)
 			{
-				*items_ = dlg.get_items();
+				if(items_)
+					*items_ = dlg.get_items();
+				defvalue("");
 				emit_event();
 			}
 		}
@@ -239,6 +265,9 @@ void pg_layout_weight::create(nana::window wd)
 	});
 	cmb_.events().selected([this](const nana::arg_combox& arg)
 	{
+		if(!evt_emit_)
+			return;
+
 		value(txt_.caption() + (cmb_.option() == 1 ? "%" : ""));
 		emit_event();
 		arg.stop_propagation();

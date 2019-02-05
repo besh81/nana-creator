@@ -1,13 +1,13 @@
 /*
  *		nana::propgrid_items Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
 #include <iostream>
 #include <algorithm>
-#include "nana_extra/pgitems.h"
+#include "pgitems.h"
 #include "color_helper.h"
 #include "lock_guard.h"
 
@@ -353,6 +353,9 @@ namespace nana
 		});
 		cmb_.events().selected([this](const nana::arg_combox& arg)
 		{
+			if(!evt_emit_)
+				return;
+
 			option(arg.widget.option());
 			emit_event();
 		});
@@ -399,6 +402,9 @@ namespace nana
 		});
 		chk_.events().checked([this](const nana::arg_checkbox& arg)
 		{
+			if(!evt_emit_)
+				return;
+
 			check(arg.widget->checked());
 			emit_event();
 		});
@@ -416,25 +422,22 @@ namespace nana
 
 
 	/// class pg_color
-#define COLORBOX_SIZE		15
-
 	void pg_color::value(const std::string& value)
 	{
 		lock_guard evt_lock(&evt_emit_, false);
 
 		color_ = nana::to_color(value);
-		r_.caption(std::to_string(static_cast<int>(color_.r())));
-		g_.caption(std::to_string(static_cast<int>(color_.g())));
-		b_.caption(std::to_string(static_cast<int>(color_.b())));
+		rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));
+		rgb_[1].caption(std::to_string(static_cast<int>(color_.g())));
+		rgb_[2].caption(std::to_string(static_cast<int>(color_.b())));
 
 		if(show_inherited_)
 		{
 			inherited_ = is_color_inherited(value);
 			menu_.checked(2, inherited_);
 
-			r_.enabled(en_ && !inherited_);
-			g_.enabled(en_ && !inherited_);
-			b_.enabled(en_ && !inherited_);
+			for(auto & i : rgb_)
+				i.enabled(en_ && !inherited_);
 		}
 
 		pgitem::value(nana::to_string(color_, show_inherited_ ? inherited_ : false));
@@ -443,10 +446,9 @@ namespace nana
 	void pg_color::enabled(bool state)
 	{
 		pgitem::enabled(state);
-		
-		r_.enabled(en_ && !inherited_);
-		g_.enabled(en_ && !inherited_);
-		b_.enabled(en_ && !inherited_);
+
+		for(auto & i : rgb_)
+			i.enabled(en_ && !inherited_);
 	}
 
 	void pg_color::value(::nana::color value)
@@ -462,7 +464,7 @@ namespace nana
 
 	unsigned pg_color::size() const
 	{
-		return 2 * size_;
+		return expand_ ? 2 * size_ : size_;
 	}
 
 	void pg_color::create(window wd)
@@ -480,85 +482,56 @@ namespace nana
 		menu_.check_style(2, nana::menu::checks::highlight);
 
 
-		r_.create(wd);
-		r_.multi_lines(false);
+		// colorbox
+		colorbox_.create(wd);
+		colorbox_.editable(false);
 
-		r_.events().click.connect_front([this](const nana::arg_click& arg)
+		colorbox_.events().mouse_down.connect_front([this](const nana::arg_mouse& arg)
 		{
-			scroll();
-		});
-		r_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			r_.select(true);
-		});
-		r_.events().key_press([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
+			if(!en_) // only if enabled
+				return;
+
+			if(arg.left_button)
 			{
-				pg_color::value(nana::to_string(nana::to_color(r_.caption(), g_.caption(), b_.caption()), show_inherited_ ? inherited_ : false));
-				emit_event();
+				expand_ = !expand_;
+				scroll();
+				update();
 			}
 		});
-		r_.set_accept([](wchar_t c) -> bool
-		{
-			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-		});
 
 
-		g_.create(wd);
-		g_.multi_lines(false);
+		// textboxes
+		for(auto & i : rgb_)
+		{
+			i.create(wd);
+			i.multi_lines(false);
 
-		g_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
-		g_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			g_.select(true);
-		});
-		g_.events().key_press([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
+			i.events().click.connect_front([this](const nana::arg_click& arg)
 			{
-				pg_color::value(nana::to_string(nana::to_color(r_.caption(), g_.caption(), b_.caption()), show_inherited_ ? inherited_ : false));
-				emit_event();
-			}
-		});
-		g_.set_accept([](wchar_t c) -> bool
-		{
-			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-		});
-
-
-		b_.create(wd);
-		b_.multi_lines(false);
-
-		b_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
-		b_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			b_.select(true);
-		});
-		b_.events().key_press([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
+				scroll();
+			});
+			i.events().dbl_click([this, &i](const nana::arg_mouse& arg)
 			{
-				pg_color::value(nana::to_string(nana::to_color(r_.caption(), g_.caption(), b_.caption()), show_inherited_ ? inherited_ : false));
-				emit_event();
-			}
-		});
-		b_.set_accept([](wchar_t c) -> bool
-		{
-			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-		});
+				i.select(true);
+			});
+			i.events().key_press([this](const nana::arg_keyboard& arg)
+			{
+				if(arg.key == nana::keyboard::enter)
+				{
+					pg_color::value(nana::to_string(nana::to_color(rgb_[0].caption(), rgb_[1].caption(), rgb_[2].caption()), show_inherited_ ? inherited_ : false));
+					emit_event();
+				}
+			});
+			i.set_accept([](wchar_t c) -> bool
+			{
+				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+			});
+		}
 
 		pg_color::value(value_);
 	}
 
 	void pg_color::draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const
-	//void pg_color::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
 	{
 		// background
 		graph->rectangle(area, true, bgcolor);
@@ -571,6 +544,17 @@ namespace nana
 			draw_label(graph, rect, txtoff, bgcolor, fgcolor);
 		}
 
+		// draw value - colorbox
+		if(valuew)
+		{
+			auto rect = area;
+			rect.x += labelw;
+			rect.width = valuew;
+			colorbox_.move(rect.x + PG_BORDER_X, PG_BORDER_Y);
+			colorbox_.size(nana::size(rect.width - 2 * PG_BORDER_X, size_ - 2 * PG_BORDER_Y));
+			colorbox_.bgcolor(color_);
+		}
+
 		// draw interaction-box
 		if(iboxw)
 		{
@@ -580,50 +564,53 @@ namespace nana
 			draw_ibox(graph, rect, bgcolor, fgcolor);
 		}
 
+		// draw expanded
+		if(!expand_)
+		{
+			for(auto & i : rgb_)
+				API::show_window(i, false);
+			return;
+		}
 
-		// draw value
 		if(!en_)
 			fgcolor = colors::gray; //TODO: scheme
 
+
+		for(auto & i : rgb_)
+			API::show_window(i, true);
+
+		
 		// colorbox R G B
 		int availw = labelw + valuew;
 		if(availw)
 		{
-			int x = PG_BORDER_X + 50;
-			int y = size_ - 3;
-			int ctrly = y;
-			const int offset = 10;
-
-			// colorbox
-			rectangle colorbox{ area.x + 20, area.y + y + 2, static_cast<unsigned int>(availw - 50), 6 };
-			graph->rectangle(colorbox, false, nana::colors::black);
-			graph->rectangle(colorbox.pare_off(1), true, color_);
-
 			auto txtsize = graph->text_extent_size("R");
-			x += COLORBOX_SIZE + offset;
-			y += static_cast<int>((size_ - txtsize.height) / 2) + 1;
-			availw -= x;
+			int x = 75;
+			int y = size_ + static_cast<int>(size_ - txtsize.height) / 2;
+			int ctrly = size_;
+			const int offset = 8;
 
+			availw -= x;
 			const unsigned txtw = txtsize.width + 5;
 			const unsigned ctrlw = (availw - (3 * txtw) - (2 * offset)) / 3;
 
 			// R
 			graph->string(point{ area.x + x, area.y + y }, "R", fgcolor);
 			x += txtw;
-			r_.move(x, ctrly);
-			r_.size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+			rgb_[0].move(x, ctrly);
+			rgb_[0].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
 			x += ctrlw + offset;
 			// G
 			graph->string(point{ area.x + x, area.y + y }, "G", fgcolor);
 			x += txtw;
-			g_.move(x, ctrly);
-			g_.size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+			rgb_[1].move(x, ctrly);
+			rgb_[1].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
 			x += ctrlw + offset;
 			// B
 			graph->string(point{ area.x + x, area.y + y }, "B", fgcolor);
 			x += txtw;
-			b_.move(x, ctrly);
-			b_.size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+			rgb_[2].move(x, ctrly);
+			rgb_[2].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
 		}
 	}
 	/// class pg_color end

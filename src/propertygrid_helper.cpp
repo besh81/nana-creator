@@ -26,47 +26,43 @@ namespace propertygrid_helper
 
 			auto cat_idx = propgrid->find(prop.category());
 			auto cat = (cat_idx == nana::npos) ? propgrid->append(prop.category()) : propgrid->at(cat_idx);
+			nana::propertygrid::item_proxy ip(nullptr);
 
 			if(prop.type() == ctrls::pg_type::string_int)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_int(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::string_uint || prop.type() == ctrls::pg_type::string_uint_0_100 || prop.type() == ctrls::pg_type::string_uint_1_100)
 			{
-				auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
 
+				auto psui = static_cast<nana::pg_string_uint*>(ip._m_pgitem());
 				if(prop.type() == ctrls::pg_type::string_uint_0_100)
-				{
-					auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
 					psui->range(0, 100);
-				}
 				else if(prop.type() == ctrls::pg_type::string_uint_1_100)
-				{
-					auto psui = static_cast<nana::pg_string_uint*>(item._m_pgitem());
 					psui->range(1, 100);
-				}
 			}
 			else if(prop.type() == ctrls::pg_type::string_weight)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new pg_layout_weight(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_layout_weight(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::check)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_check(prop.label(), prop.value() == "true" ? true : false)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_check(prop.label(), prop.value() == "true" ? true : false)));
 			}
 			else if(prop.type() == ctrls::pg_type::color)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), false)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), false)));
 			}
 			else if(prop.type() == ctrls::pg_type::color_inherited)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
 			}
 			else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
 				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style)
 			{
-				auto item = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
-				auto pgc = static_cast<nana::pg_choice*>(item._m_pgitem());
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
+				auto pgc = static_cast<nana::pg_choice*>(ip._m_pgitem());
 
 				if(prop.type() == ctrls::pg_type::halign)
 				{
@@ -102,23 +98,27 @@ namespace propertygrid_helper
 			}
 			else if(prop.type() == ctrls::pg_type::image)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::folder)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new pg_folder(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_folder(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::collection_combox || prop.type() == ctrls::pg_type::collection_toolbar
 				|| prop.type() == ctrls::pg_type::collection_listbox || prop.type() == ctrls::pg_type::collection_tabbar
 				|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize
 				|| prop.type() == ctrls::pg_type::collection_collapse)
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.type(), items)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.type(), items)));
 			}
 			else //nana::pg_type::string
 			{
-				cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string(prop.label(), prop.value())));
 			}
+
+
+			// set default value
+			ip.defvalue(prop.defvalue());
 		}
 
 		// look for properties bonds
