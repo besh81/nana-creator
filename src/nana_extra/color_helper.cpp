@@ -15,7 +15,19 @@
 
 namespace nana
 {
-	/// helper functions
+	nana::color to_color(const std::string& s)
+	{
+		bool inherited;
+		return to_color(s, inherited);
+	}
+
+
+	bool is_color_inherited(const std::string& s)
+	{
+		return s.find(INHERITED_COLOR) == 0 ? true : false;
+	}
+
+
 	nana::color to_color(const std::string& s, bool& inherited)
 	{
 		std::stringstream ss(s);
@@ -51,23 +63,10 @@ namespace nana
 	}
 
 
-	nana::color to_color(const std::string& s)
-	{
-		bool inherited;
-		return to_color(s, inherited);
-	}
-
-
-	nana::color to_color(const std::string& r, const std::string& g, const std::string& b, bool& inherited)
-	{
-		return to_color(r + "," + g + "," + b, inherited);
-	}
-
-
 	nana::color to_color(const std::string& r, const std::string& g, const std::string& b)
 	{
 		bool inherited;
-		return to_color(r, g, b, inherited);
+		return to_color(r + "," + g + "," + b, inherited);
 	}
 
 
@@ -75,12 +74,5 @@ namespace nana
 	{
 		return (inherited ? INHERITED_COLOR "," : "") + std::to_string(int(c.r())) + "," + std::to_string(int(c.g())) + "," + std::to_string(int(c.b()));
 	}
-
-
-	bool is_color_inherited(const std::string& s)
-	{
-		return s.find(INHERITED_COLOR) == 0 ? true : false;
-	}
-	/// helper functions - end
 
 }//end namespace nana

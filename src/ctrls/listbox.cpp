@@ -40,6 +40,17 @@ namespace ctrls
 		properties.append("item_selected").label("Item selected").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.item_selected);
 		properties.append("item_highlighted").label("Item highlighted").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.item_highlighted);
 		properties.append("selection_box").label("Selection box").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.selection_box);
+		//std::shared_ptr<paint::font> column_font;	///< Renderer draws column texts with the font if it is not a nullptr.
+		properties.append("max_fit_content").label("Max fit content").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.max_fit_content;
+		properties.append("min_column_width").label("Min column width").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.min_column_width;
+		properties.append("suspension_width").label("Suspension width").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.suspension_width;
+		properties.append("text_margin").label("Text margin").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.text_margin;
+		properties.append("item_height_ex").label("Item height ex").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.item_height_ex;
+		properties.append("header_splitter_area_before").label("Header splitter area before").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.header_splitter_area_before;
+		properties.append("header_splitter_area_after").label("Header splitter area after").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.header_splitter_area_after;
+		properties.append("header_padding_top").label("Header padding top").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.header_padding_top;
+		properties.append("header_padding_bottom").label("Header padding bottom").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.header_padding_bottom;
+		//::nana::parameters::mouse_wheel mouse_wheel{}; ///< The number of lines/characters to scroll when vertical/horizontal mouse wheel is moved.
 	}
 
 
@@ -80,6 +91,17 @@ namespace ctrls
 		lst.scheme().item_selected = nana::to_color(properties.property("item_selected").as_string());
 		lst.scheme().item_highlighted = nana::to_color(properties.property("item_highlighted").as_string());
 		lst.scheme().selection_box = nana::to_color(properties.property("selection_box").as_string());
+		// column_font
+		lst.scheme().max_fit_content = properties.property("max_fit_content").as_uint();
+		lst.scheme().min_column_width = properties.property("min_column_width").as_uint();
+		lst.scheme().suspension_width = properties.property("suspension_width").as_uint();
+		lst.scheme().text_margin = properties.property("text_margin").as_uint();
+		lst.scheme().item_height_ex = properties.property("item_height_ex").as_uint();
+		lst.scheme().header_splitter_area_before = properties.property("header_splitter_area_before").as_uint();
+		lst.scheme().header_splitter_area_after = properties.property("header_splitter_area_after").as_uint();
+		lst.scheme().header_padding_top = properties.property("header_padding_top").as_uint();
+		lst.scheme().header_padding_bottom = properties.property("header_padding_bottom").as_uint();
+		// mouse_wheel
 		nana::API::refresh_window(lst);
 	}
 
@@ -119,6 +141,26 @@ namespace ctrls
 			cd->init.push_back(name + ".scheme().item_highlighted = nana::color(" + properties.property("item_highlighted").as_string() + ");");
 		if(properties.property("selection_box").as_string() != nana::to_string(def_scheme.selection_box))
 			cd->init.push_back(name + ".scheme().selection_box = nana::color(" + properties.property("selection_box").as_string() + ");");
+		// scheme::column_font
+		if(properties.property("max_fit_content").as_uint() != def_scheme.max_fit_content)
+			cd->init.push_back(name + ".scheme().max_fit_content = " + properties.property("max_fit_content").as_string() + ";");
+		if(properties.property("min_column_width").as_uint() != def_scheme.min_column_width)
+			cd->init.push_back(name + ".scheme().min_column_width = " + properties.property("min_column_width").as_string() + ";");
+		if(properties.property("suspension_width").as_uint() != def_scheme.suspension_width)
+			cd->init.push_back(name + ".scheme().suspension_width = " + properties.property("suspension_width").as_string() + ";");
+		if(properties.property("text_margin").as_uint() != def_scheme.text_margin)
+			cd->init.push_back(name + ".scheme().text_margin = " + properties.property("text_margin").as_string() + ";");
+		if(properties.property("item_height_ex").as_uint() != def_scheme.item_height_ex)
+			cd->init.push_back(name + ".scheme().item_height_ex = " + properties.property("item_height_ex").as_string() + ";");
+		if(properties.property("header_splitter_area_before").as_uint() != def_scheme.header_splitter_area_before)
+			cd->init.push_back(name + ".scheme().header_splitter_area_before = " + properties.property("header_splitter_area_before").as_string() + ";");
+		if(properties.property("header_splitter_area_after").as_uint() != def_scheme.header_splitter_area_after)
+			cd->init.push_back(name + ".scheme().header_splitter_area_after = " + properties.property("header_splitter_area_after").as_string() + ";");
+		if(properties.property("header_padding_top").as_uint() != def_scheme.header_padding_top)
+			cd->init.push_back(name + ".scheme().header_padding_top = " + properties.property("header_padding_top").as_string() + ";");
+		if(properties.property("header_padding_bottom").as_uint() != def_scheme.header_padding_bottom)
+			cd->init.push_back(name + ".scheme().header_padding_bottom = " + properties.property("header_padding_bottom").as_string() + ";");
+		// scheme::mouse_wheel
 
 		// columns - START
 		for(auto& i : items)

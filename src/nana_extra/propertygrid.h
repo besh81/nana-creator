@@ -85,101 +85,90 @@ namespace nana
 			public:
 				pgitem() = default;
 
-				pgitem(const std::string& label, const std::string& value = "")
+				pgitem(const std::string& label, const std::string& value = "")	///< Constructor
 					: label_(label), value_(value), def_(value)
 				{}
 
-				void init(window wd);
+				void init(window wd);							///< Initialize the inline controls (should not be used)
 
-				//Creates inline widget
-				//pgitem calls this method to create the widget
-				//position and size of widget can be ignored in this process
-				virtual void create(window wd) = 0;
-
-				//Activate inline widget
-				virtual void activate(essence_t* ess, const index_pair& idx)
+				virtual void activate(essence_t* ess, const index_pair& idx)	///< Activate inline widgets (should not be used)
 				{
 					ess_ = ess;
 					idx_ = idx;
 				}
 
-				virtual void label(const std::string& label)
+				virtual void label(const std::string& label)	///< Sets item label
 				{
 					label_ = label;
 				}
-				virtual std::string label() const
+				virtual std::string label() const				///< Gets item label
 				{
 					return label_;
 				}
-				virtual void value(const std::string& value)
+				virtual void value(const std::string& value)	///< Sets item value
 				{
 					if(value_ == value)
 						return;
 					value_ = value;
 					update();
 				}
-				virtual std::string value() const
+				virtual std::string value() const				///< Gets item value
 				{
 					return value_;
 				}
-				virtual void defvalue(const std::string& value)
+				virtual void defvalue(const std::string& value)	///< Sets item default value
 				{
 					if(def_ == value)
 						return;
 					def_ = value;
 					update();
 				}
-				virtual std::string defvalue() const
+				virtual std::string defvalue() const			///< Gets item default value
 				{
 					return def_;
 				}
-				virtual bool isdefault() const
+				virtual bool isdefault() const					///< Returns true if item value is equal to default value. False otherwise
 				{
 					return def_ == value_;
 				}
 
-				virtual void reset()
+				virtual void reset()							///< Resets item value to default
 				{
 					value(def_);
 				}
 
-				virtual unsigned size() const
+				virtual unsigned size() const					///< Returns the item (vertical) size
 				{
 					return size_;
 				}
 
-				virtual void typeface_changed(unsigned text_height)
+				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
 				{
 					size_ = text_height + 10;
 				}
 
-				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const;
+				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the item. Position and size of inline widgets should be set here
 
+				void update();		///< Update the item (refresh)
+				void scroll();		///< Scrolls the view to show this item
 
-				void update();
-				void scroll();
+				virtual void emit_event();			///< Emit property_changed event
 
-				//Emit event
-				virtual void emit_event();
-
-				virtual void enabled(bool state)
+				virtual void enabled(bool state)	///< Enables/disables the item
 				{
 					en_ = state;
 				}
-				virtual bool enabled()
+				virtual bool enabled()				///< Get the enables state of the item
 				{
 					return en_;
 				}
 
 			protected:
-				//Draw the label of the sub item
-				virtual void draw_label(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;
+				virtual void create(window wd) = 0; ///< Creates the inline widgets. Position and size of widgets can be ignored at this stage
 
-				//Draw the value of the sub item
-				virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;
-
-				//Draw the interaction box of the sub item
-				virtual void draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const;
+				virtual void draw_label(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the label of the item
+				virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the value of the item
+				virtual void draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const;	///< Draw the interaction box of the item
 
 				std::string		label_, value_, def_;
 				unsigned		size_{ 24 };
@@ -233,60 +222,43 @@ namespace nana
 				: public std::iterator<std::input_iterator_tag, item_proxy>
 			{
 			public:
-				item_proxy(essence_t*);
-				item_proxy(essence_t*, const index_pair&);
+				item_proxy(essence_t*);						///< Constructor
+				item_proxy(essence_t*, const index_pair&);	///< Constructor
 
-				bool empty() const;
+				bool empty() const;			///< Returns true if item is empty
 
-				index_pair pos() const;
+				index_pair pos() const;		///< Returns the position of this item
 
-				item_proxy& label(const std::string& label);
-				std::string label() const;
+				item_proxy& label(const std::string& label);	///< Sets item's label
+				std::string label() const;						///< Gets item's label
 
-				item_proxy& value(const std::string& value, bool emit = false);
-				std::string value() const;
+				item_proxy& value(const std::string& value, bool emit = false);	///< Sets item's value. If emit is set to true then a property_changed event is generated
+				std::string value() const;										///< Gets item's value
 
-				item_proxy& defvalue(const std::string& value);
-				std::string defvalue() const;
+				item_proxy& defvalue(const std::string& value);	///< Sets item's default value
+				std::string defvalue() const;					///< Gets item's default value
 
-				bool enabled();
-				void enabled(bool state);
+				bool enabled();				///< Get the enables state of the item
+				void enabled(bool state);	///< Enables/disables the item
 
-				/// Behavior of Iterator's value_type
+				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
 				bool operator==(const ::std::string& s) const;
 
-				/// Behavior of Iterator
+				// Behavior of Iterator
 				item_proxy& operator=(const item_proxy&);
-
-				/// Behavior of Iterator
 				item_proxy& operator++();
-
-				/// Behavior of Iterator
 				item_proxy	operator++(int);
-
-				/// Behavior of Iterator
 				item_proxy& operator*();
-
-				/// Behavior of Iterator
 				const item_proxy& operator*() const;
-
-				/// Behavior of Iterator
 				item_proxy* operator->();
-
-				/// Behavior of Iterator
 				const item_proxy* operator->() const;
-
-				/// Behavior of Iterator
 				bool operator==(const item_proxy&) const;
-
-				/// Behavior of Iterator
 				bool operator!=(const item_proxy&) const;
 
-				pgitem* _m_pgitem() const;
+				pgitem* _m_pgitem() const;	///< Internal use
 
 			private:
-				//Undocumented method
 				essence_t * _m_ess() const;
 			
 				pgitem& _m_property() const;
@@ -301,61 +273,43 @@ namespace nana
 			{
 			public:
 				cat_proxy() = default;
-				cat_proxy(essence_t*, std::size_t pos);
-				cat_proxy(essence_t*, category_t*);
+				cat_proxy(essence_t*, std::size_t pos);		///< Constructor
+				cat_proxy(essence_t*, category_t*);			///< Constructor
 
-				/// Appends one item at the end of this category
-				item_proxy append(pgitem_ptr p);
+				item_proxy append(pgitem_ptr p);	///< Appends passed item at the end of this category
 
-				cat_proxy& text(std::string);
-				std::string text() const;
+				cat_proxy& text(std::string);	///< Sets category text
+				std::string text() const;		///< Gets category text
 
-				/// Behavior of a container
+				// Behavior of a container
 				item_proxy begin() const;
 				item_proxy end() const;
 				item_proxy cbegin() const;
 				item_proxy cend() const;
 
-				item_proxy at(std::size_t pos) const;
-				item_proxy back() const;
+				item_proxy at(std::size_t pos) const;	///< Returns the item at the specified position
+				item_proxy back() const;				///< Returns the last item of this category
 
-				/// this cat position
-				std::size_t position() const;
+				std::size_t position() const;		///< Returns the position of this category
 
-				/// Returns the number of items
-				std::size_t size() const;
+				std::size_t size() const;			///< Returns the number of items
 
-				/// Behavior of Iterator
+				// Behavior of Iterator
 				cat_proxy& operator=(const cat_proxy&);
-
-				/// Behavior of Iterator
 				cat_proxy& operator++();
-
-				/// Behavior of Iterator
 				cat_proxy	operator++(int);
-
-				/// Behavior of Iterator
 				cat_proxy& operator*();
-
-				/// Behavior of Iterator
 				const cat_proxy& operator*() const;
-
-				/// Behavior of Iterator
 				cat_proxy* operator->();
-
-				/// Behavior of Iterator
 				const cat_proxy* operator->() const;
 
-				/// Behavior of Iterator
 				bool operator==(const cat_proxy&) const;
-
-				/// Behavior of Iterator
 				bool operator!=(const cat_proxy&) const;
 
 			private:
 				void _m_cat_by_pos();
 				void _m_update();
-			private:
+
 				essence_t*	ess_{ nullptr };
 				category_t*	cat_{ nullptr };
 				std::size_t	pos_{ 0 };  ///< Absolute position, not relative to display, and dont change during sort()
@@ -407,41 +361,37 @@ namespace nana
 		using pgitem_ptr = drawerbase::propertygrid::pgitem_ptr;
 
 		propertygrid() = default;
-		propertygrid(window, bool visible);
-		propertygrid(window, const rectangle& = {}, bool visible = true);
+		propertygrid(window, bool visible);									///< Constructor
+		propertygrid(window, const rectangle& = {}, bool visible = true);	///< Constructor
 
-		bool enabled() { return _en; }
-		void enabled(bool state);
+		bool enabled() { return _en; }		///< Get the enables state of the control
+		void enabled(bool state);			///< Enables/disables the control
 
-		void auto_draw(bool);										///< Set state: Redraw automatically after an operation
+		unsigned labels_min_width() const;					///< Gets the label column min width
+		propertygrid& labels_min_width(unsigned pixels);	///< Sets the label column min width
+		unsigned values_min_width() const;					///< Gets the value column min width
+		propertygrid& values_min_width(unsigned pixels);	///< Sets the value column min width
 
-		void scroll(const index_pair& pos, bool as_first = false);	/// Scrolls the view to the selected item
+		void auto_draw(bool);										///< Enables/disables automatic drawing
 
+		void scroll(const index_pair& pos, bool as_first = false);	///< Scrolls the view to the selected item
 
-		propertygrid& labels_width(unsigned pixels);
-		propertygrid& values_width(unsigned pixels);
-		unsigned labels_width() const;
-		unsigned values_width() const;
-		unsigned labels_auto_width(unsigned max = 3000);
-		unsigned values_auto_width(unsigned max = 3000);
+		cat_proxy append(std::string str);						///< Appends a new category to the end
+		cat_proxy insert(cat_proxy cat, ::std::string str);		///< Inser a new category before the specified one
 
+		cat_proxy at(std::size_t pos) const;			///< Returns the category at the specified position
+		std::size_t find(std::string) const;			///< Finds category with given name. Returns the category position if found or npos otherwise
 
-		cat_proxy append(std::string);					///< Appends a new category to the end
-		cat_proxy insert(cat_proxy, ::std::string);
+		item_proxy at(const index_pair& idx) const;		///< Returns an item by the specified absolute position
 
-		cat_proxy at(std::size_t pos) const;
-		std::size_t find(std::string) const;			///< Finds category with given name, returns npos if not found
+		void clear(std::size_t cat);					///< Removes all the items from the specified category
+		void clear();									///< Removes all the items from all categories
+		void erase(std::size_t cat);					///< Erases specified category
+		void erase();									///< Erases all categories
+		void erase(item_proxy ip);						///< Erases specified item
 
-		item_proxy at(const index_pair& idx) const;		/// Returns an item by the specified absolute position
-
-		void clear(std::size_t cat);					///<Removes all the items from the specified category
-		void clear();									///<Removes all the items from all categories
-		void erase(std::size_t cat);					///<Erases a category
-		void erase();									///<Erases all categories.
-		void erase(item_proxy);
-
-		std::size_t size_categ() const;					///<Get the number of categories
-		std::size_t size_item(std::size_t cat) const;	///<The number of items in category "cat"
+		std::size_t size_categ() const;					///< Get the number of categories
+		std::size_t size_item(std::size_t cat) const;	///< Get the number of items in the specified category
 
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;
