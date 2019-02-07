@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.17.0)
+ *	C++ code generated with Nana Creator (0.18.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -232,6 +232,7 @@ private:
 		// listbox1
 		listbox1.create(page2);
 		page2_place["_field_"] << listbox1;
+		listbox1.scheme().header_bgcolor = nana::color(255,185,185);
 		listbox1.append_header("Col1", 70);
 		listbox1.append_header("Col2");
 		// treebox1

@@ -28,9 +28,9 @@ namespace ctrls
 		// form IS ALWAYS mainclass
 		properties.append("mainclass") = true;
 		// project
-		properties.append("filename").label("File Name").category(CAT_CPPCODE).type(pg_type::string) = name;
-		properties.append("rel_path").label("Relative Path").category(CAT_CPPCODE).type(pg_type::check) = true;
-		properties.append("work_dir").label("Working Dir").category(CAT_CPPCODE).type(pg_type::folder).enabled("rel_path", true) = "";
+		properties.append("filename").label("File name").category(CAT_CPPCODE).type(pg_type::string) = name;
+		properties.append("rel_path").label("Relative path").category(CAT_CPPCODE).type(pg_type::check) = true;
+		properties.append("work_dir").label("Working dir").category(CAT_CPPCODE).type(pg_type::folder).enabled("rel_path", true) = "";
 
 		ctrl::init(&frm, ispanel ? CTRL_PANEL : CTRL_FORM, name, false);
 
@@ -42,14 +42,14 @@ namespace ctrls
 		// appearance
 		properties.remove("bgcolor");
 		properties.remove("fgcolor");
-		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->bgcolor(), false);
-		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->fgcolor(), false);
+		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->bgcolor());
+		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color) = nana::to_string(nanawdg->fgcolor());
 		if(!ispanel)
 		{
 			properties.append("decoration").label("Decoration").category(CAT_APPEARANCE).type(pg_type::check) = true;
 			properties.append("taskbar").label("Taskbar").category(CAT_APPEARANCE).type(pg_type::check) = true;
 			properties.append("floating").label("Floating").category(CAT_APPEARANCE).type(pg_type::check) = false;
-			properties.append("no_activate").label("NoActivate").category(CAT_APPEARANCE).type(pg_type::check) = false;
+			properties.append("no_activate").label("No activate").category(CAT_APPEARANCE).type(pg_type::check) = false;
 			properties.append("min").label("Min").category(CAT_APPEARANCE).type(pg_type::check) = false;
 			properties.append("max").label("Max").category(CAT_APPEARANCE).type(pg_type::check) = false;
 			properties.append("sizable").label("Sizable").category(CAT_APPEARANCE).type(pg_type::check) = false;

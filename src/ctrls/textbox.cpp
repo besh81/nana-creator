@@ -28,12 +28,12 @@ namespace ctrls
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("tip_string").label("Tip").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("editable").label("Editable").category(CAT_COMMON).type(pg_type::check) = txt.editable();
-		properties.append("line_wrapped").label("Line Wrapped").category(CAT_COMMON).type(pg_type::check) = txt.line_wrapped();
-		properties.append("multi_lines").label("Multiple Lines").category(CAT_COMMON).type(pg_type::check) = txt.multi_lines();
-		properties.append("select_behavior").label("Select Behavior").category(CAT_COMMON).type(pg_type::check) = DEF_SELECT_BEHAVIOR;
-		properties.append("undo_length").label("Undo Length").category(CAT_COMMON).type(pg_type::string_uint) = DEF_UNDO_LENGHT;
+		properties.append("line_wrapped").label("Line wrapped").category(CAT_COMMON).type(pg_type::check) = txt.line_wrapped();
+		properties.append("multi_lines").label("Multiple lines").category(CAT_COMMON).type(pg_type::check) = txt.multi_lines();
+		properties.append("select_behavior").label("Select behavior").category(CAT_COMMON).type(pg_type::check) = DEF_SELECT_BEHAVIOR;
+		properties.append("undo_length").label("Undo length").category(CAT_COMMON).type(pg_type::string_uint) = DEF_UNDO_LENGHT;
 		// appearance
-		properties.append("halign").label("Text Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
+		properties.append("halign").label("Text alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
 		// layout
 		// ...
 	}

@@ -70,11 +70,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
-    <OutDir>../bin/</OutDir>
+    <OutDir>$(ProjectDir)\bin\</OutDir>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>../bin/</OutDir>
+    <OutDir>$(ProjectDir)\bin\</OutDir>
     <IntDir>$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -183,7 +183,7 @@
     <ClCompile Include="..\..\src\nana_extra\propertygrid.cpp" />
     <ClCompile Include="..\..\src\new_project.cpp" />
     <ClCompile Include="..\..\src\objectspanel.cpp" />
-    <ClCompile Include="..\..\src\pg_items.cpp" />
+    <ClCompile Include="..\..\src\pgitems_creator.cpp" />
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
     <ClCompile Include="..\..\src\resizablecanvas.cpp" />
@@ -235,7 +235,7 @@
     <ClInclude Include="..\..\src\nana_extra\propertygrid.h" />
     <ClInclude Include="..\..\src\new_project.h" />
     <ClInclude Include="..\..\src\objectspanel.h" />
-    <ClInclude Include="..\..\src\pg_items.h" />
+    <ClInclude Include="..\..\src\pgitems_creator.h" />
     <ClInclude Include="..\..\src\propertiespanel.h" />
     <ClInclude Include="..\..\src\propertygrid_helper.h" />
     <ClInclude Include="..\..\src\resizablecanvas.h" />

@@ -36,12 +36,7 @@ inifile::inifile()
 	}
 
 	if(create)
-	{
-		// set default values
-		_new_prj_dir = "";
-
 		save();
-	}
 }
 
 

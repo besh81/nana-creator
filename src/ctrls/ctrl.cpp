@@ -63,8 +63,8 @@ namespace ctrls
 		// common
 		properties.append("enabled").label("Enabled").category(CAT_COMMON).type(pg_type::check) = nanawdg->enabled();
 		// appearance
-		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->bgcolor(), false);
-		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->fgcolor(), false);
+		properties.append("bgcolor").label("Background").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->bgcolor());
+		properties.append("fgcolor").label("Foreground").category(CAT_APPEARANCE).type(pg_type::color_inherited) = nana::to_string(nanawdg->fgcolor());
 		// font
 		if(_defaults.use_font)
 		{

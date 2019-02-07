@@ -77,6 +77,12 @@ std::string get_working_dir();
 
 
 //---------------------------------------------
+// set working directory
+//---------------------------------------------
+bool set_working_dir(const std::string& path);
+
+
+//---------------------------------------------
 // check file existance
 //---------------------------------------------
 bool file_exists(const std::string& name);

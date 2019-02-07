@@ -9,6 +9,7 @@ TODO.txt
 *.user
 *.userosscache
 *.sln.docstates
+*.VC.db
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -237,15 +238,16 @@ _Pvt_Extensions
 
 # FAKE - F# Make
 .fake/
-*.VC.db
-wdir/*.h
-wdir/*.ncp
-wdir/*.exe
-wdir/icons/*.db
-wdir/nc.ini
-docs/img/Thumbs.db
+
 
 # CodeBlocks files
 *.layout
 *.cscope_file_list
 *.depend
+
+# nana-creator
+wdir/*.h
+wdir/*.ncp
+wdir/*.exe
+wdir/icons/*.db
+wdir/nc.ini

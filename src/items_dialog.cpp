@@ -9,7 +9,6 @@
 #include "items_dialog.h"
 #include "nana_extra/color_helper.h"
 #include "nana_extra/pgitems.h"
-#include "pg_items.h"
 #include "propertygrid_helper.h"
 #include "style.h"
 #include "ctrls/combox.h"

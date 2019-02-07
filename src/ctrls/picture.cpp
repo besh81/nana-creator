@@ -29,12 +29,12 @@ namespace ctrls
 		properties.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
 		// appearance
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = pct.transparent();
-		properties.append("halign").label("Horizontal Alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
-		properties.append("valign").label("Vertical Alignment").category(CAT_APPEARANCE).type(pg_type::valign) = static_cast<int>(nana::align_v::top);
+		properties.append("halign").label("Horizontal alignment").category(CAT_APPEARANCE).type(pg_type::halign) = static_cast<int>(nana::align::left);
+		properties.append("valign").label("Vertical alignment").category(CAT_APPEARANCE).type(pg_type::valign) = static_cast<int>(nana::align_v::top);
 		properties.append("stretchable").label("Stretchable").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		properties.append("gradualbg").label("Gradual background").category(CAT_APPEARANCE).type(pg_type::check) = false;
-		properties.append("gbg_from").label("From color").category(CAT_APPEARANCE).type(pg_type::color).enabled("gradualbg", true) = nana::to_string(nana::colors::white, false);
-		properties.append("gbg_to").label("To color").category(CAT_APPEARANCE).type(pg_type::color).enabled("gradualbg", true) = nana::to_string(nana::colors::black, false);
+		properties.append("gbg_from").label("From color").category(CAT_APPEARANCE).type(pg_type::color).enabled("gradualbg", true) = nana::to_string(nana::colors::white);
+		properties.append("gbg_to").label("To color").category(CAT_APPEARANCE).type(pg_type::color).enabled("gradualbg", true) = nana::to_string(nana::colors::black);
 		properties.append("gbg_dir").label("Direction").category(CAT_APPEARANCE).type(pg_type::layout).enabled("gradualbg", true) = 0;
 		// layout
 		// ...

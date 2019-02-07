@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.17.1"
+#define CREATOR_VERSION			"0.18.0"
 
 
 
@@ -71,6 +71,7 @@
 #define CAT_APPEARANCE			"Appearance"
 #define CAT_LAYOUT				"Layout"
 #define CAT_FONT				"Font"
+#define CAT_SCHEME				"Scheme"
 
 
 // choices

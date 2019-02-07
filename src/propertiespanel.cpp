@@ -7,7 +7,6 @@
 
 #include "propertiespanel.h"
 #include "ctrls/panel.h"
-#include "pg_items.h"
 #include "propertygrid_helper.h"
 #include "imagemanager.h"
 #include "lock_guard.h"

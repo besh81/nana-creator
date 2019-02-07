@@ -22,18 +22,12 @@ void new_project::init()
 {
 	// type list
 	auto cat = type_lst.at(0);
-	cat.append(CTRL_FORM).select(true).icon(nana::paint::image(g_img_mgr.path(CTRL_FORM)));
+	cat.append(CTRL_FORM).icon(nana::paint::image(g_img_mgr.path(CTRL_FORM)));
 	cat.append(CTRL_PANEL).icon(nana::paint::image(g_img_mgr.path(CTRL_PANEL)));
 
 
 	// folder textbox
-	folder_txt.caption(equalize_path(g_inifile.new_project_dir(),
-#ifdef NANA_WINDOWS
-		'/', '\\'
-#else
-		'\\', '/'
-#endif //NANA_WINDOWS
-	));
+	folder_txt.caption(equalize_path(g_inifile.new_project_dir()));
 
 
 	//------------------
@@ -61,13 +55,7 @@ void new_project::init()
 	// folder button
 	folder_btn.events().click([this]()
 	{
-		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption(),
-#ifdef NANA_WINDOWS
-			'/', '\\'
-#else
-			'\\', '/'
-#endif //NANA_WINDOWS
-		));
+		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption()));
 
 		auto path = folder_picker.show();
 		if(path)
@@ -75,7 +63,7 @@ void new_project::init()
 			folder_txt.caption(path.value().string());
 
 			// save new_project folder
-			auto path = get_dir_path(equalize_path(folder_txt.caption()));
+			auto path = equalize_path(folder_txt.caption());
 			if(path != g_inifile.new_project_dir())
 				g_inifile.new_project_dir(path, true);
 		}
@@ -141,5 +129,8 @@ void new_project::init()
 		_retval = nana::msgbox::pick_cancel;
 		nana::API::close_window(handle());
 	});
+
+	// select first item
+	cat.at(0).select(true, true);
 }
 

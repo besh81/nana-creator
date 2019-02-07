@@ -906,7 +906,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 			// deserialize attributes
 			for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
-				item.property(i->name()) = i->value();
+				item.property(i->name()).value(i->value());
 
 			continue;
 		}
@@ -942,7 +942,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 		// deserialize attributes
 		for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
-			node->value->properties.property(i->name()) = i->value();
+			node->value->properties.property(i->name()).value(i->value());
 
 		// align control name
 		if(ctrl_name_changed)

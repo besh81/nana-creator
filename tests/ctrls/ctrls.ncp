@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.17.0">
+<nana-creator version="0.18.0">
 	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="C:\Users\wk1\Documents\Documenti Personali\Projects\nana-creator\wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" width="640" height="500" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
 			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
@@ -55,7 +55,7 @@
 							<datechooser type="datechooser" name="datechooser1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1%" />
 						</page>
 						<page type="page" name="page2" enabled="true" bgcolor="212,208,20" fgcolor="0,0,255" caption="page" image="" layout="1" margin="5" gap="2">
-							<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" columns="" checkable="false" single_selection="false" sortable="true" show_header="true">
+							<listbox type="listbox" name="listbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" columns="" checkable="false" single_selection="false" sortable="true" show_header="true" header_bgcolor="255,185,185" header_fgcolor="0,0,0" header_grabbed="139,214,246" header_floated="186,187,188" item_selected="204,232,255" item_highlighted="229,243,255" selection_box="51,153,255">
 								<item type="column" key="n1" owner="" text="Col1" width="70" />
 								<item type="column" key="n2" owner="" text="Col2" width="-1" />
 							</listbox>

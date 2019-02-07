@@ -1,7 +1,7 @@
 /*
  *		nana::pgitems Implementation
  *
- *      Nana C++ Library - Creator
+ *      part of Nana Creator (https://github.com/besh81/nana-creator)
  *      Author: besh81
  */
 
@@ -12,7 +12,6 @@
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/combox.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
-#include <nana/gui/widgets/spinbox.hpp>
 #include "propertygrid.h"
 
 
@@ -37,7 +36,6 @@ namespace nana
 		{}
 
 		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
 
 		virtual void enabled(bool state) override;
 
@@ -49,9 +47,9 @@ namespace nana
 	protected:
 		virtual void create(window wd) override;
 
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+		virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const override;
 
-		mutable ::nana::textbox	txt_;
+		mutable nana::textbox	txt_;
 	};
 
 
@@ -117,7 +115,6 @@ namespace nana
 		{}
 
 		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
 
 		virtual void enabled(bool state) override;
 
@@ -125,16 +122,16 @@ namespace nana
 		virtual void set_button_click(std::function<void(const nana::arg_click&)> f);
 
 		virtual void editable(bool editable);
-		virtual bool editable();
+		virtual bool editable() const;
 
 	protected:
 		virtual void create(window wd) override;
 
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+		virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const override;
 
 		std::string				btn_label_;
-		mutable ::nana::textbox	txt_;
-		mutable ::nana::button	btn_;
+		mutable nana::textbox	txt_;
+		mutable nana::button	btn_;
 	};
 
 
@@ -150,7 +147,6 @@ namespace nana
 		{}
 
 		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
 
 		virtual void enabled(bool state) override;
 
@@ -162,9 +158,9 @@ namespace nana
 	protected:
 		virtual void create(window wd) override;
 
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+		virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const override;
 
-		mutable ::nana::combox	cmb_;
+		mutable nana::combox	cmb_;
 	};
 
 
@@ -176,55 +172,28 @@ namespace nana
 		pg_check() = default;
 
 		pg_check(const std::string& label, bool value)
-			: pgitem(label)
-		{
-			value_ = value ? "true" : "false";
-		}
-
-		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
-
-		virtual void enabled(bool state) override;
-
-		virtual void check(bool value);
-		virtual bool checked() const;
-
-	protected:
-		virtual void create(window wd) override;
-
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
-
-		mutable ::nana::checkbox	chk_;
-	};
-
-
-	/// class pg_spin
-	class pg_spin
-		: public pgitem
-	{
-	public:
-		pg_spin() = default;
-
-		pg_spin(const std::string& label, const std::string& value)
-			: pgitem(label, value)
+			: pgitem(label, value ? "true" : "false")
 		{}
 
 		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
 
 		virtual void enabled(bool state) override;
 
-		virtual void value(int value);
-		virtual int to_int() const;
-
-		virtual void range(int min, int max, int step);
+		virtual void check(bool value)
+		{
+			pg_check::value(value ? "true" : "false");
+		}
+		virtual bool checked() const
+		{
+			return pgitem::value() == "true" ? true : false;
+		}
 
 	protected:
 		virtual void create(window wd) override;
 
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+		virtual void draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const override;
 
-		mutable ::nana::spinbox	spn_;
+		mutable nana::checkbox	chk_;
 	};
 
 
@@ -235,31 +204,40 @@ namespace nana
 	public:
 		pg_color() = default;
 
-		pg_color(const std::string& label, const std::string& value, bool inherited = false);
+		pg_color(const std::string& label, const std::string& value, bool showinherited = false)
+			: pgitem(label, value), show_inherited_(showinherited)
+		{}
 
 		virtual void value(const std::string& value) override;
-		virtual std::string value() const override;
 
 		virtual void enabled(bool state) override;
 
-		virtual void value(::nana::color value);
-		virtual ::nana::color to_color() const;
+		virtual void value(nana::color value);
+		virtual nana::color to_color() const
+		{
+			return color_;
+		}
 
 		virtual void inherited(bool value);
-		virtual bool inherited() const;
+		virtual bool inherited() const
+		{
+			return inherited_;
+		}
 
 		virtual unsigned size() const override;
 
 	protected:
 		virtual void create(window wd) override;
 
-		virtual bool draw_value(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const override;
+		virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const override;
 
-		mutable ::nana::textbox		txt_;
-		mutable ::nana::checkbox	chk_;
-		::nana::color	color_;
-		bool			inherited_{ false };
-		bool			inherited_value_{ false };
+		mutable nana::textbox	colorbox_;
+		mutable nana::textbox	rgb_[3];
+		bool		expand_{ false };
+		bool		show_inherited_{ false };
+
+		nana::color	color_;
+		bool		inherited_{ false };
 	};
 
 }//end namespace nana
