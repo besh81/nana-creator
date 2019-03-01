@@ -31,9 +31,10 @@
 #define TB_PASTE				14
 
 
-extern guimanager		g_gui_mgr;
-extern inifile			g_inifile;
-extern std::string		prj_name;
+guimanager*			p_gui_mgr;	// manage all the gui elements
+
+
+extern inifile		g_inifile;
 
 
 void creator::enableGUI(bool state, bool new_load)
@@ -74,7 +75,7 @@ bool creator::load_xml(const std::string& filename)
 	}
 
 	// deserialize the XML structure
-	return g_gui_mgr.deserialize(&root);
+	return p_gui_mgr->deserialize(&root);
 }
 
 
@@ -86,7 +87,7 @@ bool creator::save_xml(const std::string& filename)
 	pugi::xml_node root = doc.append_child(NODE_ROOT);
 	root.append_attribute("version") = CREATOR_VERSION;
 
-	g_gui_mgr.serialize(&root);
+	p_gui_mgr->serialize(&root);
 
 	//doc.print(std::cout); //TEMP debug
 	return doc.save_file(filename.c_str());
@@ -96,12 +97,12 @@ bool creator::save_xml(const std::string& filename)
 bool creator::generate_cpp()
 {
 	std::string path;
-	auto tpos = prj_name.find_last_of("\\/");
-	if(tpos != prj_name.npos)
-		path = prj_name.substr(0, tpos);
+	auto tpos = _prj_name.find_last_of("\\/");
+	if(tpos != _prj_name.npos)
+		path = _prj_name.substr(0, tpos);
 
 	codegenerator cpp;
-	cpp.generate(handle(), g_gui_mgr.get_root()->child, path);
+	cpp.generate(handle(), p_gui_mgr->get_root()->child, path);
 	cpp.print(std::cout);
 	return true;
 }
@@ -117,7 +118,7 @@ void creator::_init_ctrls()
 		if(arg.button == TB_NEW) // new project
 		{
 			// confirmation message
-			if(prj_name != "")
+			if(_prj_name != "")
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -126,29 +127,29 @@ void creator::_init_ctrls()
 				if(ret == nana::msgbox::pick_cancel)
 					return;
 				else if(ret == nana::msgbox::pick_yes)
-					save_xml(prj_name);
+					save_xml(_prj_name);
 			}
 
-			g_gui_mgr.clear();
-			prj_name = "";
+			p_gui_mgr->clear();
+			_prj_name = "";
 
 			new_project dlg(*this);
 			dlg.modality();
 
 			if(dlg.return_val() == nana::msgbox::pick_ok)
 			{
-				prj_name = dlg.get_filename();
+				_prj_name = dlg.get_filename();
 
-				g_gui_mgr.new_project(dlg.get_ctrl_type(), dlg.get_projectname());
+				p_gui_mgr->new_project(dlg.get_ctrl_type(), dlg.get_projectname());
 				
 				// crea file di progetto
-				save_xml(prj_name);
+				save_xml(_prj_name);
 			}
 		}
 		else if(arg.button == TB_LOAD) // load project
 		{
 			// confirmation message
-			if(prj_name != "")
+			if(_prj_name != "")
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -157,11 +158,11 @@ void creator::_init_ctrls()
 				if(ret == nana::msgbox::pick_cancel)
 					return;
 				else if(ret == nana::msgbox::pick_yes)
-					save_xml(prj_name);
+					save_xml(_prj_name);
 			}
 
-			g_gui_mgr.clear();
-			prj_name = "";
+			p_gui_mgr->clear();
+			_prj_name = "";
 
 			nana::filebox fb(*this, true);
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
@@ -182,63 +183,63 @@ void creator::_init_ctrls()
 				if(path != g_inifile.load_project_dir())
 					g_inifile.load_project_dir(path, true);
 
-				prj_name = fb.file();
-				if(!load_xml(prj_name))
-					prj_name = "";
+				_prj_name = fb.file();
+				if(!load_xml(_prj_name))
+					_prj_name = "";
 			}
 		}
 		else if(arg.button == TB_SAVE) // save project
 		{
-			if(prj_name == "")
+			if(_prj_name == "")
 				return;
 
-			save_xml(prj_name);
+			save_xml(_prj_name);
 		}
 		else if(arg.button == TB_SAVE_AS) // save project as
 		{
-			if(prj_name == "")
+			if(_prj_name == "")
 				return;
 
 			nana::filebox fb(*this, false);
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
-			fb.init_file(prj_name);
+			fb.init_file(_prj_name);
 
 			if(fb())
 			{
-				prj_name = fb.file();
-				save_xml(prj_name);
+				_prj_name = fb.file();
+				save_xml(_prj_name);
 			}
 		}
 		else if(arg.button == TB_GENERATE) // generate code
 		{
-			if(prj_name == "")
+			if(_prj_name == "")
 				return;
 
 			generate_cpp();
 		}
 		else if(arg.button == TB_DELETE) // delete current selection
 		{
-			g_gui_mgr.deleteselected();
+			p_gui_mgr->deleteselected();
 		}
 		else if(arg.button == TB_UP) // move up current selection
 		{
-			g_gui_mgr.moveupselected();
+			p_gui_mgr->moveupselected();
 		}
 		else if(arg.button == TB_DOWN) // move down current selection
 		{
-			g_gui_mgr.movedownselected();
+			p_gui_mgr->movedownselected();
 		}
 		else if(arg.button == TB_CUT) // cut current selection
 		{
-			g_gui_mgr.cutselected();
+			p_gui_mgr->cutselected();
 		}
 		else if(arg.button == TB_COPY) // copy current selection
 		{
-			g_gui_mgr.copyselected();
+			p_gui_mgr->copyselected();
 		}
 		else if(arg.button == TB_PASTE) // paste into/after current selection
 		{
-			g_gui_mgr.pasteselected();
+			p_gui_mgr->pasteselected();
 		}
 	});
 
@@ -260,12 +261,13 @@ void creator::_init_ctrls()
 
 	_place.collocate();
 
-	g_gui_mgr.root_wd(*this);
-	g_gui_mgr.init(this, &_properties, &_assets, &_objects, &_canvas, &_statusbar);
+	p_gui_mgr = new guimanager(*this);
+	p_gui_mgr->init(this, &_properties, &_assets, &_objects, &_canvas, &_statusbar);
 }
 
 
 void creator::_destroy_ctrls()
 {
-	g_gui_mgr.clear();
+	p_gui_mgr->clear();
+	delete p_gui_mgr;
 }

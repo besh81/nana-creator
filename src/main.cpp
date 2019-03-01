@@ -6,18 +6,16 @@
 #ifdef NANA_WINDOWS
 #include <windows.h>
 #endif //NANA_WINDOWS
-#include "guimanager.h"
+#include "config.h"
 #include "imagemanager.h"
 #include "filemanager.h"
 #include "inifile.h"
 #include "creator.h"
 
 
-guimanager		g_gui_mgr;	// manage all the gui elements
 imagemanager	g_img_mgr;
 filemanager		g_file_mgr;	// manage absolute and relative path
 inifile			g_inifile;
-std::string		prj_name;
 
 
 #ifdef NANA_WINDOWS

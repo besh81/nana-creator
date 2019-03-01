@@ -37,7 +37,8 @@
 
 
 //guimanager
-guimanager::guimanager()
+guimanager::guimanager(nana::window wd)
+	: _root_wd(wd)
 {
 	// context menu
 	// 0. move up
@@ -140,7 +141,8 @@ void guimanager::clear()
 		}
 	}
 
-	_cut_copy_doc.reset();
+	if(!_cut_copy_doc.empty())
+		_cut_copy_doc.reset();
 
 	_ctrls.clear();
 	_op->clear();
@@ -580,7 +582,8 @@ void guimanager::copyselected(bool cut)
 		return;
 	}
 
-	_cut_copy_doc.reset();
+	if(!_cut_copy_doc.empty())
+		_cut_copy_doc.reset();
 	_copied = !cut;
 
 	// append root node
@@ -637,8 +640,9 @@ void guimanager::pasteselected()
 	_update_op();
 	enableGUI(true, true);
 
-	if(!_copied && paste_ok)
-		_cut_copy_doc.reset(); // cut items can be paste only once
+	if(!_copied && paste_ok)  // cut items can be paste only once
+		if(!_cut_copy_doc.empty())
+			_cut_copy_doc.reset();
 
 	// select previous ctrl
 	left_click_ctrl(prev_selected->value);

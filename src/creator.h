@@ -93,6 +93,7 @@ private:
 	void _init_ctrls();
 	void _destroy_ctrls();
 
+	std::string			_prj_name;
 
 	resizablecanvas		_canvas{ *this };
 

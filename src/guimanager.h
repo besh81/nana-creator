@@ -49,13 +49,9 @@ enum class insert_mode
 class guimanager
 {
 public:
-	guimanager();
+	guimanager(nana::window wd);
 
 
-	void root_wd(nana::window wd)
-	{
-		_root_wd = wd;
-	}
 	void init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb);
 	void clear();
 
