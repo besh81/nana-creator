@@ -43,11 +43,14 @@ namespace nana
 
 				std::size_t count() const
 				{
-					return 2;
+					return 3;
 				}
 
 				unsigned col_width_adj(unsigned col, unsigned width) const
 				{
+					if(col == 2) // ibox
+						return min_width_[2]; // ibox has fixed width
+
 					unsigned adj = 0;
 					if(width > width_())
 						adj = (width - width_()) / 2;
@@ -58,7 +61,7 @@ namespace nana
 					if(col == 1) // values
 					{
 						if(width > width_())
-							return width - (min_width_[0] + adj) - IBOX_WIDTH;
+							return width - (min_width_[0] + adj) - min_width_[2];
 						return min_width_[1];
 					}
 
@@ -68,10 +71,10 @@ namespace nana
 			private:
 				unsigned width_() const
 				{
-					return min_width_[0] + min_width_[1] + IBOX_WIDTH;
+					return min_width_[0] + min_width_[1] + min_width_[2];
 				}
 
-				unsigned min_width_[2]{ 100, 100 };
+				unsigned min_width_[3]{ 100, 100, IBOX_WIDTH };
 			};
 
 
@@ -604,7 +607,7 @@ namespace nana
 				create(wd);
 			}
 
-			void pgitem::draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const
+			void pgitem::draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned valuew, unsigned iboxw, const int txtoff, color bgcolor, color fgcolor) const
 			{
 				// background
 				graph->rectangle(area, true, bgcolor);
@@ -627,10 +630,13 @@ namespace nana
 				// draw interaction-box
 				if(iboxw)
 				{
+					API::show_window(ibox_, true);
 					area.x += valuew;
 					area.width = iboxw;
 					draw_ibox(graph, area, bgcolor, fgcolor);
 				}
+				else
+					API::show_window(ibox_, false);
 			}
 
 			void pgitem::draw_label(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -801,6 +807,11 @@ namespace nana
 
 					auto labels_width = essence_->columns.col_width_adj(0, rect.width);
 					auto values_width = essence_->columns.col_width_adj(1, rect.width);
+					auto ibox_width = essence_->columns.col_width_adj(2, rect.width);
+
+					// adjust right margin
+					if(ibox_width == 0)
+						values_width--;
 
 					es_lister & lister = essence_->lister;
 
@@ -863,7 +874,7 @@ namespace nana
 									API::show_window(*inline_wdg, true);
 
 									item_property->activate(essence_, index_pair{ cat, item });
-									item_property->draw(essence_->graph, area, labels_width, values_width, IBOX_WIDTH, txtoff, bgcolor, fgcolor);
+									item_property->draw(essence_->graph, area, labels_width, values_width, ibox_width, txtoff, bgcolor, fgcolor);
 								}
 								else
 								{
@@ -1206,6 +1217,10 @@ namespace nana
 				_m_ess()->update();
 				return *this;
 			}
+			item_proxy& item_proxy::operator=(const std::string& new_value_string )
+			{
+			    return value( new_value_string, false );
+			}
 			std::string item_proxy::value() const
 			{
 				return _m_property().value();
@@ -1226,9 +1241,22 @@ namespace nana
 			{
 				return _m_property().enabled();
 			}
-			void item_proxy::enabled(bool state)
+			item_proxy& item_proxy::enabled(bool state)
 			{
 				_m_property().enabled(state);
+				return *this;
+			}
+
+            item_proxy& item_proxy::tooltip( const std::string& help_text )
+			{
+				_m_property().tooltip( help_text );
+				return *this;
+			}
+
+			item_proxy& item_proxy::set( const std::vector< std::string >& vs )
+			{
+			    _m_property().set( vs );
+			    return *this;
 			}
 
 			auto item_proxy::_m_property() const -> pgitem&
@@ -1297,6 +1325,12 @@ namespace nana
 				return cat_->text;
 			}
 
+			void cat_proxy::expand( bool exp )
+			{
+			    cat_->expand = exp;
+			}
+
+
 			//Behavior of a container
 			item_proxy cat_proxy::begin() const
 			{
@@ -1342,6 +1376,18 @@ namespace nana
 			std::size_t cat_proxy::size() const
 			{
 				return cat_->items.size();
+			}
+
+			item_proxy cat_proxy::find(const std::string& prop_name)
+			{
+				size_t pos = 0;
+				for( auto& i : *this )
+				{
+					if( i.label() == prop_name )
+						break;
+					pos++;
+				}
+				return item_proxy(ess_, index_pair(pos_, pos));
 			}
 
 			// Behavior of Iterator
@@ -1486,6 +1532,17 @@ namespace nana
 		return *this;
 	}
 
+	void propertygrid::ibox_show(bool state)
+	{
+		auto & ess = _m_ess();
+		ess.columns.set_min_width(2, state ? IBOX_WIDTH : 0);
+		ess.update();
+	}
+	bool propertygrid::ibox_show() const
+	{
+		return _m_ess().columns.get_min_width(2) == 0 ? false : true;
+	}
+
 	void propertygrid::auto_draw(bool ad)
 	{
 		_m_ess().set_auto_draw(ad);
@@ -1541,6 +1598,18 @@ namespace nana
 				return pos;
 		}
 		return npos;
+	}
+
+	propertygrid::item_proxy propertygrid::find(const std::string& catName, const std::string& propName ) const
+	{
+		try
+		{
+			return at(find(catName)).find(propName);
+		}
+		catch(std::out_of_range&)
+		{
+			throw std::runtime_error( "Cannot find property " + propName + " in category " + catName );
+		}
 	}
 
 	propertygrid::item_proxy propertygrid::at(const index_pair& idx) const

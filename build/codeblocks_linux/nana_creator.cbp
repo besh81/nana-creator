@@ -133,16 +133,14 @@
 		<Unit filename="../../src/new_project.h" />
 		<Unit filename="../../src/objectspanel.cpp" />
 		<Unit filename="../../src/objectspanel.h" />
-		<Unit filename="../../src/pg_items.cpp" />
-		<Unit filename="../../src/pg_items.h" />
+		<Unit filename="../../src/pgitems_creator.cpp" />
+		<Unit filename="../../src/pgitems_creator.h" />
 		<Unit filename="../../src/propertiespanel.cpp" />
 		<Unit filename="../../src/propertiespanel.h" />
 		<Unit filename="../../src/propertygrid_helper.cpp" />
 		<Unit filename="../../src/propertygrid_helper.h" />
 		<Unit filename="../../src/resizablecanvas.cpp" />
 		<Unit filename="../../src/resizablecanvas.h" />
-		<Unit filename="../../src/statusbar.cpp" />
-		<Unit filename="../../src/statusbar.h" />
 		<Unit filename="../../src/style.h" />
 		<Unit filename="../../src/tree.h" />
 		<Extensions>

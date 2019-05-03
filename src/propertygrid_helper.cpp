@@ -34,9 +34,9 @@ namespace propertygrid_helper
 			}
 			else if(prop.type() == ctrls::pg_type::string_uint || prop.type() == ctrls::pg_type::string_uint_0_100 || prop.type() == ctrls::pg_type::string_uint_1_100)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string_uint(prop.label(), prop.value())));
+				auto psui = new nana::pg_string_uint(prop.label(), prop.value());
+				ip = cat.append(nana::propertygrid::pgitem_ptr(psui));
 
-				auto psui = static_cast<nana::pg_string_uint*>(ip._m_pgitem());
 				if(prop.type() == ctrls::pg_type::string_uint_0_100)
 					psui->range(0, 100);
 				else if(prop.type() == ctrls::pg_type::string_uint_1_100)
@@ -61,8 +61,8 @@ namespace propertygrid_helper
 			else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
 				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice(prop.label())));
-				auto pgc = static_cast<nana::pg_choice*>(ip._m_pgitem());
+				auto pgc = new nana::pg_choice(prop.label());
+				ip = cat.append(nana::propertygrid::pgitem_ptr(pgc));
 
 				if(prop.type() == ctrls::pg_type::halign)
 				{

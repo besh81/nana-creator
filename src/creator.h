@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.17.0)
+ *	C++ code generated with Nana Creator (0.19.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -14,13 +14,13 @@
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
 #include <nana/gui/widgets/toolbar.hpp>
+#include <nana/gui/widgets/label.hpp>
 
 //<*includes
 #include "resizablecanvas.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
-#include "statusbar.h"
 //*>
 
 
@@ -70,6 +70,10 @@ private:
 		_tb.append("Cut current selection", nana::paint::image("icons/cut.png"));
 		_tb.append("Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append("Paste into/after current selection", nana::paint::image("icons/paste.png"));
+		// _sb
+		_sb.create(*this);
+		_place["statusbar"] << _sb;
+		_sb.caption("");
 
 		_place.collocate();
 	}
@@ -78,6 +82,7 @@ private:
 protected:
 	nana::place _place{ *this };
 	nana::toolbar _tb;
+	nana::label _sb;
 
 
 	//<*declarations
@@ -88,20 +93,19 @@ public:
 
 	bool generate_cpp();
 
+	void sb_clear();
+	void sb_set(const std::string& str);
 
 private:
 	void _init_ctrls();
 	void _destroy_ctrls();
 
-	std::string			_prj_name;
 
 	resizablecanvas		_canvas{ *this };
 
 	assetspanel			_assets{ *this };
 	objectspanel		_objects{ *this };
 	propertiespanel		_properties{ *this };
-
-	statusbar			_statusbar{ *this };
 	//*>
 };
 

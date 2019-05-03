@@ -50,7 +50,7 @@ void pg_filename::create(nana::window wd)
 		fb.add_filter("All Files", "*.*");
 
 		if(value_.empty())
-#if defined(NANA_WINDOWS)
+		#if defined(NANA_WINDOWS)
 		{
 			// solve the problem with lpstrinitialdir
 			auto p = equalize_path(init_dir_, '/', '\\');
@@ -62,14 +62,14 @@ void pg_filename::create(nana::window wd)
 		else
 			fb.init_file(value_);
 
-		auto state = fb();
-
-		if(!on_close_dlg(state, fb.file()))
-			return;
-		
-		if(state)
+		auto paths = fb.show();
+		if(!paths.empty())
 		{
-			value(fb.file());
+			auto filename = paths[0];
+			if(!on_close_dlg(filename.string()))
+				return;
+
+			value(filename.string());
 			emit_event();
 		}
 	});
@@ -92,15 +92,13 @@ bool pg_image::on_open_dlg()
 	return true;
 }
 
-bool pg_image::on_close_dlg(bool state, const std::string& file)
+bool pg_image::on_close_dlg(const std::string& file)
 {
-	if(state)
-	{
-		// save image folder
-		auto path = get_dir_path(equalize_path(file));
-		if(path != g_inifile.image_dir())
-			g_inifile.image_dir(path, true);
-	}
+	nana::filebox::path_type path(equalize_path(file));
+
+	// save image folder
+	if(path.parent_path().string() != g_inifile.image_dir())
+		g_inifile.image_dir(path.parent_path().string(), true);
 	return true;
 }
 /// class pg_image end
@@ -130,10 +128,10 @@ void pg_folder::create(nana::window wd)
 	{
 		nana::folderbox folder_picker(arg.window_handle, value_);
 
-		auto path = folder_picker.show();
-		if(path)
+		auto paths = folder_picker.show();
+		if(!paths.empty())
 		{
-			value(path.value().string());
+			value(paths[0].string());
 			emit_event();
 		}
 	});

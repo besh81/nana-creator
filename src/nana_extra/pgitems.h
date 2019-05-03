@@ -44,6 +44,8 @@ namespace nana
 		virtual void editable(bool editable);
 		virtual bool editable();
 
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
+
 	protected:
 		virtual void create(window wd) override;
 
@@ -70,6 +72,8 @@ namespace nana
 		virtual void range(int min, int max);
 
 	protected:
+		bool validate_user_input(int & value);
+
 		virtual void create(window wd) override;
 
 		bool	range_{ false };
@@ -95,6 +99,8 @@ namespace nana
 		virtual void range(unsigned min, unsigned max);
 
 	protected:
+		bool validate_user_input(unsigned & value);
+
 		virtual void create(window wd) override;
 
 		bool		range_{ false };
@@ -123,6 +129,8 @@ namespace nana
 
 		virtual void editable(bool editable);
 		virtual bool editable() const;
+
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;
@@ -154,6 +162,10 @@ namespace nana
 		virtual std::size_t option() const;
 
 		virtual void push_back(const std::string& option);
+
+		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
+
+		virtual void set(const std::vector<std::string>& vs) override;	///< set options to be chosen from
 
 	protected:
 		virtual void create(window wd) override;
@@ -187,6 +199,8 @@ namespace nana
 		{
 			return pgitem::value() == "true" ? true : false;
 		}
+
+	virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
 
 	protected:
 		virtual void create(window wd) override;

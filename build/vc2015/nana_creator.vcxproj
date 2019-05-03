@@ -187,7 +187,6 @@
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
     <ClCompile Include="..\..\src\resizablecanvas.cpp" />
-    <ClCompile Include="..\..\src\statusbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libs\pugixml\pugiconfig.hpp" />
@@ -239,7 +238,6 @@
     <ClInclude Include="..\..\src\propertiespanel.h" />
     <ClInclude Include="..\..\src\propertygrid_helper.h" />
     <ClInclude Include="..\..\src\resizablecanvas.h" />
-    <ClInclude Include="..\..\src\statusbar.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
   </ItemGroup>

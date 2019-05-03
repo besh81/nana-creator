@@ -48,7 +48,7 @@ protected:
 	}
 
 	// return false to veto the file choice
-	virtual bool on_close_dlg(bool state, const std::string& file)
+	virtual bool on_close_dlg(const std::string& file)
 	{
 		return true;
 	}
@@ -74,7 +74,7 @@ protected:
 	virtual void create(nana::window wd) override;
 
 	virtual bool on_open_dlg() override;
-	virtual bool on_close_dlg(bool state, const std::string& file) override;
+	virtual bool on_close_dlg(const std::string& file) override;
 };
 
 

@@ -9,18 +9,36 @@
 #include <algorithm>
 #include "pgitems.h"
 #include "color_helper.h"
-#include "lock_guard.h"
 
 
 
 namespace nana
 {
+	class internal_lock_guard
+	{
+	public:
+		internal_lock_guard(bool* flag, bool lock_as_true = true)
+		{
+			flag_ = flag;
+			*flag_ = lock_as_true;
+		}
+
+		~internal_lock_guard()
+		{
+			*flag_ = !(*flag_);
+		}
+
+	private:
+		bool* flag_;
+	};
+
+
 	/// class pg_string
 	void pg_string::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
-		
+
 		pgitem::value(value);
 	}
 
@@ -43,6 +61,11 @@ namespace nana
 	{
 		return txt_.editable();
 	}
+	
+	void pg_string::tooltip(const std::string& help_text)
+	{
+		txt_.tooltip(help_text);
+	}
 
 	void pg_string::create(window wd)
 	{
@@ -64,6 +87,18 @@ namespace nana
 			{
 				pgitem::value(txt_.caption());
 				emit_event();
+			}
+		});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
 			}
 		});
 	}
@@ -109,6 +144,24 @@ namespace nana
 		value(std::clamp(to_int(), min_, max_));
 	}
 
+	bool pg_string_int::validate_user_input(int & value)
+	{
+		int int_val = -1;
+		try
+		{
+			int_val = std::stoi(txt_.caption());
+			if(range_)
+				int_val = std::clamp(int_val, min_, max_);
+		}
+		catch(...)
+		{
+			return false;
+		}
+
+		value = int_val;
+		return true;
+	}
+
 	void pg_string_int::create(window wd)
 	{
 		pg_string::create(wd);
@@ -118,23 +171,41 @@ namespace nana
 			if(arg.key == nana::keyboard::enter)
 			{
 				int int_val = -1;
-				try
+				if(validate_user_input(int_val))
 				{
-					int_val = std::stoi(txt_.caption());
-					if(range_)
-						int_val = std::clamp(int_val, min_, max_);
+					value(int_val);
+					emit_event();
 				}
-				catch(...)
+				else
 				{
+					// restore value
 					txt_.caption(value_);
-					arg.stop_propagation();
-					return;
 				}
 
-				pg_string::value(std::to_string(int_val));
-
-				emit_event();
 				arg.stop_propagation();
+			}
+		});
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					int int_val = -1;
+					if(validate_user_input(int_val))
+					{
+						value(int_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
 			}
 		});
 
@@ -179,6 +250,24 @@ namespace nana
 		value(std::clamp(to_uint(), min_, max_));
 	}
 
+	bool pg_string_uint::validate_user_input(unsigned & value)
+	{
+		unsigned u_val = -1;
+		try
+		{
+			u_val = std::stoul(txt_.caption());
+			if(range_)
+				u_val = std::clamp(u_val, min_, max_);
+		}
+		catch(...)
+		{
+			return false;
+		}
+
+		value = u_val;
+		return true;
+	}
+
 	void pg_string_uint::create(window wd)
 	{
 		pg_string::create(wd);
@@ -188,23 +277,41 @@ namespace nana
 			if(arg.key == nana::keyboard::enter)
 			{
 				unsigned u_val = -1;
-				try
+				if(validate_user_input(u_val))
 				{
-					u_val = std::stoul(txt_.caption());
-					if(range_)
-						u_val = std::clamp(u_val, min_, max_);
+					value(u_val);
+					emit_event();
 				}
-				catch(...)
+				else
 				{
+					// restore value
 					txt_.caption(value_);
-					arg.stop_propagation();
-					return;
 				}
 
-				pg_string::value(std::to_string(u_val));
-
-				emit_event();
 				arg.stop_propagation();
+			}
+		});
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value())
+				{
+					unsigned u_val = -1;
+					if(validate_user_input(u_val))
+					{
+						value(u_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
 			}
 		});
 
@@ -223,7 +330,7 @@ namespace nana
 	{
 		value_ = value;
 
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		txt_.caption(value);
 	}
 
@@ -251,6 +358,11 @@ namespace nana
 	bool pg_string_button::editable() const
 	{
 		return txt_.editable();
+	}
+	
+	void pg_string_button::tooltip(const std::string& help_text)
+	{
+		txt_.tooltip(help_text);
 	}
 
 	void pg_string_button::create(window wd)
@@ -280,6 +392,18 @@ namespace nana
 				emit_event();
 			}
 		});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+		{
+			if(!arg.getting)
+			{
+				// just lost focus, so capture the value left by the user, if changed
+				if(txt_.caption() != pgitem::value() && txt_.editable())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
+			}
+		});
 
 
 		//button
@@ -299,14 +423,27 @@ namespace nana
 
 
 	/// class pg_choice
-	void pg_choice::value(const std::string& value_)
+
+	/** \brief Select one of the options
+        \param[in] new_option_index index of option to be selected, 0-based integer in string format
+
+        If index is out of range for the number of available options, it is ignored
+        If index is badly formatted ( not a number ), the first option will be selected
+
+        Usage example:
+
+        value( "0" );    /// make first option selected
+
+	*/
+	void pg_choice::value(const std::string& new_option_index)
 	{
 		try
 		{
-			option(std::stoul(pgitem::value()));
+			option(std::stoul(new_option_index));
 		}
 		catch(...)
 		{
+			// ignore out of range option index
 		}
 	}
 
@@ -318,7 +455,7 @@ namespace nana
 
 	void pg_choice::option(std::size_t value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		if(value < cmb_.the_number_of_options())
 		{
 			cmb_.option(value);
@@ -341,6 +478,17 @@ namespace nana
 	void pg_choice::push_back(const std::string& option)
 	{
 		cmb_.push_back(option);
+	}
+
+	void pg_choice::tooltip(const std::string& help_text)
+	{
+		cmb_.tooltip(help_text);
+	}
+
+	void pg_choice::set(const std::vector<std::string>& vs)
+	{
+		for(auto& s : vs)
+			cmb_.push_back(s);
 	}
 
 	void pg_choice::create(window wd)
@@ -372,7 +520,7 @@ namespace nana
 	/// class pg_check
 	void pg_check::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 		if(value == "true" || value == "T" || value == "t" || value == "1")
 		{
 			chk_.check(true);
@@ -389,6 +537,11 @@ namespace nana
 	{
 		pgitem::enabled(state);
 		chk_.enabled(en_);
+	}
+
+	void pg_check::tooltip( const std::string& help_text )
+	{
+	    chk_.tooltip( help_text );
 	}
 
 	void pg_check::create(window wd)
@@ -424,7 +577,7 @@ namespace nana
 	/// class pg_color
 	void pg_color::value(const std::string& value)
 	{
-		lock_guard evt_lock(&evt_emit_, false);
+		internal_lock_guard evt_lock(&evt_emit_, false);
 
 		color_ = nana::to_color(value);
 		rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));
@@ -522,6 +675,15 @@ namespace nana
 					emit_event();
 				}
 			});
+			i.events().focus([this, &i](const nana::arg_focus& arg)
+			{
+				if(!arg.getting)
+				{
+					// just lost focus, so capture the value left by the user
+					pg_color::value(nana::to_string(nana::to_color(rgb_[0].caption(), rgb_[1].caption(), rgb_[2].caption()), show_inherited_ ? inherited_ : false));
+					emit_event();
+				}
+			});
 			i.set_accept([](wchar_t c) -> bool
 			{
 				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
@@ -579,7 +741,7 @@ namespace nana
 		for(auto & i : rgb_)
 			API::show_window(i, true);
 
-		
+
 		// colorbox R G B
 		int availw = labelw + valuew;
 		if(availw)

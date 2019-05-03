@@ -83,7 +83,22 @@ void propertiespanel::name_changed(std::function<void(const std::string&)> f)
 	_name_txt.events().key_press([this, f](const nana::arg_keyboard& arg)
 	{
 		if(arg.key == nana::keyboard::enter && _properties)
+		{
+			_name_txt.edited_reset();
 			f(_name_txt.caption());
+		}
+	});
+	_name_txt.events().focus([this, f](const nana::arg_focus& arg)
+	{
+		if(!arg.getting)
+		{
+			// just lost focus, so capture the value left by the user, if changed
+			if(_name_txt.edited() && _properties)
+			{
+				_name_txt.edited_reset();
+				f(_name_txt.caption());
+			}
+		}
 	});
 }
 
@@ -108,6 +123,7 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 		_type_txt.caption("");
 		_name_txt.editable(false);
 		_name_txt.caption("");
+		_name_txt.edited_reset();
 
 		_place.collocate();
 		return;
@@ -124,6 +140,7 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 	_type_txt.caption(_properties->property("type").as_string());
 	_name_txt.editable(true);
 	_name_txt.caption(_properties->property("name").as_string());
+	_name_txt.edited_reset();
 
 	_place.collocate();
 }

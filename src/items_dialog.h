@@ -115,7 +115,7 @@ public:
 
 protected:
 	void init();
-	void tb_add_item(bool separator = false);
+	void tb_add_item_same_level_selected_item(bool separator = false);
 	void tb_delete_selected_item();
 	void tb_move_up_selected_item();
 	void tb_move_down_selected_item();

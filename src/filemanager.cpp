@@ -133,29 +133,6 @@ std::string get_relative_path(const std::string& basedir, const std::string& abs
 }
 
 
-// Given a file path returns the dir path
-// Eg.: if file path is c:/aaa/ccc/file.txt will return c:/aaa/ccc
-std::string get_dir_path(const std::string& filename)
-{
-	// make sure the names are not too long or too short
-	if(filename.empty())
-		return "";
-
-	// find out the last dir
-	int marker = 0;
-	for(unsigned int i = 0; i < filename.size(); i++)
-	{
-		if(filename[i] == '/')
-			marker = i;
-	}
-
-	if(marker == 0)
-		return "";
-
-	return filename.substr(0, marker);
-}
-
-
 //get_working_dir
 std::string get_working_dir()
 {

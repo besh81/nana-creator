@@ -104,12 +104,12 @@ void items_dialog::init()
 		if(arg.button == 0)
 		{
 			// add item
-			tb_add_item();
+			tb_add_item_same_level_selected_item();
 		}
 		else if(arg.button == 1)
 		{
 			// add separator
-			tb_add_item(true);
+			tb_add_item_same_level_selected_item(true);
 		}
 		else if(arg.button == 2)
 		{
@@ -161,8 +161,29 @@ void items_dialog::init()
 }
 
 
-void items_dialog::tb_add_item(bool separator)
+void items_dialog::tb_add_item_same_level_selected_item(bool separator)
 {
+	auto sel = items_tree.selected();
+
+	if(separator)
+	{
+		bool check_pos = false;
+
+		if(!sel.empty())
+			if(sel.level() > 1)
+				check_pos = true;
+
+		if(!check_pos)
+		{
+			nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::ok);
+			m.icon(m.icon_error);
+			m << "Separator cannot be a menubar item !";
+			m();
+			return;
+		}
+	}
+
+
 	_items.push_back(ctrls::properties_collection{});
 	auto& item = _items.back();
 
@@ -186,17 +207,26 @@ void items_dialog::tb_add_item(bool separator)
 		item.property("text") = SEPARATOR_TXT;
 	}
 
+
 	// append to treebox
 	auto text = item.property("text").as_string();
 	if(_type == ctrls::pg_type::collection_collapse)
 		text = COLLAPSE_TXT;
-	auto ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), text);
-	if(_root.empty())
-		_root = ip.owner();
+
+	nana::drawerbase::treebox::item_proxy ip;
+	if(_root.empty() || sel.level() == 1)
+	{
+		ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), text);
+
+		if(_root.empty())
+			_root = ip.owner();
+	}
+	else
+		ip = items_tree.insert(sel.owner(), _node_mgr.add_numbered(NODE_NAME), text);
 
 	update_image(ip, "");
-
 	item.property("key") = ip.key();
+
 
 	// select
 	ip.select(true);
@@ -213,17 +243,16 @@ void items_dialog::tb_add_item(bool separator)
 //-------------------------------------------------------------------------------
 void items_dialog::tb_delete_selected_item()
 {
+	auto sel = items_tree.selected();
+	if(sel.empty())
+		return;
+
 	nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::yes_no);
 	m.icon(m.icon_question);
 	m << "Delete selected item?";
 
 	if(m() == nana::msgbox::pick_yes)
 	{
-		auto sel = items_tree.selected();
-		if(sel.empty())
-			return;
-
-
 		if(sel == _root.child())
 		{
 			// this is the 1st sibling

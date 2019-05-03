@@ -90,7 +90,7 @@ guimanager::guimanager(nana::window wd)
 }
 
 
-void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd, statusbar* sb)
+void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd)
 {
 	_ct = ct;
 
@@ -121,7 +121,6 @@ void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objects
 	_op->contex_menu(&_ctxmenu);
 
 	_main_wd = main_wd;
-	_sb = sb;
 	
 	enableGUI(false, true);
 }
@@ -174,9 +173,9 @@ void guimanager::cursor(cursor_state state)
 
 	//XXX - statusbar
 	if(state.type == "")
-		_sb->set("");
+		_ct->sb_set("");
 	else
-		_sb->set("Add control: " + state.type);
+		_ct->sb_set("Add control: " + state.type);
 }
 
 

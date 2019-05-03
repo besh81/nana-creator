@@ -31,10 +31,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
+			<Add directory="../../src/ctrls" />
+			<Add directory="../../src/nana_extra" />
 			<Add directory="../../src" />
 			<Add directory="../../libs" />
 		</Compiler>
 		<Linker>
+			<Add library="png" />
 			<Add library="jpeg" />
 			<Add library="nana" />
 			<Add library="gdi32" />
@@ -135,8 +138,6 @@
 		<Unit filename="../../src/propertygrid_helper.h" />
 		<Unit filename="../../src/resizablecanvas.cpp" />
 		<Unit filename="../../src/resizablecanvas.h" />
-		<Unit filename="../../src/statusbar.cpp" />
-		<Unit filename="../../src/statusbar.h" />
 		<Unit filename="../../src/style.h" />
 		<Unit filename="../../src/tree.h" />
 		<Extensions>

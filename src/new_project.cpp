@@ -56,11 +56,11 @@ void new_project::init()
 	folder_btn.events().click([this]()
 	{
 		nana::folderbox folder_picker(*this, equalize_path(folder_txt.caption()));
-
-		auto path = folder_picker.show();
-		if(path)
+		
+		auto paths = folder_picker.show();
+		if(!paths.empty())
 		{
-			folder_txt.caption(path.value().string());
+			folder_txt.caption(paths[0].string());
 
 			// save new_project folder
 			auto path = equalize_path(folder_txt.caption());

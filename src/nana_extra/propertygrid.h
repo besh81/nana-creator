@@ -142,12 +142,22 @@ namespace nana
 					return size_;
 				}
 
+				virtual void tooltip(const std::string& help_text)
+				{
+					// nothing to be done for the base class
+				}
+
+				virtual void set(const std::vector<std::string>& vs)
+				{
+					// nothing to be done for the base class
+				}
+
 				virtual void typeface_changed(unsigned text_height)	///< Inform the item the font is changed (should not be used)
 				{
 					size_ = text_height + 10;
 				}
 
-				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned  valuew, unsigned  iboxw, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the item. Position and size of inline widgets should be set here
+				virtual void draw(paint::graphics* graph, rectangle area, unsigned labelw, unsigned valuew, unsigned iboxw, const int txtoff, color bgcolor, color fgcolor) const;	///< Draw the item. Position and size of inline widgets should be set here
 
 				void update();		///< Update the item (refresh)
 				void scroll();		///< Scrolls the view to show this item
@@ -216,7 +226,7 @@ namespace nana
 				drawer_lister_impl* drawer_lister_;
 			};//end class trigger
 
-			  /// operate with absolute positions and contain only the position but mantain pointers to parts of the real items 
+			  /// operate with absolute positions and contain only the position but mantain pointers to parts of the real items
 			  /// item_proxy self, it references and iterators are not invalidated by sort()
 			class item_proxy
 				: public std::iterator<std::input_iterator_tag, item_proxy>
@@ -233,13 +243,41 @@ namespace nana
 				std::string label() const;						///< Gets item's label
 
 				item_proxy& value(const std::string& value, bool emit = false);	///< Sets item's value. If emit is set to true then a property_changed event is generated
+				item_proxy& operator=(const std::string& new_value_string );    ///< Sets item's value
 				std::string value() const;										///< Gets item's value
 
 				item_proxy& defvalue(const std::string& value);	///< Sets item's default value
 				std::string defvalue() const;					///< Gets item's default value
 
 				bool enabled();				///< Get the enables state of the item
-				void enabled(bool state);	///< Enables/disables the item
+				item_proxy& enabled(bool state);	///< Enables/disables the item
+
+				/** \brief Provide help in pop-up when mouse hovers over property's value entry field
+
+                @param[in] help_text
+
+                Example Usage:
+
+                <pre>
+                    auto cat = pg.append("A category");
+                    cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))->tooltip( "A helpful hint" );
+                </pre>
+				*/
+				item_proxy& tooltip(const std::string& help_text);
+
+                /** \brief Set a vector of strings in the item
+
+                @param[in] vs vector of stings to set in item
+
+                Example Usage:
+
+                <pre>
+                    auto cat = pg.append("A category");
+                    auto ip  = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))
+                    ip->set({ "A", "B", "C", "D" });
+                </pre>
+				*/
+				item_proxy& set(const std::vector<std::string>& vs);
 
 				// Behavior of Iterator's value_type
 				bool operator==(const char* s) const;
@@ -260,7 +298,7 @@ namespace nana
 
 			private:
 				essence_t * _m_ess() const;
-			
+
 				pgitem& _m_property() const;
 
 				essence_t* ess_;
@@ -277,6 +315,10 @@ namespace nana
 				cat_proxy(essence_t*, category_t*);			///< Constructor
 
 				item_proxy append(pgitem_ptr p);	///< Appends passed item at the end of this category
+
+				void expand( bool exp );               ///< Expand or collapse the category
+
+				item_proxy find( const std::string& prop_label ); ///< find item in category with specified label
 
 				cat_proxy& text(std::string);	///< Sets category text
 				std::string text() const;		///< Gets category text
@@ -372,6 +414,15 @@ namespace nana
 		unsigned values_min_width() const;					///< Gets the value column min width
 		propertygrid& values_min_width(unsigned pixels);	///< Sets the value column min width
 
+		/** \brief Show or hide the interactive box
+		\param[in] state true if you want the interactive boxes to show, this is the default.
+		\param[in] state false to hide the boxes
+
+		The interactive box appear on the left of each property in the grid and provide a pop-up menu for the property.
+		*/
+		void ibox_show(bool state);
+		bool ibox_show() const;
+
 		void auto_draw(bool);										///< Enables/disables automatic drawing
 
 		void scroll(const index_pair& pos, bool as_first = false);	///< Scrolls the view to the selected item
@@ -384,6 +435,15 @@ namespace nana
 
 		item_proxy at(const index_pair& idx) const;		///< Returns an item by the specified absolute position
 
+		/** \brief Find a property by name and category name
+            \param[in] catName
+            \param[in] propName
+            \throw runtime_error if property does not exist
+        */
+		item_proxy find(
+					const std::string& catName,
+					const std::string& propName ) const;
+
 		void clear(std::size_t cat);					///< Removes all the items from the specified category
 		void clear();									///< Removes all the items from all categories
 		void erase(std::size_t cat);					///< Erases specified category
@@ -392,6 +452,7 @@ namespace nana
 
 		std::size_t size_categ() const;					///< Get the number of categories
 		std::size_t size_item(std::size_t cat) const;	///< Get the number of items in the specified category
+
 
 	private:
 		drawerbase::propertygrid::essence_t & _m_ess() const;

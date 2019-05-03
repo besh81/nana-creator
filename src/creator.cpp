@@ -31,10 +31,11 @@
 #define TB_PASTE				14
 
 
-guimanager*			p_gui_mgr;	// manage all the gui elements
+guimanager*					p_gui_mgr;	// manage all the gui elements
+nana::filebox::path_type	prj_name;
 
+extern inifile				g_inifile;
 
-extern inifile		g_inifile;
 
 
 void creator::enableGUI(bool state, bool new_load)
@@ -96,15 +97,22 @@ bool creator::save_xml(const std::string& filename)
 
 bool creator::generate_cpp()
 {
-	std::string path;
-	auto tpos = _prj_name.find_last_of("\\/");
-	if(tpos != _prj_name.npos)
-		path = _prj_name.substr(0, tpos);
-
 	codegenerator cpp;
-	cpp.generate(handle(), p_gui_mgr->get_root()->child, path);
+	cpp.generate(handle(), p_gui_mgr->get_root()->child, prj_name.parent_path().string());
 	cpp.print(std::cout);
 	return true;
+}
+
+
+void creator::sb_clear()
+{
+	_sb.caption("");
+}
+
+
+void creator::sb_set(const std::string& str)
+{
+	_sb.caption(str);
 }
 
 
@@ -118,7 +126,7 @@ void creator::_init_ctrls()
 		if(arg.button == TB_NEW) // new project
 		{
 			// confirmation message
-			if(_prj_name != "")
+			if(prj_name != "")
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -127,29 +135,29 @@ void creator::_init_ctrls()
 				if(ret == nana::msgbox::pick_cancel)
 					return;
 				else if(ret == nana::msgbox::pick_yes)
-					save_xml(_prj_name);
+					save_xml(prj_name.string());
 			}
 
 			p_gui_mgr->clear();
-			_prj_name = "";
+			prj_name = "";
 
 			new_project dlg(*this);
 			dlg.modality();
 
 			if(dlg.return_val() == nana::msgbox::pick_ok)
 			{
-				_prj_name = dlg.get_filename();
+				prj_name = dlg.get_filename();
 
 				p_gui_mgr->new_project(dlg.get_ctrl_type(), dlg.get_projectname());
 				
 				// crea file di progetto
-				save_xml(_prj_name);
+				save_xml(prj_name.string());
 			}
 		}
 		else if(arg.button == TB_LOAD) // load project
 		{
 			// confirmation message
-			if(_prj_name != "")
+			if(prj_name != "")
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -158,11 +166,11 @@ void creator::_init_ctrls()
 				if(ret == nana::msgbox::pick_cancel)
 					return;
 				else if(ret == nana::msgbox::pick_yes)
-					save_xml(_prj_name);
+					save_xml(prj_name.string());
 			}
 
 			p_gui_mgr->clear();
-			_prj_name = "";
+			prj_name = "";
 
 			nana::filebox fb(*this, true);
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
@@ -176,43 +184,44 @@ void creator::_init_ctrls()
 			fb.init_path(equalize_path(g_inifile.load_project_dir()));
 		#endif
 
-			if(fb())
+			auto paths = fb.show();
+			if(!paths.empty())
 			{
 				// save load_project folder
-				auto path = get_dir_path(equalize_path(fb.file()));
-				if(path != g_inifile.load_project_dir())
-					g_inifile.load_project_dir(path, true);
+				prj_name = paths[0];
+				if(prj_name.parent_path().string() != g_inifile.load_project_dir())
+					g_inifile.load_project_dir(prj_name.parent_path().string(), true);
 
-				_prj_name = fb.file();
-				if(!load_xml(_prj_name))
-					_prj_name = "";
+				if(!load_xml(prj_name.string()))
+					prj_name = "";
 			}
 		}
 		else if(arg.button == TB_SAVE) // save project
 		{
-			if(_prj_name == "")
+			if(prj_name == "")
 				return;
 
-			save_xml(_prj_name);
+			save_xml(prj_name.string());
 		}
 		else if(arg.button == TB_SAVE_AS) // save project as
 		{
-			if(_prj_name == "")
+			if(prj_name == "")
 				return;
 
 			nana::filebox fb(*this, false);
 			fb.add_filter("Nana Creator Project (*." PROJECT_EXT ")", "*." PROJECT_EXT);
-			fb.init_file(_prj_name);
+			fb.init_file(prj_name.string());
 
-			if(fb())
+			auto paths = fb.show();
+			if(!paths.empty())
 			{
-				_prj_name = fb.file();
-				save_xml(_prj_name);
+				prj_name = paths[0];
+				save_xml(prj_name.string());
 			}
 		}
 		else if(arg.button == TB_GENERATE) // generate code
 		{
-			if(_prj_name == "")
+			if(prj_name == "")
 				return;
 
 			generate_cpp();
@@ -255,14 +264,13 @@ void creator::_init_ctrls()
 	// canvas
 	_place.field("canvas") << _canvas;
 
-	// statusbar
-	_statusbar.set("Ready");
-	_place.field("statusbar") << _statusbar;
-
 	_place.collocate();
 
+
 	p_gui_mgr = new guimanager(*this);
-	p_gui_mgr->init(this, &_properties, &_assets, &_objects, &_canvas, &_statusbar);
+	p_gui_mgr->init(this, &_properties, &_assets, &_objects, &_canvas);
+	
+	sb_set("Ready");
 }
 
 
