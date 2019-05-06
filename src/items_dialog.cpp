@@ -165,7 +165,7 @@ void items_dialog::tb_add_item_same_level_selected_item(bool separator)
 {
 	auto sel = items_tree.selected();
 
-	if(separator)
+	if(separator && _type == ctrls::pg_type::collection_menubar)
 	{
 		bool check_pos = false;
 
