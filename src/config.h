@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.19.1"
+#define CREATOR_VERSION			"0.20.0"
 
 
 
@@ -49,9 +49,11 @@
 #define CTRL_SLIDER				"slider"
 #define CTRL_TABBAR				"tabbar"
 #define CTRL_TREEBOX			"treebox"
+//
 #define CTRL_NOTEBOOK			"notebook"
 #define CTRL_PAGE				"page"
-
+//
+#define CTRL_CUSTOM				"custom"
 
 
 // project file
@@ -94,6 +96,9 @@
 //
 #define CITEM_PIXELS			"px"
 #define CITEM_PERCENT			"%"
+//
+#define CITEM_INCLUDE_1			"#include <>"
+#define CITEM_INCLUDE_2			"#include \"\""
 
 
 // code-generator

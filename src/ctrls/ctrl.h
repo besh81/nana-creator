@@ -92,6 +92,7 @@ namespace ctrls
 		// code generation
 		virtual void generatecode(code_data_struct* cd, code_info_struct* ci);
 		void generatecode_colors(code_data_struct* cd, code_info_struct* ci, const std::string& name = "");
+		void generatecode_fonts(code_data_struct* cd, const std::string& name = "");
 
 
 	protected:

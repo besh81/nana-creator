@@ -6,7 +6,6 @@
  */
 
 #include "config.h"
-#include <iostream>
 #include "ctrls/menubar.h"
 #include "filemanager.h"
 

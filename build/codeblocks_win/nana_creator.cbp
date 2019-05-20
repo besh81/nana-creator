@@ -66,6 +66,8 @@
 		<Unit filename="../../src/ctrls/combox.h" />
 		<Unit filename="../../src/ctrls/ctrl.cpp" />
 		<Unit filename="../../src/ctrls/ctrl.h" />
+		<Unit filename="../../src/ctrls/custom.cpp" />
+		<Unit filename="../../src/ctrls/custom.h" />
 		<Unit filename="../../src/ctrls/date_chooser.cpp" />
 		<Unit filename="../../src/ctrls/date_chooser.h" />
 		<Unit filename="../../src/ctrls/field.cpp" />
@@ -112,6 +114,8 @@
 		<Unit filename="../../src/guimanager.h" />
 		<Unit filename="../../src/imagemanager.cpp" />
 		<Unit filename="../../src/imagemanager.h" />
+		<Unit filename="../../src/info.cpp" />
+		<Unit filename="../../src/info.h" />
 		<Unit filename="../../src/inifile.cpp" />
 		<Unit filename="../../src/inifile.h" />
 		<Unit filename="../../src/items_dialog.cpp" />
@@ -136,8 +140,8 @@
 		<Unit filename="../../src/propertiespanel.h" />
 		<Unit filename="../../src/propertygrid_helper.cpp" />
 		<Unit filename="../../src/propertygrid_helper.h" />
-		<Unit filename="../../src/resizablecanvas.cpp" />
-		<Unit filename="../../src/resizablecanvas.h" />
+		<Unit filename="../../src/scrollablecanvas.cpp" />
+		<Unit filename="../../src/scrollablecanvas.h" />
 		<Unit filename="../../src/style.h" />
 		<Unit filename="../../src/tree.h" />
 		<Extensions>

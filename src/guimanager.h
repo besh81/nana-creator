@@ -17,7 +17,7 @@
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
-#include "resizablecanvas.h"
+#include "scrollablecanvas.h"
 
 
 typedef std::shared_ptr<ctrls::ctrl>	control_obj;
@@ -50,7 +50,7 @@ class guimanager
 public:
 	guimanager(nana::window wd);
 
-	void init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd);
+	void init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, scrollablecanvas* main_wd);
 	void clear();
 
 	void enableGUI(bool state, bool new_load);
@@ -124,7 +124,7 @@ private:
 	propertiespanel*		_pp{ 0 };
 	assetspanel*			_ap{ 0 };
 	objectspanel*			_op{ 0 };
-	resizablecanvas*		_main_wd{ 0 };
+	scrollablecanvas*		_main_wd{ 0 };
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator
 

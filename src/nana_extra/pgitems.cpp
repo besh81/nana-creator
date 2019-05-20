@@ -480,15 +480,27 @@ namespace nana
 		cmb_.push_back(option);
 	}
 
-	void pg_choice::tooltip(const std::string& help_text)
-	{
-		cmb_.tooltip(help_text);
-	}
+	/** \brief Set a vector of strings in the item
 
+	@param[in] vs vector of stings to set in item
+
+	Example Usage:
+
+	<pre>
+		auto cat = pg.append("A category");
+		auto ip  = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_choice("A property")))
+		ip->set({ "A", "B", "C", "D" });
+	</pre>
+	*/
 	void pg_choice::set(const std::vector<std::string>& vs)
 	{
 		for(auto& s : vs)
 			cmb_.push_back(s);
+	}
+
+	void pg_choice::tooltip(const std::string& help_text)
+	{
+		cmb_.tooltip(help_text);
 	}
 
 	void pg_choice::create(window wd)

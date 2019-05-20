@@ -6,7 +6,6 @@
  */
 
 #include "config.h"
-#include <iostream>
 #include "ctrls/ctrl.h"
 #include "nana_extra/color_helper.h"
 #include "style.h"
@@ -177,25 +176,7 @@ namespace ctrls
 			cd->init.push_back(name + ".enabled(false);");
 
 		generatecode_colors(cd, ci, name);
-
-		// font
-		if(_defaults.use_font)
-		{
-			auto f = nanawdg->typeface();
-
-			if(_defaults.font.size(true) != f.size(true) || _defaults.font.weight() != f.weight()
-				|| _defaults.font.italic() != f.italic() || _defaults.font.underline() != f.underline()
-				|| _defaults.font.strikeout() != f.strikeout())
-			{
-				std::string font = name + ".typeface(nana::paint::font(\"\", " + properties.property("f_size").as_string() + ", {";
-				font += properties.property("f_weight").as_string() + ", ";
-				font += properties.property("f_italic").as_string() + ", ";
-				font += properties.property("f_underline").as_string() + ", ";
-				font += properties.property("f_strike_out").as_string() + "}));";
-
-				cd->init.push_back(font);
-			}
-		}
+		generatecode_fonts(cd, name);
 	}
 
 
@@ -254,6 +235,31 @@ namespace ctrls
 					cd->init.push_back("fgcolor(nana::color(" + color_txt + "));");
 				else
 					cd->init.push_back(name + ".fgcolor(nana::color(" + color_txt + "));");
+			}
+		}
+	}
+
+
+	void ctrl::generatecode_fonts(code_data_struct* cd, const std::string& name)
+	{
+		if(_defaults.use_font)
+		{
+			auto f = nanawdg->typeface();
+
+			if(_defaults.font.size(true) != f.size(true) || _defaults.font.weight() != f.weight()
+				|| _defaults.font.italic() != f.italic() || _defaults.font.underline() != f.underline()
+				|| _defaults.font.strikeout() != f.strikeout())
+			{
+				std::string font;
+				if(name != "")
+					font += name + ".";
+				font += "typeface(nana::paint::font(\"\", " + properties.property("f_size").as_string() + ", {";
+				font += properties.property("f_weight").as_string() + ", ";
+				font += properties.property("f_italic").as_string() + ", ";
+				font += properties.property("f_underline").as_string() + ", ";
+				font += properties.property("f_strike_out").as_string() + "}));";
+
+				cd->init.push_back(font);
 			}
 		}
 	}

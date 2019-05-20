@@ -5,7 +5,6 @@
  *      Author: besh81
  */
 
-#include <iostream>
 #include <algorithm>
 #include "ctrls/field.h"
 #include "style.h"

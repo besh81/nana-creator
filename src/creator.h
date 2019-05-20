@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.19.0)
+ *	C++ code generated with Nana Creator (0.20.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -17,7 +17,7 @@
 #include <nana/gui/widgets/label.hpp>
 
 //<*includes
-#include "resizablecanvas.h"
+#include "scrollablecanvas.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
@@ -70,6 +70,8 @@ private:
 		_tb.append("Cut current selection", nana::paint::image("icons/cut.png"));
 		_tb.append("Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append("Paste into/after current selection", nana::paint::image("icons/paste.png"));
+		_tb.go_right();
+		_tb.append("About...", nana::paint::image("icons/info.png"));
 		// _sb
 		_sb.create(*this);
 		_place["statusbar"] << _sb;
@@ -101,7 +103,7 @@ private:
 	void _destroy_ctrls();
 
 
-	resizablecanvas		_canvas{ *this };
+	scrollablecanvas	_canvas{ *this };
 
 	assetspanel			_assets{ *this };
 	objectspanel		_objects{ *this };

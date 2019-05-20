@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CF9D40B4-28C8-4984-9F94-9E20EF008CB4}</ProjectGuid>
     <RootNamespace>nana_creator</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -84,13 +84,13 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../src;../../libs;$(NANALIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <UndefinePreprocessorDefinitions>
       </UndefinePreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nana_v140_Debug_x86.lib;libjpeg.MDd.lib;libzlib.MDd.lib;libpng.MDd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>nana_v142_Debug_x86.lib;libjpeg.MTd.x86.lib;zlib.MTd.x86.lib;libpng.MTd.x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -115,14 +115,16 @@
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>../../src;../../libs;$(NANALIB)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>nana_v140_Release_x86.lib;libjpeg.MD.lib;libzlib.MD.lib;libpng.MD.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(NANALIB)/build/bin;$(NANALIB)/extrlib/vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>nana_v142_Release_x86.lib;libjpeg.MT.x86.lib;zlib.MT.x86.lib;libpng.MT.x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <SubSystem>Windows</SubSystem>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +153,7 @@
     <ClCompile Include="..\..\src\ctrls\checkbox.cpp" />
     <ClCompile Include="..\..\src\ctrls\combox.cpp" />
     <ClCompile Include="..\..\src\ctrls\ctrl.cpp" />
+    <ClCompile Include="..\..\src\ctrls\custom.cpp" />
     <ClCompile Include="..\..\src\ctrls\date_chooser.cpp" />
     <ClCompile Include="..\..\src\ctrls\field.cpp" />
     <ClCompile Include="..\..\src\ctrls\form.cpp" />
@@ -174,6 +177,7 @@
     <ClCompile Include="..\..\src\filemanager.cpp" />
     <ClCompile Include="..\..\src\guimanager.cpp" />
     <ClCompile Include="..\..\src\imagemanager.cpp" />
+    <ClCompile Include="..\..\src\info.cpp" />
     <ClCompile Include="..\..\src\inifile.cpp" />
     <ClCompile Include="..\..\src\items_dialog.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -186,7 +190,7 @@
     <ClCompile Include="..\..\src\pgitems_creator.cpp" />
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
-    <ClCompile Include="..\..\src\resizablecanvas.cpp" />
+    <ClCompile Include="..\..\src\scrollablecanvas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libs\pugixml\pugiconfig.hpp" />
@@ -202,6 +206,7 @@
     <ClInclude Include="..\..\src\ctrls\checkbox.h" />
     <ClInclude Include="..\..\src\ctrls\combox.h" />
     <ClInclude Include="..\..\src\ctrls\ctrl.h" />
+    <ClInclude Include="..\..\src\ctrls\custom.h" />
     <ClInclude Include="..\..\src\ctrls\date_chooser.h" />
     <ClInclude Include="..\..\src\ctrls\field.h" />
     <ClInclude Include="..\..\src\ctrls\form.h" />
@@ -225,6 +230,7 @@
     <ClInclude Include="..\..\src\filemanager.h" />
     <ClInclude Include="..\..\src\guimanager.h" />
     <ClInclude Include="..\..\src\imagemanager.h" />
+    <ClInclude Include="..\..\src\info.h" />
     <ClInclude Include="..\..\src\inifile.h" />
     <ClInclude Include="..\..\src\items_dialog.h" />
     <ClInclude Include="..\..\src\lock_guard.h" />
@@ -237,7 +243,7 @@
     <ClInclude Include="..\..\src\pgitems_creator.h" />
     <ClInclude Include="..\..\src\propertiespanel.h" />
     <ClInclude Include="..\..\src\propertygrid_helper.h" />
-    <ClInclude Include="..\..\src\resizablecanvas.h" />
+    <ClInclude Include="..\..\src\scrollablecanvas.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
   </ItemGroup>

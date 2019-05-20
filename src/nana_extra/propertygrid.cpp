@@ -1253,12 +1253,6 @@ namespace nana
 				return *this;
 			}
 
-			item_proxy& item_proxy::set( const std::vector< std::string >& vs )
-			{
-			    _m_property().set( vs );
-			    return *this;
-			}
-
 			auto item_proxy::_m_property() const -> pgitem&
 			{
 				return ess_->lister.get_property(cat_, pos_.item);

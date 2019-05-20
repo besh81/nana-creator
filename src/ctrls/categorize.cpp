@@ -6,7 +6,6 @@
  */
 
 #include "config.h"
-#include <iostream>
 #include "ctrls/categorize.h"
 #include "nana_extra/color_helper.h"
 

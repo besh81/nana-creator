@@ -28,5 +28,6 @@
 #define ITEMS_DEF_BGCOL			nana::color(212, 208, 200)
 #define ITEMS_DEF_FGCOL			nana::color(0, 0, 0)
 
+#define CUSTOM_COL				nana::colors::cadet_blue
 
 #endif //NANA_CREATOR_STYLE_H

@@ -53,6 +53,7 @@ inifile			g_inifile;
 	g_img_mgr.add(CTRL_TREEBOX, "icons/treebox.png");
 	g_img_mgr.add(CTRL_NOTEBOOK, "icons/notebook.png");
 	g_img_mgr.add(CTRL_PAGE, "icons/page.png");
+	g_img_mgr.add(CTRL_CUSTOM, "icons/custom.png");
 
 
 	creator fm(0, nana::size{ 1200, 700 });

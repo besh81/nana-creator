@@ -6,7 +6,6 @@
  */
 
 #include "config.h"
-#include <iostream>
 #include "ctrls/group.h"
 #include "nana_extra/color_helper.h"
 

@@ -90,9 +90,6 @@
     <ClCompile Include="..\..\src\propertiespanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\resizablecanvas.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\libs\pugixml\pugixml.cpp">
       <Filter>libs\pugixml</Filter>
     </ClCompile>
@@ -171,6 +168,15 @@
     <ClCompile Include="..\..\src\pgitems_creator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\scrollablecanvas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ctrls\custom.cpp">
+      <Filter>Source Files\ctrls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -234,9 +240,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\propertiespanel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\resizablecanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\style.h">
@@ -325,6 +328,15 @@
     </ClInclude>
     <ClInclude Include="..\..\src\pgitems_creator.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\scrollablecanvas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ctrls\custom.h">
+      <Filter>Header Files\ctrls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

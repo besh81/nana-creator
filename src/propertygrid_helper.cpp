@@ -59,7 +59,7 @@ namespace propertygrid_helper
 				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
 			}
 			else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
-				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style)
+				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style || prop.type() == ctrls::pg_type::include_style)
 			{
 				auto pgc = new nana::pg_choice(prop.label());
 				ip = cat.append(nana::propertygrid::pgitem_ptr(pgc));
@@ -92,6 +92,11 @@ namespace propertygrid_helper
 					pgc->push_back(CITEM_NONE);
 					pgc->push_back(CITEM_OPTION);
 					pgc->push_back(CITEM_HIGHLIGHT);
+				}
+				else if(prop.type() == ctrls::pg_type::include_style)
+				{
+					pgc->push_back(CITEM_INCLUDE_1);
+					pgc->push_back(CITEM_INCLUDE_2);
 				}
 			
 				pgc->option(std::atoi(prop.value().c_str()));

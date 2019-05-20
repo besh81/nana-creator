@@ -5,7 +5,6 @@
  *      Author: besh81
  */
 
-#include <iostream>
 #include <assert.h>
 #include "ctrls/property.h"
 

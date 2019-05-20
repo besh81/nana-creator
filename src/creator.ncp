@@ -1,23 +1,25 @@
 <?xml version="1.0"?>
-<nana-creator version="0.19.0">
-	<form mainclass="true" filename="creator" rel_path="true" work_dir="F:\C++ Projects\nana-creator\wdir" type="form" name="creator" enabled="true" caption="Nana Creator" width="800" height="500" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
+<nana-creator version="0.20.0">
+	<form mainclass="true" filename="creator" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="creator" enabled="true" caption="Nana Creator" width="800" height="500" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="toolbar" weight="30" layout="0" margin="0" gap="0">
-			<toolbar type="toolbar" name="_tb" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" buttons="" scale="21">
-				<item type="button" key="n1" owner="" text="New project" image="F:\C++ Projects\nana-creator\wdir\icons\new_prj.png" enable="true" separator="false" />
-				<item type="button" key="n2" owner="" text="Load project" image="F:\C++ Projects\nana-creator\wdir\icons\load_prj.png" enable="true" separator="false" />
-				<item type="button" key="n3" owner="" text="Save project" image="F:\C++ Projects\nana-creator\wdir\icons\save.png" enable="true" separator="false" />
-				<item type="button" key="n4" owner="" text="Save project as..." image="F:\C++ Projects\nana-creator\wdir\icons\save_as.png" enable="true" separator="false" />
-				<item type="button" key="n5" owner="" text="-----" image="" enable="true" separator="true" />
-				<item type="button" key="n6" owner="" text="Generate C++ code" image="F:\C++ Projects\nana-creator\wdir\icons\output_on.png" enable="true" separator="false" />
-				<item type="button" key="n7" owner="" text="-----" image="" enable="true" separator="true" />
-				<item type="button" key="n8" owner="" text="Delete current selection" image="F:\C++ Projects\nana-creator\wdir\icons\delete.png" enable="true" separator="false" />
-				<item type="button" key="n9" owner="" text="-----" image="" enable="true" separator="true" />
-				<item type="button" key="n10" owner="" text="Move up current selection" image="F:\C++ Projects\nana-creator\wdir\icons\up.png" enable="true" separator="false" />
-				<item type="button" key="n11" owner="" text="Move down current selection" image="F:\C++ Projects\nana-creator\wdir\icons\down.png" enable="true" separator="false" />
-				<item type="button" key="n12" owner="" text="-----" image="" enable="true" separator="true" />
-				<item type="button" key="n13" owner="" text="Cut current selection" image="F:\C++ Projects\nana-creator\wdir\icons\cut.png" enable="true" separator="false" />
-				<item type="button" key="n14" owner="" text="Copy current selection" image="F:\C++ Projects\nana-creator\wdir\icons\copy.png" enable="true" separator="false" />
-				<item type="button" key="n15" owner="" text="Paste into/after current selection" image="F:\C++ Projects\nana-creator\wdir\icons\paste.png" enable="true" separator="false" />
+			<toolbar type="toolbar" name="_tb" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" buttons="(Collection)" scale="21">
+				<item type="button" key="n1" owner="" text="New project" image="C:\cppprojects\nana-creator\wdir\icons\new_prj.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n2" owner="" text="Load project" image="C:\cppprojects\nana-creator\wdir\icons\load_prj.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n3" owner="" text="Save project" image="C:\cppprojects\nana-creator\wdir\icons\save.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n4" owner="" text="Save project as..." image="C:\cppprojects\nana-creator\wdir\icons\save_as.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n5" owner="" text="-----" image="" enable="true" separator="true" goright="false" />
+				<item type="button" key="n6" owner="" text="Generate C++ code" image="C:\cppprojects\nana-creator\wdir\icons\output_on.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n7" owner="" text="-----" image="" enable="true" separator="true" goright="false" />
+				<item type="button" key="n8" owner="" text="Delete current selection" image="C:\cppprojects\nana-creator\wdir\icons\delete.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n9" owner="" text="-----" image="" enable="true" separator="true" goright="false" />
+				<item type="button" key="n10" owner="" text="Move up current selection" image="C:\cppprojects\nana-creator\wdir\icons\up.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n11" owner="" text="Move down current selection" image="C:\cppprojects\nana-creator\wdir\icons\down.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n12" owner="" text="-----" image="" enable="true" separator="true" goright="false" />
+				<item type="button" key="n13" owner="" text="Cut current selection" image="C:\cppprojects\nana-creator\wdir\icons\cut.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n14" owner="" text="Copy current selection" image="C:\cppprojects\nana-creator\wdir\icons\copy.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n15" owner="" text="Paste into/after current selection" image="C:\cppprojects\nana-creator\wdir\icons\paste.png" enable="true" separator="false" goright="false" />
+				<item type="button" key="n16" owner="" text="&gt;&gt;&gt;   Go right   &gt;&gt;&gt;" image="" enable="true" separator="false" goright="true" />
+				<item type="button" key="n19" owner="" text="Info..." image="C:\cppprojects\nana-creator\wdir\icons\info.png" enable="true" separator="false" goright="false" />
 			</toolbar>
 		</field>
 		<field type="field" name="main_field" weight="-1" layout="0" margin="0" gap="0">

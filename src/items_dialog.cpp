@@ -22,6 +22,7 @@
 #define NODE_NAME		"n"
 #define SEPARATOR_TXT	"-----"
 #define COLLAPSE_TXT	"Collapse"
+#define GORIGHT_TXT		">>>   Go right   >>>"
 
 
 
@@ -39,16 +40,23 @@ void items_dialog::init()
 	_place["right_lyt"] << _propgrid;
 	_place.collocate();
 
-	// toolbar: add separator button
+	// toolbar: separator button
 	if(_type != ctrls::pg_type::collection_toolbar && _type != ctrls::pg_type::collection_menubar)
 	{
 		toolbar.enable(1, false);
 	}
 	// toolbar: left/right buttons
-	if(_type != ctrls::pg_type::collection_menubar)
+	if(_type == ctrls::pg_type::collection_menubar)
 	{
-		toolbar.enable(7, false);
-		toolbar.enable(8, false);
+		toolbar.separate();
+		toolbar.append("Move left", nana::paint::image("icons/left.png"));
+		toolbar.append("Move right", nana::paint::image("icons/right.png"));
+	}
+	// toolbar: go_right button
+	else if(_type == ctrls::pg_type::collection_toolbar)
+	{
+		toolbar.separate();
+		toolbar.append("Go right", nana::paint::image("icons/goright.png"));
 	}
 	//ctrls - END
 
@@ -128,8 +136,16 @@ void items_dialog::init()
 		}
 		else if(arg.button == 7)
 		{
-			// move left
-			tb_move_left_selected_item();
+			if(_type == ctrls::pg_type::collection_menubar)
+			{
+				// move left
+				tb_move_left_selected_item();
+			}
+			else if(_type == ctrls::pg_type::collection_toolbar)
+			{
+				// go right
+				tb_add_go_right();
+			}
 		}
 		else if(arg.button == 8)
 		{
@@ -253,6 +269,9 @@ void items_dialog::tb_delete_selected_item()
 
 	if(m() == nana::msgbox::pick_yes)
 	{
+		if(sel.text() == GORIGHT_TXT)
+			_go_right = false;
+
 		if(sel == _root.child())
 		{
 			// this is the 1st sibling
@@ -463,6 +482,45 @@ void items_dialog::tb_move_right_selected_item()
 }
 
 
+void items_dialog::tb_add_go_right()
+{
+	if(_go_right)
+	{
+		nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::ok);
+		m.icon(m.icon_information);
+		m << "\"Go right\" is already present !";
+		m();
+		return;
+	}
+	_go_right = true;
+
+	auto sel = items_tree.selected();
+
+	_items.push_back(ctrls::properties_collection{});
+	auto& item = _items.back();
+
+	// init item properties
+	ctrls::toolbar::init_item(item);
+	item.property("goright") = true;
+	item.property("text") = GORIGHT_TXT;
+
+	// append to treebox
+	nana::drawerbase::treebox::item_proxy ip;
+	ip = items_tree.insert(_node_mgr.add_numbered(NODE_NAME), GORIGHT_TXT);
+
+	if(_root.empty())
+		_root = ip.owner();
+
+	update_image(ip, "");
+	item.property("key") = ip.key();
+
+
+	// select
+	ip.select(true);
+	return;
+}
+
+
 void items_dialog::select_item(const std::string& key)
 {
 	_selected = 0;
@@ -506,7 +564,7 @@ void items_dialog::update_selected()
 
 	if(_selected)
 	{
-		if(_selected->property("separator").as_bool() == false)
+		if(_selected->property("separator").as_bool() == false && _selected->property("goright").as_bool() == false)
 		{
 			propertygrid_helper::append(&_propgrid, _selected, 0);
 
@@ -576,6 +634,10 @@ void items_dialog::set_items(const std::vector<ctrls::properties_collection>& it
 			auto text = i.property("text").as_string();
 			if(_type == ctrls::pg_type::collection_collapse)
 				text = COLLAPSE_TXT;
+
+			if(text == GORIGHT_TXT)
+				_go_right = true;
+
 			auto ip = items_tree.insert(i.property("key").as_string(), text);
 			if(_root.empty())
 				_root = ip.owner();

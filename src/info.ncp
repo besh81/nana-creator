@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<nana-creator version="0.20.0">
+	<form mainclass="true" filename="info" rel_path="true" work_dir="" type="form" name="info" enabled="true" caption="About Nana Creator" width="520" height="330" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="0" gap="2">
+		<field type="field" name="field1" weight="150" layout="0" margin="0" gap="0">
+			<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="50%" image="C:\cppprojects\nana-creator\wdir\icons\NC.png" transparent="false" halign="1" valign="1" stretchable="false" gradualbg="true" gbg_from="255,255,255" gbg_to="30,30,30" gbg_dir="0" />
+			<panel type="panel" name="panel1" enabled="true" bgcolor="30,30,30" fgcolor="0,0,0" transparent="false" layout="1" weight="-1" margin="10" gap="0">
+				<label type="label" name="label1" enabled="true" bgcolor="212,208,200" fgcolor="255,255,255" f_size="26" f_weight="600" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Nana Creator" format="false" transparent="true" halign="1" valign="2" />
+				<label type="label" name="_ver" enabled="true" bgcolor="212,208,200" fgcolor="255,255,255" f_size="16" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="version" format="false" transparent="true" halign="1" valign="0" />
+			</panel>
+		</field>
+		<field type="field" name="field2" weight="30" layout="1" margin="5" gap="2">
+			<label type="label" name="label2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="20" caption=" Nana Creator - a RAD tool for (and build with) Nana C++ Library" format="false" transparent="false" halign="1" valign="1" />
+		</field>
+		<grid type="grid" name="grid1" weight="-1" columns="5" rows="5" margin="5" gap="0" collapse="(Collection)">
+			<item type="collapse" key="n1" owner="" left="1" top="0" cols="4" rows="1" />
+			<item type="collapse" key="n2" owner="" left="1" top="1" cols="4" rows="1" />
+			<item type="collapse" key="n3" owner="" left="1" top="2" cols="4" rows="3" />
+			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Author:" format="false" transparent="false" halign="0" valign="0" />
+			<label type="label" name="label31" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="besh81" format="false" transparent="false" halign="0" valign="0" />
+			<label type="label" name="label4" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="website:" format="false" transparent="false" halign="0" valign="0" />
+			<label type="label" name="label41" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="https://github.com/besh81/nana-creator" format="false" transparent="false" halign="0" valign="0" />
+			<label type="label" name="label5" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Thanks to ..." format="false" transparent="false" halign="0" valign="0" />
+			<textbox type="textbox" name="_thanks_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="true" select_behavior="false" undo_length="30" halign="0" />
+		</grid>
+		<field type="field" name="field3" weight="40" layout="0" margin="6" gap="2">
+			<panel type="panel" name="panel2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" transparent="false" layout="0" weight="-1" margin="5" gap="2" />
+			<button type="button" name="_ok_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="OK" icon="" enable_pushed="false" pushed="false" transparent="false" />
+		</field>
+	</form>
+</nana-creator>

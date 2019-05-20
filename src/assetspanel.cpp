@@ -60,6 +60,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.append("controls/categorize", CTRL_CATEGORIZE, std::string(CTRL_CATEGORIZE)).icon(CTRL_CATEGORIZE);
 	set.append("controls/checkbox", CTRL_CHECKBOX, std::string(CTRL_CHECKBOX)).icon(CTRL_CHECKBOX);
 	set.append("controls/combox", CTRL_COMBOX, std::string(CTRL_COMBOX)).icon(CTRL_COMBOX);
+	set.append("controls/custom", CTRL_CUSTOM, std::string(CTRL_CUSTOM)).icon(CTRL_CUSTOM);
 	set.append("controls/datechooser", CTRL_DATECHOOSER, std::string(CTRL_DATECHOOSER)).icon(CTRL_DATECHOOSER);
 	set.append("controls/label", CTRL_LABEL, std::string(CTRL_LABEL)).icon(CTRL_LABEL);
 	set.append("controls/listbox", CTRL_LISTBOX, std::string(CTRL_LISTBOX)).icon(CTRL_LISTBOX);

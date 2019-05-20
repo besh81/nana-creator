@@ -162,10 +162,9 @@ namespace nana
 		virtual std::size_t option() const;
 
 		virtual void push_back(const std::string& option);
+		virtual void set(const std::vector<std::string>& vs);	///< Set options to be chosen from
 
 		virtual void tooltip(const std::string& help_text) override;	///< Provide pop-up help string
-
-		virtual void set(const std::vector<std::string>& vs) override;	///< set options to be chosen from
 
 	protected:
 		virtual void create(window wd) override;

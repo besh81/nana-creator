@@ -30,6 +30,7 @@
 #include "ctrls/splitterbar.h"
 #include "ctrls/notebook.h"
 #include "ctrls/page.h"
+#include "ctrls/custom.h"
 #include "guimanager.h"
 #include "lock_guard.h"
 #include "style.h"
@@ -90,7 +91,7 @@ guimanager::guimanager(nana::window wd)
 }
 
 
-void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, resizablecanvas* main_wd)
+void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, scrollablecanvas* main_wd)
 {
 	_ct = ct;
 
@@ -135,9 +136,7 @@ void guimanager::clear()
 	{
 		auto root_child = root->child;
 		if(root_child)
-		{
-			_main_wd->remove(*root_child->value->nanawdg);
-		}
+			_main_wd->remove();
 	}
 
 	if(!_cut_copy_doc.empty())
@@ -222,12 +221,11 @@ tree_node<control_obj>* guimanager::addmainctrl(const std::string& type, const s
 	control_obj ctrl;
 
 	if(type == CTRL_FORM)
-		ctrl = control_obj(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, false, _deserializing ? false : true));
+		ctrl = control_obj(new ctrls::form(_main_wd->get_handle(), name.empty() ? _name_mgr.add_numbered(CTRL_FORM) : name, false, _deserializing ? false : true));
 	else if(type == CTRL_PANEL)
-		ctrl = control_obj(new ctrls::form(*_main_wd, name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
+		ctrl = control_obj(new ctrls::form(_main_wd->get_handle(), name.empty() ? _name_mgr.add_numbered(CTRL_PANEL) : name, true, _deserializing ? false : true));
 	else
 		return 0;
-
 
 	_main_wd->add(*ctrl->nanawdg);
 
@@ -287,6 +285,8 @@ control_obj guimanager::_create_ctrl(control_obj parent, const std::string& type
 		return control_obj(new ctrls::textbox(parent.get(), name));
 	else if(type == CTRL_COMBOX)
 		return control_obj(new ctrls::combox(parent.get(), name));
+	else if(type == CTRL_CUSTOM)
+		return control_obj(new ctrls::custom(parent.get(), name));
 	else if(type == CTRL_SPINBOX)
 		return control_obj(new ctrls::spinbox(parent.get(), name));
 	else if(type == CTRL_LISTBOX)
@@ -500,7 +500,7 @@ void guimanager::deleteselected()
 	{
 		parent = 0;
 		_pp->set(0, 0);
-		_main_wd->remove(*toremove->value->nanawdg);
+		_main_wd->remove();
 	}
 
 	_ctrls.recursive_backward(toremove, [this](tree_node<control_obj>* node) -> bool
@@ -1027,6 +1027,10 @@ bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string
 void guimanager::_updatectrl(tree_node<control_obj>* node, bool update_owner, bool update_children)
 {
 	node->value->update();
+
+	// needs to update scroll bars
+	if(node->value->properties.property("mainclass").as_bool())
+		_main_wd->refresh();
 
 	// update children ctrls
 	if(node->child && update_children)

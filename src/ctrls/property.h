@@ -38,7 +38,8 @@ namespace ctrls
 		collection_categorize,
 		collection_collapse,
 		string_weight,
-		check_style
+		check_style,
+		include_style
 	};
 
 

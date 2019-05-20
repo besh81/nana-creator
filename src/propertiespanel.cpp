@@ -16,38 +16,17 @@
 extern imagemanager		g_img_mgr;
 
 
-//propertiespanel
-propertiespanel::propertiespanel(nana::window wd, bool visible)
-	: nana::panel<true>(wd, visible)
+void propertiespanel::_init_ctrls()
 {
 	bgcolor(CREATOR_WINDOW_BG);
 
-	_place.div("vertical <weight=20 caption><margin=2 vertical <weight=42 <margin=10 weight=42 icon><vertical <weight=21 type arrange=[50,variable]><weight=21 name arrange=[50,variable]>>><margin=[5] propgrid>>");
-	
-
-	//TEMP caption
 	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
 	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-	_caption.caption("  Properties");
-	_caption.text_align(nana::align::left, nana::align_v::center);
-	_place.field("caption") << _caption;
-
 
 	_pic.bgcolor(CREATOR_WINDOW_BG);
-	_place.field("icon") << _pic;
-
 	_type_lbl.bgcolor(CREATOR_WINDOW_BG);
-	_type_txt.bgcolor(CREATOR_WINDOW_BG);
-	_place.field("type") << _type_lbl << _type_txt;
-
+	_type.bgcolor(CREATOR_WINDOW_BG);
 	_name_lbl.bgcolor(CREATOR_WINDOW_BG);
-	_name_txt.multi_lines(false);
-	_place.field("name") << _name_lbl << _name_txt;
-
-	_place.field("propgrid") << _propgrid;
-
-
-	_place.collocate();
 
 
 	// events
@@ -80,23 +59,23 @@ propertiespanel::propertiespanel(nana::window wd, bool visible)
 void propertiespanel::name_changed(std::function<void(const std::string&)> f)
 {
 	// events
-	_name_txt.events().key_press([this, f](const nana::arg_keyboard& arg)
+	_name.events().key_press([this, f](const nana::arg_keyboard& arg)
 	{
 		if(arg.key == nana::keyboard::enter && _properties)
 		{
-			_name_txt.edited_reset();
-			f(_name_txt.caption());
+			_name.edited_reset();
+			f(_name.caption());
 		}
 	});
-	_name_txt.events().focus([this, f](const nana::arg_focus& arg)
+	_name.events().focus([this, f](const nana::arg_focus& arg)
 	{
 		if(!arg.getting)
 		{
 			// just lost focus, so capture the value left by the user, if changed
-			if(_name_txt.edited() && _properties)
+			if(_name.edited() && _properties)
 			{
-				_name_txt.edited_reset();
-				f(_name_txt.caption());
+				_name.edited_reset();
+				f(_name.caption());
 			}
 		}
 	});
@@ -120,10 +99,10 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 	if(!_properties)
 	{
 		_pic.load(nana::paint::image(""));
-		_type_txt.caption("");
-		_name_txt.editable(false);
-		_name_txt.caption("");
-		_name_txt.edited_reset();
+		_type.caption("");
+		_name.editable(false);
+		_name.caption("");
+		_name.edited_reset();
 
 		_place.collocate();
 		return;
@@ -137,10 +116,10 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 	// set image, type and name
 	_img.open(g_img_mgr.path(_properties->property("type").as_string()));
 	_pic.load(_img);
-	_type_txt.caption(_properties->property("type").as_string());
-	_name_txt.editable(true);
-	_name_txt.caption(_properties->property("name").as_string());
-	_name_txt.edited_reset();
+	_type.caption(_properties->property("type").as_string());
+	_name.editable(true);
+	_name.caption(_properties->property("name").as_string());
+	_name.edited_reset();
 
 	_place.collocate();
 }

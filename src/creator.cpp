@@ -11,6 +11,7 @@
 #include "inifile.h"
 #include "codegenerator.h"
 #include "new_project.h"
+#include "info.h"
 
 
  // toolbar
@@ -29,6 +30,8 @@
 #define TB_CUT					12
 #define TB_COPY					13
 #define TB_PASTE				14
+//
+#define TB_INFO					15
 
 
 guimanager*					p_gui_mgr;	// manage all the gui elements
@@ -51,6 +54,7 @@ void creator::enableGUI(bool state, bool new_load)
 	_tb.enable(TB_CUT, state);
 	_tb.enable(TB_COPY, state);
 	_tb.enable(TB_PASTE, state);
+	_tb.enable(TB_INFO, state ? true : new_load);
 }
 
 
@@ -249,6 +253,11 @@ void creator::_init_ctrls()
 		else if(arg.button == TB_PASTE) // paste into/after current selection
 		{
 			p_gui_mgr->pasteselected();
+		}
+		else if(arg.button == TB_INFO) // info
+		{
+			info dlg(*this);
+			dlg.modality();
 		}
 	});
 

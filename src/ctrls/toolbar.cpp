@@ -6,7 +6,6 @@
  */
 
 #include "config.h"
-#include <iostream>
 #include "ctrls/toolbar.h"
 #include "filemanager.h"
 
@@ -44,6 +43,7 @@ namespace ctrls
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
 		item.append("enable").label("Enable").category(CAT_COMMON).type(pg_type::check) = true;
 		item.append("separator") = false;
+		item.append("goright") = false;
 	}
 
 
@@ -61,6 +61,8 @@ namespace ctrls
 		{
 			if(i.property("separator").as_bool())
 				tlb.separate();
+			else if(i.property("goright").as_bool())
+				tlb.go_right();
 			else
 			{
 				if(i.property("image").as_string().empty())
@@ -97,6 +99,8 @@ namespace ctrls
 		{
 			if(i.property("separator").as_bool())
 				cd->init.push_back(name + ".separate();");
+			else if(i.property("goright").as_bool())
+				cd->init.push_back(name + ".go_right();");
 			else
 			{
 				auto str = name + ".append(\"" + i.property("text").as_string() + "\"";

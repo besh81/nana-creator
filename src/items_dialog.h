@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.17.0)
+ *	C++ code generated with Nana Creator (0.20.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -65,9 +65,6 @@ private:
 		toolbar.separate();
 		toolbar.append("Move up", nana::paint::image("icons/up.png"));
 		toolbar.append("Move down", nana::paint::image("icons/down.png"));
-		toolbar.separate();
-		toolbar.append("Move left", nana::paint::image("icons/left.png"));
-		toolbar.append("Move right", nana::paint::image("icons/right.png"));
 		// panel1
 		panel1.create(*this);
 		panel1.transparent(true);
@@ -121,6 +118,7 @@ protected:
 	void tb_move_down_selected_item();
 	void tb_move_left_selected_item();
 	void tb_move_right_selected_item();
+	void tb_add_go_right();
 
 	void update_selected();
 	void update_text(nana::drawerbase::treebox::item_proxy& ip, const std::string& text);
@@ -138,6 +136,7 @@ protected:
 	bool										_grid_setup{ false };
 	std::vector<ctrls::properties_collection>	_items;
 	ctrls::properties_collection*				_selected{ 0 };
+	bool										_go_right{ false };
 
 	void select_item(const std::string& key);
 	void erase_item(const std::string& key);
