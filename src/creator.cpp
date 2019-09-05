@@ -10,6 +10,10 @@
 #include "filemanager.h"
 #include "inifile.h"
 #include "codegenerator.h"
+#include "scrollablecanvas.h"
+#include "propertiespanel.h"
+#include "assetspanel.h"
+#include "objectspanel.h"
 #include "new_project.h"
 #include "info.h"
 
@@ -261,25 +265,50 @@ void creator::_init_ctrls()
 		}
 	});
 
-	// assets
-	_place.field("assets") << _assets;
 
-	// objects
-	_place.field("objects") << _objects;
+	// adi
+	_adi_panel.create(*this);
+	_place["adi_panel"] << _adi_panel;
 
-	// properties
-	_place.field("properties") << _properties;
 
-	// canvas
-	_place.field("canvas") << _canvas;
+	_adi_place.bind(_adi_panel);
 
-	_place.collocate();
+	nana::paneinfo pinfo;
+
+	auto assets = new assetspanel(_adi_panel);
+	pinfo = _adi_place.add_pane("A", assets, "Assets");
+	pinfo.show_close(false);
+	_adi_place.update_pane(pinfo);
+
+	auto objects = new objectspanel(_adi_panel);
+	pinfo = _adi_place.add_pane("O", objects, nana::dockposition::down, "Objects");
+	pinfo.show_close(false);
+	_adi_place.update_pane(pinfo);
+
+	auto canvas = new scrollablecanvas(_adi_panel);
+	nana::paneinfo piC("C");
+	piC.show_caption(false);
+	piC.center(true);
+	piC.weightXXX(55);
+	_adi_place.add_pane(canvas, nana::dockposition::right, piC);
+
+	auto properties = new propertiespanel(_adi_panel);
+	pinfo = _adi_place.add_pane("P", properties, nana::dockposition::right, "Properties");
+	pinfo.show_close(false);
+	_adi_place.update_pane(pinfo);
+
+	_adi_place.collocate();
 
 
 	p_gui_mgr = new guimanager(*this);
-	p_gui_mgr->init(this, &_properties, &_assets, &_objects, &_canvas);
+	p_gui_mgr->init(this, properties, assets, objects, canvas);
 	
+
+	// statusbar
 	sb_set("Ready");
+
+
+	_place.collocate();
 }
 
 

@@ -17,10 +17,8 @@
 #include <nana/gui/widgets/label.hpp>
 
 //<*includes
-#include "scrollablecanvas.h"
-#include "propertiespanel.h"
-#include "assetspanel.h"
-#include "objectspanel.h"
+#include <nana/gui/widgets/panel.hpp>
+#include "nana_extra/adi_place.hpp"
 //*>
 
 
@@ -49,7 +47,8 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <weight=30 toolbar><<vert weight=20% <assets>|<objects>>|<weight=55% canvas>|<properties>><weight=24 margin=3 statusbar>");
+		//_place.div("vert <weight=30 toolbar><<vert weight=20% <assets>|<objects>>|<weight=55% canvas>|<properties>><weight=24 margin=3 statusbar>");
+		_place.div("vert <weight=30 toolbar><adi_panel><weight=24 margin=3 statusbar>");
 		caption("Nana Creator");
 		// _tb
 		_tb.create(*this);
@@ -102,12 +101,8 @@ private:
 	void _init_ctrls();
 	void _destroy_ctrls();
 
-
-	scrollablecanvas	_canvas{ *this };
-
-	assetspanel			_assets{ *this };
-	objectspanel		_objects{ *this };
-	propertiespanel		_properties{ *this };
+	nana::panel<true>	_adi_panel;
+	nana::adi_place		_adi_place;
 	//*>
 };
 

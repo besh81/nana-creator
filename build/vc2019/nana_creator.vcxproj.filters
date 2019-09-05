@@ -177,6 +177,9 @@
     <ClCompile Include="..\..\src\ctrls\custom.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\nana_extra\adi_place.cpp">
+      <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ctrls\button.h">
@@ -337,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\ctrls\custom.h">
       <Filter>Header Files\ctrls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\nana_extra\adi_place.hpp">
+      <Filter>Header Files\nana_extra</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

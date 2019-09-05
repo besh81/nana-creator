@@ -48,7 +48,6 @@ public:
 private:
 	nana::place		_place{ *this };
 
-	nana::label		_caption{ *this };
 	nana::treebox	_objects{ *this };
 
 	nana::menu*		_ctxmenu;

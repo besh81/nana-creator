@@ -44,6 +44,7 @@ namespace ctrls
 		item.append("enable").label("Enable").category(CAT_COMMON).type(pg_type::check) = true;
 		item.append("separator") = false;
 		item.append("goright") = false;
+		item.append("textout").label("Textout").category(CAT_COMMON).type(pg_type::check) = false;
 	}
 
 
@@ -51,18 +52,22 @@ namespace ctrls
 	{
 		ctrl::update();
 
+		tlb.clear();
+
 		tlb.scale(properties.property("scale").as_uint());
 
 		// buttons - START
-		tlb.clear();
-
 		std::size_t pos = 0;
 		for(auto& i : items)
 		{
+			if(i.property("goright").as_bool())
+			{
+				tlb.go_right();
+				continue;
+			}
+
 			if(i.property("separator").as_bool())
 				tlb.separate();
-			else if(i.property("goright").as_bool())
-				tlb.go_right();
 			else
 			{
 				if(i.property("image").as_string().empty())
@@ -71,6 +76,7 @@ namespace ctrls
 					tlb.append(i.property("text").as_string(), nana::paint::image(g_file_mgr.to_relative(i.property("image").as_string())));
 
 				tlb.enable(pos, i.property("enable").as_bool());
+				tlb.textout(pos, i.property("textout").as_bool());
 			}
 
 			++pos;

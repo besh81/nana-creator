@@ -2,7 +2,7 @@
  *      Nana C++ Library - Creator
  *      Author: besh81
  */
-#include <nana/gui/wvl.hpp>
+#include <nana/gui.hpp>
 #ifdef NANA_WINDOWS
 #include <windows.h>
 #endif //NANA_WINDOWS

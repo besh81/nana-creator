@@ -20,9 +20,6 @@ void propertiespanel::_init_ctrls()
 {
 	bgcolor(CREATOR_WINDOW_BG);
 
-	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
-	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-
 	_pic.bgcolor(CREATOR_WINDOW_BG);
 	_type_lbl.bgcolor(CREATOR_WINDOW_BG);
 	_type.bgcolor(CREATOR_WINDOW_BG);

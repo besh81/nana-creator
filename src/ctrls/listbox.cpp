@@ -42,7 +42,6 @@ namespace ctrls
 		//std::shared_ptr<paint::font> column_font;	///< Renderer draws column texts with the font if it is not a nullptr.
 		properties.append("max_fit_content").label("Max fit content").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.max_fit_content;
 		properties.append("min_column_width").label("Min column width").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.min_column_width;
-		properties.append("suspension_width").label("Suspension width").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.suspension_width;
 		properties.append("text_margin").label("Text margin").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.text_margin;
 		properties.append("item_height_ex").label("Item height ex").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.item_height_ex;
 		properties.append("header_splitter_area_before").label("Header splitter area before").category(CAT_SCHEME).type(pg_type::string_uint) = def_scheme.header_splitter_area_before;
@@ -93,7 +92,6 @@ namespace ctrls
 		// column_font
 		lst.scheme().max_fit_content = properties.property("max_fit_content").as_uint();
 		lst.scheme().min_column_width = properties.property("min_column_width").as_uint();
-		lst.scheme().suspension_width = properties.property("suspension_width").as_uint();
 		lst.scheme().text_margin = properties.property("text_margin").as_uint();
 		lst.scheme().item_height_ex = properties.property("item_height_ex").as_uint();
 		lst.scheme().header_splitter_area_before = properties.property("header_splitter_area_before").as_uint();
@@ -145,8 +143,6 @@ namespace ctrls
 			cd->init.push_back(name + ".scheme().max_fit_content = " + properties.property("max_fit_content").as_string() + ";");
 		if(properties.property("min_column_width").as_uint() != def_scheme.min_column_width)
 			cd->init.push_back(name + ".scheme().min_column_width = " + properties.property("min_column_width").as_string() + ";");
-		if(properties.property("suspension_width").as_uint() != def_scheme.suspension_width)
-			cd->init.push_back(name + ".scheme().suspension_width = " + properties.property("suspension_width").as_string() + ";");
 		if(properties.property("text_margin").as_uint() != def_scheme.text_margin)
 			cd->init.push_back(name + ".scheme().text_margin = " + properties.property("text_margin").as_string() + ";");
 		if(properties.property("item_height_ex").as_uint() != def_scheme.item_height_ex)

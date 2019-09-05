@@ -10,7 +10,7 @@
 
 #include "config.h"
 #include <memory>
-#include <nana/gui/wvl.hpp>
+#include <nana/gui.hpp>
 #include "ctrls/property.h"
 #include "codegenerator_data.h"
 

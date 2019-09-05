@@ -5,7 +5,7 @@
  *      Author: besh81
  */
 
-#include <nana/gui/wvl.hpp> // define OS version
+#include <nana/gui.hpp> // define OS version
 #include<iostream>
 #include <stdio.h>  /* defines FILENAME_MAX */
 #if defined(NANA_WINDOWS)

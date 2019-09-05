@@ -20,15 +20,7 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 {
 	bgcolor(CREATOR_WINDOW_BG);
 
-	_place.div("vertical <weight=20 caption><objects>");
-
-	// caption
-	_caption.bgcolor(CREATOR_WINDOW_CAP_BG);
-	_caption.fgcolor(CREATOR_WINDOW_CAP_FG);
-	_caption.caption("  Objects");
-	_caption.text_align(nana::align::left, nana::align_v::center);
-	_place.field("caption") << _caption;
-
+	_place.div("objects");
 
 	_objects.bgcolor(CREATOR_WINDOW_BG);
 	_place.field("objects") << _objects;

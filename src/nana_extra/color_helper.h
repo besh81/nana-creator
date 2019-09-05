@@ -8,7 +8,7 @@
 #ifndef NANA_CREATOR_COLOR_HELPER_H
 #define NANA_CREATOR_COLOR_HELPER_H
 
-#include <nana/gui/wvl.hpp>
+#include <nana/gui.hpp>
 
 
 namespace nana

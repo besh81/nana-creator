@@ -259,9 +259,14 @@ namespace nana
 					return get(cat)->items.size();
 				}
 
-				bool good(std::size_t cat) const
+				bool good(std::size_t cat) const noexcept
 				{
 					return (cat < categories_.size());
+				}
+
+				bool good(const index_pair& pos) const noexcept
+				{
+					return ((pos.cat < categories_.size()) && (pos.item < size_item(pos.cat)));
 				}
 
 				void enabled(bool state)
@@ -714,7 +719,7 @@ namespace nana
 				}
 
 
-				int pos_offset_end, pos_offset = 0;
+				int pos_offset_end = 0, pos_offset = 0;
 				bool first_cat = true;
 				for(auto i_categ = get(0); i_categ != cat_container().end(); ++i_categ)
 				{
@@ -1101,7 +1106,7 @@ namespace nana
 
 			bool item_proxy::empty() const
 			{
-				return !ess_;
+				return !(ess_ && ess_->lister.good(pos_));
 			}
 
 			//Behavior of Iterator's value_type

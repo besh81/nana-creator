@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.20.0)
+ *	C++ code generated with Nana Creator (0.21.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -13,8 +13,8 @@
 
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/place.hpp>
-#include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/picture.hpp>
+#include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include "nana_extra/propertygrid.h"
 
@@ -48,12 +48,7 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <weight=20 caption><vert margin=2 <weight=42 <weight=42 margin=5 icon><vert <gap=10 arrange=[45,variable] type><gap=10 arrange=[45,variable] name>>><margin=5 propgrid>>");
-		// _caption
-		_caption.create(*this);
-		_place["caption"] << _caption;
-		_caption.caption("  Properties");
-		_caption.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
+		_place.div("vert <vert margin=2 <weight=42 <weight=42 margin=5 icon><vert <gap=10 arrange=[45,variable] type><gap=10 arrange=[45,variable] name>>><margin=5 propgrid>>");
 		// _pic
 		_pic.create(*this);
 		_place["icon"] << _pic;
@@ -87,7 +82,6 @@ private:
 
 protected:
 	nana::place _place{ *this };
-	nana::label _caption;
 	nana::picture _pic;
 	nana::label _type_lbl;
 	nana::label _type;
