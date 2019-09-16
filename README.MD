@@ -5,7 +5,7 @@
 
 Click here to download the win exe file: [![Download nana-creator](https://img.shields.io/sourceforge/dt/nana-creator.svg)](https://sourceforge.net/projects/nana-creator/files/latest/download)
 
-<img src="https://besh81.github.io/nana-creator-docs/img/calc.jpg" alt="Calculator UI" width="80%"></a>
+<img src="https://besh81.github.io/nana-creator-docs/img/calc.jpg" alt="Calculator UI" width="48%"></a>  <img src="https://besh81.github.io/nana-creator-docs/img/adi.jpg" alt="Calculator UI" width="48%"></a>
 
 
 #### Used libraries:

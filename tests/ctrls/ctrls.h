@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.18.0)
+ *	C++ code generated with Nana Creator (0.22.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -62,7 +62,7 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,variable,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
+		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,26,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
 		caption("Nana-Creator test");
 		// menubar1
 		menubar1.create(*this);
@@ -96,9 +96,20 @@ private:
 		toolbar1.bgcolor(this->bgcolor());
 		toolbar1.scale(21);
 		toolbar1.append("Add", nana::paint::image("icons/item_add.png"));
-		toolbar1.separate();
 		toolbar1.append("Delete", nana::paint::image("icons/item_delete.png"));
-		toolbar1.enable(2, false);
+		toolbar1.enable(1, false);
+		toolbar1.separate();
+		toolbar1.append("Toggle A");
+		toolbar1.textout(3, true);
+		toolbar1.tooltype(3, nana::toolbar::tool_type::toggle);
+		toolbar1.toggle_group(3, "Gruppo1");
+		toolbar1.toggle(3, true);
+		toolbar1.append("Toggle B");
+		toolbar1.textout(4, true);
+		toolbar1.tooltype(4, nana::toolbar::tool_type::toggle);
+		toolbar1.toggle_group(4, "Gruppo1");
+		toolbar1.go_right();
+		toolbar1.append("Right", nana::paint::image("icons/info.png"));
 		// label1
 		label1.create(*this);
 		_place["field1"] << label1;
@@ -176,6 +187,8 @@ private:
 		_place["field1"] << textbox1;
 		textbox1.tip_string("insert text");
 		textbox1.multi_lines(false);
+		textbox1.focus_behavior(static_cast<nana::textbox::text_focus_behavior>(3));
+		textbox1.scheme().selection_text = nana::color(255,0,0);
 		// tabbar1
 		tabbar1.create(*this);
 		_place["field1"] << tabbar1;

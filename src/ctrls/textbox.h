@@ -29,6 +29,8 @@ namespace ctrls
 
 	protected:
 		nana::textbox txt;
+
+		nana::widgets::skeletons::text_editor_scheme def_scheme;
 	};
 
 }//end namespace ctrls

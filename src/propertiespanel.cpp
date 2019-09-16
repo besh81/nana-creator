@@ -18,14 +18,6 @@ extern imagemanager		g_img_mgr;
 
 void propertiespanel::_init_ctrls()
 {
-	bgcolor(CREATOR_WINDOW_BG);
-
-	_pic.bgcolor(CREATOR_WINDOW_BG);
-	_type_lbl.bgcolor(CREATOR_WINDOW_BG);
-	_type.bgcolor(CREATOR_WINDOW_BG);
-	_name_lbl.bgcolor(CREATOR_WINDOW_BG);
-
-
 	// events
 	_propgrid.events().property_changed([this](const nana::arg_propertygrid& arg)
 	{

@@ -39,7 +39,8 @@ namespace ctrls
 		collection_collapse,
 		string_weight,
 		check_style,
-		include_style
+		include_style,
+		focus_behavior
 	};
 
 

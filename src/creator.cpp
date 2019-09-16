@@ -267,11 +267,10 @@ void creator::_init_ctrls()
 
 
 	// adi
-	_adi_panel.create(*this);
-	_place["adi_panel"] << _adi_panel;
-
-
 	_adi_place.bind(_adi_panel);
+	//
+	_adi_place.scheme().caption_bg = nana::color(64, 86, 141);
+	_adi_place.scheme().caption_highlight = nana::color(200, 92, 92);
 
 	nana::paneinfo pinfo;
 
@@ -289,8 +288,8 @@ void creator::_init_ctrls()
 	nana::paneinfo piC("C");
 	piC.show_caption(false);
 	piC.center(true);
-	piC.weightXXX(55);
-	_adi_place.add_pane(canvas, nana::dockposition::right, piC);
+	piC.weight(55);
+	_adi_place.add_pane(piC, canvas, nana::dockposition::right);
 
 	auto properties = new propertiespanel(_adi_panel);
 	pinfo = _adi_place.add_pane("P", properties, nana::dockposition::right, "Properties");

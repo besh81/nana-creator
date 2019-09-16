@@ -9,7 +9,7 @@
 #define NANA_CREATOR_STYLE_H
 
 
-#define CREATOR_MAIN_BG			nana::color(128, 128, 128)
+#define CREATOR_MAIN_BG			nana::color(132, 134, 176)
 
 #define CREATOR_WINDOW_BG		nana::color(245, 245, 245)
 

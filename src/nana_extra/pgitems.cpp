@@ -670,6 +670,7 @@ namespace nana
 		{
 			i.create(wd);
 			i.multi_lines(false);
+			i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop_or_click);
 
 			i.events().click.connect_front([this](const nana::arg_click& arg)
 			{
@@ -698,7 +699,7 @@ namespace nana
 			});
 			i.set_accept([](wchar_t c) -> bool
 			{
-				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace || c == nana::keyboard::tab) ? true : false;
 			});
 		}
 

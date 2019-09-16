@@ -68,6 +68,9 @@ namespace ctrls
 	void field::update()
 	{
 		//ctrl::update();
+		auto pw = nana::API::get_widget(nanawdg->parent());
+		fld.bgcolor(pw->bgcolor());
+		fld.fgcolor(pw->fgcolor());
 
 		// update boxmodel
 		if(_grid)

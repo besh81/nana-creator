@@ -59,7 +59,8 @@ namespace propertygrid_helper
 				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
 			}
 			else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
-				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style || prop.type() == ctrls::pg_type::include_style)
+				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style || prop.type() == ctrls::pg_type::include_style ||
+				prop.type() == ctrls::pg_type::focus_behavior)
 			{
 				auto pgc = new nana::pg_choice(prop.label());
 				ip = cat.append(nana::propertygrid::pgitem_ptr(pgc));
@@ -97,6 +98,14 @@ namespace propertygrid_helper
 				{
 					pgc->push_back(CITEM_INCLUDE_1);
 					pgc->push_back(CITEM_INCLUDE_2);
+				}
+				else if(prop.type() == ctrls::pg_type::focus_behavior)
+				{
+					pgc->push_back(CITEM_FOCUS_NONE);
+					pgc->push_back(CITEM_FOCUS_SEL);
+					pgc->push_back(CITEM_FOCUS_TAB);
+					pgc->push_back(CITEM_FOCUS_CLICK);
+					pgc->push_back(CITEM_FOCUS_TAB_CLICK);
 				}
 			
 				pgc->option(std::atoi(prop.value().c_str()));

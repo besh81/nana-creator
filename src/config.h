@@ -10,7 +10,7 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.21.0"
+#define CREATOR_VERSION			"0.22.0"
 
 
 
@@ -74,6 +74,7 @@
 #define CAT_LAYOUT				"Layout"
 #define CAT_FONT				"Font"
 #define CAT_SCHEME				"Scheme"
+#define CAT_TYPE				"Type"
 
 
 // choices
@@ -99,6 +100,12 @@
 //
 #define CITEM_INCLUDE_1			"#include <>"
 #define CITEM_INCLUDE_2			"#include \"\""
+//
+#define CITEM_FOCUS_NONE		"none"
+#define CITEM_FOCUS_SEL			"select"
+#define CITEM_FOCUS_TAB			"select_if_tabstop"
+#define CITEM_FOCUS_CLICK		"select_if_click"
+#define CITEM_FOCUS_TAB_CLICK	"select_if_tabstop_or_click"
 
 
 // code-generator

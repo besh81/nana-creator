@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.20.0)
+ *	C++ code generated with Nana Creator (0.22.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -14,10 +14,10 @@
 #include <nana/gui.hpp>
 #include <nana/gui/place.hpp>
 #include <nana/gui/widgets/toolbar.hpp>
+#include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/label.hpp>
 
 //<*includes
-#include <nana/gui/widgets/panel.hpp>
 #include "nana_extra/adi_place.hpp"
 //*>
 
@@ -47,19 +47,21 @@ public:
 private:
 	void init_()
 	{
-		//_place.div("vert <weight=30 toolbar><<vert weight=20% <assets>|<objects>>|<weight=55% canvas>|<properties>><weight=24 margin=3 statusbar>");
-		_place.div("vert <weight=30 toolbar><adi_panel><weight=24 margin=3 statusbar>");
+		_place.div("vert arrange=[30,variable,24] _field_");
 		caption("Nana Creator");
+		bgcolor(nana::color(93,107,153));
 		// _tb
 		_tb.create(*this);
-		_place["toolbar"] << _tb;
+		_place["_field_"] << _tb;
+		_tb.bgcolor(nana::color(204,213,240));
 		_tb.scale(21);
 		_tb.append("New project", nana::paint::image("icons/new_prj.png"));
 		_tb.append("Load project", nana::paint::image("icons/load_prj.png"));
 		_tb.append("Save project", nana::paint::image("icons/save.png"));
 		_tb.append("Save project as...", nana::paint::image("icons/save_as.png"));
 		_tb.separate();
-		_tb.append("Generate C++ code", nana::paint::image("icons/output_on.png"));
+		_tb.append("Generate code", nana::paint::image("icons/output.png"));
+		_tb.textout(5, true);
 		_tb.separate();
 		_tb.append("Delete current selection", nana::paint::image("icons/delete.png"));
 		_tb.separate();
@@ -70,19 +72,45 @@ private:
 		_tb.append("Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append("Paste into/after current selection", nana::paint::image("icons/paste.png"));
 		_tb.go_right();
-		_tb.append("About...", nana::paint::image("icons/info.png"));
+		_tb.append("Info...", nana::paint::image("icons/info.png"));
+		_tb.textout(15, true);
+		// _adi_panel_margin
+		_adi_panel_margin.create(*this);
+		_adi_panel_margin_place.bind(_adi_panel_margin);
+		_adi_panel_margin_place.div("margin=5 gap=2 _field_");
+		_adi_panel_margin.bgcolor(this->bgcolor());
+		_place["_field_"] << _adi_panel_margin;
+		// _adi_panel
+		_adi_panel.create(_adi_panel_margin);
+		_adi_panel.bgcolor(_adi_panel_margin.bgcolor());
+		_adi_panel_margin_place["_field_"] << _adi_panel;
+		// _sb_panel
+		_sb_panel.create(*this);
+		_sb_panel_place.bind(_sb_panel);
+		_sb_panel_place.div("weight=24 margin=3 gap=2 _field_");
+		_sb_panel.bgcolor(nana::color(64,86,141));
+		_place["_field_"] << _sb_panel;
 		// _sb
-		_sb.create(*this);
-		_place["statusbar"] << _sb;
+		_sb.create(_sb_panel);
+		_sb_panel_place["_field_"] << _sb;
+		_sb.bgcolor(_sb_panel.bgcolor());
+		_sb.fgcolor(nana::color(255,255,255));
 		_sb.caption("");
 
 		_place.collocate();
+		_adi_panel_margin_place.collocate();
+		_sb_panel_place.collocate();
 	}
 
 
 protected:
 	nana::place _place{ *this };
 	nana::toolbar _tb;
+	nana::panel<true> _adi_panel_margin;
+	nana::place _adi_panel_margin_place;
+	nana::panel<true> _adi_panel;
+	nana::panel<true> _sb_panel;
+	nana::place _sb_panel_place;
 	nana::label _sb;
 
 
@@ -101,7 +129,6 @@ private:
 	void _init_ctrls();
 	void _destroy_ctrls();
 
-	nana::panel<true>	_adi_panel;
 	nana::adi_place		_adi_place;
 	//*>
 };

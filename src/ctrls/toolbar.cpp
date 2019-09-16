@@ -42,9 +42,14 @@ namespace ctrls
 		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
 		item.append("enable").label("Enable").category(CAT_COMMON).type(pg_type::check) = true;
+		item.append("textout").label("Textout").category(CAT_COMMON).type(pg_type::check) = false;
+		//
+		item.append("toggle_type").label("Toggle").category(CAT_TYPE).type(pg_type::check) = false;
+		item.append("toggle_pushed").label("Pushed").category(CAT_TYPE).type(pg_type::check).enabled("toggle_type", true) = false;
+		item.append("toggle_group").label("Group").category(CAT_TYPE).type(pg_type::string).enabled("toggle_type", true) = "";
+		//
 		item.append("separator") = false;
 		item.append("goright") = false;
-		item.append("textout").label("Textout").category(CAT_COMMON).type(pg_type::check) = false;
 	}
 
 
@@ -77,6 +82,14 @@ namespace ctrls
 
 				tlb.enable(pos, i.property("enable").as_bool());
 				tlb.textout(pos, i.property("textout").as_bool());
+				
+				if(i.property("toggle_type").as_bool())
+				{
+					tlb.tooltype(pos, nana::toolbar::tool_type::toggle);
+					if(!i.property("toggle_group").as_string().empty())
+						tlb.toggle_group(pos, i.property("toggle_group").as_string());
+					tlb.toggle(pos, i.property("toggle_pushed").as_bool());
+				}
 			}
 
 			++pos;
@@ -103,14 +116,17 @@ namespace ctrls
 		std::size_t pos = 0;
 		for(auto& i : items)
 		{
+			if(i.property("goright").as_bool())
+			{
+				cd->init.push_back(name + ".go_right();");
+				continue;
+			}
+
 			if(i.property("separator").as_bool())
 				cd->init.push_back(name + ".separate();");
-			else if(i.property("goright").as_bool())
-				cd->init.push_back(name + ".go_right();");
 			else
 			{
 				auto str = name + ".append(\"" + i.property("text").as_string() + "\"";
-
 				if(i.property("image").as_string().empty())
 					str.append(");");
 				else
@@ -119,6 +135,17 @@ namespace ctrls
 
 				if(!i.property("enable").as_bool())
 					cd->init.push_back(name + ".enable(" + std::to_string(pos) + ", false);");
+				if(i.property("textout").as_bool())
+					cd->init.push_back(name + ".textout(" + std::to_string(pos) + ", true);");
+
+				if(i.property("toggle_type").as_bool())
+				{
+					cd->init.push_back(name + ".tooltype(" + std::to_string(pos) + ", nana::toolbar::tool_type::toggle);");
+					if(!i.property("toggle_group").as_string().empty())
+						cd->init.push_back(name + ".toggle_group(" + std::to_string(pos) + ", \"" + i.property("toggle_group").as_string() + "\");");
+					if(i.property("toggle_pushed").as_bool())
+						cd->init.push_back(name + ".toggle(" + std::to_string(pos) + ", true);");
+				}
 			}
 
 			++pos;

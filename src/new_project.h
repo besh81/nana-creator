@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.17.0)
+ *	C++ code generated with Nana Creator (0.22.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -65,10 +65,8 @@ private:
 		// type_txt
 		type_txt.create(*this);
 		_place["field2"] << type_txt;
-		type_txt.caption("");
 		type_txt.editable(false);
 		type_txt.line_wrapped(true);
-		type_txt.multi_lines(true);
 		// label1
 		label1.create(*this);
 		_place["field3"] << label1;
@@ -77,7 +75,6 @@ private:
 		// name_txt
 		name_txt.create(*this);
 		_place["field3"] << name_txt;
-		name_txt.caption("");
 		name_txt.multi_lines(false);
 		// label2
 		label2.create(*this);
@@ -87,7 +84,6 @@ private:
 		// folder_txt
 		folder_txt.create(*this);
 		_place["field4"] << folder_txt;
-		folder_txt.caption("");
 		folder_txt.editable(false);
 		folder_txt.multi_lines(false);
 		// folder_btn

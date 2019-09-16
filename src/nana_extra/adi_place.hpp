@@ -6,6 +6,7 @@
 #define NANA_GUI_ADI_PLACE_HPP
 #include <nana/push_ignore_diagnostic>
 #include <nana/gui/basis.hpp>
+#include <nana/gui/detail/widget_geometrics.hpp>
 #include <memory>
 #include <functional>
 
@@ -59,8 +60,8 @@ namespace nana
 		paneinfo& show_close(bool show);
 		bool show_close() const;
 
-		paneinfo& weightXXX(double value);
-		double weightXXX() const;
+		paneinfo& weight(double value); //XXX per ora funziona solo come peso iniziale: cosa succede se si setta durante il funzionamento ???
+		double weight() const;
 
 		paneinfo& center(bool value);
 		bool center() const;
@@ -73,14 +74,13 @@ namespace nana
 		{
 			std::string id;
 
-			std::string caption;			///<  The caption of the pane
+			std::string caption;			///<  Caption string
 			bool show_caption{ true };		///<  Indicates where the pane caption should be visible
 			bool close_button{ true };		///<  Indicates where the close button should be visible
 			double weight{ 0.f };			///<  Indicates the weight of the pane in percentage along the place direction (0 <= not defined)
 			bool center{ false };			///<  Indicates the pane is a center pane
 		} data_;
 	};
-
 
 
     ///  Layout management - an object of class adi_place is attached to a widget, and it automatically positions and resizes the children widgets.
@@ -90,10 +90,19 @@ namespace nana
 		struct implement;
 
 	public:
+		struct scheme_t
+		{
+			nana::color_proxy caption_bg{ static_cast<color_rgb>(0x83EB) };	///< caption background color
+			nana::color_proxy caption_fg{ nana::colors::white };			///< caption foreground color
+			nana::color_proxy caption_highlight{ nana::colors::red };		///< caption highlight color
+
+			unsigned splitter_width{ 6 };		///< splitter width in pixels
+		};
+
 		class error :public std::invalid_argument
 		{
 		public:
-			error(	const std::string& what, const adi_place& plc);
+			error(const std::string& what, const adi_place& plc);
 
 			std::string base_what;
 			std::string owner_caption;  ///< truncate caption (title) of the "adi_placed" widget
@@ -117,15 +126,17 @@ namespace nana
 		/// Add a panel
 		paneinfo add_pane(const std::string& id, widget* window, const std::string& caption = "");
 		paneinfo add_pane(const std::string& id, widget* window, dockposition position, const std::string& caption = "");
-		paneinfo add_pane(widget* window, const paneinfo& info);
-		paneinfo add_pane(widget* window, dockposition position, const paneinfo& info);
+		paneinfo add_pane(const paneinfo& info, widget* window);
+		paneinfo add_pane(const paneinfo& info, widget* window, dockposition position);
 
 		paneinfo get_pane(const std::string& id);
 
 		void update_pane(const paneinfo& info);
 
+		scheme_t& scheme();
+
 	private:
-		implement * impl_;
+		implement* impl_;
 	};
 
 	

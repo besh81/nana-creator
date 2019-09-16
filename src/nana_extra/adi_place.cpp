@@ -19,18 +19,10 @@
 #include <nana/gui/element.hpp>
 #include <nana/paint/text_renderer.hpp>
 
-#include <memory>
-#include <limits>	//numeric_limits
-#include <cstdlib>	//std::abs
-#include <cstring>	//std::memset
-#include <cctype>	//std::isalpha/std::isalnum
 
+#define DOCK_CAPTION_H		20
+#define DOCK_PANE_MIN_W		30 //TODO: aggiungere in paneinfo
 
-
-//ADI_TODO : spostare in scheme
-#define DOCK_CAPTION_H	20
-#define DOCK_PANE_MIN_W	30
-#define DOCK_PANE_MIN_H	30
 
 
 namespace nana
@@ -66,12 +58,12 @@ namespace nana
 		return data_.close_button;
 	}
 
-	paneinfo& paneinfo::weightXXX(double value)
+	paneinfo& paneinfo::weight(double value)
 	{
 		data_.weight = value;
 		return *this;
 	}
-	double paneinfo::weightXXX() const
+	double paneinfo::weight() const
 	{
 		return data_.weight;
 	}
@@ -186,6 +178,11 @@ namespace nana
 				info_ = info;
 			}
 
+			void set_scheme(adi_place::scheme_t* scheme)
+			{
+				scheme_ = scheme;
+			}
+
 			void on_close(std::function<void()>&& fn)
 			{
 				close_fn_ = std::move(fn);
@@ -208,8 +205,8 @@ namespace nana
 				if(!info_->show_caption())
 					return;
 
-				graph.palette(true, colors::white);
-				graph.rectangle(true, static_cast<color_rgb>(0x83EB));
+				graph.palette(true, scheme_->caption_fg);
+				graph.rectangle(true, scheme_->caption_bg);
 
 				//draw caption
 				auto text = to_wstring(API::window_caption(window_handle_));
@@ -222,7 +219,7 @@ namespace nana
 					auto r = _m_button_area();
 					if(x_pointed_)
 					{
-						color xclr = colors::red;
+						color xclr = scheme_->caption_highlight;
 
 						if(x_state_ == ::nana::mouse_action::pressed)
 							xclr = xclr.blend(colors::white, 0.2);
@@ -233,7 +230,7 @@ namespace nana
 					r.x += (r.width - 16) / 2;
 					r.y = (r.height - 16) / 2;
 
-					x_icon_.draw(graph, colors::red, colors::white, r, element_state::normal);
+					x_icon_.draw(graph, scheme_->caption_bg, scheme_->caption_fg, r, element_state::normal);
 				}
 			}
 
@@ -282,7 +279,7 @@ namespace nana
 				return{ static_cast<int>(sz.width) - DOCK_CAPTION_H, 0, DOCK_CAPTION_H, sz.height };
 			}
 		public:
-			window window_handle_;
+			window window_handle_{ nullptr };
 			std::unique_ptr<paint::text_renderer> text_rd_;
 			bool x_pointed_{ false };
 			::nana::mouse_action x_state_{ ::nana::mouse_action::normal };
@@ -290,7 +287,8 @@ namespace nana
 
 			std::function<void()>	close_fn_;
 
-			paneinfo * info_;
+			paneinfo* info_{ nullptr };
+			adi_place::scheme_t* scheme_{ nullptr };
 		};
 
 		class dockarea_caption
@@ -313,16 +311,18 @@ namespace nana
 				notifier_ = notifier;
 			}
 
-			void create(window parent, paneinfo* info)
+			void create(window parent, paneinfo* info, adi_place::scheme_t* scheme)
 			{
 				host_window_ = parent;
 				info_ = info;
+				scheme_ = scheme;
 
 				base_type::create(parent, true);
 				this->caption("dockarea");
 				caption_.create(*this, true);
 				caption_.caption(info_->caption());
 				caption_.get_drawer_trigger().set_info(info);
+				caption_.get_drawer_trigger().set_scheme(scheme_);
 				caption_.get_drawer_trigger().on_close([this]
 					{
 						notifier_->request_close();
@@ -330,20 +330,7 @@ namespace nana
 
 				this->events().resized.connect_unignorable([this](const arg_resized& arg)
 					{
-						rectangle r{ 0, 0, arg.width, DOCK_CAPTION_H };
-
-						if(info_->show_caption())
-						{
-							caption_.move(r);
-
-							r.y = DOCK_CAPTION_H;
-							r.height = arg.height - DOCK_CAPTION_H;
-						}
-						else
-							r.height = arg.height;
-
-						if(widget_ptr)
-							widget_ptr->move(r);
+						adjust_caption_area_({ arg.width, arg.height });
 					});
 
 				auto grab_fn = [this](const arg_mouse& arg)
@@ -392,7 +379,6 @@ namespace nana
 				caption_.events().mouse_down.connect(grab_fn);
 				caption_.events().mouse_move.connect(grab_fn);
 				caption_.events().mouse_up.connect(grab_fn);
-
 			}
 
 			void add_pane(widget* w)
@@ -450,16 +436,36 @@ namespace nana
 			void update()
 			{
 				caption_.caption(info_->caption());
-				API::refresh_window(*this); //XXX ???
+				adjust_caption_area_(size());
+				API::refresh_window(*this);
 			}
 
 		private:
 			window host_window_{ nullptr };
-			paneinfo* info_;
+			paneinfo* info_{ nullptr };
+			adi_place::scheme_t* scheme_{ nullptr };
 			dock_notifier_interface* notifier_{ nullptr };
 			std::unique_ptr<form>	container_;
 			dockarea_caption	caption_;
 			std::unique_ptr<widget> widget_ptr;
+
+			void adjust_caption_area_(const nana::size& sz)
+			{
+				rectangle r{ 0, 0, sz.width, DOCK_CAPTION_H };
+
+				if(info_->show_caption())
+				{
+					caption_.move(r);
+
+					r.y = DOCK_CAPTION_H;
+					r.height = sz.height - DOCK_CAPTION_H;
+				}
+				else
+					r.height = sz.height;
+
+				if(widget_ptr)
+					widget_ptr->move(r);
+			}
 
 			struct moves
 			{
@@ -644,6 +650,8 @@ namespace nana
 		std::function<void(window, paint::graphics&, nana::mouse_action)> split_renderer;
 		std::set<div_splitter*> splitters;
 
+		scheme_t scheme;
+
 		//The following functions are defined behind the definition of class division.
 		//because the class division here is an incomplete type.
 		implement();
@@ -709,11 +717,13 @@ namespace nana
 		division(kind k, const std::string& n) noexcept
 			: kind_of_division(k),
 			name(n)
-		{}
+		{
+			min_px.assign(DOCK_PANE_MIN_W);
+		}
 
 		virtual ~division()
 		{
-			//XXX
+#ifdef __DEBUG
 			printf("*********** dtor %s - ", name.size() ? name.c_str() : "empty");
 			if(division::kind::splitter == kind_of_division)
 				printf("splitter\n");
@@ -723,6 +733,7 @@ namespace nana
 				printf("arrange\n");
 			else
 				printf("unknown\n");
+#endif
 		}
 
 		void set_visible(bool vsb)
@@ -732,6 +743,11 @@ namespace nana
 		}
 		
 		virtual bool center() const
+		{
+			return false;
+		}
+
+		virtual bool is_vertical() const
 		{
 			return false;
 		}
@@ -817,8 +833,6 @@ namespace nana
 		number_t min_px, max_px;
 
 		division* div_owner{ nullptr };
-
-		bool do_not_remove{ false };		
 	};//end class division
 
 	class adi_place::implement::div_arrange
@@ -829,11 +843,6 @@ namespace nana
 			: division(kind::arrange, name), vertical(vert)
 		{}
 
-		bool is_vertical() const
-		{
-			return vertical;
-		}
-
 		bool center() const override
 		{
 			for(auto& c : children)
@@ -843,12 +852,17 @@ namespace nana
 			return false;
 		}
 
+		bool is_vertical() const override
+		{
+			return vertical;
+		}
+
 		void collocate(window wd) override
 		{
 			rectangle_rotator area(vertical, margin_area());
 			auto area_px = area.w();
 
-			auto fa = _m_fixed_and_adjustable(kind_of_division, area_px);
+			auto fa = _m_fixed_and_adjustable(area_px);
 			double adjustable_px = _m_revise_adjustable(fa, area_px);
 
 			auto has_center = center();
@@ -929,7 +943,7 @@ namespace nana
 
 	private:
 		//Returns the fixed pixels and the number of adjustable items.
-		std::pair<unsigned, std::size_t> _m_fixed_and_adjustable(kind match_kind, unsigned area_px) const noexcept
+		std::pair<unsigned, std::size_t> _m_fixed_and_adjustable(unsigned area_px) const noexcept
 		{
 			std::pair<unsigned, std::size_t> result;
 
@@ -1083,17 +1097,15 @@ namespace nana
 			{}
 		};
 
-		enum{splitter_px = 6};
-
 	public:
-		div_splitter(implement* impl) noexcept :
-			division(kind::splitter, std::string()),
-			impl_(impl)
+		div_splitter(implement* impl, bool vert) noexcept :
+			division(kind::splitter, std::string()), impl_(impl)
 		{
-			impl->splitters.insert(this);
+			impl->splitters.insert(static_cast<div_splitter*>(this));
 			this->splitter_.set_renderer(impl_->split_renderer);
 
-			this->weight_.assign(splitter_px);
+			splitter_cursor_ = (vert ? cursor::size_ns : cursor::size_we);
+			weight_.assign(static_cast<int>(impl_->scheme.splitter_width));
 		}
 
 		~div_splitter()
@@ -1108,12 +1120,7 @@ namespace nana
 				API::refresh_window(this->splitter_);
 		}
 
-		void direction(bool horizontal) noexcept
-		{
-			splitter_cursor_ = (horizontal ? cursor::size_we : cursor::size_ns);
-		}
-
-		bool is_vertical()
+		bool is_vertical() const override
 		{
 			return splitter_cursor_ == cursor::size_ns;
 		}
@@ -1169,7 +1176,6 @@ namespace nana
 					else if(event_code::mouse_up == arg.evt_code)
 					{
 						grabbed_ = false;
-						//XXX
 						impl_->print_debug();
 					}
 					else if (event_code::mouse_move == arg.evt_code)
@@ -1248,7 +1254,7 @@ namespace nana
 				pos = (std::max)(right_base - static_cast<int>(leaf_right->max_px.get_value(area.w())), pos);
 
 			area.x_ref() = pos;
-			area.w_ref() = unsigned(endpos - pos + splitter_px);
+			area.w_ref() = unsigned(endpos - pos);
 
 			dragger_.target(splitter_, area.result(), (vert ? nana::arrange::vertical : nana::arrange::horizontal));
 
@@ -1256,7 +1262,7 @@ namespace nana
 		}
 
 	private:
-		implement* const impl_;
+		implement* const impl_{ nullptr };
 		nana::cursor	splitter_cursor_{nana::cursor::arrow};
 		adi_place_parts::splitter	splitter_;
 		nana::point	begin_point_;
@@ -1278,8 +1284,8 @@ namespace nana
 			info_ = info;
 
 			//ADI_TODO : migliorare peso iniziale
-			if(info_->weightXXX() != 0.f)
-				weight_.assign_percent(info_->weightXXX());
+			if(info_->weight() != 0.f)
+				weight_.assign_percent(info_->weight());
 		}
 
 		~div_dockpane() noexcept
@@ -1351,31 +1357,27 @@ namespace nana
 			bool abspos;
 			if(impl_ptr_->hit_indicators(&dockpos, &abspos))
 			{
+				field_area.dimension(dockable_field->dockarea->size());
+
 				if(abspos)
 				{
 					impl_ptr_->lock_pane_indicators(false);
 					impl_ptr_->force_hide_pane_indicators(true);
 
-					field_area.dimension(dockable_field->dockarea->size());
-
 					if(impl_ptr_->to_dock(this, dockpos))
 					{
 						impl_ptr_->collocate();
-
-						impl_ptr_->print_debug(); //XXX
+						impl_ptr_->print_debug();
 					}
 				}
 				else
 				{
 					impl_ptr_->lock_pane_indicators(true);
 
-					field_area.dimension(dockable_field->dockarea->size());
-
 					if(impl_ptr_->to_dock(this, pane, dockpos))
 					{
 						impl_ptr_->collocate();
-
-						impl_ptr_->print_debug(); //XXX
+						impl_ptr_->print_debug();
 					}
 				}
 			}
@@ -1387,8 +1389,7 @@ namespace nana
 				if(impl_ptr_->to_float(this))
 				{
 					impl_ptr_->collocate();
-					
-					impl_ptr_->print_debug(); //XXX
+					impl_ptr_->print_debug();
 				}
 			}
 		}
@@ -1770,18 +1771,19 @@ namespace nana
 				arrange_ptr->weight_.assign(static_cast<int>(arrange_ptr->is_vertical() ? where_uptr->field_area.width : where_uptr->field_area.height));
 			}
 
-			auto splitter_ptr = new div_splitter(this); //ADI_TODO : mettere direzione nel ctor e invertire vert/horiz come in div_arrange
-			splitter_ptr->direction(!is_vertical(pos));
+			auto splitter_ptr = new div_splitter(this, is_vertical(pos));
 			splitter_ptr->div_owner = arrange_ptr;
 
 			div->div_owner = arrange_ptr;
 			if(div->weight_.empty())
 			{
 				div->weight_.assign(static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width));
-				if(div->weight_.integer() == 0)
+
+				// check the available space and adjust the weight accordingly
+				int avail = (is_vertical(pos) ? where_uptr->field_area.height : where_uptr->field_area.width) - where_uptr->min_px.integer() - scheme.splitter_width;
+				if(div->weight_.integer() == 0 || avail < 0 || div->weight_.integer() >= avail)
 					div->weight_.reset();
 			}
-			div->do_not_remove = true;
 
 			where_uptr->div_owner = arrange_ptr;
 			if(!div->weight_.empty())
@@ -1824,18 +1826,30 @@ namespace nana
 			auto where_owner = where ? where->div_owner : root_division.get();
 			size_t i_where = where ? where->index() : std::string::npos;
 
-			auto splitter_ptr = new div_splitter(this); //ADI_TODO : mettere direzione nel ctor e invertire vert/horiz come in div_arrange
-			splitter_ptr->direction(!is_vertical(pos));
+			auto splitter_ptr = new div_splitter(this, is_vertical(pos));
 			splitter_ptr->div_owner = where_owner;
 
 			div->div_owner = where_owner;
 			if(div->weight_.empty())
 			{
-				div->weight_.assign(static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width));
+				// check available space
+				int children_fixed_px = 0;
+				for(auto& child : where_owner->children)
+					if(!child->weight_.empty())
+						children_fixed_px += child->weight_.integer();
+					else
+						children_fixed_px += child->min_px.integer();
+				children_fixed_px += scheme.splitter_width;
+				int avail = (is_vertical(pos) ? where_owner->field_area.height : where_owner->field_area.width) - children_fixed_px;
+				// adjust the weight according with the available space
+				if(avail < div->min_px.integer())
+					div->weight_.assign(static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width));
+				else
+					div->weight_.assign(std::min(avail, static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width)));
+				
 				if(div->weight_.integer() == 0)
 					div->weight_.reset();
 			}
-			div->do_not_remove = true;
 
 			if(is_before(pos))
 			{
@@ -1982,11 +1996,7 @@ namespace nana
 				printf("\t");
 
 			if(division::kind::splitter == div->kind_of_division)
-			{
-				printf("| splitter (");
-				static_cast<div_splitter*>(div)->is_vertical() ? printf("V") : printf("H");
-				printf(")\n");
-			}
+				printf("| splitter (%s)\n", div->is_vertical() ? "V" : "H");
 			else
 			{
 				printf("%s [%.2f", div->name.size() ? div->name.c_str() : "empty", div->weight_.get_value(100));
@@ -1998,9 +2008,9 @@ namespace nana
 				if(division::kind::dockpane == div->kind_of_division)
 					printf("dockpane\n");
 				else if(division::kind::arrange == div->kind_of_division)
-					printf("arrange\n");
+					printf("arrange (%s)\n", div->is_vertical() ? "V" : "H");
 				else
-					printf("unknown\n");
+					printf("unknown !!!\n");
 			}
 
 			++level;
@@ -2011,7 +2021,7 @@ namespace nana
 
 		print_fn(root_division.get());
 		printf("\n\n\n");
-#endif // __DEBUG
+#endif
 	}
 
 	void adi_place::implement::purge()
@@ -2053,7 +2063,7 @@ namespace nana
 					}
 				}
 
-				if(to_remove && !div->children[i]->do_not_remove)
+				if(to_remove)
 				{
 					if(i == div->children.size() - 1)
 					{
@@ -2170,22 +2180,22 @@ namespace nana
 	{
 		paneinfo i(id);
 		i.caption(caption);
-		return add_pane(w, i);
+		return add_pane(i, w);
 	}
 
 	paneinfo adi_place::add_pane(const std::string& id, widget* w, dockposition position, const std::string& caption)
 	{
 		paneinfo i(id);
 		i.caption(caption);
-		return add_pane(w, position, i);
+		return add_pane(i, w, position);
 	}
 
-	paneinfo adi_place::add_pane(widget* w, const paneinfo& info)
+	paneinfo adi_place::add_pane(const paneinfo& info, widget* w)
 	{
-		return add_pane(w, dockposition::right, info);
+		return add_pane(info, w, dockposition::right);
 	}
 
-	paneinfo adi_place::add_pane(widget* w, dockposition position, const paneinfo& info)
+	paneinfo adi_place::add_pane(const paneinfo& info, widget* w, dockposition position)
 	{
 		if(info.empty())
 		{
@@ -2210,7 +2220,7 @@ namespace nana
 		impl_->floating_divs.emplace_back(div);
 
 		dock_ptr->dockarea.reset(new ::nana::adi_place_parts::dockarea);
-		dock_ptr->dockarea->create(impl_->window_handle, &dock_ptr->info);
+		dock_ptr->dockarea->create(impl_->window_handle, &dock_ptr->info, &impl_->scheme);
 		dock_ptr->dockarea->set_notifier(dock_ptr->attached);
 		dock_ptr->dockarea->move(dock_ptr->attached->field_area);
 		dock_ptr->dockarea->add_pane(w);
@@ -2242,6 +2252,11 @@ namespace nana
 		}
 	}
 	
+	adi_place::scheme_t& adi_place::scheme()
+	{
+		return impl_->scheme;
+	}
+
 
 	adi_place::error::error(const std::string& what, const adi_place& plc)
 
