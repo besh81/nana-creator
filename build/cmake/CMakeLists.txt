@@ -16,7 +16,26 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(common_dep nana)
+
 find_package(Threads REQUIRED)
+
+if(UNIX)
+    find_package(X11 REQUIRED)
+    list(APPEND common_dep
+        X11::X11
+        X11::Xft
+        X11::Xcursor
+        fontconfig
+        )
+endif()
+
+list(APPEND common_dep
+    stdc++fs
+    png
+    jpeg
+    Threads::Threads
+    )
 
 add_executable(${PROJECT_NAME}
     ../../libs/pugixml/pugixml.cpp
@@ -75,24 +94,16 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src
     )
 
-target_link_libraries(${PROJECT_NAME}
-    nana
-    pthread
-    X11
-    Xft
-    fontconfig
-    stdc++fs
-    png
-    jpeg
-    Xcursor
-)
+target_link_libraries(${PROJECT_NAME} ${common_dep})
 
 add_executable(test-ctrls
     ../../tests/ctrls/main.cpp
     ../../tests/ctrls/ctrls.ncp
     ../../tests/ctrls/ctrls.h
     )
-target_link_libraries(test-ctrls nana pthread X11 Xft fontconfig stdc++fs)
+
+list(REMOVE_ITEM common_dep png jpeg)
+target_link_libraries(test-ctrls ${common_dep})
 
 add_test(NAME test-ctrls COMMAND test-ctrls)
 
