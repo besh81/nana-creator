@@ -170,7 +170,7 @@ void guimanager::cursor(cursor_state state)
 {
 	_cursor_state = state;
 
-	//XXX - statusbar
+	//statusbar
 	if(state.type == "")
 		_ct->sb_set("");
 	else
@@ -1093,24 +1093,32 @@ void guimanager::_select_ctrl(tree_node<control_obj>* to_select)
 	if(_selected == to_select)
 		return;
 
-	if(_selected)
+	if(_selected && _selected->value)
 	{
-		if(_selected->value)
-		{
-			_selected->value->select(false);
-			_selected->value->refresh();
-		}
+		_selected->value->select(false);
+		_selected->value->refresh();
 	}
 
 	_selected = to_select;
 
-	if(_selected)
+	if(_selected && _selected->value)
 	{
-		if(_selected->value)
+		// if selected ctrl is inside a notebook then show the container page
+		auto pctrl = _selected->owner;
+		while(pctrl && pctrl->value)
 		{
-			_selected->value->select(true);
-			_selected->value->refresh();
+			if(pctrl->value->get_type() == CTRL_PAGE)
+			{
+				ctrls::page* pag = static_cast<ctrls::page*>(pctrl->value.get());
+				ctrls::notebook* ntb = static_cast<ctrls::notebook*>(pctrl->owner->value.get());
+				ntb->show_page(pag);
+			}
+			pctrl = pctrl->owner;
 		}
+
+
+		_selected->value->select(true);
+		_selected->value->refresh();
 	}
 }
 

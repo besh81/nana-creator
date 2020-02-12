@@ -43,7 +43,7 @@ namespace nana
 				if(item == INHERITED_COLOR)
 					inherited = true;
 				else
-					items.push_back(item.empty() ? 0 : std::stoi(item));
+					items.push_back(item.empty() ? 0 : std::clamp(std::stoi(item), 0, 255));
 			}
 		}
 		catch(...)
@@ -51,13 +51,9 @@ namespace nana
 			// reset
 			items.clear();
 		}
-		for(size_t i = 0; i < 3; ++i)
-		{
-			if(i >= items.size())
-				items.push_back(0);
-			else
-				items[i] = std::max(0, std::min(items[i], 255));
-		}
+
+		for(size_t i = items.size(); i < 3; ++i)
+			items.push_back(0);
 
 		return nana::color(items[0], items[1], items[2]);
 	}

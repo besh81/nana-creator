@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.22.0)
+ *	C++ code generated with Nana Creator (0.23.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -53,7 +53,7 @@ private:
 		// picture1
 		picture1.create(*this);
 		_place["field1"] << picture1;
-		picture1.load(nana::paint::image("c:/cppprojects/nana-creator/wdir/icons/nc.png"));
+		picture1.load(nana::paint::image("icons/nc.png"));
 		picture1.align(static_cast<nana::align>(1), static_cast<nana::align_v>(1));
 		picture1.set_gradual_background(nana::color(255,255,255), nana::color(30,30,30), true);
 		// panel1

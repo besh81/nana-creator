@@ -286,3 +286,225 @@ void pg_layout_weight::draw_value(nana::paint::graphics* graph, nana::rectangle 
 	cmb_.size(nana::size(STRING_CHOICE_SIZE, size_ - 2 * PG_BORDER_Y));
 }
 /// class pg_layout_weight end
+
+
+
+/// class pg_margin
+#define ARROW_BG_COLOR		nana::colors::dark_gray
+#define ARROW_FG_COLOR		nana::colors::white
+
+void pg_margin::value(const std::string& value)
+{
+	std::stringstream ss(value);
+	std::string item;
+	std::vector<int> items;
+
+	try
+	{
+		while(getline(ss, item, ','))
+			items.push_back(item.empty() ? 0 : std::max(0, std::stoi(item)));
+	}
+	catch(...)
+	{
+		// reset
+		items.clear();
+	}
+
+	if(items.size() == 1)
+	{
+		expand_ = false;
+		menu_.checked(2, true);
+	}
+	else
+	{
+		expand_ = true;
+		menu_.checked(3, true);
+
+		for(size_t i = items.size(); i < 4; ++i)
+			items.push_back(0);
+	}
+
+	evt_emit_ = false;
+	values_[0].caption(std::to_string(items[0])); //top or all
+	if(expand_)
+	{
+		values_[1].caption(std::to_string(items[1])); //right
+		values_[2].caption(std::to_string(items[2])); //bottom
+		values_[3].caption(std::to_string(items[3])); //left
+	}
+	else
+	{
+		values_[1].caption("0"); //right
+		values_[2].caption("0"); //bottom
+		values_[3].caption("0"); //left
+	}
+	evt_emit_ = true;
+
+	if(expand_)
+		pgitem::value(std::to_string(items[0]) + "," + std::to_string(items[1]) + "," + std::to_string(items[2]) + "," + std::to_string(items[3]));
+	else
+		pgitem::value(std::to_string(items[0]));
+}
+
+void pg_margin::enabled(bool state)
+{
+	pgitem::enabled(state);
+
+	for(auto& i : values_)
+		i.enabled(en_);
+}
+
+unsigned pg_margin::size() const
+{
+	return expand_ ? 2 * size_ : size_;
+}
+
+void pg_margin::value(int value)
+{
+	pg_margin::value(std::to_string(value));
+}
+
+void pg_margin::value(int top, int right, int bottom, int left)
+{
+	pg_margin::value(std::to_string(top) + "," + std::to_string(right) + "," + std::to_string(bottom) + "," + std::to_string(left));
+}
+
+void pg_margin::create(nana::window wd)
+{
+	// ibox context menu
+	menu_.append_splitter();
+	// 2. 1 value
+	menu_.append("1 value", [this](const nana::menu::item_proxy& ip)
+		{
+			pg_margin::value(values_[0].caption());
+			scroll();
+			update();
+			emit_event();
+		});
+	menu_.check_style(2, nana::menu::checks::option);
+	// 3. 4 values
+	menu_.append("4 values", [this](const nana::menu::item_proxy& ip)
+		{
+			pg_margin::value(values_[0].caption() + "," + values_[0].caption() + "," + values_[0].caption() + "," + values_[0].caption());
+			scroll();
+			update();
+			emit_event();
+		});
+	menu_.check_style(3, nana::menu::checks::option);
+	menu_.checked(3, true);
+
+
+	// textboxes
+	for(auto& i : values_)
+	{
+		i.create(wd);
+		i.multi_lines(false);
+		i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop_or_click);
+
+		i.events().click.connect_front([this](const nana::arg_click& arg)
+			{
+				scroll();
+			});
+		i.events().dbl_click([this, &i](const nana::arg_mouse& arg)
+			{
+				i.select(true);
+			});
+		i.events().key_press([this](const nana::arg_keyboard& arg)
+			{
+				if(arg.key == nana::keyboard::enter)
+				{
+					if(expand_)
+						pg_margin::value(values_[0].caption() + "," + values_[1].caption() + "," + values_[2].caption() + "," + values_[3].caption());
+					else
+						pg_margin::value(values_[0].caption());
+					emit_event();
+				}
+			});
+		i.events().focus([this, &i](const nana::arg_focus& arg)
+			{
+				if(!arg.getting)
+				{
+					// just lost focus, so capture the value left by the user
+					if(expand_)
+						pg_margin::value(values_[0].caption() + "," + values_[1].caption() + "," + values_[2].caption() + "," + values_[3].caption());
+					else
+						pg_margin::value(values_[0].caption());
+					emit_event();
+				}
+			});
+		i.set_accept([](wchar_t c) -> bool
+			{
+				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace || c == nana::keyboard::tab) ? true : false;
+			});
+	}
+
+	pg_margin::value(value_);
+}
+
+void pg_margin::draw_value(nana::paint::graphics* graph, nana::rectangle rect, const int txtoff, nana::color bgcolor, nana::color fgcolor) const
+{
+	if(expand_)
+	{
+		nana::API::show_window(values_[1], true);
+		nana::API::show_window(values_[2], true);
+		nana::API::show_window(values_[3], true);
+
+		auto txtsize = graph->text_extent_size("R");
+		int x = rect.x + PG_BORDER_X;
+		int y = rect.y + static_cast<int>(size_ - 16) / 2;
+		int ry = rect.y + PG_BORDER_Y;
+		const int offset = 8;
+
+		const unsigned txtw = 16 + 3;
+		const unsigned ctrlw = (rect.width - (2 * txtw) - offset - 2 * PG_BORDER_X) / 2;
+
+		nana::facade<nana::element::arrow> arrow("solid_triangle");
+
+		// TOP
+		graph->rectangle(nana::rectangle{ x + 1, ry, txtw, size_ - 2 * PG_BORDER_Y }, true, ARROW_BG_COLOR);
+		arrow.direction(nana::direction::north);
+		arrow.draw(*graph, {}, ARROW_FG_COLOR, { x + 3, y, 16, 16 }, nana::element_state::normal);
+		x += txtw;
+		values_[0].move(x, PG_BORDER_Y);
+		values_[0].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+		x += ctrlw + offset;
+		// BOTTOM
+		graph->rectangle(nana::rectangle{ x + 1, ry, txtw, size_ - 2 * PG_BORDER_Y }, true, ARROW_BG_COLOR);
+		arrow.direction(nana::direction::south);
+		arrow.draw(*graph, {}, ARROW_FG_COLOR, { x + 3, y, 16, 16 }, nana::element_state::normal);
+		x += txtw;
+		values_[2].move(x, PG_BORDER_Y);
+		values_[2].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+
+		// second line
+		x = rect.x + PG_BORDER_X;
+		y += size_;
+		ry += size_;
+
+		// LEFT
+		graph->rectangle(nana::rectangle{ x + 1, ry, txtw, size_ - 2 * PG_BORDER_Y }, true, ARROW_BG_COLOR);
+		arrow.direction(nana::direction::west);
+		arrow.draw(*graph, {}, ARROW_FG_COLOR, { x + 4, y, 16, 16 }, nana::element_state::normal);
+		x += txtw;
+		values_[3].move(x, size_ + PG_BORDER_Y);
+		values_[3].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+		x += ctrlw + offset;
+		// RIGHT
+		graph->rectangle(nana::rectangle{ x + 1, ry, txtw, size_ - 2 * PG_BORDER_Y }, true, ARROW_BG_COLOR);
+		arrow.direction(nana::direction::east);
+		arrow.draw(*graph, {}, ARROW_FG_COLOR, { x + 4, y, 16, 16 }, nana::element_state::normal);
+		x += txtw;
+		values_[1].move(x, size_ + PG_BORDER_Y);
+		values_[1].size(nana::size(ctrlw, size_ - 2 * PG_BORDER_Y));
+	}
+	else
+	{
+		nana::API::show_window(values_[1], false);
+		nana::API::show_window(values_[2], false);
+		nana::API::show_window(values_[3], false);
+
+		values_[0].move(rect.x + PG_BORDER_X, PG_BORDER_Y);
+		values_[0].size(nana::size(rect.width - 2 * PG_BORDER_X, size_ - 2 * PG_BORDER_Y));
+	}
+}
+/// class pg_margin end

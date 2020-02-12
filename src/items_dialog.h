@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.22.0)
+ *	C++ code generated with Nana Creator (0.23.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -55,6 +55,7 @@ private:
 		// items_tree
 		items_tree.create(*this);
 		_place["left_lyt"] << items_tree;
+		items_tree.use_entire_line(true);
 		// toolbar
 		toolbar.create(*this);
 		_place["left_lyt"] << toolbar;

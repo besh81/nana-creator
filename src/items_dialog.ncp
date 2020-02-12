@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<nana-creator version="0.22.0">
+<nana-creator version="0.23.0">
 	<form mainclass="true" filename="items_dialog" rel_path="true" work_dir="F:\C++ Projects\nana-creator\wdir" type="form" name="items_dialog" enabled="true" caption="Form" width="660" height="480" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
 		<field type="field" name="body_lyt" weight="-1" layout="0" margin="0" gap="2">
 			<field type="field" name="left_lyt" weight="-1" layout="1" margin="3" gap="2">
-				<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" checkable="false" />
+				<treebox type="treebox" name="items_tree" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" checkable="false" use_entire_line="true" />
 				<toolbar type="toolbar" name="toolbar" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" buttons="(Collection)" scale="21">
 					<item type="button" key="n1" owner="" text="Add item" image="F:\C++ Projects\nana-creator\wdir\icons\item_add.png" enable="true" textout="false" toggle_type="false" toggle_pushed="false" toggle_group="" separator="false" goright="false" />
 					<item type="button" key="n2" owner="" text="Add separator" image="F:\C++ Projects\nana-creator\wdir\icons\sep_add.png" enable="true" textout="false" toggle_type="false" toggle_pushed="false" toggle_group="" separator="false" goright="false" />

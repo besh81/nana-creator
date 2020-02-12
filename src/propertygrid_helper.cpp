@@ -125,6 +125,10 @@ namespace propertygrid_helper
 			{
 				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.type(), items)));
 			}
+			else if(prop.type() == ctrls::pg_type::margin)
+			{
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_margin(prop.label(), prop.value())));
+			}
 			else //nana::pg_type::string
 			{
 				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_string(prop.label(), prop.value())));

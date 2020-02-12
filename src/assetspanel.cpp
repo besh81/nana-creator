@@ -68,6 +68,7 @@ assetspanel::assetspanel(nana::window wd, bool visible)
 	set.expand(true);
 
 	_assets.bgcolor(CREATOR_WINDOW_BG);
+	_assets.use_entire_line(true);
 	_place.field("assets") << _assets;
 	_place.collocate();
 }

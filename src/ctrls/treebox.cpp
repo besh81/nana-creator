@@ -23,7 +23,7 @@ namespace ctrls
 		// common
 		properties.append("checkable").label("Checkable").category(CAT_COMMON).type(pg_type::check) = trb.checkable();
 		// appearance
-		// ...
+		properties.append("use_entire_line").label("Use entire line").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		// layout
 		// ...
 	}
@@ -34,6 +34,7 @@ namespace ctrls
 		ctrl::update();
 
 		trb.checkable(properties.property("checkable").as_bool());
+		trb.use_entire_line(properties.property("use_entire_line").as_bool());
 	}
 
 
@@ -50,6 +51,8 @@ namespace ctrls
 		// init
 		if(properties.property("checkable").as_bool())
 			cd->init.push_back(name + ".checkable(true);");
+		if(properties.property("use_entire_line").as_bool())
+			cd->init.push_back(name + ".use_entire_line(true);");
 	}
 
 }//end namespace ctrls

@@ -23,6 +23,7 @@ objectspanel::objectspanel(nana::window wd, bool visible)
 	_place.div("objects");
 
 	_objects.bgcolor(CREATOR_WINDOW_BG);
+	_objects.use_entire_line(true);
 	_place.field("objects") << _objects;
 	_place.collocate();
 }

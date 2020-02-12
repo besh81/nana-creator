@@ -640,7 +640,6 @@ namespace nana
 		menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
 		{
 			pg_color::value(nana::to_string(color_, ip.checked()));
-			printf(ip.checked() ? "[X]\n" : "[ ]\n");
 			emit_event();
 		});
 		menu_.enabled(2, show_inherited_);

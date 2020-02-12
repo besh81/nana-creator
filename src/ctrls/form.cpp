@@ -58,7 +58,7 @@ namespace ctrls
 		// layout
 		properties.remove("weight");
 		properties.append("layout").label("Layout").category(CAT_LAYOUT).type(pg_type::layout) = static_cast<int>(layout_orientation::horizontal);
-		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::string_uint) = 5;
+		properties.append("margin").label("Margin").category(CAT_LAYOUT).type(pg_type::margin) = "5,5,5,5";
 		properties.append("gap").label("Gap").category(CAT_LAYOUT).type(pg_type::string_uint) = 2;
 	}
 

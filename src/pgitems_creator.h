@@ -145,4 +145,33 @@ protected:
 };
 
 
+/// class pg_margin
+class pg_margin
+	: public pgitem
+{
+public:
+	pg_margin() = default;
+
+	pg_margin(const std::string& label, const std::string& value)
+		: pgitem(label, value)
+	{}
+
+	virtual void value(const std::string& value) override;
+
+	virtual void enabled(bool state) override;
+
+	virtual unsigned size() const override;
+
+	virtual void value(int value);
+	virtual void value(int top, int right, int bottom, int left);
+
+protected:
+	virtual void create(nana::window wd) override;
+
+	virtual void draw_value(nana::paint::graphics* graph, nana::rectangle rect, const int txtoff, nana::color bgcolor, nana::color fgcolor) const override;
+
+	mutable nana::textbox	values_[4];
+	bool		expand_{ true };
+};
+
 #endif //NANA_CREATOR_PGITEMS_CREATOR_H

@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.22.0)
+ *	C++ code generated with Nana Creator (0.23.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -48,7 +48,7 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <vert margin=2 <weight=42 margin=2 <weight=42 margin=5 icon><vert <gap=10 arrange=[45,variable] type><gap=10 arrange=[45,variable] name>>><margin=2 propgrid>>");
+		_place.div("vert <weight=42 margin=3 <weight=42 margin=5 icon><vert <gap=10 arrange=[45,variable] type><gap=10 arrange=[45,variable] name>>><propgrid>");
 		bgcolor(nana::color(204,213,240));
 		// _pic
 		_pic.create(*this);

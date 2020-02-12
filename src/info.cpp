@@ -12,8 +12,10 @@ void info::_init_ctrls()
 
 	_thanks_txt.caption(
 		"Jinhao:\t\tNana C++ Library and help\n"
+		"kassane:\t\tCMAKE build\n"
+		"ppetraki:\t\tCMAKE build\n"
 		"szega83:\t\tbug fixing\n"
-		"James Bremner:\t\tpropertygrid improvements\n");
+		"JamesBremner:\t\tpropertygrid improvements\n");
 
 
 	//------------------

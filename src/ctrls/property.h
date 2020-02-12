@@ -40,7 +40,8 @@ namespace ctrls
 		string_weight,
 		check_style,
 		include_style,
-		focus_behavior
+		focus_behavior,
+		margin
 	};
 
 

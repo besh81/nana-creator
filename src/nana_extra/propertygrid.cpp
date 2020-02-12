@@ -680,7 +680,7 @@ namespace nana
 			void pgitem::draw_ibox(paint::graphics* graph, rectangle rect, color bgcolor, color fgcolor) const
 			{
 				ibox_.bgcolor(bgcolor);
-				ibox_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (rect.height - IBOX_SIZE) / 2);
+				ibox_.move(rect.x + (rect.width - IBOX_SIZE) / 2, (ess_->cat_size - IBOX_SIZE) / 2);
 				ibox_.size(nana::size(IBOX_SIZE, IBOX_SIZE));
 				API::refresh_window(ibox_);
 			}

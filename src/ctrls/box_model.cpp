@@ -193,8 +193,15 @@ namespace ctrls
 
 		_margin_str = "";
 		if(!margin.empty())
-			if(margin[0] != '0')
-				_margin_str = "margin=" + margin + " ";
+		{
+			if(margin != "0" && margin != "0,0,0,0")
+			{
+				if(margin.find(',') != std::string::npos)
+					_margin_str = "margin=[" + margin + "] ";
+				else
+					_margin_str = "margin=" + margin + " ";
+			}
+		}
 
 		_gap_str = "";
 		if(!gap.empty())

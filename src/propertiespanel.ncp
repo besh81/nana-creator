@@ -1,25 +1,23 @@
 <?xml version="1.0"?>
-<nana-creator version="0.22.0">
+<nana-creator version="0.23.0">
 	<panel mainclass="true" filename="propertiespanel" rel_path="true" work_dir="" type="panel" name="propertiespanel" enabled="true" width="300" height="480" bgcolor="204,213,240" fgcolor="0,0,0" transparent="false" layout="1" margin="0" gap="0">
-		<field type="field" name="body" weight="-1" layout="1" margin="2" gap="0">
-			<field type="field" name="info" weight="42" layout="0" margin="2" gap="0">
-				<field type="field" name="icon" weight="42" layout="0" margin="5" gap="0">
-					<picture type="picture" name="_pic" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" weight="-1" image="" transparent="false" halign="1" valign="1" stretchable="false" gradualbg="false" gbg_from="255,255,255" gbg_to="0,0,0" gbg_dir="0" />
+		<field type="field" name="info" weight="42" layout="0" margin="3" gap="0">
+			<field type="field" name="icon" weight="42" layout="0" margin="5" gap="0">
+				<picture type="picture" name="_pic" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" weight="-1" image="" transparent="false" halign="1" valign="1" stretchable="false" gradualbg="false" gbg_from="255,255,255" gbg_to="0,0,0" gbg_dir="0" />
+			</field>
+			<field type="field" name="info_right" weight="-1" layout="1" margin="0" gap="0">
+				<field type="field" name="type" weight="-1" layout="0" margin="0" gap="10">
+					<label type="label" name="_type_lbl" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="45" caption="Type" format="false" transparent="true" halign="2" valign="1" />
+					<label type="label" name="_type" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" format="false" transparent="true" halign="0" valign="1" />
 				</field>
-				<field type="field" name="info_right" weight="-1" layout="1" margin="0" gap="0">
-					<field type="field" name="type" weight="-1" layout="0" margin="0" gap="10">
-						<label type="label" name="_type_lbl" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="45" caption="Type" format="false" transparent="true" halign="2" valign="1" />
-						<label type="label" name="_type" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" format="false" transparent="true" halign="0" valign="1" />
-					</field>
-					<field type="field" name="name" weight="-1" layout="0" margin="0" gap="10">
-						<label type="label" name="_name_lbl" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="45" caption="Name" format="false" transparent="true" halign="2" valign="1" />
-						<textbox type="textbox" name="_name" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="true" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
-					</field>
+				<field type="field" name="name" weight="-1" layout="0" margin="0" gap="10">
+					<label type="label" name="_name_lbl" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="45" caption="Name" format="false" transparent="true" halign="2" valign="1" />
+					<textbox type="textbox" name="_name" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="true" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
 				</field>
 			</field>
-			<field type="field" name="propgrid" weight="-1" layout="0" margin="2" gap="0">
-				<custom include="nana_extra/propertygrid.h" include_style="1" class_name="nana::propertygrid" create="$(THIS).create($(PARENT));" extra_code="" type="custom" name="_propgrid" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" />
-			</field>
+		</field>
+		<field type="field" name="propgrid" weight="-1" layout="0" margin="0" gap="0">
+			<custom include="nana_extra/propertygrid.h" include_style="1" class_name="nana::propertygrid" create="$(THIS).create($(PARENT));" extra_code="" type="custom" name="_propgrid" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" />
 		</field>
 	</panel>
 </nana-creator>
