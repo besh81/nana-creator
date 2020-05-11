@@ -174,4 +174,35 @@ protected:
 	bool		expand_{ true };
 };
 
+
+/// class pg_color_inherited
+class pg_color_inherited
+	: public nana::pg_color
+{
+public:
+	pg_color_inherited() = default;
+
+	pg_color_inherited(const std::string& label, const std::string& value)
+		: pg_color(label, value)
+	{}
+
+	virtual void value(const std::string& value) override;
+
+	virtual void enabled(bool state) override;
+
+	virtual void value(nana::color value);
+
+	virtual void inherited(bool value);
+	virtual bool inherited() const
+	{
+		return inherited_;
+	}
+
+protected:
+	virtual void create(nana::window wd) override;
+
+	bool		inherited_{ false };
+};
+
+
 #endif //NANA_CREATOR_PGITEMS_CREATOR_H

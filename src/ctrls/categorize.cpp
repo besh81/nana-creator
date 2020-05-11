@@ -7,7 +7,6 @@
 
 #include "config.h"
 #include "ctrls/categorize.h"
-#include "nana_extra/color_helper.h"
 
 
 namespace ctrls

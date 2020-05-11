@@ -13,10 +13,10 @@
 #include <nana/gui/drawing.hpp>
 
 
-#define			IBOX_SIZE		13
-#define			IBOX_RECT_SIZE	7
-#define			IBOX_MARGIN		2
-#define			IBOX_WIDTH		(IBOX_MARGIN + IBOX_SIZE + IBOX_MARGIN)
+constexpr auto IBOX_SIZE		= 13;
+constexpr auto IBOX_RECT_SIZE	= 7;
+constexpr auto IBOX_MARGIN		= 2;
+constexpr auto IBOX_WIDTH		= IBOX_MARGIN + IBOX_SIZE + IBOX_MARGIN;
 
 
 namespace nana

@@ -12,6 +12,7 @@
 #include "filemanager.h"
 #include "inifile.h"
 #include "lock_guard.h"
+#include "nana_extra/color_helper.h"
 
 
 extern filemanager		g_file_mgr;
@@ -508,3 +509,63 @@ void pg_margin::draw_value(nana::paint::graphics* graph, nana::rectangle rect, c
 	}
 }
 /// class pg_margin end
+
+
+
+/// class pg_color_inherited
+void pg_color_inherited::value(const std::string& value)
+{
+	evt_emit_ = false;
+
+	color_ = nana::to_color(value);
+	rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));
+	rgb_[1].caption(std::to_string(static_cast<int>(color_.g())));
+	rgb_[2].caption(std::to_string(static_cast<int>(color_.b())));
+
+	inherited_ = nana::is_color_inherited(value);
+	menu_.checked(2, inherited_);
+
+	for(auto& i : rgb_)
+		i.enabled(en_ && !inherited_);
+
+	evt_emit_ = true;
+
+	pgitem::value(nana::to_string(color_, inherited_));
+}
+
+void pg_color_inherited::enabled(bool state)
+{
+	pgitem::enabled(state);
+
+	for(auto& i : rgb_)
+		i.enabled(en_ && !inherited_);
+}
+
+void pg_color_inherited::value(::nana::color value)
+{
+	pg_color_inherited::value(nana::to_string(value, inherited_));
+}
+
+void pg_color_inherited::inherited(bool value)
+{
+	pg_color_inherited::value(nana::to_string(color_, value));
+}
+
+void pg_color_inherited::create(nana::window wd)
+{
+	pg_color::create(wd);
+
+	// ibox context menu
+	menu_.append_splitter();
+	// 2. Inherited
+	menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
+		{
+			pg_color_inherited::value(nana::to_string(color_, ip.checked()));
+			emit_event();
+		});
+	menu_.check_style(2, nana::menu::checks::highlight);
+
+	pg_color_inherited::value(value_);
+}
+
+/// class pg_color_inherited end

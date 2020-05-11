@@ -8,7 +8,6 @@
 #include "config.h"
 #include "ctrls/page.h"
 #include "ctrls/notebook.h"
-#include "nana_extra/color_helper.h"
 #include "filemanager.h"
 
 

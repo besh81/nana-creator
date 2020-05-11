@@ -7,7 +7,6 @@
 
 #include "config.h"
 #include "items_dialog.h"
-#include "nana_extra/color_helper.h"
 #include "nana_extra/pgitems.h"
 #include "propertygrid_helper.h"
 #include "style.h"

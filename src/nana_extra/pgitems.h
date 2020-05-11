@@ -217,8 +217,8 @@ namespace nana
 	public:
 		pg_color() = default;
 
-		pg_color(const std::string& label, const std::string& value, bool showinherited = false)
-			: pgitem(label, value), show_inherited_(showinherited)
+		pg_color(const std::string& label, const std::string& value)
+			: pgitem(label, value)
 		{}
 
 		virtual void value(const std::string& value) override;
@@ -231,13 +231,10 @@ namespace nana
 			return color_;
 		}
 
-		virtual void inherited(bool value);
-		virtual bool inherited() const
+		virtual unsigned size() const override
 		{
-			return inherited_;
+			return expand_ ? 2 * size_ : size_;
 		}
-
-		virtual unsigned size() const override;
 
 	protected:
 		virtual void create(window wd) override;
@@ -247,10 +244,8 @@ namespace nana
 		mutable nana::textbox	colorbox_;
 		mutable nana::textbox	rgb_[3];
 		bool		expand_{ false };
-		bool		show_inherited_{ false };
 
 		nana::color	color_;
-		bool		inherited_{ false };
 	};
 
 }//end namespace nana

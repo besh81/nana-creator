@@ -8,7 +8,6 @@
 #include <iostream>
 #include <algorithm>
 #include "pgitems.h"
-#include "color_helper.h"
 
 
 
@@ -589,23 +588,32 @@ namespace nana
 	/// class pg_color
 	void pg_color::value(const std::string& value)
 	{
-		internal_lock_guard evt_lock(&evt_emit_, false);
+		std::stringstream ss(value);
+		std::string item;
+		std::vector<int> items;
 
-		color_ = nana::to_color(value);
-		rgb_[0].caption(std::to_string(static_cast<int>(color_.r())));
-		rgb_[1].caption(std::to_string(static_cast<int>(color_.g())));
-		rgb_[2].caption(std::to_string(static_cast<int>(color_.b())));
-
-		if(show_inherited_)
+		try
 		{
-			inherited_ = is_color_inherited(value);
-			menu_.checked(2, inherited_);
-
-			for(auto & i : rgb_)
-				i.enabled(en_ && !inherited_);
+			while(getline(ss, item, ','))
+				items.push_back(item.empty() ? 0 : std::clamp(std::stoi(item), 0, 255));
+		}
+		catch(...)
+		{
+			// reset
+			items.clear();
 		}
 
-		pgitem::value(nana::to_string(color_, show_inherited_ ? inherited_ : false));
+		for(size_t i = items.size(); i < 3; ++i)
+			items.push_back(0);
+
+
+		internal_lock_guard evt_lock(&evt_emit_, false);
+
+		for(size_t i = 0; i < 3; ++i)
+			rgb_[i].caption(std::to_string(items[i]));
+
+		color_ = nana::color(items[0], items[1], items[2]);
+		pgitem::value(std::to_string(items[0]) + "," + std::to_string(items[1]) + "," + std::to_string(items[2]));
 	}
 
 	void pg_color::enabled(bool state)
@@ -613,39 +621,16 @@ namespace nana
 		pgitem::enabled(state);
 
 		for(auto & i : rgb_)
-			i.enabled(en_ && !inherited_);
+			i.enabled(en_);
 	}
 
 	void pg_color::value(::nana::color value)
 	{
-		pg_color::value(nana::to_string(value, show_inherited_ ? inherited_ : false));
-	}
-
-	void pg_color::inherited(bool value)
-	{
-		if(show_inherited_)
-			pg_color::value(nana::to_string(color_, value));
-	}
-
-	unsigned pg_color::size() const
-	{
-		return expand_ ? 2 * size_ : size_;
+		pg_color::value(std::to_string(int(value.r())) + "," + std::to_string(int(value.g())) + "," + std::to_string(int(value.b())));
 	}
 
 	void pg_color::create(window wd)
 	{
-		// ibox context menu
-		menu_.append_splitter();
-		// 2. Inherited
-		menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
-		{
-			pg_color::value(nana::to_string(color_, ip.checked()));
-			emit_event();
-		});
-		menu_.enabled(2, show_inherited_);
-		menu_.check_style(2, nana::menu::checks::highlight);
-
-
 		// colorbox
 		colorbox_.create(wd);
 		colorbox_.editable(false);
@@ -683,7 +668,7 @@ namespace nana
 			{
 				if(arg.key == nana::keyboard::enter)
 				{
-					pg_color::value(nana::to_string(nana::to_color(rgb_[0].caption(), rgb_[1].caption(), rgb_[2].caption()), show_inherited_ ? inherited_ : false));
+					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
 					emit_event();
 				}
 			});
@@ -692,7 +677,7 @@ namespace nana
 				if(!arg.getting)
 				{
 					// just lost focus, so capture the value left by the user
-					pg_color::value(nana::to_string(nana::to_color(rgb_[0].caption(), rgb_[1].caption(), rgb_[2].caption()), show_inherited_ ? inherited_ : false));
+					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
 					emit_event();
 				}
 			});

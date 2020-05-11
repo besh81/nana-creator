@@ -52,11 +52,11 @@ namespace propertygrid_helper
 			}
 			else if(prop.type() == ctrls::pg_type::color)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), false)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::color_inherited)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new nana::pg_color(prop.label(), prop.value(), true)));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_color_inherited(prop.label(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::halign || prop.type() == ctrls::pg_type::valign || prop.type() == ctrls::pg_type::layout ||
 				prop.type() == ctrls::pg_type::seekdir || prop.type() == ctrls::pg_type::check_style || prop.type() == ctrls::pg_type::include_style ||

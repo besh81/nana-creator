@@ -7,7 +7,6 @@
 
 #include "config.h"
 #include "ctrls/spinbox.h"
-#include "nana_extra/color_helper.h"
 
 #define DEF_STEP_VALUE	1 // get from nana source
 
