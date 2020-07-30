@@ -127,6 +127,7 @@
 		<Unit filename="../../src/main.cpp" />
 		<Unit filename="../../src/namemanager.cpp" />
 		<Unit filename="../../src/namemanager.h" />
+		<Unit filename="../../src/nana_extra/adi_place.cpp" />
 		<Unit filename="../../src/nana_extra/color_helper.cpp" />
 		<Unit filename="../../src/nana_extra/color_helper.h" />
 		<Unit filename="../../src/nana_extra/pgitems.cpp" />
