@@ -113,7 +113,7 @@ namespace ctrls
 			cd->init.push_back(name + ".scale(" + properties.property("scale").as_string() + ");");
 
 		// buttons - START
-		std::size_t pos = 0;
+		std::size_t pos = 0; //TODO : nella nuova versione non dovrebbe più servire
 		for(auto& i : items)
 		{
 			if(i.property("goright").as_bool())
@@ -126,6 +126,7 @@ namespace ctrls
 				cd->init.push_back(name + ".separate();");
 			else
 			{
+				/*
 				auto str = name + ".append(\"" + i.property("text").as_string() + "\"";
 				if(i.property("image").as_string().empty())
 					str.append(");");
@@ -146,6 +147,30 @@ namespace ctrls
 					if(i.property("toggle_pushed").as_bool())
 						cd->init.push_back(name + ".toggle(" + std::to_string(pos) + ", true);");
 				}
+				*/
+				auto str = name + ".append(\"" + i.property("text").as_string() + "\"";
+				if(i.property("image").as_string().empty())
+					str.append(")");
+				else
+					str.append(", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"))");
+
+				if(!i.property("enable").as_bool())
+					str.append(".enable(false)");
+				if(i.property("textout").as_bool())
+					str.append(".textout(true)");
+
+				if(i.property("toggle_type").as_bool())
+				{
+					// TODO: questo va direttamente dentro la funzione append
+					//cd->init.push_back(name + ".tooltype(" + std::to_string(pos) + ", nana::toolbar::tool_type::toggle);");
+					if(!i.property("toggle_group").as_string().empty())
+						str.append(".toggle_group(\"" + i.property("toggle_group").as_string() + "\")");
+					if(i.property("toggle_pushed").as_bool())
+						str.append(".toggle(true)");
+				}
+
+				str.append(";");
+				cd->init.push_back(str);
 			}
 
 			++pos;

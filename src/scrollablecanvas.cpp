@@ -11,7 +11,7 @@
 
 
 scrollablecanvas::scrollablecanvas(nana::window parent, bool visible)
-	: nana::panel<true>(parent, visible)
+	: nana::panel<true>(parent, nana::rectangle(), visible)
 {
 	bgcolor(CREATOR_MAIN_BG);
 

@@ -86,7 +86,7 @@ namespace nana
 				pgitem() = default;
 
 				pgitem(const std::string& label, const std::string& value = "")	///< Constructor
-					: label_(label), value_(value), def_(value)
+					: label_(label), value_(value), def_(value), ess_(nullptr)
 				{}
 
 				void init(window wd);							///< Initialize the inline controls (should not be used)

@@ -67,6 +67,10 @@ public:
 	void moveupselected();
 	void movedownselected();
 
+	void moveintofield() { _moveinto(_selected, move_into::field); }
+	void moveintogrid() { _moveinto(_selected, move_into::grid); }
+	void moveintopanel() { _moveinto(_selected, move_into::panel); }
+
 	void cutselected() { copyselected(true); }
 	void copyselected(bool cut = false);
 	void pasteselected();
@@ -94,6 +98,15 @@ public:
 	
 
 private:
+	enum class move_into
+	{
+		field,
+		grid,
+		panel
+	};
+
+	void _error_message(const std::string& txt);
+
 	bool _check_relationship(control_obj parent, const std::string& child_type);
 
 	control_obj _create_ctrl(control_obj parent, const std::string& type, const std::string& name);
@@ -110,6 +123,9 @@ private:
 	void _update_op();
 
 	void _select_ctrl(tree_node<control_obj>* to_select);
+
+	bool _moveinto_check_relationship(tree_node<control_obj>* ctrl, move_into into);
+	void _moveinto(tree_node<control_obj>* ctrl, move_into into);
 
 
 	nana::window			_root_wd;

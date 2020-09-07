@@ -42,52 +42,70 @@ guimanager::guimanager(nana::window wd)
 	: _root_wd(wd)
 {
 	// context menu
-	// 0. move up
-	_ctxmenu.append("Move Up", [this](const nana::menu::item_proxy& ip)
+	// move up
+	_ctxmenu.append("Move up", [this](const nana::menu::item_proxy& ip)
 	{
 		moveupselected();
 	});
 	nana::paint::image _img_up("icons/up.png");
 	_ctxmenu.image(0, _img_up);
-	// 1. move down
-	_ctxmenu.append("Move Down", [this](const nana::menu::item_proxy& ip)
+	// move down
+	_ctxmenu.append("Move down", [this](const nana::menu::item_proxy& ip)
 	{
 		movedownselected();
 	});
 	nana::paint::image _img_down("icons/down.png");
 	_ctxmenu.image(1, _img_down);
-	// 2. -----
+	// move into
+	_ctxmenu.append("Move into");
+	auto* sub_move_into = _ctxmenu.create_sub_menu(2);
+	sub_move_into->append("field", [this](const nana::menu::item_proxy& ip)
+		{
+			moveintofield();
+		});
+	sub_move_into->image(0, nana::paint::image("icons/horizontal_layout.png"));
+	sub_move_into->append("grid", [this](const nana::menu::item_proxy& ip)
+		{
+			moveintogrid();
+		});
+	sub_move_into->image(1, nana::paint::image("icons/grid_layout.png"));
+	sub_move_into->append("panel", [this](const nana::menu::item_proxy& ip)
+		{
+			moveintopanel();
+		});
+	sub_move_into->image(2, nana::paint::image("icons/panel.png"));
+	// -----
 	_ctxmenu.append_splitter();
-	// 3. delete
+	// delete
 	_ctxmenu.append("Delete", [this](const nana::menu::item_proxy& ip)
-	{
-		deleteselected();
-	});
+		{
+			deleteselected();
+		});
 	nana::paint::image _img_del("icons/delete.png");
-	_ctxmenu.image(3, _img_del);
-	// 4. -----
+	_ctxmenu.image(4, _img_del);
+	// -----
 	_ctxmenu.append_splitter();
-	// 5. cut
+	// cut
 	_ctxmenu.append("Cut", [this](const nana::menu::item_proxy& ip)
-	{
-		copyselected(true);
-	});
+		{
+			copyselected(true);
+		});
 	nana::paint::image _img_cut("icons/cut.png");
-	_ctxmenu.image(5, _img_cut);
-	// 6. copy
+	_ctxmenu.image(6, _img_cut);
+	// copy
 	_ctxmenu.append("Copy", [this](const nana::menu::item_proxy& ip)
-	{
-		copyselected();
-	});
+		{
+			copyselected();
+		});
 	nana::paint::image _img_copy("icons/copy.png");
-	_ctxmenu.image(6, _img_copy);
-	// 7. paste
+	_ctxmenu.image(7, _img_copy);
+	// paste
 	_ctxmenu.append("Paste", [this](const nana::menu::item_proxy& ip)
-	{
-		pasteselected();
-	});
+		{
+			pasteselected();
+		});
 	nana::paint::image _img_paste("icons/paste.png");
-	_ctxmenu.image(7, _img_paste);
+	_ctxmenu.image(8, _img_paste);
 }
 
 
@@ -184,6 +202,15 @@ void guimanager::new_project(const std::string& type, const std::string& name)
 		return;
 
 	enableGUI(true, true);
+}
+
+
+void guimanager::_error_message(const std::string& txt)
+{
+	nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
+	m.icon(m.icon_error);
+	m << txt;
+	m();
 }
 
 
@@ -452,14 +479,14 @@ tree_node<control_obj>* guimanager::addcommonctrl(tree_node<control_obj>* node, 
 			control_obj_ptr	page_wptr;
 
 			_ctrls.for_each([page, &page_wptr](tree_node<control_obj>* node) -> bool
-			{
-				if(node->value.get() == page)
 				{
-					page_wptr = node->value;
-					return false;
-				}
-				return true;
-			});
+					if(node->value.get() == page)
+					{
+						page_wptr = node->value;
+						return false;
+					}
+					return true;
+				});
 
 			if(page_wptr.expired())
 				return;
@@ -489,10 +516,10 @@ void guimanager::deleteselected()
 
 	// delete ctrl name
 	_ctrls.for_each(toremove, [this](tree_node<control_obj>* node) -> bool
-	{
-		_name_mgr.remove(node->value->properties.property("name").as_string());
-		return true;
-	});
+		{
+			_name_mgr.remove(node->value->properties.property("name").as_string());
+			return true;
+		});
 	
 
 	// delete ctrl
@@ -566,6 +593,135 @@ void guimanager::movedownselected()
 }
 
 
+bool guimanager::_moveinto_check_relationship(tree_node<control_obj>* ctrl, move_into into)
+{
+	if(!ctrl)
+		return false;
+
+	auto type = ctrl->value->properties.property("type").as_string();
+	if(type == CTRL_PAGE || type == CTRL_FORM || ctrl == _ctrls.get_root()->child)
+	{
+		_error_message("Impossible to move the selected control!");
+		return false;
+	}
+
+	auto parent = ctrl->owner;
+	auto parent_type = parent->value->properties.property("type").as_string();
+
+	if(into == move_into::field || into == move_into::grid)
+	{
+		if(parent_type == CTRL_GRID)
+		{
+			_error_message("Impossible to create field/grid inside a grid!");
+			return false;
+		}
+	}
+
+	if(into == move_into::grid)
+	{
+		if(type == CTRL_FIELD || type == CTRL_GRID)
+		{
+			_error_message("Impossible to create field/grid inside a grid!");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
+{
+	if(!_moveinto_check_relationship(ctrl, into))
+		return;
+
+	auto parent = ctrl->owner;
+	_select_ctrl(0);
+
+	// disable GUI
+	enableGUI(false, false);
+	lock_guard des_lock(&_deserializing, true);
+	_op->emit_events(false);
+	_op->auto_draw(false);
+
+	// serialize ctrls to move
+	pugi::xml_document to_move;
+	pugi::xml_node root = to_move.append_child(NODE_ROOT);
+	_serialize(parent->child, &root, false);
+
+	// delete ctrls to move
+	int num_siblings = 0;
+	auto sibling = parent->child;
+	while(sibling)
+	{
+		num_siblings++;
+
+		// delete ctrls name
+		_ctrls.for_each(sibling, [this](tree_node<control_obj>* node) -> bool
+			{
+				_name_mgr.remove(node->value->properties.property("name").as_string());
+				return true;
+			});
+
+		auto next = sibling->next;
+
+		_ctrls.recursive_backward(sibling, [this](tree_node<control_obj>* node) -> bool
+			{
+				if(node->owner)
+				{
+					control_obj parent_ = node->owner->value;
+					if(parent_)
+						parent_->remove(node->value.get());
+				}
+
+				_ctrls.remove(node);
+
+				return true;
+			});
+
+		sibling = next;
+	}
+
+	// add new field node
+	tree_node<control_obj>* new_node = nullptr;
+	if(into == move_into::field)
+	{
+		new_node = addcommonctrl(parent, CTRL_FIELD, insert_mode::into);
+		// adjust layout orientation
+		new_node->value->properties.property("layout").value(parent->value->properties.property("layout").as_int());
+	}
+	else if(into == move_into::grid)
+	{
+		new_node = addcommonctrl(parent, CTRL_GRID, insert_mode::into);
+		// adjust grid size
+		int n = std::max(int(ceil(sqrt(num_siblings))), 2);
+		new_node->value->properties.property("columns").value(n);
+		new_node->value->properties.property("rows").value(n);
+	}
+	else if(into == move_into::panel)
+	{
+		new_node = addcommonctrl(parent, CTRL_PANEL, insert_mode::into);
+		new_node->value->properties.property("layout").value(parent->value->properties.property("layout").as_int());
+	}
+
+	// deserialize ctrls to move
+	if(!_deserialize(new_node, &root, true))
+	{
+		_error_message("Unable to move the selected controls!");
+	}
+
+	// enable GUI
+	_op->auto_draw(true);
+	_op->emit_events(true);
+	_update_op();
+	enableGUI(true, true);
+
+	// select new_node
+	new_node->value->refresh();
+	left_click_ctrl(new_node->value);
+}
+
+
+
 void guimanager::copyselected(bool cut)
 {
 	if(!_selected)
@@ -574,10 +730,7 @@ void guimanager::copyselected(bool cut)
 	// main widget cannot be cut or copied
 	if(_selected == _ctrls.get_root()->child)
 	{
-		nana::msgbox m(_root_wd, CREATOR_NAME, nana::msgbox::ok);
-		m.icon(m.icon_error);
-		m << "Impossible to cut/copy the main widget!";
-		m();
+		_error_message("Impossible to cut/copy the main widget!");
 		return;
 	}
 
@@ -631,7 +784,7 @@ void guimanager::pasteselected()
 	bool paste_ok = _deserialize(_selected, &root, true);
 	if(!paste_ok)
 	{
-		//TODO message box con errore
+		_error_message("Unable to move the selected controls!");
 	}
 
 	_op->auto_draw(true);
@@ -654,14 +807,14 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 	tree_node<control_obj>*	_ctrl_node{ 0 };
 
 	_ctrls.for_each([&ctrl, &_ctrl_node](tree_node<control_obj>* node) -> bool
-	{
-		if(node->value == ctrl)
 		{
-			_ctrl_node = node;
-			return false;
-		}
-		return true;
-	});
+			if(node->value == ctrl)
+			{
+				_ctrl_node = node;
+				return false;
+			}
+			return true;
+		});
 
 	if(!_ctrl_node)
 		return false; // continue propagation
@@ -740,7 +893,7 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 			// add ctrl
 			if(!addcommonctrl(_ctrl_node, cursor().type, mode))
 			{
-				//TODO message box con errore
+				_error_message("Unable to add control!");
 			}
 
 			// reset mouse cursor
@@ -791,22 +944,22 @@ void guimanager::left_click_ctrl(control_obj ctrl)
 void guimanager::click_objectspanel(const std::string& name)
 {
 	_ctrls.for_each([this, name](tree_node<control_obj>* node) -> bool
-	{
-		if(node->value->properties.property("name").as_string() == name)
 		{
-			_select_ctrl(node);
+			if(node->value->properties.property("name").as_string() == name)
+			{
+				_select_ctrl(node);
 
-			// set properties panel
-			_pp->set(&node->value->properties, &node->value->items);
+				// set properties panel
+				_pp->set(&node->value->properties, &node->value->items);
 
-			// set focus to new object
-			node->value->nanawdg->focus();
+				// set focus to new object
+				node->value->nanawdg->focus();
 
-			return false;
-		}
+				return false;
+			}
 
-		return true;
-	});
+			return true;
+		});
 }
 
 
@@ -1049,13 +1202,13 @@ void guimanager::_updatechildrenctrls(tree_node<control_obj>* node)
 {
 	auto* this_node = node;
 	_ctrls.for_each(node, [this, this_node](tree_node<control_obj>* node) -> bool
-	{
-		if(this_node == node)
-			return true;
+		{
+			if(this_node == node)
+				return true;
 
-		_updatectrl(node, false, false);
-		return true;
-	});
+			_updatectrl(node, false, false);
+			return true;
+		});
 }
 
 
@@ -1067,18 +1220,18 @@ void guimanager::_update_op()
 	_op->clear();
 
 	_ctrls.for_each([this](tree_node<control_obj>* node) -> bool
-	{
-		auto ctrl = node->value;
-
-		if(node->owner->value)
 		{
-			auto parent = node->owner->value;
-			_op->append(parent->properties.property("name").as_string(), ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
-		}
-		else
-			_op->append("", ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
-		return true;
-	});
+			auto ctrl = node->value;
+
+			if(node->owner->value)
+			{
+				auto parent = node->owner->value;
+				_op->append(parent->properties.property("name").as_string(), ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
+			}
+			else
+				_op->append("", ctrl->properties.property("name").as_string(), ctrl->properties.property("type").as_string());
+			return true;
+		});
 
 	_op->auto_draw(true);
 	_op->emit_events(true);

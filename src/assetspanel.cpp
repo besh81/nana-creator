@@ -17,7 +17,7 @@ extern imagemanager		g_img_mgr;
 
 //assetspanel
 assetspanel::assetspanel(nana::window wd, bool visible)
-	: nana::panel<true>(wd, visible)
+	: nana::panel<true>(wd, nana::rectangle(), visible)
 {
 	bgcolor(CREATOR_WINDOW_BG);
 

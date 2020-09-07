@@ -7,7 +7,7 @@
 
 #include "config.h"
 #include "ctrls/checkbox.h"
-
+#include "nana_extra/color_helper.h"
 
 
 namespace ctrls
@@ -20,6 +20,10 @@ namespace ctrls
 		chk.create(*parent->nanawdg);
 		ctrl::init(&chk, CTRL_CHECKBOX, name);
 
+		def_scheme = chk.scheme();
+
+		chk.react(false); // needs to avoid user can change the state clicking on control
+
 		// common
 		properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "";
 		properties.append("check").label("Checked").category(CAT_COMMON).type(pg_type::check) = chk.checked();
@@ -29,6 +33,10 @@ namespace ctrls
 		properties.append("transparent").label("Transparent").category(CAT_APPEARANCE).type(pg_type::check) = chk.transparent();
 		// layout
 		// ...
+		//scheme
+		// def values from checkbox.cpp - function: void drawer::refresh(graph_reference graph)
+		properties.append("square_bgcolor").label("Square bg").category(CAT_SCHEME).type(pg_type::color_inherited) = nana::to_string(def_scheme.square_bgcolor.get(chk.bgcolor()), true);
+		properties.append("square_border_color").label("Square border").category(CAT_SCHEME).type(pg_type::color) = nana::to_string(def_scheme.square_border_color.get(chk.fgcolor()));
 	}
 
 
@@ -41,7 +49,14 @@ namespace ctrls
 		chk.radio(properties.property("radio").as_bool());
 		chk.transparent(properties.property("transparent").as_bool());
 
-		chk.react(false); // needs to avoid user can change the state clicking on control
+		//scheme
+		if(nana::is_color_inherited(properties.property("square_bgcolor").as_string()))
+			chk.scheme().square_bgcolor = static_cast<nana::color_argb>(0x0); // def values from checkbox.hpp - drawerbase::checkbox::scheme
+		else
+			chk.scheme().square_bgcolor = nana::to_color(properties.property("square_bgcolor").as_string());
+		chk.scheme().square_border_color = nana::to_color(properties.property("square_border_color").as_string());
+
+		nana::API::refresh_window(chk);
 	}
 
 
@@ -84,6 +99,12 @@ namespace ctrls
 			cd->init.push_back(name + ".radio(true);");
 		if(properties.property("transparent").as_bool())
 			cd->init.push_back(name + ".transparent(true);");
+
+		//scheme
+		if(properties.property("square_bgcolor").as_string() != nana::to_string(def_scheme.square_bgcolor))
+			cd->init.push_back(name + ".scheme().square_bgcolor = nana::color(" + properties.property("square_bgcolor").as_string() + ");");
+		if(properties.property("square_border_color").as_string() != nana::to_string(def_scheme.square_border_color))
+			cd->init.push_back(name + ".scheme().square_border_color = nana::color(" + properties.property("square_border_color").as_string() + ");");
 	}
 
 }//end namespace ctrls

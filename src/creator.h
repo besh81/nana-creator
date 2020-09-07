@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.22.0)
+ *	C++ code generated with Nana Creator (0.25.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -60,8 +60,7 @@ private:
 		_tb.append("Save project", nana::paint::image("icons/save.png"));
 		_tb.append("Save project as...", nana::paint::image("icons/save_as.png"));
 		_tb.separate();
-		_tb.append("Generate code", nana::paint::image("icons/output.png"));
-		_tb.textout(5, true);
+		_tb.append("Generate code", nana::paint::image("icons/output.png")).textout(true);
 		_tb.separate();
 		_tb.append("Delete current selection", nana::paint::image("icons/delete.png"));
 		_tb.separate();
@@ -72,8 +71,7 @@ private:
 		_tb.append("Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append("Paste into/after current selection", nana::paint::image("icons/paste.png"));
 		_tb.go_right();
-		_tb.append("Info...", nana::paint::image("icons/info.png"));
-		_tb.textout(15, true);
+		_tb.append("Info...", nana::paint::image("icons/info.png")).textout(true);
 		// _adi_panel_margin
 		_adi_panel_margin.create(*this);
 		_adi_panel_margin_place.bind(_adi_panel_margin);

@@ -29,6 +29,8 @@ namespace ctrls
 
 	protected:
 		nana::checkbox chk;
+
+		nana::drawerbase::checkbox::scheme def_scheme;
 	};
 
 }//end namespace ctrls

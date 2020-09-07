@@ -126,7 +126,7 @@ void creator::sb_set(const std::string& str)
 
 void creator::_init_ctrls()
 {
-	caption(CREATOR_NAME " " CREATOR_VERSION);
+	caption(CREATOR_TITLE);
 
 	// toolbar
 	_tb.events().selected([this](const nana::arg_toolbar & arg)
@@ -146,6 +146,9 @@ void creator::_init_ctrls()
 					save_xml(prj_name.string());
 			}
 
+			// update window caption
+			caption(CREATOR_TITLE);
+
 			p_gui_mgr->clear();
 			prj_name = "";
 
@@ -155,6 +158,15 @@ void creator::_init_ctrls()
 			if(dlg.return_val() == nana::msgbox::pick_ok)
 			{
 				prj_name = dlg.get_filename();
+
+				// update window caption
+				std::string title = CREATOR_TITLE;
+				if(!prj_name.string().empty())
+				{
+					title.append(" - ");
+					title.append(prj_name.filename().string());
+				}
+				caption(title);
 
 				p_gui_mgr->new_project(dlg.get_ctrl_type(), dlg.get_projectname());
 				
@@ -176,6 +188,9 @@ void creator::_init_ctrls()
 				else if(ret == nana::msgbox::pick_yes)
 					save_xml(prj_name.string());
 			}
+
+			// update window caption
+			caption(CREATOR_TITLE);
 
 			p_gui_mgr->clear();
 			prj_name = "";
@@ -202,6 +217,15 @@ void creator::_init_ctrls()
 
 				if(!load_xml(prj_name.string()))
 					prj_name = "";
+
+				// update window caption
+				std::string title = CREATOR_TITLE;
+				if(!prj_name.string().empty())
+				{
+					title.append(" - ");
+					title.append(prj_name.filename().string());
+				}
+				caption(title);
 			}
 		}
 		else if(arg.button == TB_SAVE) // save project

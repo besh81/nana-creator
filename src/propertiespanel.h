@@ -28,7 +28,7 @@ class propertiespanel
 {
 public:
 	propertiespanel(nana::window wd, bool visible = true)
-		: nana::panel<true>(wd, visible)
+		: nana::panel<true>(wd, nana::rectangle(), visible)
 	{
 		init_();
 

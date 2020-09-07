@@ -16,7 +16,7 @@ extern imagemanager	g_img_mgr;
 
 //objectspanel
 objectspanel::objectspanel(nana::window wd, bool visible)
-	: nana::panel<true>(wd, visible)
+	: nana::panel<true>(wd, nana::rectangle(), visible)
 {
 	bgcolor(CREATOR_WINDOW_BG);
 
@@ -117,8 +117,7 @@ bool objectspanel::select(const std::string& name)
 
 void objectspanel::selected(std::function<void(const std::string&)> f)
 {
-	_objects.events().selected([this, f](const nana::arg_treebox& arg)
-	{
+	_objects.events().selected([this, f](const nana::arg_treebox& arg) {
 		if(!_evt_emit)
 			return;
 
@@ -131,5 +130,18 @@ void objectspanel::selected(std::function<void(const std::string&)> f)
 void objectspanel::contex_menu(nana::menu* ctx)
 {
 	_ctxmenu = ctx;
-	_objects.events().mouse_down(nana::menu_popuper(*_ctxmenu));
+
+	_objects.events().mouse_down([this](const nana::arg_mouse& arg) {
+		_right_button = arg.right_button;
+	});
+
+	_objects.events().mouse_up([this](const nana::arg_mouse& arg) {
+		if(!_evt_emit)
+			return;
+
+		if(_right_button && !_objects.hovered(false).empty())
+		{
+			_ctxmenu->popup(*this, arg.pos.x, arg.pos.y);
+		}
+	});
 }

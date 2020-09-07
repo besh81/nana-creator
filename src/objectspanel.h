@@ -55,6 +55,7 @@ private:
 	std::vector<nana::treebox::item_proxy> _roots;
 
 	bool			_evt_emit{ true };
+	bool			_right_button{ false };
 };
 
 #endif //NANA_CREATOR_OBJECTSPANEL_H

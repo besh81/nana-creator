@@ -64,7 +64,8 @@ namespace ctrls
 		txt.scheme().selection = nana::to_color(properties.property("selection").as_string());
 		txt.scheme().selection_unfocused = nana::to_color(properties.property("selection_unfocused").as_string());
 		txt.scheme().selection_text = nana::to_color(properties.property("selection_text").as_string());
-		// mouse_wheel
+		// mouse_wheel {???}
+
 		nana::API::refresh_window(txt);
 	}
 

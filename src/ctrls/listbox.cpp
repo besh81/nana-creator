@@ -89,7 +89,7 @@ namespace ctrls
 		lst.scheme().item_selected = nana::to_color(properties.property("item_selected").as_string());
 		lst.scheme().item_highlighted = nana::to_color(properties.property("item_highlighted").as_string());
 		lst.scheme().selection_box = nana::to_color(properties.property("selection_box").as_string());
-		// column_font
+		// column_font {???}
 		lst.scheme().max_fit_content = properties.property("max_fit_content").as_uint();
 		lst.scheme().min_column_width = properties.property("min_column_width").as_uint();
 		lst.scheme().text_margin = properties.property("text_margin").as_uint();
@@ -98,7 +98,8 @@ namespace ctrls
 		lst.scheme().header_splitter_area_after = properties.property("header_splitter_area_after").as_uint();
 		lst.scheme().header_padding_top = properties.property("header_padding_top").as_uint();
 		lst.scheme().header_padding_bottom = properties.property("header_padding_bottom").as_uint();
-		// mouse_wheel
+		// mouse_wheel {???}
+
 		nana::API::refresh_window(lst);
 	}
 

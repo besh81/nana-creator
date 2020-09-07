@@ -553,6 +553,7 @@ void pg_color_inherited::inherited(bool value)
 
 void pg_color_inherited::create(nana::window wd)
 {
+	auto val = value_;
 	pg_color::create(wd);
 
 	// ibox context menu
@@ -565,7 +566,7 @@ void pg_color_inherited::create(nana::window wd)
 		});
 	menu_.check_style(2, nana::menu::checks::highlight);
 
-	pg_color_inherited::value(value_);
+	pg_color_inherited::value(value_ = val);
 }
 
 /// class pg_color_inherited end
