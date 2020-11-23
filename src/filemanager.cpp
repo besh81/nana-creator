@@ -153,6 +153,18 @@ bool set_working_dir(const std::string& path)
 //file_exists
 bool file_exists(const std::string& name)
 {
-    struct stat buffer;
-	return (stat(name.c_str(), &buffer) == 0);
+    struct stat info;
+	return (stat(name.c_str(), &info) == 0);
+}
+
+
+//dir_exists
+bool dir_exists(const std::string& path)
+{
+	struct stat info;
+	if(stat(path.c_str(), &info) != 0)
+		return false; // cannot access
+	if(info.st_mode & S_IFDIR)
+		return true;
+	return false;
 }

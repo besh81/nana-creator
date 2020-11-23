@@ -127,7 +127,7 @@ void pg_folder::create(nana::window wd)
 	//button
 	set_button_click([this](const nana::arg_click& arg)
 	{
-		nana::folderbox folder_picker(arg.window_handle, value_);
+		nana::folderbox folder_picker(arg.window_handle, dir_exists(value_) ? value_ : "");
 
 		auto paths = folder_picker.show();
 		if(!paths.empty())

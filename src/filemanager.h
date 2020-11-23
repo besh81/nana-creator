@@ -82,4 +82,10 @@ bool set_working_dir(const std::string& path);
 bool file_exists(const std::string& name);
 
 
+//---------------------------------------------
+// check directory existance
+//---------------------------------------------
+bool dir_exists(const std::string& path);
+
+
 #endif //NANA_CREATOR_FILEMANAGER_H

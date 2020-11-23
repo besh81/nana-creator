@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.23.0">
+<nana-creator version="0.26.0">
 	<form mainclass="true" filename="info" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="info" enabled="true" caption="About Nana Creator" width="520" height="330" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="0" gap="2">
 		<field type="field" name="field1" weight="150" layout="0" margin="0" gap="0">
 			<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="50%" image="C:\cppprojects\nana-creator\wdir\icons\NC.png" transparent="false" halign="1" valign="1" stretchable="false" gradualbg="true" gbg_from="255,255,255" gbg_to="30,30,30" gbg_dir="0" />

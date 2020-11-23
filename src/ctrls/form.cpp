@@ -117,7 +117,7 @@ namespace ctrls
 		{
 			cd->mainclass_base = "nana::panel<true>"; //TODO: add hasbackground prop
 			cd->mainclass_ctor = "(nana::window wd, bool visible = true)";
-			cd->mainclass_base_ctor = "(wd, visible)";
+			cd->mainclass_base_ctor = "(wd, nana::rectangle(), visible)";
 		}
 
 		// filename
