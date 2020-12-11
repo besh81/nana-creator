@@ -8,7 +8,6 @@
 #include "config.h"
 #include "pgitems_creator.h"
 #include <nana/gui/filebox.hpp>
-#include "items_dialog.h"
 #include "filemanager.h"
 #include "inifile.h"
 #include "lock_guard.h"
@@ -23,8 +22,6 @@ extern inifile			g_inifile;
 /// class pg_filename
 void pg_filename::value(const std::string& value)
 {
-	auto ep = equalize_path(value);
-
 	lock_guard evt_lock(&evt_emit_, false);
 	txt_.caption(g_file_mgr.to_relative(value));
 
@@ -34,6 +31,12 @@ void pg_filename::value(const std::string& value)
 void pg_filename::create(nana::window wd)
 {
 	pg_string_button::create(wd);
+
+	// remove update on focus lost because shown value is different from stored one
+	txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+		{
+			arg.stop_propagation();
+		});
 
 	//textbox
 	value(value_);
@@ -84,7 +87,10 @@ void pg_image::create(nana::window wd)
 {
 	pg_filename::create(wd);
 
-	add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+	if(type_ == ctrls::pg_type::image)
+		add_filter("Image Files (" CREATOR_SUPPORTED_IMG ")", CREATOR_SUPPORTED_IMG);
+	else if(type_ == ctrls::pg_type::icon)
+		add_filter("Image Files (" CREATOR_SUPPORTED_ICO ")", CREATOR_SUPPORTED_ICO);
 }
 
 bool pg_image::on_open_dlg()
@@ -138,64 +144,6 @@ void pg_folder::create(nana::window wd)
 	});
 }
 /// class pg_folder end
-
-
-
-/// class pg_collection
-void pg_collection::defvalue(const std::string& value)
-{
-	if(items_)
-		if((*items_).size())
-		{
-			pgitem::defvalue("items");
-			return;
-		}
-
-	pgitem::defvalue(pgitem::value());
-}
-
-void pg_collection::items(std::vector<ctrls::properties_collection>* items)
-{
-	items_ = items;
-	defvalue("");
-}
-
-void pg_collection::reset()
-{
-	if(items_)
-		(*items_).clear();
-	defvalue("");
-}
-
-void pg_collection::create(nana::window wd)
-{
-	pg_string_button::create(wd);
-	pg_string_button::value("(Collection)");
-	defvalue("");
-	editable(false);
-
-	//button
-	set_button_click([this](const nana::arg_click& arg)
-	{
-		//items dialog
-		if(items_)
-		{
-			items_dialog dlg(arg.window_handle, type_);
-			if(items_)
-				dlg.set_items(*items_);
-			dlg.modality();
-
-			if(dlg.return_val() == nana::msgbox::pick_ok)
-			{
-				if(items_)
-					*items_ = dlg.get_items();
-				defvalue("");
-				emit_event();
-			}
-		}
-	});
-}
-/// class pg_collection end
 
 
 

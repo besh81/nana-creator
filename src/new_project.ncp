@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<nana-creator version="0.26.0">
-	<form mainclass="true" filename="new_project" rel_path="true" work_dir="" type="form" name="new_project" enabled="true" caption="New project" width="540" height="350" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
+<nana-creator version="0.27.0">
+	<form mainclass="true" filename="new_project" rel_path="true" work_dir="" type="form" name="new_project" enabled="true" caption="New project" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="540" height="350" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
 		<field type="field" name="field1" weight="30" layout="0" margin="0" gap="2">
 			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="   Type:" format="false" transparent="false" halign="0" valign="2" />
 		</field>
@@ -19,7 +19,7 @@
 			<textbox type="textbox" name="folder_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
 			<button type="button" name="folder_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="50" caption="..." icon="" enable_pushed="false" pushed="false" transparent="false" />
 		</field>
-		<field type="field" name="field5" weight="40" layout="0" margin="5" gap="3">
+		<field type="field" name="field5" weight="36" layout="0" margin="5" gap="3">
 			<panel type="panel" name="panel1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" transparent="true" layout="0" weight="-1" margin="5" gap="2" />
 			<button type="button" name="create_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Create" icon="" enable_pushed="false" pushed="false" transparent="false" />
 			<button type="button" name="canc_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Cancel" icon="" enable_pushed="false" pushed="false" transparent="false" />

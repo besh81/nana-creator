@@ -11,6 +11,7 @@
 #include "config.h"
 #include <memory>
 #include <nana/gui.hpp>
+#include "tree.h"
 #include "ctrls/property.h"
 #include "codegenerator_data.h"
 
@@ -42,9 +43,9 @@ namespace ctrls
 
 
 		// public vars
-		properties_collection				properties;
-		std::vector<properties_collection>	items;
-		nana::widget*						nanawdg;
+		properties_collection		properties;
+		tree<properties_collection>	items;
+		nana::widget*				nanawdg{ nullptr };
 
 		// relationship management
 		ctrl* parent() { return _parent; }

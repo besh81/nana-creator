@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.26.0)
+ *	C++ code generated with Nana Creator (0.27.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -47,31 +47,37 @@ public:
 private:
 	void init_()
 	{
+		_place.bind(*this);
 		_place.div("vert arrange=[30,variable,24] _field_");
 		caption("Nana Creator");
+		icon(nana::paint::image("icons/creator.ico"));
 		bgcolor(nana::color(93,107,153));
 		// _tb
 		_tb.create(*this);
 		_place["_field_"] << _tb;
 		_tb.bgcolor(nana::color(204,213,240));
-		_tb.scale(21);
-		_tb.append("New project", nana::paint::image("icons/new_prj.png"));
-		_tb.append("Load project", nana::paint::image("icons/load_prj.png"));
-		_tb.append("Save project", nana::paint::image("icons/save.png"));
-		_tb.append("Save project as...", nana::paint::image("icons/save_as.png"));
-		_tb.separate();
-		_tb.append("Generate code", nana::paint::image("icons/output.png")).textout(true);
-		_tb.separate();
-		_tb.append("Delete current selection", nana::paint::image("icons/delete.png"));
-		_tb.separate();
-		_tb.append("Move up current selection", nana::paint::image("icons/up.png"));
-		_tb.append("Move down current selection", nana::paint::image("icons/down.png"));
-		_tb.separate();
-		_tb.append("Cut current selection", nana::paint::image("icons/cut.png"));
-		_tb.append("Copy current selection", nana::paint::image("icons/copy.png"));
-		_tb.append("Paste into/after current selection", nana::paint::image("icons/paste.png"));
+		_tb.tools_height(21);
+		_tb.append(nana::toolbar::tools::button, "New project", nana::paint::image("icons/new_prj.png"));
+		_tb.append(nana::toolbar::tools::button, "Load project", nana::paint::image("icons/load_prj.png"));
+		_tb.append(nana::toolbar::tools::button, "Save project", nana::paint::image("icons/save.png"));
+		_tb.append(nana::toolbar::tools::button, "Save project as...", nana::paint::image("icons/save_as.png"));
+		_tb.append_separator();
+		_tb.append(nana::toolbar::tools::button, "Generate code", nana::paint::image("icons/output.png")).textout(true);
+		_tb.append_separator();
+		_tb.append(nana::toolbar::tools::button, "Delete current selection", nana::paint::image("icons/delete.png"));
+		_tb.append_separator();
+		_tb.append(nana::toolbar::tools::button, "Move up current selection", nana::paint::image("icons/up.png"));
+		_tb.append(nana::toolbar::tools::button, "Move down current selection", nana::paint::image("icons/down.png"));
+		auto ip__tb_11 = _tb.append(nana::toolbar::tools::dropdown, "Move into").textout(true);
+		ip__tb_11.dropdown_append("field", nana::paint::image("icons/horizontal_layout.png"));
+		ip__tb_11.dropdown_append("grid", nana::paint::image("icons/grid_layout.png"));
+		ip__tb_11.dropdown_append("panel", nana::paint::image("icons/panel.png"));
+		_tb.append_separator();
+		_tb.append(nana::toolbar::tools::button, "Cut current selection", nana::paint::image("icons/cut.png"));
+		_tb.append(nana::toolbar::tools::button, "Copy current selection", nana::paint::image("icons/copy.png"));
+		_tb.append(nana::toolbar::tools::button, "Paste into/after current selection", nana::paint::image("icons/paste.png"));
 		_tb.go_right();
-		_tb.append("Info...", nana::paint::image("icons/info.png")).textout(true);
+		_tb.append(nana::toolbar::tools::button, "Info...", nana::paint::image("icons/info.png")).textout(true);
 		// _adi_panel_margin
 		_adi_panel_margin.create(*this);
 		_adi_panel_margin_place.bind(_adi_panel_margin);
@@ -102,7 +108,7 @@ private:
 
 
 protected:
-	nana::place _place{ *this };
+	nana::place _place;
 	nana::toolbar _tb;
 	nana::panel<true> _adi_panel_margin;
 	nana::place _adi_panel_margin_place;

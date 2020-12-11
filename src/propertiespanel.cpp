@@ -71,7 +71,7 @@ void propertiespanel::name_changed(std::function<void(const std::string&)> f)
 }
 
 
-void propertiespanel::set(ctrls::properties_collection* properties, std::vector<ctrls::properties_collection>* items)
+void propertiespanel::set(ctrls::properties_collection* properties)
 {
 	if(_properties == properties)
 		return;
@@ -99,7 +99,7 @@ void propertiespanel::set(ctrls::properties_collection* properties, std::vector<
 
 
 	// add properties
-	propertygrid_helper::append(&_propgrid, _properties, items);
+	propertygrid_helper::append(&_propgrid, _properties);
 	
 
 	// set image, type and name

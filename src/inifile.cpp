@@ -6,6 +6,7 @@
  */
 
 #include "config.h"
+#include "version.h"
 #include "inifile.h"
 #include "pugixml/pugixml.hpp"
 

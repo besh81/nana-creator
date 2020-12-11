@@ -10,13 +10,10 @@
 
 
 #define CREATOR_NAME			"Nana Creator"
-#define CREATOR_VERSION			"0.26.0"
-#define CREATOR_TITLE			(CREATOR_NAME " " CREATOR_VERSION)
 
 
-
- // ini file
- //--------------------------------------------------------
+// ini file
+//--------------------------------------------------------
 #define INI_FILE				"nc.ini"
 
 
@@ -116,6 +113,7 @@
 #define DEFAULT_FIELD			"_field_"
 
 #define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
+#define CREATOR_SUPPORTED_ICO	"*.ico"
 #define CITEM_INNER_TKN			"\r"
 #define CITEM_TKN				"\n"
 #define CITEM_EMPTY				" "

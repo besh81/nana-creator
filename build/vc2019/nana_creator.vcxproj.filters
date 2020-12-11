@@ -126,9 +126,6 @@
     <ClCompile Include="..\..\src\ctrls\treebox.cpp">
       <Filter>Source Files\ctrls</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\items_dialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\filemanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -179,6 +176,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\nana_extra\adi_place.cpp">
       <Filter>Source Files\nana_extra</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\itemseditorpanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\updater.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -290,9 +293,6 @@
     <ClInclude Include="..\..\src\ctrls\treebox.h">
       <Filter>Header Files\ctrls</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\items_dialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\filemanager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -343,6 +343,15 @@
     </ClInclude>
     <ClInclude Include="..\..\src\nana_extra\adi_place.hpp">
       <Filter>Header Files\nana_extra</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\itemseditorpanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\updater.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

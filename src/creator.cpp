@@ -3,17 +3,20 @@
  *      Author: besh81
  */
 #include "creator.h"
-#include "config.h"
+#include "version.h"
 #include <nana/gui/filebox.hpp>
 #include <iostream>
+#include "pugixml/pugixml.hpp"
 #include "guimanager.h"
 #include "filemanager.h"
+#include "updater.h"
 #include "inifile.h"
 #include "codegenerator.h"
 #include "scrollablecanvas.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
+#include "itemseditorpanel.h"
 #include "new_project.h"
 #include "info.h"
 
@@ -30,12 +33,16 @@
  //
 #define TB_UP					9
 #define TB_DOWN					10
+#define TB_MOVE_INTO			11
+	#define TB_MOVE_INTO_FIELD			0
+	#define TB_MOVE_INTO_GRID			1
+	#define TB_MOVE_INTO_PANEL			2
  //
-#define TB_CUT					12
-#define TB_COPY					13
-#define TB_PASTE				14
+#define TB_CUT					13
+#define TB_COPY					14
+#define TB_PASTE				15
 //
-#define TB_INFO					15
+#define TB_INFO					17
 
 
 guimanager*					p_gui_mgr;	// manage all the gui elements
@@ -55,6 +62,7 @@ void creator::enableGUI(bool state, bool new_load)
 	_tb.enable(TB_DELETE, state);
 	_tb.enable(TB_UP, state);
 	_tb.enable(TB_DOWN, state);
+	_tb.enable(TB_MOVE_INTO, state);
 	_tb.enable(TB_CUT, state);
 	_tb.enable(TB_COPY, state);
 	_tb.enable(TB_PASTE, state);
@@ -82,6 +90,9 @@ bool creator::load_xml(const std::string& filename)
 		std::cout << "Error missing root node: " << NODE_ROOT << "\n";
 		return false;
 	}
+
+	// update project file if necessary
+	updater(&root);
 
 	// deserialize the XML structure
 	return p_gui_mgr->deserialize(&root);
@@ -289,6 +300,21 @@ void creator::_init_ctrls()
 		}
 	});
 
+	// toolbar - move into dropdown
+	auto ip = _tb.at(TB_MOVE_INTO);
+	ip.dropdown_answerer(TB_MOVE_INTO_FIELD, [this](const nana::toolbar::item_proxy& ip)
+		{
+			p_gui_mgr->moveintofield();
+		});
+	ip.dropdown_answerer(TB_MOVE_INTO_GRID, [this](const nana::toolbar::item_proxy& ip)
+		{
+			p_gui_mgr->moveintogrid();
+		});
+	ip.dropdown_answerer(TB_MOVE_INTO_PANEL, [this](const nana::toolbar::item_proxy& ip)
+		{
+			p_gui_mgr->moveintopanel();
+		});
+
 
 	// adi
 	_adi_place.bind(_adi_panel);
@@ -320,11 +346,16 @@ void creator::_init_ctrls()
 	pinfo.show_close(false);
 	_adi_place.update_pane(pinfo);
 
+	auto itemseditor = new itemseditorpanel(_adi_panel);
+	pinfo = _adi_place.add_pane("I", itemseditor, "P", nana::dockposition::down, "Items editor");
+	pinfo.show_close(false);
+	_adi_place.update_pane(pinfo);
+
 	_adi_place.collocate();
 
 
 	p_gui_mgr = new guimanager(*this);
-	p_gui_mgr->init(this, properties, assets, objects, canvas);
+	p_gui_mgr->init(this, properties, assets, objects, itemseditor, canvas);
 	
 
 	// statusbar

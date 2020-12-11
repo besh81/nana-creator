@@ -4,6 +4,7 @@
  */
 #include "info.h"
 #include "config.h"
+#include "version.h"
 
 
 void info::_init_ctrls()

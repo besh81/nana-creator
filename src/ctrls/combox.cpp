@@ -39,7 +39,7 @@ namespace ctrls
 	void combox::init_item(properties_collection& item)
 	{
 		ctrl::init_item(item);
-		item.property("type") = "item";
+		item.property("type") = "option";
 		//
 		item.append("text").label("Text").category(CAT_COMMON).type(pg_type::string) = "New Item";
 		item.append("image").label("Image").category(CAT_COMMON).type(pg_type::image) = "";
@@ -70,16 +70,15 @@ namespace ctrls
 		// init
 		
 		// options - START
-		std::size_t pos = 0;
-		for(auto& i : items)
-		{
-			cd->init.push_back(name + ".push_back(\"" + i.property("text").as_string() + "\");");
+		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_string() + "\");");
 
-			if(!i.property("image").as_string().empty())
-				cd->init.push_back(name + ".image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
+				if(!node->value.property("image").as_string().empty())
+					cd->init.push_back(name + ".image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\"));");
 
-			++pos;
-		}
+				return true;
+			});
 		// options - END
 
 		cd->init.push_back(name + ".option(" + properties.property("option").as_string() + ");");

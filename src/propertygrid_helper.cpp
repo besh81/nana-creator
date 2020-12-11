@@ -13,7 +13,7 @@
 namespace propertygrid_helper
 {
 
-	void append(nana::propertygrid* propgrid, ctrls::properties_collection* properties, std::vector<ctrls::properties_collection>* items)
+	void append(nana::propertygrid* propgrid, ctrls::properties_collection* properties)
 	{
 		if(!propgrid || !properties)
 			return;
@@ -110,20 +110,19 @@ namespace propertygrid_helper
 			
 				pgc->option(std::atoi(prop.value().c_str()));
 			}
-			else if(prop.type() == ctrls::pg_type::image)
+			else if(prop.type() == ctrls::pg_type::image || prop.type() == ctrls::pg_type::icon)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.value())));
+				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_image(prop.label(), prop.type(), prop.value())));
 			}
 			else if(prop.type() == ctrls::pg_type::folder)
 			{
 				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_folder(prop.label(), prop.value())));
 			}
-			else if(prop.type() == ctrls::pg_type::collection_combox || prop.type() == ctrls::pg_type::collection_toolbar
+			else if(prop.type() == ctrls::pg_type::collection_toolbar || prop.type() == ctrls::pg_type::collection_combox
 				|| prop.type() == ctrls::pg_type::collection_listbox || prop.type() == ctrls::pg_type::collection_tabbar
-				|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_categorize
-				|| prop.type() == ctrls::pg_type::collection_collapse)
+				|| prop.type() == ctrls::pg_type::collection_menubar || prop.type() == ctrls::pg_type::collection_collapse)
 			{
-				ip = cat.append(nana::propertygrid::pgitem_ptr(new pg_collection(prop.label(), prop.type(), items)));
+				// do nothing - is managed by itemseditorpanel
 			}
 			else if(prop.type() == ctrls::pg_type::margin)
 			{
@@ -136,7 +135,8 @@ namespace propertygrid_helper
 
 
 			// set default value
-			ip.defvalue(prop.defvalue());
+			if(!ip.empty())
+				ip.defvalue(prop.defvalue());
 		}
 
 		// look for properties bonds
@@ -160,7 +160,7 @@ namespace propertygrid_helper
 					continue;
 
 				auto cat = propgrid->at(cat_idx);
-				for(auto c : cat)
+				for(auto &c : cat)
 				{
 					if(c.label() == prop.label())
 					{

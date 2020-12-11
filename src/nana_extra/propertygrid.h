@@ -89,6 +89,8 @@ namespace nana
 					: label_(label), value_(value), def_(value), ess_(nullptr)
 				{}
 
+				virtual ~pgitem() = default;
+
 				void init(window wd);							///< Initialize the inline controls (should not be used)
 
 				virtual void activate(essence_t* ess, const index_pair& idx)	///< Activate inline widgets (should not be used)

@@ -66,16 +66,17 @@ namespace ctrls
 	{
 		ctrl::update();
 
-		// columns - START
 		lst.clear_headers();
 
-		for(auto& i : items)
-		{
-			if(i.property("width").as_int() < 0)
-				lst.append_header(i.property("text").as_string());
-			else
-				lst.append_header(i.property("text").as_string(), i.property("width").as_uint());
-		}
+		// columns - START
+		items.for_each([this](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				if(node->value.property("width").as_int() < 0)
+					lst.append_header(node->value.property("text").as_string());
+				else
+					lst.append_header(node->value.property("text").as_string(), node->value.property("width").as_uint());
+				return true;
+			});
 		// columns - END
 
 		lst.sortable(properties.property("sortable").as_bool());
@@ -159,17 +160,16 @@ namespace ctrls
 		// scheme::mouse_wheel
 
 		// columns - START
-		for(auto& i : items)
-		{
-			std::string str = name + ".append_header(\"" + i.property("text").as_string() + "\"";
-
-			if(i.property("width").as_int() < 0)
-				str.append(");");
-			else
-				str.append(", " + i.property("width").as_string() + ");");
-
-			cd->init.push_back(str);
-		}
+		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				std::string str = name + ".append_header(\"" + node->value.property("text").as_string() + "\"";
+				if(node->value.property("width").as_int() < 0)
+					str.append(");");
+				else
+					str.append(", " + node->value.property("width").as_string() + ");");
+				cd->init.push_back(str);
+				return true;
+			});
 		// columns - END
 	}
 

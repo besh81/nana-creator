@@ -57,8 +57,6 @@ inifile			g_inifile;
 
 
 	creator fm(0, nana::size{ 1200, 700 });
-	fm.icon(nana::paint::image("icons/creator.ico"));
-
 	fm.show();
 	nana::exec();
 }

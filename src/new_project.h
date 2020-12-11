@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.26.0)
+ *	C++ code generated with Nana Creator (0.27.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -49,8 +49,10 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=40 margin=5 gap=3 arrange=[variable,90,90] field5>");
+		_place.bind(*this);
+		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=36 margin=5 gap=3 arrange=[variable,90,90] field5>");
 		caption("New project");
+		icon(nana::paint::image("c:/cppprojects/nana-creator/wdir/icons/creator.ico"));
 		// label3
 		label3.create(*this);
 		_place["field1"] << label3;
@@ -108,7 +110,7 @@ private:
 
 
 protected:
-	nana::place _place{ *this };
+	nana::place _place;
 	nana::label label3;
 	nana::listbox type_lst;
 	nana::textbox type_txt;

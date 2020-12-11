@@ -15,7 +15,7 @@
 namespace propertygrid_helper
 {
 
-	void append(nana::propertygrid* propgrid, ctrls::properties_collection* properties, std::vector<ctrls::properties_collection>* items);
+	void append(nana::propertygrid* propgrid, ctrls::properties_collection* properties);
 
 	void enabled_bonds(nana::propertygrid* propgrid, ctrls::properties_collection* properties, const std::string& name, bool value);
 

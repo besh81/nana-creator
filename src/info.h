@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.26.0)
+ *	C++ code generated with Nana Creator (0.27.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -16,6 +16,7 @@
 #include <nana/gui/widgets/picture.hpp>
 #include <nana/gui/widgets/panel.hpp>
 #include <nana/gui/widgets/label.hpp>
+#include <nana/gui/widgets/group.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/button.hpp>
 
@@ -27,7 +28,7 @@ class info
 	: public nana::form
 {
 public:
-	info(nana::window wd, const ::nana::size& sz = {520, 330}, const nana::appearance& apr = {true, true, false, false, false, false, false})
+	info(nana::window wd, const ::nana::size& sz = {520, 340}, const nana::appearance& apr = {true, true, false, false, false, false, false})
 		: nana::form(wd, sz, apr)
 	{
 		init_();
@@ -48,8 +49,10 @@ public:
 private:
 	void init_()
 	{
-		_place.div("vert <weight=150 arrange=[50%,variable] field1><vert weight=30 margin=5 gap=2 arrange=[20] field2><grid=[5,5] margin=5 collapse(1,0,4,1) collapse(1,1,4,1) collapse(1,2,4,3) grid1><weight=40 margin=6 gap=2 arrange=[variable,90] field3>");
+		_place.bind(*this);
+		_place.div("vert <weight=150 arrange=[50%,variable] field1><vert weight=30 margin=5 gap=2 arrange=[20] field2><grid=[5,6] margin=[5,5,0,5] collapse(1,0,4,1) collapse(1,1,4,1) collapse(0,2,5,4) grid1><weight=40 margin=6 gap=2 arrange=[variable,90] field3>");
 		caption("About Nana Creator");
+		icon(nana::paint::image("icons/creator.ico"));
 		// picture1
 		picture1.create(*this);
 		_place["field1"] << picture1;
@@ -73,6 +76,7 @@ private:
 		// _ver
 		_ver.create(panel1);
 		panel1_place["_field_"] << _ver;
+		_ver.bgcolor(nana::color(212,208,200));
 		_ver.fgcolor(nana::color(255,255,255));
 		_ver.typeface(nana::paint::font("", 16, {400, false, false, false}));
 		_ver.caption("version");
@@ -99,13 +103,14 @@ private:
 		label41.create(*this);
 		_place["grid1"] << label41;
 		label41.caption("https://github.com/besh81/nana-creator");
-		// label5
-		label5.create(*this);
-		_place["grid1"] << label5;
-		label5.caption("Thanks to ...");
+		// group1
+		group1.create(*this);
+		group1.div("margin=3 gap=2 _field_");
+		group1.caption("Thanks to ...");
+		_place["grid1"] << group1;
 		// _thanks_txt
-		_thanks_txt.create(*this);
-		_place["grid1"] << _thanks_txt;
+		_thanks_txt.create(group1);
+		group1["_field_"] << _thanks_txt;
 		_thanks_txt.editable(false);
 		// panel2
 		panel2.create(*this);
@@ -117,11 +122,12 @@ private:
 
 		_place.collocate();
 		panel1_place.collocate();
+		group1.collocate();
 	}
 
 
 protected:
-	nana::place _place{ *this };
+	nana::place _place;
 	nana::picture picture1;
 	nana::panel<true> panel1;
 	nana::place panel1_place;
@@ -132,7 +138,7 @@ protected:
 	nana::label label31;
 	nana::label label4;
 	nana::label label41;
-	nana::label label5;
+	nana::group group1;
 	nana::textbox _thanks_txt;
 	nana::panel<true> panel2;
 	nana::button _ok_btn;

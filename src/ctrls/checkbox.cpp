@@ -101,7 +101,7 @@ namespace ctrls
 			cd->init.push_back(name + ".transparent(true);");
 
 		//scheme
-		if(properties.property("square_bgcolor").as_string() != nana::to_string(def_scheme.square_bgcolor))
+		if(properties.property("square_bgcolor").as_string() != nana::to_string(def_scheme.square_bgcolor) && !nana::is_color_inherited(properties.property("square_bgcolor").as_string()))
 			cd->init.push_back(name + ".scheme().square_bgcolor = nana::color(" + properties.property("square_bgcolor").as_string() + ");");
 		if(properties.property("square_border_color").as_string() != nana::to_string(def_scheme.square_border_color))
 			cd->init.push_back(name + ".scheme().square_border_color = nana::color(" + properties.property("square_border_color").as_string() + ");");

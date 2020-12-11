@@ -717,11 +717,14 @@ namespace nana
 		// draw interaction-box
 		if(iboxw)
 		{
+			API::show_window(ibox_, true);
 			auto rect = area;
 			rect.x += labelw + valuew;
 			rect.width = iboxw;
 			draw_ibox(graph, rect, bgcolor, fgcolor);
 		}
+		else
+			API::show_window(ibox_, false);
 
 		// draw expanded
 		if(!expand_)

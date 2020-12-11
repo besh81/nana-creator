@@ -617,7 +617,7 @@ namespace nana
 			{
 				int integer;
 				double real;
-			}value_;
+			} value_;
 		};//end class number_t
 	}//end namespace place_parts
 
@@ -817,12 +817,12 @@ namespace nana
 			return (i < div_owner->children.size() - 1) ? div_owner->children[i + 1].get() : nullptr;
 		}
 
-	public:
-		//Collocate the division and its children divisions,
+
+		//Collocate the division and its children divisions.
 		//The window parameter is specified for the window which the adi_place object binded.
 		virtual void collocate(window) = 0;
 
-	public:
+
 		kind kind_of_division;
 		bool visible{ true };
 		std::string name;
@@ -1324,7 +1324,7 @@ namespace nana
 			impl_ptr_->to_float(this);
 
 			impl_ptr_->collocate();
-			//XXX
+
 			impl_ptr_->print_debug();
 		}
 
@@ -1333,7 +1333,7 @@ namespace nana
 			impl_ptr_->hide_indicators();
 
 			impl_ptr_->collocate();
-			//XXX
+
 			impl_ptr_->print_debug();
 		}
 
@@ -1768,7 +1768,10 @@ namespace nana
 			if(where)
 			{
 				arrange_ptr->div_owner = where->div_owner;
-				arrange_ptr->weight_.assign(static_cast<int>(arrange_ptr->is_vertical() ? where_uptr->field_area.width : where_uptr->field_area.height));
+
+				// if field_area width and height are both zero let the system to decide the size
+				if(where_uptr->field_area.width || where_uptr->field_area.height)
+					arrange_ptr->weight_.assign(static_cast<int>(arrange_ptr->is_vertical() ? where_uptr->field_area.width : where_uptr->field_area.height));
 			}
 
 			auto splitter_ptr = new div_splitter(this, is_vertical(pos));
@@ -2118,7 +2121,6 @@ namespace nana
 				return;
 
 			root_division->collocate(window_handle);
-
 			API::refresh_window(window_handle);
 		}
 	}
@@ -2173,6 +2175,7 @@ namespace nana
 
 	void adi_place::collocate()
 	{
+		collocated_ = true;
 		impl_->collocate();
 	}
 
@@ -2190,12 +2193,24 @@ namespace nana
 		return add_pane(i, w, position);
 	}
 
+	paneinfo adi_place::add_pane(const std::string& id, widget* w, const std::string& relative_to_id, dockposition position, const std::string& caption)
+	{
+		paneinfo i(id);
+		i.caption(caption);
+		return add_pane(i, w, relative_to_id, position);
+	}
+
 	paneinfo adi_place::add_pane(const paneinfo& info, widget* w)
 	{
 		return add_pane(info, w, dockposition::right);
 	}
 
 	paneinfo adi_place::add_pane(const paneinfo& info, widget* w, dockposition position)
+	{
+		return add_pane(info, w, "", position);
+	}
+
+	paneinfo adi_place::add_pane(const paneinfo& info, widget* w, const std::string& relative_to_id, dockposition position)
 	{
 		if(info.empty())
 		{
@@ -2225,8 +2240,35 @@ namespace nana
 		dock_ptr->dockarea->move(dock_ptr->attached->field_area);
 		dock_ptr->dockarea->add_pane(w);
 
-		if(impl_->to_dock(div, position))
-			return dock_ptr->info;
+		if(!relative_to_id.empty())
+		{
+			std::function<implement::division* (implement::division* div)> hit_fn;
+			hit_fn = [&hit_fn, relative_to_id](implement::division* div) -> implement::division*
+			{
+				if(implement::division::kind::dockpane == div->kind_of_division)
+				{
+					if(div->name == relative_to_id)
+						return div;
+				}
+
+				for(auto& child : div->children)
+				{
+					auto r = hit_fn(child.get());
+					if(r)
+						return r;
+				}
+
+				return nullptr;
+			};
+
+			auto w = hit_fn(impl_->root_division.get());
+
+			if(impl_->to_dock(div, w, position))
+				return dock_ptr->info;
+		}
+		else
+			if(impl_->to_dock(div, position))
+				return dock_ptr->info;
 		
 		throw error("add_pane() -> to_dock() - possible divs tree corruption", *this);
 		return paneinfo();
@@ -2247,6 +2289,10 @@ namespace nana
 		if(it != impl_->docks.end())
 		{
 			it->second->info = info;
+			
+			if(!collocated_)
+				return;
+
 			it->second->attached->update();
 			it->second->dockarea->update();
 		}

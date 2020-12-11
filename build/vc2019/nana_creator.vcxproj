@@ -181,7 +181,7 @@
     <ClCompile Include="..\..\src\imagemanager.cpp" />
     <ClCompile Include="..\..\src\info.cpp" />
     <ClCompile Include="..\..\src\inifile.cpp" />
-    <ClCompile Include="..\..\src\items_dialog.cpp" />
+    <ClCompile Include="..\..\src\itemseditorpanel.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\namemanager.cpp" />
     <ClCompile Include="..\..\src\nana_extra\adi_place.cpp" />
@@ -194,6 +194,7 @@
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
     <ClCompile Include="..\..\src\scrollablecanvas.cpp" />
+    <ClCompile Include="..\..\src\updater.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libs\pugixml\pugiconfig.hpp" />
@@ -235,7 +236,7 @@
     <ClInclude Include="..\..\src\imagemanager.h" />
     <ClInclude Include="..\..\src\info.h" />
     <ClInclude Include="..\..\src\inifile.h" />
-    <ClInclude Include="..\..\src\items_dialog.h" />
+    <ClInclude Include="..\..\src\itemseditorpanel.h" />
     <ClInclude Include="..\..\src\lock_guard.h" />
     <ClInclude Include="..\..\src\namemanager.h" />
     <ClInclude Include="..\..\src\nana_extra\adi_place.hpp" />
@@ -250,6 +251,8 @@
     <ClInclude Include="..\..\src\scrollablecanvas.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
+    <ClInclude Include="..\..\src\updater.h" />
+    <ClInclude Include="..\..\src\version.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\TODO.txt" />

@@ -84,10 +84,12 @@ namespace ctrls
 		{
 			// collapse - START
 			boxmodel.clear_collapse();
-			for(auto& i : items)
-			{
-				boxmodel.add_collapse(i.property("left").as_string() + "," + i.property("top").as_string() + "," + i.property("cols").as_string() + "," + i.property("rows").as_string());
-			}
+
+			items.for_each([this](tree_node<ctrls::properties_collection>* node) -> bool
+				{
+					boxmodel.add_collapse(node->value.property("left").as_string() + "," + node->value.property("top").as_string() + "," + node->value.property("cols").as_string() + "," + node->value.property("rows").as_string());
+					return true;
+				});
 			// collapse - END
 		}
 

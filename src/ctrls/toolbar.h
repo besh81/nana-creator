@@ -22,7 +22,7 @@ namespace ctrls
 	public:
 		toolbar(ctrl* parent, const std::string& name);
 
-		static void init_item(properties_collection& item);
+		static void init_item(properties_collection& item, const std::string& type);
 
 		void update() override;
 

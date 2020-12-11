@@ -82,22 +82,23 @@ namespace ctrls
 		while(tbb.length())
 			tbb.erase(0);
 
-		for(auto& i : items)
-		{
-			tbb.push_back(i.property("text").as_string());
+		items.for_each([this](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				tbb.push_back(node->value.property("text").as_string());
 
-			if(!i.property("image").as_string().empty())
-				tbb.tab_image(tbb.length() - 1, nana::paint::image(i.property("image").as_string()));
+				if(!node->value.property("image").as_string().empty())
+					tbb.tab_image(tbb.length() - 1, nana::paint::image(node->value.property("image").as_string()));
 
-			bool inherited;
-			auto bgcolor = nana::to_color(i.property("bgcolor").as_string(), inherited);
-			if(!inherited)
-				tbb.tab_bgcolor(tbb.length() - 1, bgcolor);
+				bool inherited;
+				auto bgcolor = nana::to_color(node->value.property("bgcolor").as_string(), inherited);
+				if(!inherited)
+					tbb.tab_bgcolor(tbb.length() - 1, bgcolor);
 
-			auto fgcolor = nana::to_color(i.property("fgcolor").as_string(), inherited);
-			if(!inherited)
-				tbb.tab_fgcolor(tbb.length() - 1, fgcolor);
-		}
+				auto fgcolor = nana::to_color(node->value.property("fgcolor").as_string(), inherited);
+				if(!inherited)
+					tbb.tab_fgcolor(tbb.length() - 1, fgcolor);
+				return true;
+			});
 
 		internal_use = false;
 		// tabs - END
@@ -123,24 +124,22 @@ namespace ctrls
 		// init
 
 		// tabs - START
-		std::size_t pos = 0;
-		for(auto& i : items)
-		{
-			cd->init.push_back(name + ".push_back(\"" + i.property("text").as_string() + "\");");
+		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_string() + "\");");
 
-			if(!i.property("image").as_string().empty())
-				cd->init.push_back(name + ".tab_image(" + std::to_string(pos) + ", nana::paint::image(\"" + g_file_mgr.to_relative(i.property("image").as_string()) + "\"));");
+				if(!node->value.property("image").as_string().empty())
+					cd->init.push_back(name + ".tab_image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\"));");
 
-			auto bgcolor_txt = i.property("bgcolor").as_string();
-			if(!nana::is_color_inherited(bgcolor_txt))
-				cd->init.push_back(name + ".tab_bgcolor(" + std::to_string(pos) + ", nana::color(" + bgcolor_txt + "));");
+				auto bgcolor_txt = node->value.property("bgcolor").as_string();
+				if(!nana::is_color_inherited(bgcolor_txt))
+					cd->init.push_back(name + ".tab_bgcolor(" + std::to_string(node->pos()) + ", nana::color(" + bgcolor_txt + "));");
 
-			auto fgcolor_txt = i.property("fgcolor").as_string();
-			if(!nana::is_color_inherited(fgcolor_txt))
-				cd->init.push_back(name + ".tab_fgcolor(" + std::to_string(pos) + ", nana::color(" + fgcolor_txt + "));");
-
-			++pos;
-		}
+				auto fgcolor_txt = node->value.property("fgcolor").as_string();
+				if(!nana::is_color_inherited(fgcolor_txt))
+					cd->init.push_back(name + ".tab_fgcolor(" + std::to_string(node->pos()) + ", nana::color(" + fgcolor_txt + "));");
+				return true;
+			});
 		// tabs - END
 
 		if(properties.property("addbtn").as_bool())

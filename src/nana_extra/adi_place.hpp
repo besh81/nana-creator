@@ -126,8 +126,10 @@ namespace nana
 		/// Add a panel
 		paneinfo add_pane(const std::string& id, widget* window, const std::string& caption = "");
 		paneinfo add_pane(const std::string& id, widget* window, dockposition position, const std::string& caption = "");
+		paneinfo add_pane(const std::string& id, widget* window, const std::string& relative_to_id, dockposition position, const std::string& caption = "");
 		paneinfo add_pane(const paneinfo& info, widget* window);
 		paneinfo add_pane(const paneinfo& info, widget* window, dockposition position);
+		paneinfo add_pane(const paneinfo& info, widget* window, const std::string& relative_to_id, dockposition position);
 
 		paneinfo get_pane(const std::string& id);
 
@@ -137,6 +139,7 @@ namespace nana
 
 	private:
 		implement* impl_;
+		bool collocated_{ false };
 	};
 
 	

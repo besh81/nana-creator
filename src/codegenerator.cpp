@@ -11,6 +11,7 @@
 #include <cstring>
 #include <algorithm>
 #include "codegenerator.h"
+#include "version.h"
 #include "filemanager.h"
 #include "ctrls/ctrl.h"
 

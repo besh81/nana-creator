@@ -35,7 +35,10 @@ namespace ctrls
 
 		// common
 		if(!ispanel)
+		{
 			properties.append("caption").label("Caption").category(CAT_COMMON).type(pg_type::string) = "Form";
+			properties.append("icon").label("Icon").category(CAT_COMMON).type(pg_type::icon) = "";
+		}
 		properties.append("width").label("Width").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_W;
 		properties.append("height").label("Height").category(CAT_COMMON).type(pg_type::string_uint) = MAIN_WDG_H;
 		// appearance
@@ -130,13 +133,18 @@ namespace ctrls
 			cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 		cd->hpps.add("#include <nana/gui/place.hpp>");
 		// declaration
-		cd->decl.push_back("nana::place _place{ *this };");
+		cd->decl.push_back("nana::place _place;");
 		// init
+		cd->init.push_back("_place.bind(*this);");
 		cd->init.push_back("_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back("enabled(false);");
 		if(!ispanel)
+		{
 			cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
+			if(!properties.property("icon").as_string().empty())
+				cd->init.push_back("icon(nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("icon").as_string()) + "\"));");
+		}
 		else
 		{
 			if(properties.property("transparent").as_bool())

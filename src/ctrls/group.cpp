@@ -92,7 +92,7 @@ namespace ctrls
 		
 		if(properties.property("format").as_bool())
 			cd->init.push_back(name + ".enable_format_caption(" + properties.property("format").as_string() + ");");
-		if(properties.property("format").as_string() != "left")
+		if(properties.property("halign").as_int() != static_cast<int>(nana::align::left))
 			cd->init.push_back(name + ".caption_align(static_cast<nana::align>(" + properties.property("halign").as_string() + "));");
 		if(children())
 			cd->init.push_back(name + ".div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");

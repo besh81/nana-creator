@@ -41,7 +41,9 @@ namespace ctrls
 		check_style,
 		include_style,
 		focus_behavior,
-		margin
+		margin,
+		icon,
+		empty
 	};
 
 

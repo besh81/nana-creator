@@ -109,7 +109,7 @@ guimanager::guimanager(nana::window wd)
 }
 
 
-void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, scrollablecanvas* main_wd)
+void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd)
 {
 	_ct = ct;
 
@@ -139,6 +139,12 @@ void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objects
 	});
 	_op->contex_menu(&_ctxmenu);
 
+	_iep = iep;
+	_iep->property_changed([this](const std::string& arg)
+		{
+			updateselected();
+		});
+
 	_main_wd = main_wd;
 	
 	enableGUI(false, true);
@@ -162,7 +168,8 @@ void guimanager::clear()
 
 	_ctrls.clear();
 	_op->clear();
-	_pp->set(0, 0);
+	_pp->set(0);
+	_iep->set(0, 0);
 	_name_mgr.clear();
 
 	enableGUI(false, true);
@@ -172,13 +179,18 @@ void guimanager::clear()
 void guimanager::enableGUI(bool state, bool new_load)
 {
 	nana::API::enum_widgets(*_ap, true, [state](nana::widget &w)
-	{
-		w.enabled(state);
-	});
+		{
+			w.enabled(state);
+		});
 	nana::API::enum_widgets(*_pp, true, [state](nana::widget &w)
-	{
-		w.enabled(state);
-	});
+		{
+			w.enabled(state);
+		});
+	nana::API::enum_widgets(*_iep, true, [state](nana::widget& w)
+		{
+			w.enabled(state);
+		});
+	_iep->enable(state);
 
 	_ct->enableGUI(state, new_load);
 }
@@ -526,7 +538,8 @@ void guimanager::deleteselected()
 	if(toremove == _ctrls.get_root()->child)
 	{
 		parent = 0;
-		_pp->set(0, 0);
+		_pp->set(0);
+		_iep->set(0, 0);
 		_main_wd->remove();
 	}
 
@@ -716,8 +729,11 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 	enableGUI(true, true);
 
 	// select new_node
-	new_node->value->refresh();
-	left_click_ctrl(new_node->value);
+	if(new_node)
+	{
+		new_node->value->refresh();
+		left_click_ctrl(new_node->value);
+	}
 }
 
 
@@ -832,7 +848,9 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 		_op->emit_events(true);
 
 		// set properties panel
-		_pp->set(&ctrl->properties, &ctrl->items);
+		_pp->set(&ctrl->properties);
+		// set items editor panel
+		_iep->set(&ctrl->properties, &ctrl->items);
 
 		if(arg.left_button)
 			return true; // stop propagation
@@ -950,7 +968,9 @@ void guimanager::click_objectspanel(const std::string& name)
 				_select_ctrl(node);
 
 				// set properties panel
-				_pp->set(&node->value->properties, &node->value->items);
+				_pp->set(&node->value->properties);
+				// set items editor panel
+				_iep->set(&node->value->properties, &node->value->items);
 
 				// set focus to new object
 				node->value->nanawdg->focus();
@@ -985,13 +1005,14 @@ void guimanager::_serialize(tree_node<control_obj>* node, pugi::xml_node* xml_pa
 			xml_child.append_attribute(node->value->properties[i].name().c_str()) = node->value->properties[i].as_string().c_str();
 
 		// serialize items
-		for(auto& item : node->value->items)
-		{
-			auto xml_item = xml_child.append_child(NODE_ITEM);
+		node->value->items.for_each([&xml_child](tree_node<ctrls::properties_collection>* node) -> bool
+			{
+				auto xml_item = xml_child.append_child(NODE_ITEM);
 
-			for(size_t i = 0; i < item.count(); ++i)
-				xml_item.append_attribute(item[i].name().c_str()) = item[i].as_string().c_str();
-		}
+				for(size_t i = 0; i < node->value.count(); ++i)
+					xml_item.append_attribute(node->value[i].name().c_str()) = node->value[i].as_string().c_str();
+				return true;
+			});
 	}
 
 	if(node->child)
@@ -1043,8 +1064,7 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 
 		if(node_name == NODE_ITEM)
 		{
-			parent->value->items.push_back(ctrls::properties_collection{});
-			auto& item = parent->value->items.back();
+			ctrls::properties_collection item;
 
 			// init item properties
 			if(parent->value->get_type() == CTRL_GRID)
@@ -1054,15 +1074,32 @@ bool guimanager::_deserialize(tree_node<control_obj>* parent, pugi::xml_node* xm
 			else if(parent->value->get_type() == CTRL_LISTBOX)
 				ctrls::listbox::init_item(item);
 			else if(parent->value->get_type() == CTRL_MENUBAR)
-				ctrls::menubar::init_item(item);
+				ctrls::menubar::init_item(item, xml_node.attribute("type").as_string());
 			else if(parent->value->get_type() == CTRL_TABBAR)
 				ctrls::tabbar::init_item(item);
 			else if(parent->value->get_type() == CTRL_TOOLBAR)
-				ctrls::toolbar::init_item(item);
+				ctrls::toolbar::init_item(item, xml_node.attribute("type").as_string());
 
 			// deserialize attributes
 			for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
 				item.property(i->name()).value(i->value());
+
+			if(item.property("owner").as_string().empty())
+			{
+				parent->value->items.append(item);
+			}
+			else
+			{
+				parent->value->items.for_each([&item](tree_node<ctrls::properties_collection>* node) -> bool
+					{
+						if(item.property("owner").as_string() == node->value.property("key").as_string())
+						{
+							node->append(item);
+							return false;
+						}
+						return true;
+					});
+			}
 
 			continue;
 		}
@@ -1142,7 +1179,9 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<
 		_update_op();
 
 		// set properties panel
-		_pp->set(&ctrl->properties, &ctrl->items);
+		_pp->set(&ctrl->properties);
+		// set items editor panel
+		_iep->set(&ctrl->properties, &ctrl->items);
 
 		// set focus to new object
 		ctrl->nanawdg->focus();

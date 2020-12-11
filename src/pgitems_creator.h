@@ -66,8 +66,8 @@ class pg_image
 public:
 	pg_image() = default;
 
-	pg_image(const std::string& label, const std::string& value)
-		: pg_filename(label, value)
+	pg_image(const std::string& label, ctrls::pg_type type, const std::string& value)
+		: pg_filename(label, value), type_(type)
 	{}
 
 protected:
@@ -75,6 +75,8 @@ protected:
 
 	virtual bool on_open_dlg() override;
 	virtual bool on_close_dlg(const std::string& file) override;
+
+	ctrls::pg_type type_;
 };
 
 
@@ -98,31 +100,6 @@ protected:
 
 
 
-/// class pg_collection
-class pg_collection
-	: public nana::pg_string_button
-{
-public:
-	pg_collection() = default;
-
-	pg_collection(const std::string& label, ctrls::pg_type type, std::vector<ctrls::properties_collection>* items)
-		: pg_string_button(label, ""), type_(type), items_(items)
-	{}
-
-	virtual void value(const std::string& value) override {}
-	virtual void defvalue(const std::string& value) override;
-	virtual void reset() override;
-
-	virtual void items(std::vector<ctrls::properties_collection>* items);
-
-protected:
-	virtual void create(nana::window wd) override;
-
-	ctrls::pg_type type_;
-	std::vector<ctrls::properties_collection>* items_{ nullptr };
-};
-
-
 /// class pg_layout_weight
 class pg_layout_weight
 	: public nana::pg_string
@@ -143,6 +120,7 @@ protected:
 
 	mutable ::nana::combox	cmb_;
 };
+
 
 
 /// class pg_margin
@@ -173,6 +151,7 @@ protected:
 	mutable nana::textbox	values_[4];
 	bool		expand_{ true };
 };
+
 
 
 /// class pg_color_inherited
