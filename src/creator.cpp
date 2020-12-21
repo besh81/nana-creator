@@ -42,7 +42,7 @@
 #define TB_COPY					14
 #define TB_PASTE				15
 //
-#define TB_INFO					17
+#define TB_INFO					16
 
 
 guimanager*					p_gui_mgr;	// manage all the gui elements
@@ -138,6 +138,10 @@ void creator::sb_set(const std::string& str)
 void creator::_init_ctrls()
 {
 	caption(CREATOR_TITLE);
+
+#ifdef __RELEASE
+	nana::API::zoom_window(*this, true);
+#endif
 
 	// toolbar
 	_tb.events().selected([this](const nana::arg_toolbar & arg)

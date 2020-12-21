@@ -408,6 +408,9 @@ namespace nana
 				API::set_parent_window(handle(), container_->handle());
 				this->move({ 1, 1 });
 
+				// set pane min size
+				API::track_window_size(container_->handle(), { 100, 100 }, false);
+
 				container_->events().resized.connect_unignorable([this](const arg_resized& arg)
 					{
 						this->size({ arg.width - 2, arg.height - 2 });

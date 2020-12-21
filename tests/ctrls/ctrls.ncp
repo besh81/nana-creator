@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<nana-creator version="0.27.0">
-	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="" width="640" height="500" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
+<nana-creator version="0.28.0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="" width="640" height="500" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
 			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
 				<item type="item" key="n1" owner="" text="M&amp;enu1" />
@@ -67,7 +67,7 @@
 									<item type="column" key="n1" owner="" text="col 1" width="55" />
 									<item type="column" key="n2" owner="" text="col 2" width="-1" />
 								</listbox>
-								<treebox type="treebox" name="treebox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" checkable="false" use_entire_line="false" />
+								<treebox type="treebox" name="treebox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" checkable="false" use_entire_line="false" item_bg_selected="213,239,252" item_fg_selected="153,222,253" item_bg_highlighted="232,245,253" item_fg_highlighted="216,240,250" item_bg_selected_and_highlighted="196,232,250" item_fg_selected_and_highlighted="182,230,251" item_offset="16" text_offset="4" icon_size="16" crook_size="16" indent_displacement="18" />
 							</grid>
 						</page>
 						<page type="page" name="page2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" caption="page" image="C:\cppprojects\nana-creator\wdir\icons\datechooser.png" layout="0" margin="5" gap="2">

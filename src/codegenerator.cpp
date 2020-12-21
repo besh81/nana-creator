@@ -301,6 +301,14 @@ bool codegenerator::_write_file()
 	_write_line("public:");
 	_indent++;
 
+	//---- default ctor - START
+	if(_code_data.mainclass_def_ctor)
+	{
+		_write_line(_code_data.mainclass + "() = default;");
+		_write_line();
+	}
+	//---- default ctor - END
+
 	//---- ctor - START
 	_write_line(_code_data.mainclass + _code_data.mainclass_ctor);
 	_indent++;
@@ -309,12 +317,19 @@ bool codegenerator::_write_file()
 	_write_line("{");
 	_indent++;
 
-	_write_line("init_();");
+	if(_code_data.mainclass_def_ctor)
+	{
+		_write_line("this->create(wd, r, visible);");
+	}
+	else
+	{
+		_write_line("init_();");
 
-	_write_line();
-	_append_tag(CTOR_TAG);
-
+		_write_line();
+		_append_tag(CTOR_TAG);
+	}
 	_indent--;
+
 	_write_line("}");
 	//---- ctor - END
 
@@ -330,6 +345,34 @@ bool codegenerator::_write_file()
 	_indent--;
 	_write_line("}");
 	//---- dtor - END
+
+	//---- create - START
+	if(_code_data.mainclass_def_ctor)
+	{
+		_write_line();
+
+		_write_line("bool create" + _code_data.mainclass_ctor);
+		_write_line("{");
+		_indent++;
+
+		_write_line("if(!nana::panel<true>::create(wd, r, visible))");
+		_indent++;
+		_write_line("return false;");
+		_indent--;
+
+		_write_line();
+		_write_line("init_();");
+
+		_write_line();
+		_append_tag(CTOR_TAG);
+
+		_write_line();
+		_write_line("return true;");
+
+		_indent--;
+		_write_line("}");
+	}
+	//---- create - END
 	//---- public - END
 
 	_write_line();

@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.27.0)
+ *	C++ code generated with Nana Creator (0.28.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -28,14 +28,12 @@ class itemseditorpanel
 	: public nana::panel<true>
 {
 public:
-	itemseditorpanel(nana::window wd, bool visible = true)
-		: nana::panel<true>(wd, nana::rectangle(), visible)
-	{
-		init_();
+	itemseditorpanel() = default;
 
-		//<*ctor
-		_init_ctrls();
-		//*>
+	itemseditorpanel(nana::window wd, const nana::rectangle& r = {}, bool visible = true)
+		: nana::panel<true>(wd, r, visible)
+	{
+		this->create(wd, r, visible);
 	}
 
 	~itemseditorpanel()
@@ -43,6 +41,20 @@ public:
 		//<*dtor
 
 		//*>
+	}
+
+	bool create(nana::window wd, const nana::rectangle& r = {}, bool visible = true)
+	{
+		if(!nana::panel<true>::create(wd, r, visible))
+			return false;
+
+		init_();
+
+		//<*ctor
+		_init_ctrls();
+		//*>
+
+		return true;
 	}
 
 

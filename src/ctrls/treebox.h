@@ -29,6 +29,8 @@ namespace ctrls
 
 	protected:
 		nana::treebox trb;
+
+		nana::drawerbase::treebox::scheme def_scheme;
 	};
 
 }//end namespace ctrls

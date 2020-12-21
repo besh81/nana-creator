@@ -23,6 +23,7 @@ struct code_data_struct
 	std::vector<std::string>	init_post;
 
 	std::string					mainclass;
+	bool						mainclass_def_ctor;
 	std::string					mainclass_ctor;
 	std::string					mainclass_base;
 	std::string					mainclass_base_ctor;
@@ -36,6 +37,10 @@ struct code_data_struct
 		init_post.clear();
 
 		mainclass.clear();
+		mainclass_def_ctor = false;
+		mainclass_ctor.clear();
+		mainclass_base.clear();
+		mainclass_base_ctor.clear();
 		filename = "";
 	}
 };

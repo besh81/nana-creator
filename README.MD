@@ -5,7 +5,8 @@
 
 Click here to download the win exe file: [![Download nana-creator](https://img.shields.io/sourceforge/dt/nana-creator.svg)](https://sourceforge.net/projects/nana-creator/files/latest/download)
 
-<img src="https://besh81.github.io/nana-creator-docs/img/calc.jpg" alt="Calculator UI" width="48%"></a>  <img src="https://besh81.github.io/nana-creator-docs/img/adi.jpg" alt="Calculator UI" width="48%"></a>
+<img src="https://besh81.github.io/nana-creator-docs/img/calc.jpg" alt="Calculator UI" width="48%"></a>  <img src="https://besh81.github.io/nana-creator-docs/img/adi.jpg" alt="ADI place" width="48%"></a>
+<img src="https://besh81.github.io/nana-creator-docs/img/ctrls.jpg" alt="Ctrls UI" width="48%"></a>
 
 
 #### Used libraries:
@@ -19,3 +20,4 @@ Here the instruction to [Configure-Third-Party-Libraries-for-Nana](https://githu
 
 ### Tutorials
 - [Basic tutorial](https://besh81.github.io/nana-creator-docs/Basic_Tutorial.html)
+- [Toolbar tutorial](https://besh81.github.io/nana-creator-docs/Toolbar_Tutorial.html)

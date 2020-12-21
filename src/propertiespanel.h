@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.27.0)
+ *	C++ code generated with Nana Creator (0.28.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -27,14 +27,12 @@ class propertiespanel
 	: public nana::panel<true>
 {
 public:
-	propertiespanel(nana::window wd, bool visible = true)
-		: nana::panel<true>(wd, nana::rectangle(), visible)
-	{
-		init_();
+	propertiespanel() = default;
 
-		//<*ctor
-		_init_ctrls();
-		//*>
+	propertiespanel(nana::window wd, const nana::rectangle& r = {}, bool visible = true)
+		: nana::panel<true>(wd, r, visible)
+	{
+		this->create(wd, r, visible);
 	}
 
 	~propertiespanel()
@@ -42,6 +40,20 @@ public:
 		//<*dtor
 
 		//*>
+	}
+
+	bool create(nana::window wd, const nana::rectangle& r = {}, bool visible = true)
+	{
+		if(!nana::panel<true>::create(wd, r, visible))
+			return false;
+
+		init_();
+
+		//<*ctor
+		_init_ctrls();
+		//*>
+
+		return true;
 	}
 
 
