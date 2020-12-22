@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.28.0">
+<nana-creator version="0.29.0">
 	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="" width="640" height="500" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
 			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
@@ -15,9 +15,9 @@
 				<item type="menu" key="n11" owner="n9" text="Highlight2" image="" enabled="true" check_style="2" checked="false" />
 				<item type="item" key="n4" owner="" text="Men&amp;u3" />
 			</menubar>
-			<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" buttons="(Collection)" tools_height="21">
-				<item type="button" key="n1" owner="" text="Add" image="C:\cppprojects\nana-creator\wdir\icons\item_add.png" enable="true" textout="false" />
-				<item type="button" key="n3" owner="" text="Delete" image="C:\cppprojects\nana-creator\wdir\icons\item_delete.png" enable="false" textout="false" />
+			<toolbar type="toolbar" name="toolbar1" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="32" buttons="(Collection)" tools_height="22">
+				<item type="button" key="n1" owner="" text="Add" image="C:\cppprojects\nana-creator\wdir\icons\save.png" enable="true" textout="false" />
+				<item type="button" key="n3" owner="" text="Delete" image="C:\cppprojects\nana-creator\wdir\icons\delete.png" enable="false" textout="false" />
 				<item type="separator" key="n2" owner="" />
 				<item type="toggle" key="n6" owner="" text="Toggle A" image="" enable="true" textout="true" toggle_pushed="true" toggle_group="Gruppo1" />
 				<item type="toggle" key="n7" owner="" text="Toggle B" image="" enable="true" textout="true" toggle_pushed="false" toggle_group="Gruppo1" />

@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.28.0)
+ *	C++ code generated with Nana Creator (0.29.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -48,7 +48,7 @@ private:
 	void init_()
 	{
 		_place.bind(*this);
-		_place.div("vert arrange=[30,variable,24] _field_");
+		_place.div("vert arrange=[36,variable,24] _field_");
 		caption("Nana Creator");
 		icon(nana::paint::image("icons/creator.ico"));
 		bgcolor(nana::color(93,107,153));
@@ -56,7 +56,7 @@ private:
 		_tb.create(*this);
 		_place["_field_"] << _tb;
 		_tb.bgcolor(nana::color(204,213,240));
-		_tb.tools_height(21);
+		_tb.tools_height(26);
 		_tb.append(nana::toolbar::tools::button, "New project", nana::paint::image("icons/new_prj.png"));
 		_tb.append(nana::toolbar::tools::button, "Load project", nana::paint::image("icons/load_prj.png"));
 		_tb.append(nana::toolbar::tools::button, "Save project", nana::paint::image("icons/save.png"));

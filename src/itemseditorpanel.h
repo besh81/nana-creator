@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.28.0)
+ *	C++ code generated with Nana Creator (0.29.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -62,16 +62,16 @@ private:
 	void init_()
 	{
 		_place.bind(*this);
-		_place.div("vert margin=1 <vert weight=31 arrange=[31] field1><vert gap=2 field2>|<gap=2 field3>");
+		_place.div("vert margin=1 <vert weight=32 arrange=[32] field1><vert gap=2 field2>|<gap=2 field3>");
 		bgcolor(nana::color(64,86,141));
 		// toolbar
 		toolbar.create(*this);
 		_place["field1"] << toolbar;
 		toolbar.bgcolor(nana::color(204,213,240));
-		toolbar.tools_height(21);
-		toolbar.append(nana::toolbar::tools::dropdown, "Add", nana::paint::image("icons/item_add.png")).textout(true);
+		toolbar.tools_height(22);
+		toolbar.append(nana::toolbar::tools::dropdown, "Add", nana::paint::image("icons/add.png")).textout(true);
 		toolbar.append_separator();
-		toolbar.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/item_delete.png"));
+		toolbar.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/delete.png"));
 		toolbar.append_separator();
 		toolbar.append(nana::toolbar::tools::button, "Move up", nana::paint::image("icons/up.png"));
 		toolbar.append(nana::toolbar::tools::button, "Move down", nana::paint::image("icons/down.png"));

@@ -139,7 +139,7 @@ void itemseditorpanel::_set_toolbar()
 	toolbar.clear();
 
 	// Add ...
-	auto ip = toolbar.append(nana::toolbar::tools::dropdown, "Add", nana::paint::image("icons/item_add.png")).textout(true);
+	auto ip = toolbar.append(nana::toolbar::tools::dropdown, "Add", nana::paint::image("icons/add.png")).textout(true);
 	if(_type == ctrls::pg_type::collection_toolbar)
 	{
 		ip.dropdown_append("button", nana::paint::image("icons/item_generic.png"),
@@ -200,7 +200,7 @@ void itemseditorpanel::_set_toolbar()
 	}
 
 	toolbar.append_separator();
-	toolbar.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/item_delete.png"),
+	toolbar.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/delete.png"),
 		[this](const nana::toolbar::item_proxy& ip) {
 			_delete_selected();
 		});

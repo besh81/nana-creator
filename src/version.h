@@ -11,7 +11,7 @@
 #include "config.h"
 
 
-#define CREATOR_VERSION			"0.28.0"
+#define CREATOR_VERSION			"0.29.0"
 #define CREATOR_TITLE			(CREATOR_NAME " " CREATOR_VERSION)
 
 

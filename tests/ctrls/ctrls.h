@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.28.0)
+ *	C++ code generated with Nana Creator (0.29.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -63,7 +63,7 @@ private:
 	void init_()
 	{
 		_place.bind(*this);
-		_place.div("vert <vert weight=56 arrange=[variable,30] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,26,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
+		_place.div("vert <vert weight=56 arrange=[variable,32] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,26,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
 		caption("Nana-Creator test");
 		// menubar1
 		menubar1.create(*this);
@@ -95,9 +95,9 @@ private:
 		toolbar1.create(*this);
 		_place["menuf"] << toolbar1;
 		toolbar1.bgcolor(this->bgcolor());
-		toolbar1.tools_height(21);
-		toolbar1.append(nana::toolbar::tools::button, "Add", nana::paint::image("icons/item_add.png"));
-		toolbar1.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/item_delete.png")).enable(false);
+		toolbar1.tools_height(22);
+		toolbar1.append(nana::toolbar::tools::button, "Add", nana::paint::image("icons/save.png"));
+		toolbar1.append(nana::toolbar::tools::button, "Delete", nana::paint::image("icons/delete.png")).enable(false);
 		toolbar1.append_separator();
 		toolbar1.append(nana::toolbar::tools::toggle, "Toggle A").textout(true).toggle_group("Gruppo1").toggle(true);
 		toolbar1.append(nana::toolbar::tools::toggle, "Toggle B").textout(true).toggle_group("Gruppo1");
