@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<nana-creator version="0.28.0">
-	<form mainclass="true" filename="new_project" rel_path="true" work_dir="" type="form" name="new_project" enabled="true" caption="New project" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="540" height="350" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
+<nana-creator version="0.30.0">
+	<form mainclass="true" filename="new_project" rel_path="true" work_dir="" type="form" name="new_project" enabled="true" caption="New project" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="540" height="350" zoom="false" bgcolor="204,213,240" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5" gap="2">
 		<field type="field" name="field1" weight="30" layout="0" margin="0" gap="2">
-			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="   Type:" format="false" transparent="false" halign="0" valign="2" />
+			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="   Type:" format="false" transparent="true" halign="0" valign="2" />
 		</field>
 		<field type="field" name="field2" weight="-1" layout="0" margin="5" gap="5">
 			<listbox type="listbox" name="type_lst" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="180" columns="" checkable="false" single_selection="true" sortable="true" show_header="false" header_bgcolor="241,242,244" header_fgcolor="0,0,0" header_grabbed="139,214,246" header_floated="186,187,188" item_selected="204,232,255" item_highlighted="229,243,255" selection_box="51,153,255" max_fit_content="0" min_column_width="20" text_margin="5" item_height_ex="6" header_splitter_area_before="2" header_splitter_area_after="3" header_padding_top="3" header_padding_bottom="3">
@@ -11,18 +11,18 @@
 			<textbox type="textbox" name="type_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="true" multi_lines="true" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
 		</field>
 		<field type="field" name="field3" weight="36" layout="0" margin="5" gap="3">
-			<label type="label" name="label1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="100" caption="Name:" format="false" transparent="false" halign="2" valign="1" />
+			<label type="label" name="label1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="100" caption="Name:" format="false" transparent="true" halign="2" valign="1" />
 			<textbox type="textbox" name="name_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="true" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
 		</field>
 		<field type="field" name="field4" weight="36" layout="0" margin="5" gap="3">
-			<label type="label" name="label2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="100" caption="Create in:" format="false" transparent="false" halign="2" valign="1" />
+			<label type="label" name="label2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="100" caption="Create in:" format="false" transparent="true" halign="2" valign="1" />
 			<textbox type="textbox" name="folder_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
-			<button type="button" name="folder_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="50" caption="..." icon="" enable_pushed="false" pushed="false" transparent="false" />
+			<button type="button" name="folder_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="50" caption="..." icon="" enable_pushed="false" pushed="false" transparent="false" />
 		</field>
 		<field type="field" name="field5" weight="36" layout="0" margin="5" gap="3">
 			<panel type="panel" name="panel1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" transparent="true" layout="0" weight="-1" margin="5" gap="2" />
-			<button type="button" name="create_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Create" icon="" enable_pushed="false" pushed="false" transparent="false" />
-			<button type="button" name="canc_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Cancel" icon="" enable_pushed="false" pushed="false" transparent="false" />
+			<button type="button" name="create_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Create" icon="" enable_pushed="false" pushed="false" transparent="false" />
+			<button type="button" name="canc_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Cancel" icon="" enable_pushed="false" pushed="false" transparent="false" />
 		</field>
 	</form>
 </nana-creator>

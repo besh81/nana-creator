@@ -27,22 +27,26 @@
 #define TB_SAVE					2
 #define TB_SAVE_AS				3
  //
-#define TB_GENERATE				5
+#define TB_UNDO					5
+#define TB_REDO					6
  //
-#define TB_DELETE				7
+#define TB_GENERATE				8
  //
-#define TB_UP					9
-#define TB_DOWN					10
-#define TB_MOVE_INTO			11
+#define TB_DELETE				10
+ //
+#define TB_UP					12
+#define TB_DOWN					13
+#define TB_MOVE_INTO			14
 	#define TB_MOVE_INTO_FIELD			0
 	#define TB_MOVE_INTO_GRID			1
 	#define TB_MOVE_INTO_PANEL			2
  //
-#define TB_CUT					13
-#define TB_COPY					14
-#define TB_PASTE				15
-//
-#define TB_INFO					16
+#define TB_CUT					16
+#define TB_COPY					17
+#define TB_PASTE				18
+// >> go-right >>
+#define TB_SETTINGS				19
+#define TB_INFO					20
 
 
 guimanager*					p_gui_mgr;	// manage all the gui elements
@@ -52,12 +56,14 @@ extern inifile				g_inifile;
 
 
 
-void creator::enableGUI(bool state, bool new_load)
+void creator::enable_gui(bool state, bool new_load, bool undo, bool redo)
 {
 	_tb.enable(TB_NEW, state ? true : new_load);
 	_tb.enable(TB_LOAD, state ? true : new_load);
 	_tb.enable(TB_SAVE, state);
 	_tb.enable(TB_SAVE_AS, state);
+	_tb.enable(TB_UNDO, state ? undo : false);
+	_tb.enable(TB_REDO, state ? redo : false);
 	_tb.enable(TB_GENERATE, state);
 	_tb.enable(TB_DELETE, state);
 	_tb.enable(TB_UP, state);
@@ -66,6 +72,7 @@ void creator::enableGUI(bool state, bool new_load)
 	_tb.enable(TB_CUT, state);
 	_tb.enable(TB_COPY, state);
 	_tb.enable(TB_PASTE, state);
+	_tb.enable(TB_SETTINGS, state ? true : new_load);
 	_tb.enable(TB_INFO, state ? true : new_load);
 }
 
@@ -149,7 +156,7 @@ void creator::_init_ctrls()
 		if(arg.button == TB_NEW) // new project
 		{
 			// confirmation message
-			if(prj_name != "")
+			if(prj_name != "" && p_gui_mgr->modified())
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -192,7 +199,7 @@ void creator::_init_ctrls()
 		else if(arg.button == TB_LOAD) // load project
 		{
 			// confirmation message
-			if(prj_name != "")
+			if(prj_name != "" && p_gui_mgr->modified())
 			{
 				nana::msgbox m(*this, "Save project", nana::msgbox::yes_no_cancel);
 				m.icon(m.icon_warning);
@@ -264,7 +271,21 @@ void creator::_init_ctrls()
 			{
 				prj_name = paths[0];
 				save_xml(prj_name.string());
+
+				// update window caption
+				std::string title = CREATOR_TITLE;
+				title.append(" - ");
+				title.append(prj_name.filename().string());
+				caption(title);
 			}
+		}
+		else if(arg.button == TB_UNDO) // undo
+		{
+			p_gui_mgr->undo();
+		}
+		else if(arg.button == TB_REDO) // redo
+		{
+			p_gui_mgr->redo();
 		}
 		else if(arg.button == TB_GENERATE) // generate code
 		{
@@ -359,7 +380,15 @@ void creator::_init_ctrls()
 
 
 	p_gui_mgr = new guimanager(*this);
-	p_gui_mgr->init(this, properties, assets, objects, itemseditor, canvas);
+	p_gui_mgr->registerEnableGUI([this](bool state, bool new_load, bool undo, bool redo)
+		{
+			enable_gui(state, new_load, undo, redo);
+		});
+	p_gui_mgr->registerSetStatusbar([this](const std::string& str)
+		{
+			sb_set(str);
+		});
+	p_gui_mgr->init(properties, assets, objects, itemseditor, canvas);
 	
 
 	// statusbar

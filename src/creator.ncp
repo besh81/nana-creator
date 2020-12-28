@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.29.0">
+<nana-creator version="0.30.0">
 	<form mainclass="true" filename="creator" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="creator" enabled="true" caption="Nana Creator" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="800" height="500" zoom="false" bgcolor="93,107,153" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<toolbar type="toolbar" name="_tb" enabled="true" bgcolor="204,213,240" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="36" buttons="(Collection)" tools_height="26">
 			<item type="button" key="n1" owner="" text="New project" image="C:\cppprojects\nana-creator\wdir\icons\new_prj.png" enable="true" textout="false" />
@@ -7,13 +7,16 @@
 			<item type="button" key="n3" owner="" text="Save project" image="C:\cppprojects\nana-creator\wdir\icons\save.png" enable="true" textout="false" />
 			<item type="button" key="n4" owner="" text="Save project as..." image="C:\cppprojects\nana-creator\wdir\icons\save_as.png" enable="true" textout="false" />
 			<item type="separator" key="n5" owner="" />
+			<item type="button" key="n22" owner="" text="Undo" image="C:\cppprojects\nana-creator\wdir\icons\undo.png" enable="true" textout="false" />
+			<item type="button" key="n23" owner="" text="Redo" image="C:\cppprojects\nana-creator\wdir\icons\redo.png" enable="true" textout="false" />
+			<item type="separator" key="n24" owner="" />
 			<item type="button" key="n6" owner="" text="Generate code" image="C:\cppprojects\nana-creator\wdir\icons\output.png" enable="true" textout="true" />
 			<item type="separator" key="n7" owner="" />
 			<item type="button" key="n8" owner="" text="Delete current selection" image="C:\cppprojects\nana-creator\wdir\icons\delete.png" enable="true" textout="false" />
 			<item type="separator" key="n9" owner="" />
 			<item type="button" key="n10" owner="" text="Move up current selection" image="C:\cppprojects\nana-creator\wdir\icons\up.png" enable="true" textout="false" />
 			<item type="button" key="n11" owner="" text="Move down current selection" image="C:\cppprojects\nana-creator\wdir\icons\down.png" enable="true" textout="false" />
-			<item type="dropdown" key="n17" owner="" text="Move into" image="" enable="true" textout="true" />
+			<item type="dropdown" key="n17" owner="" text="Move into" image="C:\cppprojects\nana-creator\wdir\icons\into.png" enable="true" textout="true" />
 			<item type="dropdown-item" key="n18" owner="n17" text="field" image="C:\cppprojects\nana-creator\wdir\icons\horizontal_layout.png" enable="true" />
 			<item type="dropdown-item" key="n20" owner="n17" text="grid" image="C:\cppprojects\nana-creator\wdir\icons\grid_layout.png" enable="true" />
 			<item type="dropdown-item" key="n21" owner="n17" text="panel" image="C:\cppprojects\nana-creator\wdir\icons\panel.png" enable="true" />
@@ -22,7 +25,8 @@
 			<item type="button" key="n14" owner="" text="Copy current selection" image="C:\cppprojects\nana-creator\wdir\icons\copy.png" enable="true" textout="false" />
 			<item type="button" key="n15" owner="" text="Paste into/after current selection" image="C:\cppprojects\nana-creator\wdir\icons\paste.png" enable="true" textout="false" />
 			<item type="go_right" key="n16" owner="" />
-			<item type="button" key="n19" owner="" text="Info..." image="C:\cppprojects\nana-creator\wdir\icons\info.png" enable="true" textout="true" />
+			<item type="button" key="n25" owner="" text="Settings" image="C:\cppprojects\nana-creator\wdir\icons\settings.png" enable="true" textout="false" />
+			<item type="button" key="n19" owner="" text="Info" image="C:\cppprojects\nana-creator\wdir\icons\info.png" enable="true" textout="false" />
 		</toolbar>
 		<panel type="panel" name="_adi_panel_margin" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" transparent="false" layout="0" weight="-1" margin="5" gap="2">
 			<panel type="panel" name="_adi_panel" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" transparent="false" layout="0" weight="-1" margin="5" gap="2" />

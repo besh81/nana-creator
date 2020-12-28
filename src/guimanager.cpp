@@ -36,6 +36,9 @@
 #include "style.h"
 
 
+//TODO: inserire in file ini e modificare da settings
+#define UNDO_LEN		10
+
 
 //guimanager
 guimanager::guimanager(nana::window wd)
@@ -109,10 +112,8 @@ guimanager::guimanager(nana::window wd)
 }
 
 
-void guimanager::init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd)
+void guimanager::init(propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd)
 {
-	_ct = ct;
-
 	_pp = pp;
 	_pp->name_changed([this](const std::string& arg)
 	{
@@ -192,7 +193,8 @@ void guimanager::enableGUI(bool state, bool new_load)
 		});
 	_iep->enable(state);
 
-	_ct->enableGUI(state, new_load);
+	if(_enableGUI_f)
+		_enableGUI_f(state, new_load, !_undo.empty(), !_redo.empty());
 }
 
 
@@ -201,10 +203,8 @@ void guimanager::cursor(cursor_state state)
 	_cursor_state = state;
 
 	//statusbar
-	if(state.type == "")
-		_ct->sb_set("");
-	else
-		_ct->sb_set("Add control: " + state.type);
+	if(_setStatusbar_f)
+		_setStatusbar_f(state.type == "" ? "" : "Add control: " + state.type);
 }
 
 
@@ -514,12 +514,10 @@ tree_node<control_obj>* guimanager::addcommonctrl(tree_node<control_obj>* node, 
 
 void guimanager::deleteselected()
 {
-	if(!_selected)
+	if(!_selected || _selected == _ctrls.get_root()->child) // main widget cannot be removed
 		return;
 
-	// main widget cannot be removed
-	if(_selected == _ctrls.get_root()->child)
-		return;
+	//_push_state();
 
 	auto toremove = _selected;
 	auto parent = toremove->owner;
@@ -570,7 +568,7 @@ void guimanager::deleteselected()
 }
 
 
-void guimanager::moveupselected()
+void guimanager::moveupselected(bool push_undo)
 {
 	if(!_selected)
 		return;
@@ -578,6 +576,9 @@ void guimanager::moveupselected()
 	// move one position up
 	if(!_ctrls.move_before_sibling(_selected))
 		return;
+
+	if(push_undo)
+		_push_undo(ur_action::move_up, _selected);
 
 	// if here is possible to move up
 	auto parent = _selected->owner->value;
@@ -588,7 +589,7 @@ void guimanager::moveupselected()
 }
 
 
-void guimanager::movedownselected()
+void guimanager::movedownselected(bool push_undo)
 {
 	if(!_selected)
 		return;
@@ -596,6 +597,9 @@ void guimanager::movedownselected()
 	// move one position down
 	if(!_ctrls.move_after_sibling(_selected))
 		return;
+
+	if(push_undo)
+		_push_undo(ur_action::move_down, _selected);
 
 	// if here is possible to move down
 	auto parent = _selected->owner->value;
@@ -646,6 +650,8 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 {
 	if(!_moveinto_check_relationship(ctrl, into))
 		return;
+
+	//_push_state();
 
 	auto parent = ctrl->owner;
 	_select_ctrl(0);
@@ -799,9 +805,7 @@ void guimanager::pasteselected()
 
 	bool paste_ok = _deserialize(_selected, &root, true);
 	if(!paste_ok)
-	{
 		_error_message("Unable to move the selected controls!");
-	}
 
 	_op->auto_draw(true);
 	_op->emit_events(true);
@@ -1314,3 +1318,94 @@ void guimanager::_select_ctrl(tree_node<control_obj>* to_select)
 	}
 }
 
+
+/*---------------*/
+/*   UNDO/REDO   */
+/*---------------*/
+void guimanager::undo()
+{
+	if(_undo.size() == 0)
+		return;
+
+	enableGUI(false, false);
+
+	auto& ustate = _undo.back();
+	switch(ustate.action)
+	{
+	case ur_action::move_up:
+		_select_ctrl(ustate.ctrl);
+		movedownselected(false);
+		break;
+	case ur_action::move_down:
+		_select_ctrl(ustate.ctrl);
+		moveupselected(false);
+		break;
+	default:
+		// error
+		break;
+	}
+
+	auto& rstate = _redo.emplace_back();
+	rstate = ustate;
+
+	_undo.pop_back();
+
+	enableGUI(true, false);
+}
+
+
+void guimanager::redo()
+{
+	if(_redo.size() == 0)
+		return;
+
+	enableGUI(false, false);
+
+	auto& rstate = _redo.back();
+	switch(rstate.action)
+	{
+	case ur_action::move_up:
+		_select_ctrl(rstate.ctrl);
+		moveupselected(false);
+		break;
+	case ur_action::move_down:
+		_select_ctrl(rstate.ctrl);
+		movedownselected(false);
+		break;
+	default:
+		// error
+		break;
+	}
+
+	auto& ustate = _undo.emplace_back();
+	ustate = rstate;
+
+	_redo.pop_back();
+
+	enableGUI(true, false);
+}
+
+/*
+void guimanager::_queue_push(std::deque<pugi::xml_document>* q)
+{
+	pugi::xml_document& udoc = q->emplace_back();
+
+	pugi::xml_node root = udoc.append_child(NODE_ROOT);
+	serialize(&root);
+}
+*/
+
+void guimanager::_push_undo(ur_action action, tree_node<control_obj>* ctrl)
+{
+	_modified = true;
+
+	auto& ustate = _undo.emplace_back();
+	ustate.action = action;
+	ustate.ctrl = ctrl;
+
+	// invalidate REDO QUEUE
+	_redo.clear();
+
+	if(_enableGUI_f)
+		_enableGUI_f(true, false, !_undo.empty(), !_redo.empty());
+}

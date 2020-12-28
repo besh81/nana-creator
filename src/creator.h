@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.29.0)
+ *	C++ code generated with Nana Creator (0.30.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -62,22 +62,26 @@ private:
 		_tb.append(nana::toolbar::tools::button, "Save project", nana::paint::image("icons/save.png"));
 		_tb.append(nana::toolbar::tools::button, "Save project as...", nana::paint::image("icons/save_as.png"));
 		_tb.append_separator();
+		_tb.append(nana::toolbar::tools::button, "Undo", nana::paint::image("icons/undo.png"));
+		_tb.append(nana::toolbar::tools::button, "Redo", nana::paint::image("icons/redo.png"));
+		_tb.append_separator();
 		_tb.append(nana::toolbar::tools::button, "Generate code", nana::paint::image("icons/output.png")).textout(true);
 		_tb.append_separator();
 		_tb.append(nana::toolbar::tools::button, "Delete current selection", nana::paint::image("icons/delete.png"));
 		_tb.append_separator();
 		_tb.append(nana::toolbar::tools::button, "Move up current selection", nana::paint::image("icons/up.png"));
 		_tb.append(nana::toolbar::tools::button, "Move down current selection", nana::paint::image("icons/down.png"));
-		auto ip__tb_11 = _tb.append(nana::toolbar::tools::dropdown, "Move into").textout(true);
-		ip__tb_11.dropdown_append("field", nana::paint::image("icons/horizontal_layout.png"));
-		ip__tb_11.dropdown_append("grid", nana::paint::image("icons/grid_layout.png"));
-		ip__tb_11.dropdown_append("panel", nana::paint::image("icons/panel.png"));
+		auto ip__tb_14 = _tb.append(nana::toolbar::tools::dropdown, "Move into", nana::paint::image("icons/into.png")).textout(true);
+		ip__tb_14.dropdown_append("field", nana::paint::image("icons/horizontal_layout.png"));
+		ip__tb_14.dropdown_append("grid", nana::paint::image("icons/grid_layout.png"));
+		ip__tb_14.dropdown_append("panel", nana::paint::image("icons/panel.png"));
 		_tb.append_separator();
 		_tb.append(nana::toolbar::tools::button, "Cut current selection", nana::paint::image("icons/cut.png"));
 		_tb.append(nana::toolbar::tools::button, "Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append(nana::toolbar::tools::button, "Paste into/after current selection", nana::paint::image("icons/paste.png"));
 		_tb.go_right();
-		_tb.append(nana::toolbar::tools::button, "Info...", nana::paint::image("icons/info.png")).textout(true);
+		_tb.append(nana::toolbar::tools::button, "Settings", nana::paint::image("icons/settings.png"));
+		_tb.append(nana::toolbar::tools::button, "Info", nana::paint::image("icons/info.png"));
 		// _adi_panel_margin
 		_adi_panel_margin.create(*this);
 		_adi_panel_margin_place.bind(_adi_panel_margin);
@@ -120,7 +124,7 @@ protected:
 
 	//<*declarations
 public:
-	void enableGUI(bool state, bool new_load = false);
+	void enable_gui(bool state, bool new_load, bool undo, bool redo);
 	bool load_xml(const std::string& filename);
 	bool save_xml(const std::string& filename);
 

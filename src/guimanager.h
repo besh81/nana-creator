@@ -13,7 +13,6 @@
 #include "tree.h"
 #include "ctrls/ctrl.h"
 #include "namemanager.h"
-#include "creator.h"
 #include "propertiespanel.h"
 #include "assetspanel.h"
 #include "objectspanel.h"
@@ -51,7 +50,10 @@ class guimanager
 public:
 	guimanager(nana::window wd);
 
-	void init(creator* ct, propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd);
+	void registerEnableGUI(std::function<void(bool state, bool new_load, bool undo, bool redo)> f) { _enableGUI_f = f; }
+	void registerSetStatusbar(std::function<void(const std::string& str)> f) { _setStatusbar_f = f; }
+
+	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd);
 	void clear();
 
 	void enableGUI(bool state, bool new_load);
@@ -65,8 +67,8 @@ public:
 	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* node, const std::string& type, insert_mode mode, const std::string& name = "");
 
 	void deleteselected();
-	void moveupselected();
-	void movedownselected();
+	void moveupselected(bool push_undo = true);
+	void movedownselected(bool push_undo = true);
 
 	void moveintofield() { _moveinto(_selected, move_into::field); }
 	void moveintogrid() { _moveinto(_selected, move_into::grid); }
@@ -96,6 +98,14 @@ public:
 
 	void serialize(pugi::xml_node* xml_parent);
 	bool deserialize(pugi::xml_node* xml_parent);
+
+	bool modified() { return _modified; }
+
+	/*---------------*/
+	/*   UNDO/REDO   */
+	/*---------------*/
+	void undo();
+	void redo();
 	
 
 private:
@@ -137,12 +147,14 @@ private:
 
 	cursor_state			_cursor_state{ cursor_action::select };
 
-	creator*				_ct{ 0 };
 	propertiespanel*		_pp{ 0 };
 	assetspanel*			_ap{ 0 };
 	objectspanel*			_op{ 0 };
 	itemseditorpanel*		_iep{ 0 };
 	scrollablecanvas*		_main_wd{ 0 };
+
+	std::function<void(bool state, bool new_load, bool undo, bool redo)> _enableGUI_f;
+	std::function<void(const std::string& str)> _setStatusbar_f;
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator
 
@@ -150,6 +162,32 @@ private:
 
 	pugi::xml_document		_cut_copy_doc;
 	bool					_copied{ false };
+
+	bool					_modified{ false };
+
+
+	/*---------------*/
+	/*   UNDO/REDO   */
+	/*---------------*/
+	enum class ur_action
+	{
+		add_control,
+		remove_control,
+		move_up,
+		move_down,
+		modify_property,
+		empty
+	};
+
+	struct ur_state {
+		ur_action action{ ur_action::empty };
+		tree_node<control_obj>* ctrl{ 0 };
+	};
+
+	void _push_undo(ur_action action, tree_node<control_obj>* ctrl);
+
+	std::deque<ur_state> _undo;
+	std::deque<ur_state> _redo;
 };
 
 #endif //NANA_CREATOR_GUIMANAGER_H
