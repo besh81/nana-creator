@@ -66,7 +66,7 @@ public:
 	tree_node<control_obj>* addmainctrl(const std::string& type, const std::string& name = "");
 	tree_node<control_obj>* addcommonctrl(tree_node<control_obj>* node, const std::string& type, insert_mode mode, const std::string& name = "");
 
-	void deleteselected();
+	void deleteselected(bool push_undo = true);
 	void moveupselected(bool push_undo = true);
 	void movedownselected(bool push_undo = true);
 
@@ -93,7 +93,7 @@ public:
 
 	bool click_ctrl(control_obj ctrl, const nana::arg_mouse& arg);
 	void left_click_ctrl(control_obj ctrl);
-	void click_objectspanel(const std::string& name);
+	void click_ctrlname(const std::string& name);
 
 
 	void serialize(pugi::xml_node* xml_parent);
@@ -125,7 +125,7 @@ private:
 	tree_node<control_obj>* _registerobject(control_obj ctrl, tree_node<control_obj>* node, insert_mode mode);
 
 	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
-	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool paste = false);
+	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool paste = false);
 
 	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
@@ -181,7 +181,8 @@ private:
 
 	struct ur_state {
 		ur_action action{ ur_action::empty };
-		tree_node<control_obj>* ctrl{ 0 };
+		std::string name;
+		pugi::xml_document snapshot;
 	};
 
 	void _push_undo(ur_action action, tree_node<control_obj>* ctrl);
