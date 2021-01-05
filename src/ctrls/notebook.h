@@ -26,6 +26,7 @@ namespace ctrls
 
 		// relationship management
 		bool append(ctrl* child) override;
+		bool insert(ctrl* child, ctrl* pos, bool after) override;
 		bool remove(ctrl* child) override;
 		//
 		bool moveup(ctrl* child) override;

@@ -78,18 +78,9 @@ public:
 	void copyselected(bool cut = false);
 	void pasteselected();
 
+	tree_node<control_obj>* get_root() { return _ctrls.get_root(); }
 
-	tree_node<control_obj>* get_root()
-	{
-		return _ctrls.get_root();
-	}
-
-
-	void updateselected()
-	{
-		_updatectrl(_selected);
-	}
-
+	void updateselected() { _updatectrl(_selected); }
 
 	bool click_ctrl(control_obj ctrl, const nana::arg_mouse& arg);
 	void left_click_ctrl(control_obj ctrl);
@@ -125,7 +116,7 @@ private:
 	tree_node<control_obj>* _registerobject(control_obj ctrl, tree_node<control_obj>* node, insert_mode mode);
 
 	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
-	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool paste = false);
+	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool push_undo = false);
 
 	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
@@ -159,11 +150,8 @@ private:
 	namemanager				_name_mgr;	// manage the controls name used in the creator
 
 	bool					_deserializing{ false };
-
-	pugi::xml_document		_cut_copy_doc;
-	bool					_copied{ false };
-
 	bool					_modified{ false };
+	pugi::xml_document		_cut_copy_doc;
 
 
 	/*---------------*/
@@ -171,11 +159,11 @@ private:
 	/*---------------*/
 	enum class ur_action
 	{
-		add_control,
-		remove_control,
+		add,
+		remove,
 		move_up,
 		move_down,
-		modify_property,
+		modify,
 		empty
 	};
 
@@ -185,6 +173,7 @@ private:
 		pugi::xml_document snapshot;
 	};
 
+	void _ur_restore_ctrls(const ur_state& state);
 	void _push_undo(ur_action action, tree_node<control_obj>* ctrl);
 
 	std::deque<ur_state> _undo;

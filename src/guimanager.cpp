@@ -166,7 +166,6 @@ void guimanager::clear()
 
 	if(!_cut_copy_doc.empty())
 		_cut_copy_doc.reset();
-	_copied = false;
 
 	_modified = false;
 
@@ -524,7 +523,7 @@ void guimanager::deleteselected(bool push_undo)
 		return;
 
 	if(push_undo)
-		_push_undo(ur_action::remove_control, _selected);
+		_push_undo(ur_action::remove, _selected);
 
 	auto toremove = _selected;
 	auto parent = toremove->owner;
@@ -730,10 +729,8 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 	}
 
 	// deserialize ctrls to move
-	if(!_deserialize(new_node, &root, insert_mode::into, true))
-	{
+	if(!_deserialize(new_node, &root, insert_mode::into))
 		_error_message("Unable to move the selected controls!");
-	}
 
 	// enable GUI
 	_op->auto_draw(true);
@@ -765,7 +762,6 @@ void guimanager::copyselected(bool cut)
 
 	if(!_cut_copy_doc.empty())
 		_cut_copy_doc.reset();
-	_copied = !cut;
 
 	// append root node
 	pugi::xml_node root = _cut_copy_doc.append_child(NODE_ROOT);
@@ -778,13 +774,13 @@ void guimanager::copyselected(bool cut)
 
 void guimanager::pasteselected()
 {
+	if(!_selected)
+		return;
+
 	// read root node
 	pugi::xml_node root = _cut_copy_doc.child(NODE_ROOT);
 	if(root.empty())
 		return; // nothing to paste
-
-	if(!_selected)
-		return;
 
 	auto prev_selected = _selected;
 
@@ -810,18 +806,13 @@ void guimanager::pasteselected()
 	_op->emit_events(false);
 	_op->auto_draw(false);
 
-	bool paste_ok = _deserialize(_selected, &root, insert_mode::into, true);
-	if(!paste_ok)
-		_error_message("Unable to move the selected controls!");
+	if(!_deserialize(_selected, &root, insert_mode::into, true))
+		_error_message("Unable to paste here!");
 
 	_op->auto_draw(true);
 	_op->emit_events(true);
 	_update_op();
 	enableGUI(true, true);
-
-	if(!_copied && paste_ok)  // cut items can be paste only once
-		if(!_cut_copy_doc.empty())
-			_cut_copy_doc.reset();
 
 	// select previous ctrl
 	left_click_ctrl(prev_selected->value);
@@ -900,7 +891,6 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 					mode = insert_mode::before;
 			}
 
-
 			// deselect previous ctrl
 			_ap->deselect();
 
@@ -921,9 +911,9 @@ bool guimanager::click_ctrl(control_obj ctrl, const nana::arg_mouse& arg)
 
 			// add ctrl
 			if(!addcommonctrl(_ctrl_node, cursor().type, mode))
-			{
 				_error_message("Unable to add control!");
-			}
+			else
+				_push_undo(ur_action::add, _selected);
 
 			// reset mouse cursor
 			cursor(cursor_state{ cursor_action::select });
@@ -1062,7 +1052,7 @@ bool guimanager::deserialize(pugi::xml_node* xml_parent)
 	return true;
 }
 
-bool guimanager::_deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool paste)
+bool guimanager::_deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool push_undo)
 {
 	tree_node<control_obj>* parent = (mode == insert_mode::into) ? node : node->owner;
 
@@ -1116,6 +1106,13 @@ bool guimanager::_deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_
 		}
 
 
+		if(!xml_node.attribute("mainclass").as_bool())
+		{
+			// check parent and siblings
+			if(!_check_relationship(parent->value, xml_node.attribute("type").as_string()))
+				return false;
+		}
+
 		// add name to name manager (and check)
 		bool ctrl_name_changed = false;
 		if(!_name_mgr.add(ctrl_name))
@@ -1127,23 +1124,13 @@ bool guimanager::_deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_
 		tree_node<control_obj>* new_node = 0;
 
 		if(xml_node.attribute("mainclass").as_bool())
-		{
 			new_node = addmainctrl(node_name, ctrl_name);
-		}
 		else
-		{
-			// check parent and siblings
-			if(_check_relationship(parent->value, xml_node.attribute("type").as_string()))
-				new_node = addcommonctrl(node, node_name, mode, ctrl_name);
-		}
+			new_node = addcommonctrl(node, node_name, mode, ctrl_name);
 
 		if(new_node == 0)
 		{
-			if(paste)
-				return false; //XXX //TODO non torna perchè + stato aggiunto il nome in _name_mgr ???
-
-			//TODO message box con errore
-			std::cout << "UNKNOWN NODE: " << xml_node.name() << std::endl;
+			std::cout << "ERROR ADDING CTRL: " << node_name.c_str() << std::endl;
 			continue;
 		}
 
@@ -1154,6 +1141,9 @@ bool guimanager::_deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_
 		// align control name
 		if(ctrl_name_changed)
 			new_node->value->properties.property("name") = ctrl_name;
+
+		if(push_undo)
+			_push_undo(ur_action::add, new_node);
 
 		// deserialize children
 		if(!_deserialize(new_node, &xml_node, insert_mode::into))
@@ -1347,75 +1337,28 @@ void guimanager::undo()
 	rstate.name = ustate.name;
 
 	// perform undo
-	switch(ustate.action)
+	if(ustate.action == ur_action::add)
 	{
-	case ur_action::remove_control:
-		// add ctrl (and children) previously removed
-		{
-			auto removed_node = ustate.snapshot.find_node([&ustate](pugi::xml_node node) -> bool {
-					return node.attribute("name").as_string() == ustate.name;
-				});
+		// save UI state
+		auto root = rstate.snapshot.append_child(NODE_ROOT);
+		serialize(&root);
 
-			insert_mode mode;
-			std::string node_name;
-			if(!removed_node.previous_sibling().empty())
-			{
-				mode = insert_mode::after;
-				node_name = removed_node.previous_sibling().attribute("name").as_string();
-			}
-			else if(!removed_node.next_sibling().empty())
-			{
-				mode = insert_mode::before;
-				node_name = removed_node.next_sibling().attribute("name").as_string();
-			}
-			else
-			{
-				mode = insert_mode::into;
-				node_name = removed_node.parent().attribute("name").as_string();
-			}
-
-			// get ctrl from node name
-			tree_node<control_obj>* ctrl = 0;
-			_ctrls.for_each([node_name, &ctrl](tree_node<control_obj>* node) -> bool
-				{
-					if(node->value->properties.property("name").as_string() == node_name)
-					{
-						ctrl = node;
-						return false;
-					}
-
-					return true;
-				});
-
-			pugi::xml_document doc;
-			pugi::xml_node root = doc.append_child(NODE_ROOT);
-			root.append_copy(removed_node);
-
-			lock_guard des_lock(&_deserializing, true);
-			_op->emit_events(false);
-			_op->auto_draw(false);
-
-			_deserialize(ctrl, &root, mode);
-
-			_op->auto_draw(true);
-			_op->emit_events(true);
-
-			click_ctrlname(ustate.name);
-			// reorder objectspanel item
-			_update_op();
-		}
-		break;
-	case ur_action::move_up:
+		click_ctrlname(rstate.name);
+		deleteselected(false);
+	}
+	else if(ustate.action == ur_action::remove)
+	{
+		_ur_restore_ctrls(ustate);
+	}
+	else if(ustate.action == ur_action::move_up)
+	{
 		click_ctrlname(ustate.name);
 		movedownselected(false);
-		break;
-	case ur_action::move_down:
+	}
+	else if(ustate.action == ur_action::move_down)
+	{
 		click_ctrlname(ustate.name);
 		moveupselected(false);
-		break;
-	default:
-		// error
-		break;
 	}
 
 	_undo.pop_back();
@@ -1438,35 +1381,89 @@ void guimanager::redo()
 	ustate.action = rstate.action;
 	ustate.name = rstate.name;
 
-	if(rstate.action == ur_action::remove_control)
+	// perform redo
+	if(rstate.action == ur_action::add)
 	{
+		_ur_restore_ctrls(rstate);
+	}
+	else if(rstate.action == ur_action::remove)
+	{
+		// save UI state
 		auto root = ustate.snapshot.append_child(NODE_ROOT);
 		serialize(&root);
-	}
 
-	// perform redo
-	switch(rstate.action)
-	{
-	case ur_action::remove_control:
 		click_ctrlname(rstate.name);
 		deleteselected(false);
-		break;
-	case ur_action::move_up:
+	}
+	else if(rstate.action == ur_action::move_up)
+	{
 		click_ctrlname(rstate.name);
 		moveupselected(false);
-		break;
-	case ur_action::move_down:
+	}
+	else if(rstate.action == ur_action::move_down)
+	{
 		click_ctrlname(rstate.name);
 		movedownselected(false);
-		break;
-	default:
-		// error
-		break;
 	}
 
 	_redo.pop_back();
 
 	enableGUI(true, false);
+}
+
+
+void guimanager::_ur_restore_ctrls(const ur_state& state)
+{
+	auto removed_node = state.snapshot.find_node([&state](pugi::xml_node node) -> bool {
+			return node.attribute("name").as_string() == state.name;
+		});
+
+	insert_mode mode;
+	std::string node_name;
+	if(!removed_node.previous_sibling().empty())
+	{
+		mode = insert_mode::after;
+		node_name = removed_node.previous_sibling().attribute("name").as_string();
+	}
+	else if(!removed_node.next_sibling().empty())
+	{
+		mode = insert_mode::before;
+		node_name = removed_node.next_sibling().attribute("name").as_string();
+	}
+	else
+	{
+		mode = insert_mode::into;
+		node_name = removed_node.parent().attribute("name").as_string();
+	}
+
+	// get ctrl from node name
+	tree_node<control_obj>* ctrl = 0;
+	_ctrls.for_each([node_name, &ctrl](tree_node<control_obj>* node) -> bool
+		{
+			if(node->value->properties.property("name").as_string() == node_name)
+			{
+				ctrl = node;
+				return false;
+			}
+			return true;
+		});
+
+	pugi::xml_document doc;
+	pugi::xml_node root = doc.append_child(NODE_ROOT);
+	root.append_copy(removed_node);
+
+	lock_guard des_lock(&_deserializing, true);
+	_op->emit_events(false);
+	_op->auto_draw(false);
+
+	_deserialize(ctrl, &root, mode);
+
+	_op->auto_draw(true);
+	_op->emit_events(true);
+
+	click_ctrlname(state.name);
+	// reorder objectspanel item
+	_update_op();
 }
 
 
@@ -1478,8 +1475,9 @@ void guimanager::_push_undo(ur_action action, tree_node<control_obj>* ctrl)
 	ustate.action = action;
 	ustate.name = ctrl->value->properties.property("name").as_string();
 
-	if(action == ur_action::remove_control)
+	if(action == ur_action::remove)
 	{
+		// save UI state
 		auto root = ustate.snapshot.append_child(NODE_ROOT);
 		serialize(&root);
 	}
