@@ -80,8 +80,6 @@ public:
 
 	tree_node<control_obj>* get_root() { return _ctrls.get_root(); }
 
-	void updateselected() { _updatectrl(_selected); }
-
 	bool click_ctrl(control_obj ctrl, const nana::arg_mouse& arg);
 	void left_click_ctrl(control_obj ctrl);
 	void click_ctrlname(const std::string& name);
@@ -118,7 +116,8 @@ private:
 	void _serialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, bool children_only = false);
 	bool _deserialize(tree_node<control_obj>* node, pugi::xml_node* xml_parent, insert_mode mode, bool push_undo = false);
 
-	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name);
+	bool _updatectrlname(tree_node<control_obj>* node, const std::string& new_name, bool push_undo = true);
+	bool _updatectrlproperty(tree_node<control_obj>* node, const std::string& name, const std::string& new_value);
 	void _updatectrl(tree_node<control_obj>* node, bool update_owner = true, bool update_children = true);
 	void _updatechildrenctrls(tree_node<control_obj>* node);
 
@@ -127,7 +126,7 @@ private:
 	void _select_ctrl(tree_node<control_obj>* to_select);
 
 	bool _moveinto_check_relationship(tree_node<control_obj>* ctrl, move_into into);
-	void _moveinto(tree_node<control_obj>* ctrl, move_into into);
+	void _moveinto(tree_node<control_obj>* ctrl, move_into into, bool push_undo = true); ///< Move ctrl and its siblings into field/grid/panel
 
 
 	nana::window			_root_wd;
@@ -163,7 +162,11 @@ private:
 		remove,
 		move_up,
 		move_down,
-		modify,
+		move_into_field,
+		move_into_grid,
+		move_into_panel,
+		change_name,
+		change_property,
 		empty
 	};
 
@@ -174,7 +177,8 @@ private:
 	};
 
 	void _ur_restore_ctrls(const ur_state& state);
-	void _push_undo(ur_action action, tree_node<control_obj>* ctrl);
+	void _ur_moveout(const ur_state& state); ///< Move ctrl and its siblings out of the parent ctrl (inverse op _moveinto)
+	void _push_undo(ur_action action, tree_node<control_obj>* ctrl, const std::string& value = "");
 
 	std::deque<ur_state> _undo;
 	std::deque<ur_state> _redo;

@@ -115,35 +115,40 @@ guimanager::guimanager(nana::window wd)
 void guimanager::init(propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd)
 {
 	_pp = pp;
-	_pp->name_changed([this](const std::string& arg)
-	{
-		_updatectrlname(_selected, arg);
-	});
-	_pp->property_changed([this](const std::string& arg)
-	{
-		updateselected();
-	});
-	
+	_pp->name_changed([this](const std::string& arg) -> bool
+		{
+			if(!_updatectrlname(_selected, arg))
+			{
+				_error_message("Name already in use!");
+				return false;
+			}
+			return true;
+		});
+	_pp->property_changed([this](const std::string& name, const std::string& new_value) -> bool
+		{
+			return _updatectrlproperty(_selected, name, new_value);
+		});
+
 	_ap = ap;
 	_ap->selected([this](const std::string& arg)
-	{
-		if(arg.empty())
-			cursor(cursor_state{ cursor_action::select });
-		else
-			cursor(cursor_state{ cursor_action::add, arg });
-	});
+		{
+			if(arg.empty())
+				cursor(cursor_state{ cursor_action::select });
+			else
+				cursor(cursor_state{ cursor_action::add, arg });
+		});
 	
 	_op = op;
-	_op->selected([this](const std::string& arg)
-	{
-		click_ctrlname(arg);
-	});
+		_op->selected([this](const std::string& arg)
+		{
+			click_ctrlname(arg);
+		});
 	_op->contex_menu(&_ctxmenu);
 
 	_iep = iep;
 	_iep->property_changed([this](const std::string& arg)
 		{
-			updateselected();
+			_updatectrl(_selected);
 		});
 
 	_main_wd = main_wd;
@@ -652,12 +657,20 @@ bool guimanager::_moveinto_check_relationship(tree_node<control_obj>* ctrl, move
 	return true;
 }
 
-void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
+void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into, bool push_undo)
 {
 	if(!_moveinto_check_relationship(ctrl, into))
 		return;
 
-	//_push_state();
+	if(push_undo)
+	{
+		if(into == move_into::field)
+			_push_undo(ur_action::move_into_field, ctrl);
+		else if(into == move_into::grid)
+			_push_undo(ur_action::move_into_grid, ctrl);
+		else if(into == move_into::panel)
+			_push_undo(ur_action::move_into_panel, ctrl);
+	}
 
 	auto parent = ctrl->owner;
 	_select_ctrl(0);
@@ -668,10 +681,11 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 	_op->emit_events(false);
 	_op->auto_draw(false);
 
+	// move all ctrls/fields at the level of ctrl
 	// serialize ctrls to move
 	pugi::xml_document to_move;
 	pugi::xml_node root = to_move.append_child(NODE_ROOT);
-	_serialize(parent->child, &root, false);
+	_serialize(parent->child, &root);
 
 	// delete ctrls to move
 	int num_siblings = 0;
@@ -706,7 +720,7 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 		sibling = next;
 	}
 
-	// add new field node
+	// add new node
 	tree_node<control_obj>* new_node = nullptr;
 	if(into == move_into::field)
 	{
@@ -728,7 +742,7 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 		new_node->value->properties.property("layout").value(parent->value->properties.property("layout").as_int());
 	}
 
-	// deserialize ctrls to move
+	// deserialize previously saved ctrls into new node
 	if(!_deserialize(new_node, &root, insert_mode::into))
 		_error_message("Unable to move the selected controls!");
 
@@ -745,7 +759,6 @@ void guimanager::_moveinto(tree_node<control_obj>* ctrl, move_into into)
 		left_click_ctrl(new_node->value);
 	}
 }
-
 
 
 void guimanager::copyselected(bool cut)
@@ -1198,7 +1211,7 @@ tree_node<control_obj>* guimanager::_registerobject(control_obj ctrl, tree_node<
 }
 
 
-bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string& new_name)
+bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string& new_name, bool push_undo)
 {
 	ctrls::properties_collection* properties = &_selected->value->properties;
 
@@ -1208,6 +1221,10 @@ bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string
 	// update name manager
 	if(!_name_mgr.add(new_name))
 		return false;
+
+	if(push_undo)
+		_push_undo(ur_action::change_name, node, new_name);
+
 	_name_mgr.remove(properties->property("name").as_string());
 
 	// update properties
@@ -1216,6 +1233,21 @@ bool guimanager::_updatectrlname(tree_node<control_obj>* node, const std::string
 	// update objects panel
 	_update_op();
 
+	return true;
+}
+
+
+bool guimanager::_updatectrlproperty(tree_node<control_obj>* node, const std::string& name, const std::string& new_value)
+{
+	//XXX
+	printf("[CHANGE]  %s -> %s\n", name.c_str(), new_value.c_str());
+
+	_push_undo(ur_action::change_property, node, name);
+
+	ctrls::properties_collection* properties = &node->value->properties;
+	properties->property(name) = new_value;
+
+	_updatectrl(node);
 	return true;
 }
 
@@ -1360,6 +1392,40 @@ void guimanager::undo()
 		click_ctrlname(ustate.name);
 		moveupselected(false);
 	}
+	else if(ustate.action == ur_action::move_into_field
+			|| ustate.action == ur_action::move_into_grid
+			|| ustate.action == ur_action::move_into_panel)
+	{
+		_ur_moveout(ustate);
+	}
+	else if(ustate.action == ur_action::change_name)
+	{
+		click_ctrlname(ustate.name);
+		std::string name_to_restore = ustate.snapshot.first_child().first_attribute().as_string();
+
+		// save ctrl name in redo queue
+		auto rnode = rstate.snapshot.append_child(NODE_ROOT);
+		rnode.append_attribute("name") = _selected->value->properties.property("name").as_string().c_str();
+		rstate.name = name_to_restore;
+
+		_updatectrlname(_selected, name_to_restore, false);
+		_pp->set_name(name_to_restore);
+	}
+	else if(ustate.action == ur_action::change_property)
+	{
+		click_ctrlname(ustate.name);
+		std::string prop_name = ustate.snapshot.first_child().first_attribute().name();
+
+		// save ctrl attribute in redo queue
+		auto rnode = rstate.snapshot.append_child(NODE_ROOT);
+		rnode.append_attribute(prop_name.c_str()) = _selected->value->properties.property(prop_name).as_string().c_str();
+
+		ctrls::properties_collection* properties = &_selected->value->properties;
+		properties->property(prop_name) = ustate.snapshot.first_child().first_attribute().as_string();
+		_pp->refresh_property(prop_name);
+		_op->select(_selected->value->properties.property("name").as_string());
+		_updatectrl(_selected);
+	}
 
 	_undo.pop_back();
 
@@ -1404,6 +1470,49 @@ void guimanager::redo()
 	{
 		click_ctrlname(rstate.name);
 		movedownselected(false);
+	}
+	else if(rstate.action == ur_action::move_into_field)
+	{
+		click_ctrlname(rstate.name);
+		_moveinto(_selected, move_into::field, false);
+	}
+	else if(rstate.action == ur_action::move_into_grid)
+	{
+		click_ctrlname(rstate.name);
+		_moveinto(_selected, move_into::grid, false);
+	}
+	else if(rstate.action == ur_action::move_into_panel)
+	{
+		click_ctrlname(rstate.name);
+		_moveinto(_selected, move_into::panel, false);
+	}
+	else if(rstate.action == ur_action::change_name)
+	{
+		click_ctrlname(rstate.name);
+		std::string name_to_change = rstate.snapshot.first_child().first_attribute().as_string();
+
+		// save ctrl name in undo queue
+		auto unode = ustate.snapshot.append_child(NODE_ROOT);
+		unode.append_attribute("name") = _selected->value->properties.property("name").as_string().c_str();
+		ustate.name = name_to_change;
+
+		_updatectrlname(_selected, name_to_change, false);
+		_pp->set_name(name_to_change);
+	}
+	else if(rstate.action == ur_action::change_property)
+	{
+		click_ctrlname(rstate.name);
+		std::string prop_name = rstate.snapshot.first_child().first_attribute().name();
+
+		// save ctrl attribute in redo queue
+		auto unode = ustate.snapshot.append_child(NODE_ROOT);
+		unode.append_attribute(prop_name.c_str()) = _selected->value->properties.property(prop_name).as_string().c_str();
+
+		ctrls::properties_collection* properties = &_selected->value->properties;
+		properties->property(prop_name) = rstate.snapshot.first_child().first_attribute().as_string();
+		_pp->refresh_property(prop_name);
+		_op->select(_selected->value->properties.property("name").as_string());
+		_updatectrl(_selected);
 	}
 
 	_redo.pop_back();
@@ -1467,7 +1576,73 @@ void guimanager::_ur_restore_ctrls(const ur_state& state)
 }
 
 
-void guimanager::_push_undo(ur_action action, tree_node<control_obj>* ctrl)
+void guimanager::_ur_moveout(const ur_state& state)
+{
+	// get ctrl from node name
+	std::string node_name = state.name;
+	tree_node<control_obj>* ctrl = 0;
+	_ctrls.for_each([node_name, &ctrl](tree_node<control_obj>* node) -> bool
+		{
+			if(node->value->properties.property("name").as_string() == node_name)
+			{
+				ctrl = node;
+				return false;
+			}
+			return true;
+		});
+
+	auto parent = ctrl->owner;
+	auto grandparent = parent->owner;
+	_select_ctrl(0);
+
+	lock_guard des_lock(&_deserializing, true);
+	_op->emit_events(false);
+	_op->auto_draw(false);
+
+	// move all ctrls/fields at the level of ctrl
+	// serialize ctrls to move
+	pugi::xml_document to_move;
+	pugi::xml_node root = to_move.append_child(NODE_ROOT);
+	_serialize(parent->child, &root);
+
+	// delete ctrls to move and parent
+	_ctrls.for_each(parent, [this](tree_node<control_obj>* node) -> bool
+		{
+			_name_mgr.remove(node->value->properties.property("name").as_string());
+			return true;
+		});
+
+	_ctrls.recursive_backward(parent, [this](tree_node<control_obj>* node) -> bool
+		{
+			if(node->owner)
+			{
+				control_obj parent_ = node->owner->value;
+				if(parent_)
+					parent_->remove(node->value.get());
+			}
+
+			_ctrls.remove(node);
+
+			return true;
+		});
+
+	// deserialize previously saved ctrls into grandparent
+	if(!_deserialize(grandparent, &root, insert_mode::into))
+		_error_message("Unable to move out the selected controls!");
+
+	grandparent->value->refresh();
+
+	_op->auto_draw(true);
+	_op->emit_events(true);
+
+	// select ctrl
+	click_ctrlname(state.name);
+	// reorder objectspanel item
+	_update_op();
+}
+
+
+void guimanager::_push_undo(ur_action action, tree_node<control_obj>* ctrl, const std::string& value)
 {
 	_modified = true;
 
@@ -1478,8 +1653,22 @@ void guimanager::_push_undo(ur_action action, tree_node<control_obj>* ctrl)
 	if(action == ur_action::remove)
 	{
 		// save UI state
-		auto root = ustate.snapshot.append_child(NODE_ROOT);
-		serialize(&root);
+		auto unode = ustate.snapshot.append_child(NODE_ROOT);
+		serialize(&unode);
+	}
+	else if(action == ur_action::change_name)
+	{
+		ustate.name = value;
+
+		// save ctrl name attribute
+		auto unode = ustate.snapshot.append_child(NODE_ROOT);
+		unode.append_attribute("name") = ctrl->value->properties.property("name").as_string().c_str();
+	}
+	else if(action == ur_action::change_property)
+	{
+		// save ctrl attribute
+		auto unode = ustate.snapshot.append_child(NODE_ROOT);
+		unode.append_attribute(value.c_str()) = ctrl->value->properties.property(value).as_string().c_str();
 	}
 
 	// invalidate REDO QUEUE

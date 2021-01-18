@@ -240,7 +240,7 @@ namespace nana
 				std::string label() const;						///< Gets item's label
 
 				item_proxy& value(const std::string& value, bool emit = false);	///< Sets item's value. If emit is set to true then a property_changed event is generated
-				item_proxy& operator=(const std::string& new_value_string );    ///< Sets item's value
+				item_proxy& operator=(const std::string& new_value_string);     ///< Sets item's value
 				std::string value() const;										///< Gets item's value
 
 				item_proxy& defvalue(const std::string& value);	///< Sets item's default value

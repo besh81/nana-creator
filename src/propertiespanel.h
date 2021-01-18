@@ -50,7 +50,7 @@ public:
 		init_();
 
 		//<*ctor
-		_init_ctrls();
+
 		//*>
 
 		return true;
@@ -113,24 +113,19 @@ protected:
 
 	//<*declarations
 public:
-	void name_changed(std::function<void(const std::string&)> f);
-	void property_changed(std::function<void(const std::string&)> f)
-	{
-		_property_changed_f = f;
-	}
+	void name_changed(std::function<bool(const std::string&)> f);
+	void property_changed(std::function<bool(const std::string&, const std::string&)> f);
 
 	void set(ctrls::properties_collection* properties);
+	void set_name(const std::string& new_name);
 
+	void refresh_property(const std::string& name);
 
 private:
-	void _init_ctrls();
-
 	ctrls::properties_collection* _properties{ nullptr };
 	nana::paint::image _img;
 
 	bool _grid_setup{ false };
-
-	std::function<void(const std::string&)> _property_changed_f;
 	//*>
 };
 
