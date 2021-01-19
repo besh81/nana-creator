@@ -73,33 +73,30 @@ namespace nana
 		txt_.caption(value_);
 
 		txt_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
+			{
+				scroll();
+			});
 		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			txt_.select(true);
-		});
+			{
+				txt_.select(true);
+			});
 		txt_.events().key_press([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
 			{
-				pgitem::value(txt_.caption());
-				emit_event();
-			}
-		});
-		txt_.events().focus([this](const nana::arg_focus& arg)
-		{
-			if(!arg.getting)
-			{
-				// just lost focus, so capture the value left by the user, if changed
-				if(txt_.caption() != pgitem::value())
+				if(arg.key == nana::keyboard::enter && txt_.caption() != pgitem::value())
 				{
 					pgitem::value(txt_.caption());
 					emit_event();
 				}
-			}
-		});
+			});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+			{
+				// on lost focus: capture the value left by the user
+				if(!arg.getting && txt_.caption() != pgitem::value())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
+			});
 	}
 
 	void pg_string::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -166,30 +163,8 @@ namespace nana
 		pg_string::create(wd);
 
 		txt_.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
 			{
-				int int_val = -1;
-				if(validate_user_input(int_val))
-				{
-					value(int_val);
-					emit_event();
-				}
-				else
-				{
-					// restore value
-					txt_.caption(value_);
-				}
-
-				arg.stop_propagation();
-			}
-		});
-		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
-		{
-			if(!arg.getting)
-			{
-				// just lost focus, so capture the value left by the user, if changed
-				if(txt_.caption() != pgitem::value())
+				if(arg.key == nana::keyboard::enter && txt_.caption() != pgitem::value())
 				{
 					int int_val = -1;
 					if(validate_user_input(int_val))
@@ -205,13 +180,32 @@ namespace nana
 
 					arg.stop_propagation();
 				}
-			}
-		});
+			});
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+			{
+				// on lost focus: capture the value left by the user
+				if(!arg.getting && txt_.caption() != pgitem::value())
+				{
+					int int_val = -1;
+					if(validate_user_input(int_val))
+					{
+						value(int_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
+			});
 
 		txt_.set_accept([](wchar_t c) -> bool
-		{
-			return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-		});
+			{
+				return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+			});
 	}
 	/// class pg_string_int end
 
@@ -272,30 +266,8 @@ namespace nana
 		pg_string::create(wd);
 
 		txt_.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter)
 			{
-				unsigned u_val = -1;
-				if(validate_user_input(u_val))
-				{
-					value(u_val);
-					emit_event();
-				}
-				else
-				{
-					// restore value
-					txt_.caption(value_);
-				}
-
-				arg.stop_propagation();
-			}
-		});
-		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
-		{
-			if(!arg.getting)
-			{
-				// just lost focus, so capture the value left by the user, if changed
-				if(txt_.caption() != pgitem::value())
+				if(arg.key == nana::keyboard::enter && txt_.caption() != pgitem::value())
 				{
 					unsigned u_val = -1;
 					if(validate_user_input(u_val))
@@ -311,13 +283,32 @@ namespace nana
 
 					arg.stop_propagation();
 				}
-			}
-		});
+			});
+		txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+			{
+				// on lost focus: capture the value left by the user
+				if(!arg.getting && txt_.caption() != pgitem::value())
+				{
+					unsigned u_val = -1;
+					if(validate_user_input(u_val))
+					{
+						value(u_val);
+						emit_event();
+					}
+					else
+					{
+						// restore value
+						txt_.caption(value_);
+					}
+
+					arg.stop_propagation();
+				}
+			});
 
 		txt_.set_accept([](wchar_t c) -> bool
-		{
-			return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-		});
+			{
+				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+			});
 	}
 	/// class pg_string_uint end
 
@@ -372,37 +363,34 @@ namespace nana
 
 
 		txt_.set_accept([this](wchar_t c) -> bool
-		{
-			return (((c == nana::keyboard::cancel || c == nana::keyboard::backspace) && txt_.selected()) || c == nana::keyboard::enter) ? true : false;
-		});
+			{
+				return (((c == nana::keyboard::cancel || c == nana::keyboard::backspace) && txt_.selected()) || c == nana::keyboard::enter) ? true : false;
+			});
 		txt_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			txt_.select(true);
-		});
+			{
+				txt_.select(true);
+			});
 		txt_.events().dbl_click([this](const nana::arg_mouse& arg)
-		{
-			txt_.select(true);
-		});
+			{
+				txt_.select(true);
+			});
 		txt_.events().key_press([this](const nana::arg_keyboard& arg)
-		{
-			if(arg.key == nana::keyboard::enter && txt_.editable())
 			{
-				pgitem::value(txt_.caption());
-				emit_event();
-			}
-		});
-		txt_.events().focus([this](const nana::arg_focus& arg)
-		{
-			if(!arg.getting)
-			{
-				// just lost focus, so capture the value left by the user, if changed
-				if(txt_.caption() != pgitem::value() && txt_.editable())
+				if(arg.key == nana::keyboard::enter && txt_.caption() != pgitem::value() && txt_.editable())
 				{
 					pgitem::value(txt_.caption());
 					emit_event();
 				}
-			}
-		});
+			});
+		txt_.events().focus([this](const nana::arg_focus& arg)
+			{
+				// on lost focus: capture the value left by the user
+				if(!arg.getting && txt_.caption() != pgitem::value() && txt_.editable())
+				{
+					pgitem::value(txt_.caption());
+					emit_event();
+				}
+			});
 
 
 		//button
@@ -507,17 +495,17 @@ namespace nana
 		cmb_.create(wd);
 
 		cmb_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
+			{
+				scroll();
+			});
 		cmb_.events().selected([this](const nana::arg_combox& arg)
-		{
-			if(!evt_emit_)
-				return;
+			{
+				if(!evt_emit_)
+					return;
 
-			option(arg.widget.option());
-			emit_event();
-		});
+				option(arg.widget.option());
+				emit_event();
+			});
 	}
 
 	void pg_choice::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -561,17 +549,17 @@ namespace nana
 		value(value_); // set the initial value passed in ctr
 
 		chk_.events().click.connect_front([this](const nana::arg_click& arg)
-		{
-			scroll();
-		});
+			{
+				scroll();
+			});
 		chk_.events().checked([this](const nana::arg_checkbox& arg)
-		{
-			if(!evt_emit_)
-				return;
+			{
+				if(!evt_emit_)
+					return;
 
-			check(arg.widget->checked());
-			emit_event();
-		});
+				check(arg.widget->checked());
+				emit_event();
+			});
 	}
 
 	void pg_check::draw_value(paint::graphics* graph, rectangle rect, const int txtoff, color bgcolor, color fgcolor) const
@@ -657,34 +645,42 @@ namespace nana
 			i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop_or_click);
 
 			i.events().click.connect_front([this](const nana::arg_click& arg)
-			{
-				scroll();
-			});
+				{
+					scroll();
+				});
 			i.events().dbl_click([this, &i](const nana::arg_mouse& arg)
-			{
-				i.select(true);
-			});
+				{
+					i.select(true);
+				});
 			i.events().key_press([this](const nana::arg_keyboard& arg)
-			{
-				if(arg.key == nana::keyboard::enter)
 				{
-					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
-					emit_event();
-				}
-			});
+					if(arg.key == nana::keyboard::enter)
+					{
+						std::string col = rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption();
+						if(col != pgitem::value())
+						{
+							pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
+							emit_event();
+						}
+					}
+				});
 			i.events().focus([this, &i](const nana::arg_focus& arg)
-			{
-				if(!arg.getting)
 				{
-					// just lost focus, so capture the value left by the user
-					pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
-					emit_event();
-				}
-			});
+					// on lost focus: capture the value left by the user
+					if(!arg.getting)
+					{
+						std::string col = rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption();
+						if(col != pgitem::value())
+						{
+							pg_color::value(rgb_[0].caption() + "," + rgb_[1].caption() + "," + rgb_[2].caption());
+							emit_event();
+						}
+					}
+				});
 			i.set_accept([](wchar_t c) -> bool
-			{
-				return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace || c == nana::keyboard::tab) ? true : false;
-			});
+				{
+					return (isdigit(c) || c == nana::keyboard::cancel || c == nana::keyboard::backspace || c == nana::keyboard::tab) ? true : false;
+				});
 		}
 
 		pg_color::value(value_);
