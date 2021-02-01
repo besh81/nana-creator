@@ -60,7 +60,7 @@ add_executable(${PROJECT_NAME}
     ../../src/ctrls/box_model.cpp
     ../../src/ctrls/progress.cpp
     ../../src/ctrls/menubar.cpp
-    ../../src/items_dialog.cpp
+    ../../src/itemseditorpanel.cpp
     ../../src/nana_extra/adi_place.cpp
     ../../src/ctrls/panel.cpp
     ../../src/ctrls/checkbox.cpp
@@ -87,6 +87,7 @@ add_executable(${PROJECT_NAME}
     ../../src/ctrls/group.cpp
     ../../src/inifile.cpp
     ../../src/ctrls/page.cpp
+    ../../src/updater.cpp
     )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -98,7 +99,6 @@ target_link_libraries(${PROJECT_NAME} ${common_dep})
 
 add_executable(test-ctrls
     ../../tests/ctrls/main.cpp
-    ../../tests/ctrls/ctrls.ncp
     ../../tests/ctrls/ctrls.h
     )
 

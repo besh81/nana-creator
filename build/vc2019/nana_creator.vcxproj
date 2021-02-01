@@ -251,6 +251,7 @@
     <ClInclude Include="..\..\src\scrollablecanvas.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
+    <ClInclude Include="..\..\src\undoredo.h" />
     <ClInclude Include="..\..\src\updater.h" />
     <ClInclude Include="..\..\src\version.h" />
   </ItemGroup>

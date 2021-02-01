@@ -21,6 +21,7 @@
 #include "tree.h"
 #include "ctrls/property.h"
 #include "namemanager.h"
+#include "undoredo.h"
 //*>
 
 
@@ -100,10 +101,20 @@ public:
 
 	void enable(bool state);
 
-	void property_changed(std::function<void(const std::string&)> f)
+	void property_changed(std::function<void()> f)
 	{
 		_property_changed_f = f;
 	}
+
+	/*---------------*/
+	/*   UNDO/REDO   */
+	/*---------------*/
+	void push_undo(std::function<void(undoredo::state* s)> f)
+	{
+		_push_undo_f = f;
+	}
+	void undo(undoredo::state* ustate, undoredo::state* rstate);
+	void redo(undoredo::state* rstate, undoredo::state* ustate);
 
 
 private:
@@ -112,9 +123,9 @@ private:
 	void _enable_toolbar_specific();
 
 	void _add_item_after_selected(const std::string& type = "");
-	void _delete_selected();
-	void _move_up_selected();
-	void _move_down_selected();
+	void _delete_selected(bool push_undo = true);
+	void _move_up_selected(bool push_undo = true);
+	void _move_down_selected(bool push_undo = true);
 
 	// ctrls specif
 	void _toolbar_add_dropdown_item_after_selected();
@@ -126,6 +137,7 @@ private:
 	void _update_selected();
 
 	nana::treebox::item_proxy _find_items_tree(const std::string& key);
+	void _select_item_tree(const std::string& key);
 	void _select_item(const std::string& key);
 
 	void _enable();
@@ -143,8 +155,17 @@ private:
 
 	bool _grid_setup{ false };
 
+	std::function<void()> _property_changed_f;
 
-	std::function<void(const std::string&)> _property_changed_f;
+
+	/*---------------*/
+	/*   UNDO/REDO   */
+	/*---------------*/
+	void _serialize_items(pugi::xml_node* xml_node);
+	void _deserialize_items(pugi::xml_node* xml_parent);
+	void _push_undo(undoredo::action action, const std::string& value = "");
+
+	std::function<void(undoredo::state* s)> _push_undo_f;
 	//*>
 };
 

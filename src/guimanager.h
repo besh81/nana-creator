@@ -18,6 +18,7 @@
 #include "objectspanel.h"
 #include "itemseditorpanel.h"
 #include "scrollablecanvas.h"
+#include "undoredo.h"
 
 
 typedef std::shared_ptr<ctrls::ctrl>	control_obj;
@@ -156,32 +157,12 @@ private:
 	/*---------------*/
 	/*   UNDO/REDO   */
 	/*---------------*/
-	enum class ur_action
-	{
-		add,
-		remove,
-		move_up,
-		move_down,
-		move_into_field,
-		move_into_grid,
-		move_into_panel,
-		change_name,
-		change_property,
-		empty
-	};
+	void _ur_restore_ctrls(const undoredo::state& state);
+	void _ur_moveout(const undoredo::state& state); ///< Move ctrl and its siblings out of the parent ctrl (inverse op _moveinto)
+	void _push_undo(undoredo::action action, tree_node<control_obj>* ctrl, const std::string& value = "", undoredo::state* item = 0);
 
-	struct ur_state {
-		ur_action action{ ur_action::empty };
-		std::string name;
-		pugi::xml_document snapshot;
-	};
-
-	void _ur_restore_ctrls(const ur_state& state);
-	void _ur_moveout(const ur_state& state); ///< Move ctrl and its siblings out of the parent ctrl (inverse op _moveinto)
-	void _push_undo(ur_action action, tree_node<control_obj>* ctrl, const std::string& value = "");
-
-	std::deque<ur_state> _undo;
-	std::deque<ur_state> _redo;
+	std::deque<undoredo::state> _undo;
+	std::deque<undoredo::state> _redo;
 };
 
 #endif //NANA_CREATOR_GUIMANAGER_H
