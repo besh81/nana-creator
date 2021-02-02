@@ -211,7 +211,7 @@ namespace nana
 				//draw caption
 				auto text = to_wstring(API::window_caption(window_handle_));
 				if((graph.size().width > DOCK_CAPTION_H) && (graph.size().width - DOCK_CAPTION_H > 10))
-					text_rd_->render({ 3, 1 }, text.data(), text.size(), graph.size().width - DOCK_CAPTION_H, paint::text_renderer::mode::truncate_with_ellipsis);
+					text_rd_->render({ 3, 1 }, { text.data(), text.size() }, graph.size().width - DOCK_CAPTION_H, paint::text_renderer::mode::truncate_with_ellipsis);
 
 				//draw x button
 				if(info_->show_close())
