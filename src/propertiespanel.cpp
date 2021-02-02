@@ -16,36 +16,7 @@
 extern imagemanager		g_img_mgr;
 
 
-void propertiespanel::_init_ctrls()
-{
-	// events
-	_propgrid.events().property_changed([this](const nana::arg_propertygrid& arg)
-	{
-		if(_grid_setup)
-			return;
-
-		auto cat = _propgrid.at(arg.item.pos().cat);
-
-		for(size_t i = 0; i < _properties->count(); ++i)
-		{
-			auto pi = (*_properties)[i];
-			if(arg.item.label() == pi.label() && cat.text() == pi.category())
-			{
-				pi.value(arg.item.value());
-
-				// look for properties bonds
-				propertygrid_helper::enabled_bonds(&_propgrid, _properties, pi.name(), pi.as_bool());
-
-				if(_property_changed_f)
-					_property_changed_f(pi.name());
-				break;
-			}
-		}
-	});
-}
-
-
-void propertiespanel::name_changed(std::function<void(const std::string&)> f)
+void propertiespanel::name_changed(std::function<bool(const std::string&)> f)
 {
 	// events
 	_name.events().key_press([this, f](const nana::arg_keyboard& arg)
@@ -53,7 +24,11 @@ void propertiespanel::name_changed(std::function<void(const std::string&)> f)
 		if(arg.key == nana::keyboard::enter && _properties)
 		{
 			_name.edited_reset();
-			f(_name.caption());
+			if(!f(_name.caption()))
+			{
+				_name.caption(_properties->property("name").as_string());
+				_name.edited_reset();
+			}
 		}
 	});
 	_name.events().focus([this, f](const nana::arg_focus& arg)
@@ -64,10 +39,40 @@ void propertiespanel::name_changed(std::function<void(const std::string&)> f)
 			if(_name.edited() && _properties)
 			{
 				_name.edited_reset();
-				f(_name.caption());
+				if(!f(_name.caption()))
+				{
+					_name.caption(_properties->property("name").as_string());
+					_name.edited_reset();
+				}
 			}
 		}
 	});
+}
+
+
+void propertiespanel::property_changed(std::function<bool(const std::string&, const std::string&)> f)
+{
+	// events
+	_propgrid.events().property_changed([this, f](const nana::arg_propertygrid& arg)
+		{
+			if(_grid_setup)
+				return;
+
+			auto cat = _propgrid.at(arg.item.pos().cat);
+			for(size_t i = 0; i < _properties->count(); ++i)
+			{
+				auto pi = (*_properties)[i];
+				if(arg.item.label() == pi.label() && cat.text() == pi.category())
+				{
+					if(f(pi.name(), arg.item.value()))
+					{
+						// look for properties bonds
+						propertygrid_helper::enabled_bonds(&_propgrid, _properties, pi.name(), pi.as_bool());
+					}
+					break;
+				}
+			}
+		});
 }
 
 
@@ -113,3 +118,23 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	_place.collocate();
 }
 
+
+void propertiespanel::set_name(const std::string& new_name)
+{
+	// ATTENTION: no check if new_name is compatible with _properties->property("name")
+	_name.caption(new_name);
+	_name.edited_reset();
+}
+
+
+void propertiespanel::refresh_property(const std::string& name)
+{
+	auto prop = _properties->property(name);
+
+	auto cat_idx = _propgrid.find(prop.category());
+	if(cat_idx == nana::npos)
+		return;
+
+	auto grid_prop = _propgrid.at(cat_idx).find(prop.label());
+	grid_prop.value(prop.as_string());
+}

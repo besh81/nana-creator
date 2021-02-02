@@ -11,10 +11,14 @@
 #include "pugixml/pugixml.hpp"
 
 
+#define INIT_UNDO_QUEUE_LEN		30
+
 
 //inifile
 inifile::inifile()
 {
+	_undo_queue_len = INIT_UNDO_QUEUE_LEN;
+
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(INI_FILE);
 
@@ -33,6 +37,8 @@ inifile::inifile()
 			_new_prj_dir = root.attribute("new_prj_dir").as_string();
 			_load_prj_dir = root.attribute("load_prj_dir").as_string();
 			_img_dir = root.attribute("img_dir").as_string();
+			//
+			_undo_queue_len = root.attribute("undo_queue_len").as_uint(INIT_UNDO_QUEUE_LEN);
 		}
 	}
 
@@ -68,6 +74,15 @@ void inifile::image_dir(const std::string& dir, bool save_to_file)
 }
 
 
+void inifile::undo_queue_len(unsigned int len, bool save_to_file)
+{
+	_undo_queue_len = len;
+
+	if(save_to_file)
+		save();
+}
+
+
 bool inifile::save()
 {
 	pugi::xml_document doc;
@@ -79,6 +94,8 @@ bool inifile::save()
 	root.append_attribute("new_prj_dir") = _new_prj_dir.c_str();
 	root.append_attribute("load_prj_dir") = _load_prj_dir.c_str();
 	root.append_attribute("img_dir") = _img_dir.c_str();
+	//
+	root.append_attribute("undo_queue_len") = _undo_queue_len;
 
 	return doc.save_file(INI_FILE);
 }

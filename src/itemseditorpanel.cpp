@@ -116,7 +116,7 @@ void itemseditorpanel::_init_ctrls()
 					//propertygrid_helper::enabled_bonds(&propgrid, _selected, pi.name(), pi.as_bool());
 
 					if(_property_changed_f)
-						_property_changed_f(pi.name());
+						_property_changed_f();
 					break;
 				}
 			}
@@ -311,111 +311,94 @@ void itemseditorpanel::_add_item_after_selected(const std::string& type)
 
 	_selected->value.property("key") = _node_mgr.add_numbered(ITEM_NODE_NAME);
 
-	_update_items_tree();
+	_push_undo(undoredo::action::add);
 
-	auto ip = _find_items_tree(_selected->value.property("key").as_string());
-	if(!ip.empty())
-	{
-		ip.select(true);
-		items_tree.scroll_into_view(ip);
-	}
+	_update_items_tree();
+	_select_item_tree(_selected->value.property("key").as_string());
 
 	if(_property_changed_f)
-		_property_changed_f("");
+		_property_changed_f();
 }
 
 
-void itemseditorpanel::_delete_selected()
+void itemseditorpanel::_delete_selected(bool push_undo)
 {
 	if(!_selected)
 		return;
 
-	nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::yes_no);
-	m.icon(m.icon_question);
-	m << "Delete selected item?";
-
-	if(m() == nana::msgbox::pick_yes)
+	if(push_undo)
 	{
-		// node to select after deletion
-		auto pnext = _selected->next;
-		if(!pnext && _selected->owner)
+		nana::msgbox m(*this, CREATOR_NAME, nana::msgbox::yes_no);
+		m.icon(m.icon_question);
+		m << "Delete selected item?";
+		if(m() != nana::msgbox::pick_yes)
+			return;
+
+		_push_undo(undoredo::action::remove);
+	}
+
+	// node to select after deletion
+	auto pnext = _selected->next;
+	if(!pnext && _selected->owner)
+	{
+		pnext = _selected->owner->child;
+		if(pnext != _selected)
 		{
-			pnext = _selected->owner->child;
-			if(pnext != _selected)
-			{
-				while(pnext->next != _selected)
-					pnext = pnext->next;
-			}
-			else
-			{
-				pnext = _selected->owner;
-				if(pnext == _items->get_root())
-					pnext = nullptr;
-			}
-		}
-
-		_items->remove(_selected);
-		_selected = pnext;
-
-		_update_items_tree();
-
-		if(_selected)
-		{
-			auto ip = _find_items_tree(_selected->value.property("key").as_string());
-			if(!ip.empty())
-			{
-				ip.select(true);
-				items_tree.scroll_into_view(ip);
-			}
+			while(pnext->next != _selected)
+				pnext = pnext->next;
 		}
 		else
-			_update_selected();
-
-		if(_property_changed_f)
-			_property_changed_f("");
+		{
+			pnext = _selected->owner;
+			if(pnext == _items->get_root())
+				pnext = nullptr;
+		}
 	}
+
+	_items->remove(_selected);
+	_selected = pnext;
+
+	_update_items_tree();
+
+	if(_selected)
+		_select_item_tree(_selected->value.property("key").as_string());
+	else
+		_update_selected();
+
+	if(_property_changed_f)
+		_property_changed_f();
 }
 
 
-void itemseditorpanel::_move_up_selected()
+void itemseditorpanel::_move_up_selected(bool push_undo)
 {
 	if(!_items->move_before_sibling(_selected))
 		return;
 
+	if(push_undo)
+		_push_undo(undoredo::action::move_up);
+
 	_update_items_tree();
-
-	lock_guard grid_change(&_grid_setup, true);
-
-	auto ip = _find_items_tree(_selected->value.property("key").as_string());
-	if(!ip.empty())
-	{
-		ip.select(true);
-		items_tree.scroll_into_view(ip);
-	}
+	_select_item_tree(_selected->value.property("key").as_string());
 
 	if(_property_changed_f)
-		_property_changed_f("");
+		_property_changed_f();
 }
 
 
-void itemseditorpanel::_move_down_selected()
+void itemseditorpanel::_move_down_selected(bool push_undo)
 {
 	if(!_items->move_after_sibling(_selected))
 		return;
 
+	if(push_undo)
+		_push_undo(undoredo::action::move_down);
+
 	_update_items_tree();
-
-	lock_guard grid_change(&_grid_setup, true);
-
-	auto ip = _find_items_tree(_selected->value.property("key").as_string());
-	if(!ip.empty())
-	{
-		ip.select(true);
-		items_tree.scroll_into_view(ip);
-	}
+	_select_item_tree(_selected->value.property("key").as_string());
 
 	if(_property_changed_f)
-		_property_changed_f("");
+		_property_changed_f();
 }
 
 
@@ -442,17 +425,13 @@ void itemseditorpanel::_toolbar_add_dropdown_item_after_selected()
 	_selected->value.property("key") = _node_mgr.add_numbered(ITEM_NODE_NAME);
 	_selected->value.property("owner") = owner_key;
 
-	_update_items_tree();
+	_push_undo(undoredo::action::add);
 
-	auto ip = _find_items_tree(_selected->value.property("key").as_string());
-	if(!ip.empty())
-	{
-		ip.select(true);
-		items_tree.scroll_into_view(ip);
-	}
+	_update_items_tree();
+	_select_item_tree(_selected->value.property("key").as_string());
 
 	if(_property_changed_f)
-		_property_changed_f("");
+		_property_changed_f();
 }
 
 
@@ -482,17 +461,13 @@ void itemseditorpanel::_menubar_add_menu_item_after_selected(const std::string& 
 	_selected->value.property("key") = _node_mgr.add_numbered(ITEM_NODE_NAME);
 	_selected->value.property("owner") = owner_key;
 
-	_update_items_tree();
+	_push_undo(undoredo::action::add);
 
-	auto ip = _find_items_tree(_selected->value.property("key").as_string());
-	if(!ip.empty())
-	{
-		ip.select(true);
-		items_tree.scroll_into_view(ip);
-	}
+	_update_items_tree();
+	_select_item_tree(_selected->value.property("key").as_string());
 
 	if(_property_changed_f)
-		_property_changed_f("");
+		_property_changed_f();
 }
 
 
@@ -516,6 +491,17 @@ nana::treebox::item_proxy itemseditorpanel::_find_items_tree(const std::string& 
 	}
 
 	return ip;
+}
+
+
+void itemseditorpanel::_select_item_tree(const std::string& key)
+{
+	auto ip = _find_items_tree(key);
+	if(!ip.empty())
+	{
+		ip.select(true);
+		items_tree.scroll_into_view(ip);
+	}
 }
 
 
@@ -655,4 +641,153 @@ void itemseditorpanel::_enable()
 
 	for(size_t i = 0; i < toolbar.count(); ++i)
 		toolbar.enable(i, s);
+}
+
+
+	/*---------------*/
+	/*   UNDO/REDO   */
+	/*---------------*/
+void itemseditorpanel::_serialize_items(pugi::xml_node* xml_node)
+{
+	_items->for_each([&xml_node](tree_node<ctrls::properties_collection>* node) -> bool
+		{
+			auto xml_item = xml_node->append_child(NODE_ITEM);
+
+			for(size_t i = 0; i < node->value.count(); ++i)
+				xml_item.append_attribute(node->value[i].name().c_str()) = node->value[i].as_string().c_str();
+			return true;
+		});
+}
+
+
+void itemseditorpanel::_deserialize_items(pugi::xml_node* xml_parent)
+{
+	// read children
+	for(pugi::xml_node xml_node = xml_parent->first_child(); xml_node; xml_node = xml_node.next_sibling())
+	{
+		ctrls::properties_collection item;
+
+		// init item properties
+		if(_type == ctrls::pg_type::collection_toolbar)
+			ctrls::toolbar::init_item(item, xml_node.attribute("type").as_string());
+		else if(_type == ctrls::pg_type::collection_combox)
+			ctrls::combox::init_item(item);
+		else if(_type == ctrls::pg_type::collection_listbox)
+			ctrls::listbox::init_item(item);
+		else if(_type == ctrls::pg_type::collection_tabbar)
+			ctrls::tabbar::init_item(item);
+		else if(_type == ctrls::pg_type::collection_menubar)
+			ctrls::menubar::init_item(item, xml_node.attribute("type").as_string());
+		else if(_type == ctrls::pg_type::collection_collapse)
+			ctrls::field::init_item(item);
+
+		// deserialize attributes
+		for(auto i = xml_node.attributes_begin(); i != xml_node.attributes_end(); ++i)
+			item.property(i->name()).value(i->value());
+
+		if(item.property("owner").as_string().empty())
+		{
+			_items->append(item);
+		}
+		else
+		{
+			_items->for_each([&item](tree_node<ctrls::properties_collection>* node) -> bool
+				{
+					if(item.property("owner").as_string() == node->value.property("key").as_string())
+					{
+						node->append(item);
+						return false;
+					}
+					return true;
+				});
+		}
+	}
+
+	_update_items_tree();
+}
+
+
+void itemseditorpanel::_push_undo(undoredo::action action, const std::string& value)
+{
+	if(!_push_undo_f)
+		return;
+
+	undoredo::state s;
+	s.item_action = action;
+	s.item_name = _selected->value.property("key").as_string();
+
+	if(action == undoredo::action::remove)
+	{
+		// save items
+		auto unode = s.snapshot.append_child(NODE_ROOT);
+		_serialize_items(&unode);
+	}
+
+	_push_undo_f(&s);
+}
+
+
+void itemseditorpanel::undo(undoredo::state* ustate, undoredo::state* rstate)
+{
+	if(ustate->item_action == undoredo::action::add)
+	{
+		// save items
+		auto rnode = rstate->snapshot.append_child(NODE_ROOT);
+		_serialize_items(&rnode);
+
+		_select_item(ustate->item_name);
+		_delete_selected(false);
+	}
+	else if(ustate->item_action == undoredo::action::remove)
+	{
+		// restore items
+		_items->clear();
+		auto xml_node = ustate->snapshot.first_child();
+		_deserialize_items(&xml_node);
+		_select_item(ustate->item_name);
+		_select_item_tree(ustate->item_name);
+	}
+	else if(ustate->item_action == undoredo::action::move_up)
+	{
+		_select_item(ustate->item_name);
+		_move_down_selected(false);
+	}
+	else if(ustate->item_action == undoredo::action::move_down)
+	{
+		_select_item(ustate->item_name);
+		_move_up_selected(false);
+	}
+}
+
+
+void itemseditorpanel::redo(undoredo::state* rstate, undoredo::state* ustate)
+{
+	if(rstate->item_action == undoredo::action::add)
+	{
+		// restore items
+		_items->clear();
+		auto xml_node = rstate->snapshot.first_child();
+		_deserialize_items(&xml_node);
+		_select_item(rstate->item_name);
+		_select_item_tree(rstate->item_name);
+	}
+	else if(rstate->item_action == undoredo::action::remove)
+	{
+		// save items
+		auto unode = ustate->snapshot.append_child(NODE_ROOT);
+		_serialize_items(&unode);
+
+		_select_item(rstate->item_name);
+		_delete_selected(false);
+	}
+	else if(rstate->item_action == undoredo::action::move_up)
+	{
+		_select_item(rstate->item_name);
+		_move_up_selected(false);
+	}
+	else if(rstate->item_action == undoredo::action::move_down)
+	{
+		_select_item(rstate->item_name);
+		_move_down_selected(false);
+	}
 }

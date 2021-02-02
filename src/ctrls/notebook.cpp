@@ -104,13 +104,43 @@ namespace ctrls
 
 		pages.push_back(child);
 
-		//
 		tbb.push_back(child->properties.property("caption").as_string());
 		tbb.attach(tbb.length() - 1, *child->nanawdg);
 
 		plc["pages"].fasten(*child->nanawdg);
 		plc.collocate();
 		return true;
+	}
+
+
+	bool notebook::insert(ctrl* child, ctrl* pos, bool after)
+	{
+		if(!child)
+			return false;
+
+		int i = 0;
+		for(auto p = pages.begin(); p < pages.end(); ++p, ++i)
+		{
+			if(*p == pos)
+			{
+				if(after)
+				{
+					++p;
+					++i;
+				}
+
+				pages.insert(p, child);
+
+				tbb.insert(i, child->properties.property("caption").as_string());
+				tbb.attach(i, *child->nanawdg);
+
+				plc["pages"].fasten(*child->nanawdg);
+				plc.collocate();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 

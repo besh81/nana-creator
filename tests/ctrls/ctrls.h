@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.29.0)
+ *	C++ code generated with Nana Creator (0.30.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -65,6 +65,7 @@ private:
 		_place.bind(*this);
 		_place.div("vert <vert weight=56 arrange=[variable,32] menuf><margin=5 <vert weight=300 margin=5 gap=2 arrange=[25,variable,26,24,variable,26,variable,25,30,26,26,30] field1>|<margin=2 gap=2 field2>>");
 		caption("Nana-Creator test");
+		icon(nana::paint::image("icons/creator.ico"));
 		// menubar1
 		menubar1.create(*this);
 		_place["menuf"] << menubar1;

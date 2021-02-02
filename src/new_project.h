@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.28.0)
+ *	C++ code generated with Nana Creator (0.30.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -50,13 +50,15 @@ private:
 	void init_()
 	{
 		_place.bind(*this);
-		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=36 margin=5 gap=3 arrange=[variable,90,90] field5>");
+		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=36 margin=[5,5,5,5] gap=5 arrange=[variable,90,90] field5>");
 		caption("New project");
-		icon(nana::paint::image("c:/cppprojects/nana-creator/wdir/icons/creator.ico"));
+		icon(nana::paint::image("icons/creator.ico"));
+		bgcolor(nana::color(204,213,240));
 		// label3
 		label3.create(*this);
 		_place["field1"] << label3;
 		label3.caption("   Type:");
+		label3.transparent(true);
 		label3.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(2));
 		// type_lst
 		type_lst.create(*this);
@@ -72,7 +74,9 @@ private:
 		// label1
 		label1.create(*this);
 		_place["field3"] << label1;
+		label1.bgcolor(nana::color(212,208,200));
 		label1.caption("Name:");
+		label1.transparent(true);
 		label1.text_align(static_cast<nana::align>(2), static_cast<nana::align_v>(1));
 		// name_txt
 		name_txt.create(*this);
@@ -81,7 +85,9 @@ private:
 		// label2
 		label2.create(*this);
 		_place["field4"] << label2;
+		label2.bgcolor(nana::color(212,208,200));
 		label2.caption("Create in:");
+		label2.transparent(true);
 		label2.text_align(static_cast<nana::align>(2), static_cast<nana::align_v>(1));
 		// folder_txt
 		folder_txt.create(*this);
@@ -91,18 +97,22 @@ private:
 		// folder_btn
 		folder_btn.create(*this);
 		_place["field4"] << folder_btn;
+		folder_btn.bgcolor(this->bgcolor());
 		folder_btn.caption("...");
 		// panel1
 		panel1.create(*this);
+		panel1.bgcolor(nana::color(212,208,200));
 		panel1.transparent(true);
 		_place["field5"] << panel1;
 		// create_btn
 		create_btn.create(*this);
 		_place["field5"] << create_btn;
+		create_btn.bgcolor(this->bgcolor());
 		create_btn.caption("Create");
 		// canc_btn
 		canc_btn.create(*this);
 		_place["field5"] << canc_btn;
+		canc_btn.bgcolor(this->bgcolor());
 		canc_btn.caption("Cancel");
 
 		_place.collocate();

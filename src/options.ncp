@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<nana-creator version="0.30.0">
+	<form mainclass="true" filename="options" rel_path="true" work_dir="f:/cppprojects/nana-creator/wdir" type="form" name="options" enabled="true" caption="Options" icon="F:\cppprojects\nana-creator\wdir\icons\creator.ico" width="450" height="260" zoom="false" bgcolor="204,213,240" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="5,5,5,5" gap="2">
+		<field type="field" name="field1" weight="34" layout="0" margin="5,5,5,5" gap="2">
+			<label type="label" name="label1" enabled="true" bgcolor="204,213,240" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="180" caption="Undo/Redo queue length" format="false" transparent="false" halign="0" valign="1" />
+			<spinbox type="spinbox" name="ur_spin" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="60" value="30" begin="0" last="99999" step="1" editable="true" prefix="" suffix="" />
+		</field>
+		<field type="field" name="field2" weight="-1" layout="0" margin="5,0,0,0" gap="2">
+			<group type="group" name="group1" enabled="true" bgcolor="193,202,228" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" caption="Directories (read only)" format="false" halign="0" layout="1" weight="-1" margin="5,5,5,5" gap="2">
+				<label type="label" name="label2" enabled="true" bgcolor="193,202,228" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="New projects" format="false" transparent="false" halign="0" valign="2" />
+				<textbox type="textbox" name="new_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
+				<label type="label" name="label21" enabled="true" bgcolor="193,202,228" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Load projects" format="false" transparent="false" halign="0" valign="2" />
+				<textbox type="textbox" name="load_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
+				<label type="label" name="label22" enabled="true" bgcolor="193,202,228" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Images" format="false" transparent="false" halign="0" valign="2" />
+				<textbox type="textbox" name="image_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="false" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
+			</group>
+		</field>
+		<field type="field" name="field3" weight="36" layout="0" margin="5,5,5,5" gap="5">
+			<panel type="panel" name="panel1" enabled="true" bgcolor="204,213,240" fgcolor="0,0,0" transparent="true" layout="0" weight="-1" margin="5,5,5,5" gap="2" />
+			<button type="button" name="ok_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="OK" icon="" enable_pushed="false" pushed="false" transparent="false" />
+			<button type="button" name="canc_btn" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="Cancel" icon="" enable_pushed="false" pushed="false" transparent="false" />
+		</field>
+	</form>
+</nana-creator>

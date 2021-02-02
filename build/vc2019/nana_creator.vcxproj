@@ -190,6 +190,7 @@
     <ClCompile Include="..\..\src\nana_extra\propertygrid.cpp" />
     <ClCompile Include="..\..\src\new_project.cpp" />
     <ClCompile Include="..\..\src\objectspanel.cpp" />
+    <ClCompile Include="..\..\src\options.cpp" />
     <ClCompile Include="..\..\src\pgitems_creator.cpp" />
     <ClCompile Include="..\..\src\propertiespanel.cpp" />
     <ClCompile Include="..\..\src\propertygrid_helper.cpp" />
@@ -245,12 +246,14 @@
     <ClInclude Include="..\..\src\nana_extra\propertygrid.h" />
     <ClInclude Include="..\..\src\new_project.h" />
     <ClInclude Include="..\..\src\objectspanel.h" />
+    <ClInclude Include="..\..\src\options.h" />
     <ClInclude Include="..\..\src\pgitems_creator.h" />
     <ClInclude Include="..\..\src\propertiespanel.h" />
     <ClInclude Include="..\..\src\propertygrid_helper.h" />
     <ClInclude Include="..\..\src\scrollablecanvas.h" />
     <ClInclude Include="..\..\src\style.h" />
     <ClInclude Include="..\..\src\tree.h" />
+    <ClInclude Include="..\..\src\undoredo.h" />
     <ClInclude Include="..\..\src\updater.h" />
     <ClInclude Include="..\..\src\version.h" />
   </ItemGroup>

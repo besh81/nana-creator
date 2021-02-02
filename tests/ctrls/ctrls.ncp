@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<nana-creator version="0.29.0">
-	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="" width="640" height="500" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
+<nana-creator version="0.30.0">
+	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="640" height="500" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
 			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
 				<item type="item" key="n1" owner="" text="M&amp;enu1" />

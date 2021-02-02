@@ -118,8 +118,8 @@
 		<Unit filename="../../src/info.h" />
 		<Unit filename="../../src/inifile.cpp" />
 		<Unit filename="../../src/inifile.h" />
-		<Unit filename="../../src/items_dialog.cpp" />
-		<Unit filename="../../src/items_dialog.h" />
+		<Unit filename="../../src/itemseditorpanel.cpp" />
+		<Unit filename="../../src/itemseditorpanel.h" />
 		<Unit filename="../../src/lock_guard.h" />
 		<Unit filename="../../src/main.cpp" />
 		<Unit filename="../../src/namemanager.cpp" />
@@ -146,6 +146,12 @@
 		<Unit filename="../../src/scrollablecanvas.h" />
 		<Unit filename="../../src/style.h" />
 		<Unit filename="../../src/tree.h" />
+		<Unit filename="../../src/updater.cpp" />
+		<Unit filename="../../src/updater.h" />
+		<Unit filename="../../src/version.h" />
+		<Unit filename="../../src/undoredo.h" />
+		<Unit filename="../../src/options.cpp" />
+		<Unit filename="../../src/options.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

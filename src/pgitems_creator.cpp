@@ -43,40 +43,43 @@ void pg_filename::create(nana::window wd)
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)
-	{
-		if(!on_open_dlg())
-			return;
-
-		nana::filebox fb(arg.window_handle, true);
-		
-		for(auto i : filters_)
-			fb.add_filter(i.first, i.second);
-		fb.add_filter("All Files", "*.*");
-
-		if(value_.empty())
-		#if defined(NANA_WINDOWS)
 		{
-			// solve the problem with lpstrinitialdir
-			auto p = equalize_path(init_dir_, '/', '\\');
-			fb.init_file(p.empty() ? "./" : p + "\\.");
-		}
-		#else
-			fb.init_path(init_dir_);
-		#endif
-		else
-			fb.init_file(value_);
-
-		auto paths = fb.show();
-		if(!paths.empty())
-		{
-			auto filename = paths[0];
-			if(!on_close_dlg(filename.string()))
+			if(!on_open_dlg())
 				return;
 
-			value(filename.string());
-			emit_event();
-		}
-	});
+			nana::filebox fb(arg.window_handle, true);
+		
+			for(auto i : filters_)
+				fb.add_filter(i.first, i.second);
+			fb.add_filter("All Files", "*.*");
+
+			if(value_.empty())
+			#if defined(NANA_WINDOWS)
+			{
+				// solve the problem with lpstrinitialdir
+				auto p = equalize_path(init_dir_, '/', '\\');
+				fb.init_file(p.empty() ? "./" : p + "\\.");
+			}
+			#else
+				fb.init_path(init_dir_);
+			#endif
+			else
+				fb.init_file(value_);
+
+			auto paths = fb.show();
+			if(!paths.empty())
+			{
+				auto filename = paths[0];
+				if(!on_close_dlg(filename.string()))
+					return;
+
+				if(filename.string() != pgitem::value())
+				{
+					value(filename.string());
+					emit_event();
+				}
+			}
+		});
 }
 /// class pg_filename end
 
@@ -132,16 +135,19 @@ void pg_folder::create(nana::window wd)
 
 	//button
 	set_button_click([this](const nana::arg_click& arg)
-	{
-		nana::folderbox folder_picker(arg.window_handle, dir_exists(value_) ? value_ : "");
-
-		auto paths = folder_picker.show();
-		if(!paths.empty())
 		{
-			value(paths[0].string());
-			emit_event();
-		}
-	});
+			nana::folderbox folder_picker(arg.window_handle, dir_exists(value_) ? value_ : "");
+
+			auto paths = folder_picker.show();
+			if(!paths.empty())
+			{
+				if(equalize_path(paths[0].string()) != pgitem::value())
+				{
+					value(paths[0].string());
+					emit_event();
+				}
+			}
+		});
 }
 /// class pg_folder end
 
@@ -175,50 +181,79 @@ void pg_layout_weight::create(nana::window wd)
 
 	// textbox
 	txt_.events().key_press.connect_front([this](const nana::arg_keyboard& arg)
-	{
-		if(arg.key == nana::keyboard::enter)
 		{
-			int int_val = -1;
-			try
+			if(arg.key == nana::keyboard::enter)
 			{
-				int_val = std::stoi(txt_.caption());
-			}
-			catch(...)
-			{
-				value(value_);
+				int int_val = -1;
+				try
+				{
+					int_val = std::stoi(txt_.caption());
+				}
+				catch(...)
+				{
+					value(pgitem::value());
+					arg.stop_propagation();
+					return;
+				}
+
+				auto old_value = pgitem::value();
+				value(std::to_string(int_val) + (cmb_.option() == 1 ? "%" : ""));
+
+				if(old_value != pgitem::value())
+					emit_event();
+
 				arg.stop_propagation();
-				return;
 			}
+		});
+	txt_.events().focus.connect_front([this](const nana::arg_focus& arg)
+		{
+			// on lost focus: capture the value left by the user
+			if(!arg.getting)
+			{
+				int int_val = -1;
+				try
+				{
+					int_val = std::stoi(txt_.caption());
+				}
+				catch(...)
+				{
+					value(pgitem::value());
+					arg.stop_propagation();
+					return;
+				}
 
-			value(std::to_string(int_val) + (cmb_.option() == 1 ? "%" : ""));
+				auto old_value = pgitem::value();
+				value(std::to_string(int_val) + (cmb_.option() == 1 ? "%" : ""));
 
-			emit_event();
-			arg.stop_propagation();
-		}
-	});
+				if(old_value != pgitem::value())
+					emit_event();
+
+				arg.stop_propagation();
+			}
+		});
 
 	txt_.set_accept([](wchar_t c) -> bool
-	{
-		return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
-	});
+		{
+			return (isdigit(c) || c == '-' || c == nana::keyboard::cancel || c == nana::keyboard::backspace) ? true : false;
+		});
 
 
 	//combox
 	cmb_.create(wd);
 
 	cmb_.events().click.connect_front([this](const nana::arg_click& arg)
-	{
-		scroll();
-	});
+		{
+			scroll();
+		});
 	cmb_.events().selected([this](const nana::arg_combox& arg)
-	{
-		if(!evt_emit_)
-			return;
+		{
+			if(!evt_emit_)
+				return;
 
-		value(txt_.caption() + (cmb_.option() == 1 ? "%" : ""));
-		emit_event();
-		arg.stop_propagation();
-	});
+			value(txt_.caption() + (cmb_.option() == 1 ? "%" : ""));
+			emit_event();
+			arg.stop_propagation();
+		});
 
 	cmb_.push_back(CITEM_PIXELS);
 	cmb_.push_back(CITEM_PERCENT);
@@ -322,22 +357,30 @@ void pg_margin::create(nana::window wd)
 {
 	// ibox context menu
 	menu_.append_splitter();
-	// 2. 1 value
+	// 1 value
 	menu_.append("1 value", [this](const nana::menu::item_proxy& ip)
 		{
+			auto old_value = pgitem::value();
+
 			pg_margin::value(values_[0].caption());
 			scroll();
 			update();
-			emit_event();
+
+			if(old_value != pgitem::value())
+				emit_event();
 		});
 	menu_.check_style(2, nana::menu::checks::option);
-	// 3. 4 values
+	// 4 values
 	menu_.append("4 values", [this](const nana::menu::item_proxy& ip)
 		{
+			auto old_value = pgitem::value();
+
 			pg_margin::value(values_[0].caption() + "," + values_[0].caption() + "," + values_[0].caption() + "," + values_[0].caption());
 			scroll();
 			update();
-			emit_event();
+
+			if(old_value != pgitem::value())
+				emit_event();
 		});
 	menu_.check_style(3, nana::menu::checks::option);
 	menu_.checked(3, true);
@@ -348,7 +391,7 @@ void pg_margin::create(nana::window wd)
 	{
 		i.create(wd);
 		i.multi_lines(false);
-		i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop_or_click);
+		i.focus_behavior(nana::textbox::text_focus_behavior::select_if_tabstop);
 
 		i.events().click.connect_front([this](const nana::arg_click& arg)
 			{
@@ -362,23 +405,31 @@ void pg_margin::create(nana::window wd)
 			{
 				if(arg.key == nana::keyboard::enter)
 				{
+					auto old_value = pgitem::value();
+
 					if(expand_)
 						pg_margin::value(values_[0].caption() + "," + values_[1].caption() + "," + values_[2].caption() + "," + values_[3].caption());
 					else
 						pg_margin::value(values_[0].caption());
-					emit_event();
+
+					if(old_value != pgitem::value())
+						emit_event();
 				}
 			});
 		i.events().focus([this, &i](const nana::arg_focus& arg)
 			{
 				if(!arg.getting)
 				{
+					auto old_value = pgitem::value();
+
 					// just lost focus, so capture the value left by the user
 					if(expand_)
 						pg_margin::value(values_[0].caption() + "," + values_[1].caption() + "," + values_[2].caption() + "," + values_[3].caption());
 					else
 						pg_margin::value(values_[0].caption());
-					emit_event();
+
+					if(old_value != pgitem::value())
+						emit_event();
 				}
 			});
 		i.set_accept([](wchar_t c) -> bool
@@ -506,7 +557,7 @@ void pg_color_inherited::create(nana::window wd)
 
 	// ibox context menu
 	menu_.append_splitter();
-	// 2. Inherited
+	// Inherited
 	menu_.append("Inherited", [this](const nana::menu::item_proxy& ip)
 		{
 			pg_color_inherited::value(nana::to_string(color_, ip.checked()));
