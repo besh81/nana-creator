@@ -88,6 +88,7 @@ add_executable(${PROJECT_NAME}
     ../../src/inifile.cpp
     ../../src/ctrls/page.cpp
     ../../src/updater.cpp
+	../../src/options.cpp
     )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

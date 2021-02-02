@@ -17,7 +17,6 @@ extern imagemanager		g_img_mgr;
 extern inifile			g_inifile;
 
 
- //items_dialog
 void new_project::init()
 {
 	// type list
@@ -133,4 +132,3 @@ void new_project::init()
 	// select first item
 	cat.at(0).select(true, true);
 }
-

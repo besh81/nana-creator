@@ -35,10 +35,10 @@
 #include "guimanager.h"
 #include "lock_guard.h"
 #include "style.h"
+#include "inifile.h"
 
 
-//TODO: inserire in file ini e modificare da settings
-#define UNDO_LEN		10
+extern inifile			g_inifile;
 
 
 //guimanager
@@ -1663,7 +1663,18 @@ void guimanager::_ur_moveout(const undoredo::state& state)
 
 void guimanager::_push_undo(undoredo::action action, tree_node<control_obj>* ctrl, const std::string& value, undoredo::state* item)
 {
-	_modified = true;
+	if(!_modified)
+	{
+		_modified = true;
+		if(_onModify_f)
+			_onModify_f();
+	}
+
+	if(g_inifile.undo_queue_len() == 0)
+		return;
+
+	if(_undo.size() >= g_inifile.undo_queue_len())
+		_undo.pop_front();
 
 	auto& ustate = _undo.emplace_back();
 	ustate.action = action;

@@ -80,7 +80,7 @@ private:
 		_tb.append(nana::toolbar::tools::button, "Copy current selection", nana::paint::image("icons/copy.png"));
 		_tb.append(nana::toolbar::tools::button, "Paste into/after current selection", nana::paint::image("icons/paste.png"));
 		_tb.go_right();
-		_tb.append(nana::toolbar::tools::button, "Settings", nana::paint::image("icons/settings.png"));
+		_tb.append(nana::toolbar::tools::button, "Options", nana::paint::image("icons/settings.png"));
 		_tb.append(nana::toolbar::tools::button, "Info", nana::paint::image("icons/info.png"));
 		// _adi_panel_margin
 		_adi_panel_margin.create(*this);
@@ -132,6 +132,8 @@ public:
 
 	void sb_clear();
 	void sb_set(const std::string& str);
+
+	void update_window_caption();
 
 private:
 	void _init_ctrls();

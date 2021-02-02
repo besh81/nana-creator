@@ -50,9 +50,9 @@ private:
 	void init_()
 	{
 		_place.bind(*this);
-		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=36 margin=5 gap=3 arrange=[variable,90,90] field5>");
+		_place.div("vert margin=5 <weight=30 gap=2 field1><margin=5 gap=5 arrange=[180,variable] field2><weight=36 margin=5 gap=3 arrange=[100,variable] field3><weight=36 margin=5 gap=3 arrange=[100,variable,50] field4><weight=36 margin=[5,5,5,5] gap=5 arrange=[variable,90,90] field5>");
 		caption("New project");
-		icon(nana::paint::image("c:/cppprojects/nana-creator/wdir/icons/creator.ico"));
+		icon(nana::paint::image("icons/creator.ico"));
 		bgcolor(nana::color(204,213,240));
 		// label3
 		label3.create(*this);
@@ -74,6 +74,7 @@ private:
 		// label1
 		label1.create(*this);
 		_place["field3"] << label1;
+		label1.bgcolor(nana::color(212,208,200));
 		label1.caption("Name:");
 		label1.transparent(true);
 		label1.text_align(static_cast<nana::align>(2), static_cast<nana::align_v>(1));
@@ -84,6 +85,7 @@ private:
 		// label2
 		label2.create(*this);
 		_place["field4"] << label2;
+		label2.bgcolor(nana::color(212,208,200));
 		label2.caption("Create in:");
 		label2.transparent(true);
 		label2.text_align(static_cast<nana::align>(2), static_cast<nana::align_v>(1));
@@ -99,6 +101,7 @@ private:
 		folder_btn.caption("...");
 		// panel1
 		panel1.create(*this);
+		panel1.bgcolor(nana::color(212,208,200));
 		panel1.transparent(true);
 		_place["field5"] << panel1;
 		// create_btn

@@ -153,6 +153,8 @@
 		<Unit filename="../../src/updater.h" />
 		<Unit filename="../../src/version.h" />
 		<Unit filename="../../src/undoredo.h" />
+		<Unit filename="../../src/options.cpp" />
+		<Unit filename="../../src/options.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

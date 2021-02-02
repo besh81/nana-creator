@@ -30,12 +30,17 @@ public:
 	std::string image_dir() { return _img_dir; }
 	void image_dir(const std::string& dir, bool save_to_file = true);
 
+	unsigned int undo_queue_len() { return _undo_queue_len; }
+	void undo_queue_len(unsigned int len, bool save_to_file = true);
+
 	bool save();
 
 protected:
 	std::string		_new_prj_dir;
 	std::string		_load_prj_dir;
 	std::string		_img_dir;
+
+	unsigned int	_undo_queue_len;
 };
 
 #endif //NANA_INIFILE_H

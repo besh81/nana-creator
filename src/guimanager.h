@@ -53,6 +53,7 @@ public:
 
 	void registerEnableGUI(std::function<void(bool state, bool new_load, bool undo, bool redo)> f) { _enableGUI_f = f; }
 	void registerSetStatusbar(std::function<void(const std::string& str)> f) { _setStatusbar_f = f; }
+	void registerOnPropertyChange(std::function<void()> f) { _onModify_f = f; }
 
 	void init(propertiespanel* pp, assetspanel* ap, objectspanel* op, itemseditorpanel* iep, scrollablecanvas* main_wd);
 	void clear();
@@ -90,6 +91,7 @@ public:
 	bool deserialize(pugi::xml_node* xml_parent);
 
 	bool modified() { return _modified; }
+	void modified_reset() { _modified = false; }
 
 	/*---------------*/
 	/*   UNDO/REDO   */
@@ -146,6 +148,7 @@ private:
 
 	std::function<void(bool state, bool new_load, bool undo, bool redo)> _enableGUI_f;
 	std::function<void(const std::string& str)> _setStatusbar_f;
+	std::function<void()> _onModify_f;
 
 	namemanager				_name_mgr;	// manage the controls name used in the creator
 

@@ -25,7 +25,7 @@
 			<item type="button" key="n14" owner="" text="Copy current selection" image="C:\cppprojects\nana-creator\wdir\icons\copy.png" enable="true" textout="false" />
 			<item type="button" key="n15" owner="" text="Paste into/after current selection" image="C:\cppprojects\nana-creator\wdir\icons\paste.png" enable="true" textout="false" />
 			<item type="go_right" key="n16" owner="" />
-			<item type="button" key="n25" owner="" text="Settings" image="C:\cppprojects\nana-creator\wdir\icons\settings.png" enable="true" textout="false" />
+			<item type="button" key="n25" owner="" text="Options" image="C:\cppprojects\nana-creator\wdir\icons\settings.png" enable="true" textout="false" />
 			<item type="button" key="n19" owner="" text="Info" image="C:\cppprojects\nana-creator\wdir\icons\info.png" enable="true" textout="false" />
 		</toolbar>
 		<panel type="panel" name="_adi_panel_margin" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" transparent="false" layout="0" weight="-1" margin="5" gap="2">

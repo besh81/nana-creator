@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <nana-creator version="0.30.0">
-	<form mainclass="true" filename="info" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="info" enabled="true" caption="About Nana Creator" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="520" height="340" zoom="false" bgcolor="204,213,240" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="0" gap="2">
+	<form mainclass="true" filename="info" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="info" enabled="true" caption="About Nana Creator" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="520" height="350" zoom="false" bgcolor="204,213,240" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="false" max="false" sizable="false" layout="1" margin="0" gap="2">
 		<field type="field" name="field1" weight="150" layout="0" margin="0" gap="0">
 			<picture type="picture" name="picture1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" weight="50%" image="C:\cppprojects\nana-creator\wdir\icons\NC.png" transparent="false" halign="1" valign="1" stretchable="false" gradualbg="true" gbg_from="255,255,255" gbg_to="93,107,153" gbg_dir="0" />
 			<panel type="panel" name="panel1" enabled="true" bgcolor="93,107,153" fgcolor="0,0,0" transparent="false" layout="1" weight="-1" margin="10" gap="0">
@@ -15,15 +15,15 @@
 			<item type="collapse" key="n1" owner="" left="1" top="0" cols="4" rows="1" />
 			<item type="collapse" key="n2" owner="" left="1" top="1" cols="4" rows="1" />
 			<item type="collapse" key="n3" owner="" left="0" top="2" cols="5" rows="4" />
-			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Author:" format="false" transparent="true" halign="0" valign="0" />
+			<label type="label" name="label3" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="Author:" format="false" transparent="true" halign="1" valign="0" />
 			<label type="label" name="label31" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="besh81" format="false" transparent="true" halign="0" valign="0" />
-			<label type="label" name="label4" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="website:" format="false" transparent="true" halign="0" valign="0" />
+			<panel type="panel" name="panel3" enabled="true" bgcolor="204,213,240" fgcolor="0,0,0" transparent="true" layout="0" weight="-1" margin="5,5,5,5" gap="2" />
 			<label type="label" name="label41" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="https://github.com/besh81/nana-creator" format="false" transparent="true" halign="0" valign="0" />
 			<group type="group" name="group1" enabled="true" bgcolor="[inherited],201,197,190" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" caption="Thanks to ..." format="false" halign="0" layout="0" weight="-1" margin="3" gap="2">
 				<textbox type="textbox" name="_thanks_txt" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" caption="" tip_string="" editable="false" line_wrapped="false" multi_lines="true" focus_behavior="0" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,255,255" />
 			</group>
 		</grid>
-		<field type="field" name="field3" weight="35" layout="0" margin="0,10,5,10" gap="2">
+		<field type="field" name="field3" weight="36" layout="0" margin="0,10,10,10" gap="2">
 			<panel type="panel" name="panel2" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" transparent="true" layout="0" weight="-1" margin="5" gap="2" />
 			<button type="button" name="_ok_btn" enabled="true" bgcolor="[inherited],212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="90" caption="OK" icon="" enable_pushed="false" pushed="false" transparent="false" />
 		</field>
