@@ -418,7 +418,7 @@ void creator::_init_ctrls()
 	sb_set("Ready");
 
 
-	_place.collocate();
+	place_.collocate();
 }
 
 

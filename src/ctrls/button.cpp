@@ -61,7 +61,7 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::button " + name + ";");
 		// init
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 		if(!properties.property("icon").as_string().empty())
 			cd->init.push_back(name + ".icon(nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("icon").as_string()) + "\"));");
 		if(properties.property("enable_pushed").as_bool())

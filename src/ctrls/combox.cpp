@@ -50,7 +50,7 @@ namespace ctrls
 	{
 		ctrl::update();
 
-		//options: I don't think it's usefull to add options here
+		//options: I don't think it's usefull to set options here
 
 		cmb.editable(properties.property("editable").as_bool());
 		cmb.image_pixels(properties.property("image_pixels").as_uint());
@@ -72,7 +72,7 @@ namespace ctrls
 		// options - START
 		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
 			{
-				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_string() + "\");");
+				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_escaped_string() + "\");");
 
 				if(!node->value.property("image").as_string().empty())
 					cd->init.push_back(name + ".image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\"));");

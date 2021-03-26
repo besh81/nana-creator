@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.30.0)
+ *	C++ code generated with Nana Creator (0.31.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -47,14 +47,14 @@ public:
 private:
 	void init_()
 	{
-		_place.bind(*this);
-		_place.div("vert arrange=[36,variable,24] _field_");
+		place_.bind(*this);
+		place_.div("vert arrange=[36,variable,24] _field_");
 		caption("Nana Creator");
 		icon(nana::paint::image("icons/creator.ico"));
 		bgcolor(nana::color(93,107,153));
 		// _tb
 		_tb.create(*this);
-		_place["_field_"] << _tb;
+		place_["_field_"] << _tb;
 		_tb.bgcolor(nana::color(204,213,240));
 		_tb.tools_height(26);
 		_tb.append(nana::toolbar::tools::button, "New project", nana::paint::image("icons/new_prj.png"));
@@ -84,41 +84,41 @@ private:
 		_tb.append(nana::toolbar::tools::button, "Info", nana::paint::image("icons/info.png"));
 		// _adi_panel_margin
 		_adi_panel_margin.create(*this);
-		_adi_panel_margin_place.bind(_adi_panel_margin);
-		_adi_panel_margin_place.div("margin=5 gap=2 _field_");
+		_adi_panel_margin_place_.bind(_adi_panel_margin);
+		_adi_panel_margin_place_.div("margin=5 gap=2 _field_");
 		_adi_panel_margin.bgcolor(this->bgcolor());
-		_place["_field_"] << _adi_panel_margin;
+		place_["_field_"] << _adi_panel_margin;
 		// _adi_panel
 		_adi_panel.create(_adi_panel_margin);
 		_adi_panel.bgcolor(_adi_panel_margin.bgcolor());
-		_adi_panel_margin_place["_field_"] << _adi_panel;
+		_adi_panel_margin_place_["_field_"] << _adi_panel;
 		// _sb_panel
 		_sb_panel.create(*this);
-		_sb_panel_place.bind(_sb_panel);
-		_sb_panel_place.div("weight=24 margin=3 gap=2 _field_");
+		_sb_panel_place_.bind(_sb_panel);
+		_sb_panel_place_.div("weight=24 margin=3 gap=2 _field_");
 		_sb_panel.bgcolor(nana::color(64,86,141));
-		_place["_field_"] << _sb_panel;
+		place_["_field_"] << _sb_panel;
 		// _sb
 		_sb.create(_sb_panel);
-		_sb_panel_place["_field_"] << _sb;
+		_sb_panel_place_["_field_"] << _sb;
 		_sb.bgcolor(_sb_panel.bgcolor());
 		_sb.fgcolor(nana::color(255,255,255));
 		_sb.caption("");
 
-		_place.collocate();
-		_adi_panel_margin_place.collocate();
-		_sb_panel_place.collocate();
+		place_.collocate();
+		_adi_panel_margin_place_.collocate();
+		_sb_panel_place_.collocate();
 	}
 
 
 protected:
-	nana::place _place;
+	nana::place place_;
 	nana::toolbar _tb;
 	nana::panel<true> _adi_panel_margin;
-	nana::place _adi_panel_margin_place;
+	nana::place _adi_panel_margin_place_;
 	nana::panel<true> _adi_panel;
 	nana::panel<true> _sb_panel;
-	nana::place _sb_panel_place;
+	nana::place _sb_panel_place_;
 	nana::label _sb;
 
 

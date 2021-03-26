@@ -103,6 +103,7 @@ namespace ctrls
 
 		// Get property value as a number, or the default value if conversion did not succeed or property is empty
 		const std::string& as_string(const std::string& def = "") const;
+		std::string as_escaped_string(const std::string& def = "") const;
 		int as_int(int def = 0) const;
 		unsigned int as_uint(unsigned int def = 0) const;
 		double as_double(double def = 0.f) const;

@@ -98,7 +98,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 		_name.caption("");
 		_name.edited_reset();
 
-		_place.collocate();
+		place_.collocate();
 		return;
 	}
 
@@ -115,7 +115,7 @@ void propertiespanel::set(ctrls::properties_collection* properties)
 	_name.caption(_properties->property("name").as_string());
 	_name.edited_reset();
 
-	_place.collocate();
+	place_.collocate();
 }
 
 

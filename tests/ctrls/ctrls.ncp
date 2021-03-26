@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.30.0">
+<nana-creator version="0.31.0">
 	<form mainclass="true" filename="ctrls" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="form" name="form1" enabled="true" caption="Nana-Creator test" icon="C:\cppprojects\nana-creator\wdir\icons\creator.ico" width="640" height="500" zoom="false" bgcolor="212,208,200" fgcolor="0,0,0" decoration="true" taskbar="true" floating="false" no_activate="false" min="true" max="true" sizable="true" layout="1" margin="0" gap="0">
 		<field type="field" name="menuf" weight="56" layout="1" margin="0" gap="0">
 			<menubar type="menubar" name="menubar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" menus="">
@@ -50,7 +50,7 @@
 				<slider type="slider" name="slider1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" value="4" maximum="10" seek="0" vertical="false" transparent="false" />
 				<spinbox type="spinbox" name="spinbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" value="-5" begin="-20" last="20" step="5" editable="false" prefix="" suffix=" Km" />
 				<textbox type="textbox" name="textbox1" enabled="true" bgcolor="255,255,255" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="26" caption="" tip_string="insert text" editable="true" line_wrapped="false" multi_lines="false" focus_behavior="3" select_behavior="false" undo_length="30" halign="0" selection="51,153,255" selection_unfocused="240,240,240" selection_text="255,0,0" />
-				<tabbar type="tabbar" name="tabbar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" tabs="(Collection)" addbtn="false" closebtn="false" closefly="false" listbtn="false" scrollbtn="true">
+				<tabbar type="tabbar" name="tabbar1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="30" tabs="(Collection)" activated="1" addbtn="false" closebtn="false" closefly="false" listbtn="false" scrollbtn="true">
 					<item type="tab" key="n1" owner="" text="tab1" image="" bgcolor="212,208,200" fgcolor="220,0,0" />
 					<item type="tab" key="n2" owner="" text="tab2" image="C:\cppprojects\nana-creator\wdir\icons\down.png" bgcolor="212,208,200" fgcolor="0,0,0" />
 					<item type="tab" key="n3" owner="" text="tab3" image="" bgcolor="212,208,200" fgcolor="0,0,0" />
@@ -59,7 +59,7 @@
 			<splitterbar type="splitterbar" name="splitterbar1" />
 			<field type="field" name="field2" weight="-1" layout="0" margin="2" gap="2">
 				<panel type="panel" name="panel1" enabled="true" bgcolor="120,208,200" fgcolor="[inherited],0,0,0" transparent="false" layout="1" weight="-1" margin="5" gap="2">
-					<notebook type="notebook" name="notebook1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" addbtn="false" closebtn="true" closefly="true" listbtn="false" scrollbtn="true" tabweight="30">
+					<notebook type="notebook" name="notebook1" enabled="true" bgcolor="212,208,200" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="-1" activated="0" addbtn="false" closebtn="true" closefly="true" listbtn="false" scrollbtn="true" tabweight="30">
 						<page type="page" name="page1" enabled="true" bgcolor="212,208,20" fgcolor="0,0,255" caption="page" image="C:\cppprojects\nana-creator\wdir\icons\grid_layout.png" layout="1" margin="5" gap="2">
 							<grid type="grid" name="grid1" weight="-1" columns="2" rows="2" margin="5,5,5,5" gap="2" collapse="(Collection)">
 								<item type="collapse" key="n1" owner="" left="0" top="0" cols="2" rows="1" />

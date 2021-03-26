@@ -82,9 +82,9 @@ namespace ctrls
 		cd->decl.push_back("nana::textbox " + name + ";");
 		// init
 		if(!properties.property("caption").as_string().empty())
-			cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+			cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 		if(!properties.property("tip_string").as_string().empty())
-			cd->init.push_back(name + ".tip_string(\"" + properties.property("tip_string").as_string() + "\");");
+			cd->init.push_back(name + ".tip_string(\"" + properties.property("tip_string").as_escaped_string() + "\");");
 		if(!properties.property("editable").as_bool())
 			cd->init.push_back(name + ".editable(false);");
 		if(properties.property("line_wrapped").as_bool())

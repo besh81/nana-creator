@@ -21,9 +21,6 @@
 #include "undoredo.h"
 
 
-typedef std::shared_ptr<ctrls::ctrl>	control_obj;
-typedef std::weak_ptr<ctrls::ctrl>		control_obj_ptr;
-
 
 enum class cursor_action
 {

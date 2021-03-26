@@ -97,7 +97,7 @@ namespace ctrls
 		if(children())
 			cd->init.push_back(name + ".div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back(name + ".enabled(false);");

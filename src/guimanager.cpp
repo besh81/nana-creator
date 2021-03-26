@@ -41,10 +41,30 @@
 extern inifile			g_inifile;
 
 
+// strings to check in validation rule
+std::vector<std::string> invalid_names_ending{ INVALID_NAMES_ENDING };
+
+
 //guimanager
 guimanager::guimanager(nana::window wd)
 	: _root_wd(wd)
 {
+	_name_mgr.set_validation_rule([](const std::string& str) -> bool {
+			for(const auto& i : invalid_names_ending)
+			{
+				auto pos = str.rfind(i);
+				if(pos == std::string::npos)
+					continue;
+
+				auto l1 = str.length();
+				auto l2 = i.length();
+				if(pos == str.length() - i.length())
+					return false;
+			}
+			return true;
+		});
+
+
 	// context menu
 	// move up
 	_ctxmenu.append("Move up", [this](const nana::menu::item_proxy& ip)
@@ -120,7 +140,7 @@ void guimanager::init(propertiespanel* pp, assetspanel* ap, objectspanel* op, it
 		{
 			if(!_updatectrlname(_selected, arg))
 			{
-				_error_message("Name already in use!");
+				_error_message("Name already in use or invalid!");
 				return false;
 			}
 			return true;
@@ -186,6 +206,7 @@ void guimanager::clear()
 	_op->clear();
 	_pp->set(0);
 	_iep->set(0, 0);
+
 	_name_mgr.clear();
 
 	enableGUI(false, true);
@@ -1248,7 +1269,8 @@ bool guimanager::_updatectrlproperty(tree_node<control_obj>* node, const std::st
 	_push_undo(undoredo::action::change_property, node, name);
 
 	ctrls::properties_collection* properties = &node->value->properties;
-	properties->property(name) = new_value;
+	//properties->property(name) = new_value;
+	properties->property(name).value(new_value);
 
 	_updatectrl(node);
 	return true;

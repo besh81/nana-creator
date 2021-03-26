@@ -126,4 +126,8 @@ namespace ctrls
 }//end namespace ctrls
 
 
+typedef std::shared_ptr<ctrls::ctrl>	control_obj;
+typedef std::weak_ptr<ctrls::ctrl>		control_obj_ptr;
+
+
 #endif //NANA_CREATOR_CTRL_H

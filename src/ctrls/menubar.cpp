@@ -131,12 +131,11 @@ namespace ctrls
 				//this is a menubar item
 				if(node->child)
 				{
-					//TODO: il nome del menu non dovrebbe essere presente tra i vari controlli
-					pval->submenu_name = name + "_" + std::to_string(node->pos());
-					cd->init.push_back("auto* " + pval->submenu_name + " = &" + name + ".push_back(\"" + pval->item->property("text").as_string() + "\");");
+					pval->submenu_name = name + "_" + std::to_string(node->pos()) + "_submenu_";
+					cd->init.push_back("auto* " + pval->submenu_name + " = &" + name + ".push_back(\"" + pval->item->property("text").as_escaped_string() + "\");");
 				}
 				else
-					cd->init.push_back(name + ".push_back(\"" + pval->item->property("text").as_string() + "\");");
+					cd->init.push_back(name + ".push_back(\"" + pval->item->property("text").as_escaped_string() + "\");");
 			}
 			else
 			{
@@ -149,7 +148,7 @@ namespace ctrls
 					return true;
 				}
 
-				cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->item->property("text").as_string() + "\");");
+				cd->init.push_back(pval_parent->submenu_name + "->append(\"" + pval->item->property("text").as_escaped_string() + "\");");
 
 				if(!pval->item->property("image").as_string().empty())
 					cd->init.push_back(pval_parent->submenu_name + "->image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(pval->item->property("image").as_string()) + "\"));");

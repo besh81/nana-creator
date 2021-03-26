@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.29.0)
+ *	C++ code generated with Nana Creator (0.31.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -62,12 +62,12 @@ public:
 private:
 	void init_()
 	{
-		_place.bind(*this);
-		_place.div("vert margin=1 <vert weight=32 arrange=[32] field1><vert gap=2 field2>|<gap=2 field3>");
+		place_.bind(*this);
+		place_.div("vert margin=1 <vert weight=32 arrange=[32] field1><vert gap=2 field2>|<gap=2 field3>");
 		bgcolor(nana::color(64,86,141));
 		// toolbar
 		toolbar.create(*this);
-		_place["field1"] << toolbar;
+		place_["field1"] << toolbar;
 		toolbar.bgcolor(nana::color(204,213,240));
 		toolbar.tools_height(22);
 		toolbar.append(nana::toolbar::tools::dropdown, "Add", nana::paint::image("icons/add.png")).textout(true);
@@ -78,18 +78,18 @@ private:
 		toolbar.append(nana::toolbar::tools::button, "Move down", nana::paint::image("icons/down.png"));
 		// items_tree
 		items_tree.create(*this);
-		_place["field2"] << items_tree;
+		place_["field2"] << items_tree;
 		items_tree.use_entire_line(true);
 		// propgrid
 		propgrid.create(*this);
-		_place["field3"] << propgrid;
+		place_["field3"] << propgrid;
 
-		_place.collocate();
+		place_.collocate();
 	}
 
 
 protected:
-	nana::place _place;
+	nana::place place_;
 	nana::toolbar toolbar;
 	nana::treebox items_tree;
 	nana::propertygrid propgrid;

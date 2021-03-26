@@ -56,7 +56,7 @@ namespace ctrls
 
 
 		// common
-		// ...
+		properties.append("activated").label("Activated").category(CAT_COMMON).type(pg_type::string_uint) = 0;
 		// appearance
 		properties.append("addbtn").label("Add button").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		properties.append("closebtn").label("Close button").category(CAT_APPEARANCE).type(pg_type::check) = false;
@@ -257,7 +257,6 @@ namespace ctrls
 	{
 		ctrl::update();
 
-		// tbb
 		tbb.bgcolor(pnl.bgcolor());
 		tbb.fgcolor(pnl.fgcolor());
 
@@ -277,6 +276,8 @@ namespace ctrls
 
 			i++;
 		}
+
+		//activated: can't be set here or it will change displayed page
 
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::add, properties.property("addbtn").as_bool());
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::close, properties.property("closebtn").as_bool());
@@ -308,7 +309,6 @@ namespace ctrls
 
 		std::string name = properties.property("name").as_string();
 
-
 		// tabs weight
 		auto tabw = properties.property("tabweight").as_string();
 		if(tabw.empty())
@@ -321,38 +321,43 @@ namespace ctrls
 		cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 		cd->hpps.add("#include <nana/gui/widgets/tabbar.hpp>");
 		// declaration
-		cd->decl.push_back("nana::panel<true> " + name + "_pnl;");
-		cd->decl.push_back("nana::tabbar<size_t> " + name + "_tbb;");
-		cd->decl.push_back("nana::place " + name + "_plc;");
+		cd->decl.push_back("nana::panel<true> " + name + "_panel_;");
+		cd->decl.push_back("nana::tabbar<size_t> " + name + "_tabbar_;");
+		cd->decl.push_back("nana::place " + name + "_place_;");
 		// init
 		cd->init.push_back("// " + name);
-		cd->init.push_back(name + "_pnl.create(" + ci->create + ");");
-		cd->init.push_back(name + "_tbb.create(" + name + "_pnl);");
+		cd->init.push_back(name + "_panel_.create(" + ci->create + ");");
+		cd->init.push_back(name + "_tabbar_.create(" + name + "_panel_);");
 
-		cd->init.push_back(name + "_plc.bind(" + name + "_pnl);");
-		cd->init.push_back(name + "_plc.div(\"vert margin=1 <vert weight=" + tabw + " tabs><pages>\");");
-		cd->init.push_back(name + "_plc[\"tabs\"] << " + name + "_tbb;");
+		cd->init.push_back(name + "_place_.bind(" + name + "_panel_);");
+		cd->init.push_back(name + "_place_.div(\"vert margin=1 <vert weight=" + tabw + " tabs><pages>\");");
+		cd->init.push_back(name + "_place_[\"tabs\"] << " + name + "_tabbar_;");
 		
 		if(properties.property("addbtn").as_bool())
-			cd->init.push_back(name + "_tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::add, true);");
+			cd->init.push_back(name + "_tabbar_.toolbox(nana::drawerbase::tabbar::trigger::kits::add, true);");
 		if(properties.property("closebtn").as_bool())
 		{
-			cd->init.push_back(name + "_tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::close, true);");
+			cd->init.push_back(name + "_tabbar_.toolbox(nana::drawerbase::tabbar::trigger::kits::close, true);");
 			if(properties.property("closefly").as_bool())
-				cd->init.push_back(name + "_tbb.close_fly(true);");
+				cd->init.push_back(name + "_tabbar_.close_fly(true);");
 		}
 		if(properties.property("listbtn").as_bool())
-			cd->init.push_back(name + "_tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::list, true);");
+			cd->init.push_back(name + "_tabbar_.toolbox(nana::drawerbase::tabbar::trigger::kits::list, true);");
 		if(!properties.property("scrollbtn").as_bool()) // Only scrolling button is enabled by default
-			cd->init.push_back(name + "_tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::scroll, false);");
+			cd->init.push_back(name + "_tabbar_.toolbox(nana::drawerbase::tabbar::trigger::kits::scroll, false);");
 
 		// placement
-		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + "_pnl;");
+		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + "_panel_;");
+		// activated
+		if(properties.property("activated").as_uint() < pages.size())
+			cd->init_post.push_back(name + "_tabbar_.activated(" + properties.property("activated").as_string() + ");");
+		else if(pages.size() > 0)
+			cd->init_post.push_back(name + "_tabbar_.activated(0);");
 		// collocate
-		cd->init_post.push_back(name + "_plc.collocate();");
+		cd->init_post.push_back(name + "_place_.collocate();");
 		// children
 		ci->create = name;
-		ci->place = name + "_plc";
+		ci->place = name + "_place_";
 		ci->field = "pages";
 	}
 

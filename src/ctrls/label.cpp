@@ -77,7 +77,7 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::label " + name + ";");
 		// init
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 		if(properties.property("format").as_bool())
 			cd->init.push_back(name + ".format(true);");
 		if(properties.property("transparent").as_bool())

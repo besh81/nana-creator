@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.29.0">
+<nana-creator version="0.31.0">
 	<panel mainclass="true" filename="itemseditorpanel" rel_path="true" work_dir="c:/cppprojects/nana-creator/wdir" type="panel" name="itemseditorpanel" enabled="true" width="250" height="350" bgcolor="64,86,141" fgcolor="0,0,0" transparent="false" layout="1" margin="1" gap="0">
 		<field type="field" name="field1" weight="32" layout="1" margin="0" gap="0">
 			<toolbar type="toolbar" name="toolbar" enabled="true" bgcolor="204,213,240" fgcolor="0,0,0" f_size="9" f_weight="400" f_italic="false" f_underline="false" f_strike_out="false" weight="32" buttons="(Collection)" tools_height="22">

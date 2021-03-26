@@ -21,14 +21,18 @@ bool namemanager::add(const std::string& name)
 	if(name.empty())
 		return false;
 
-	for(auto it = _list.begin(); it != _list.end(); ++it)
+	if(validation_rule_f_)
+		if(!validation_rule_f_(name))
+			return false;
+
+	for(auto it = list_.begin(); it != list_.end(); ++it)
 	{
 		if((*it) == name)
 			return false;
 	}
 
 	//insert name
-	_list.push_back(name);
+	list_.push_back(name);
 	return true;
 }
 
@@ -39,8 +43,8 @@ std::string namemanager::add_numbered(const std::string& name)
 			
 	while(1)
 	{
-		auto it = _list.begin();
-		for(; it != _list.end(); ++it)
+		auto it = list_.begin();
+		for(; it != list_.end(); ++it)
 		{
 			if((*it) == numbered)
 			{
@@ -50,12 +54,12 @@ std::string namemanager::add_numbered(const std::string& name)
 			}
 		}
 
-		if(it == _list.end())
+		if(it == list_.end())
 			break;
 	}
 
 	//insert numbered name
-	_list.push_back(numbered);
+	list_.push_back(numbered);
 	return numbered;
 }
 
@@ -64,11 +68,11 @@ bool namemanager::remove(const std::string& name)
 	if(name.empty())
 		return false;
 
-	for(auto it = _list.begin(); it != _list.end(); ++it)
+	for(auto it = list_.begin(); it != list_.end(); ++it)
 	{
 		if((*it) == name)
 		{
-			_list.erase(it);
+			list_.erase(it);
 			return true;
 		}
 	}
@@ -80,7 +84,7 @@ bool namemanager::remove(const std::string& name)
 void namemanager::print(std::basic_ostream<char, std::char_traits<char> >& stream) const
 {
 	stream << "list:" << std::endl;
-	for(auto it = _list.begin(); it != _list.end(); ++it)
+	for(auto it = list_.begin(); it != list_.end(); ++it)
 	{
 		stream << "\t" << *it << std::endl;
 	}

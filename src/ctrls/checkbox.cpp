@@ -71,12 +71,11 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::checkbox " + name + ";");
 		// init
-		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_string() + "\");");
+		cd->init.push_back(name + ".caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 
 		if(!properties.property("group").as_string().empty())
 		{
-			//TODO: il nome del gruppo non dovrebbe essere presente tra i vari controlli
-			std::string group = "rg_" + properties.property("group").as_string();
+			std::string group = properties.property("group").as_string() + "_radiogroup_";
 
 			// check if the group is been already declared
 			bool first_time = true;

@@ -1,5 +1,5 @@
 /*****************************************************
- *	C++ code generated with Nana Creator (0.30.0)
+ *	C++ code generated with Nana Creator (0.31.0)
  *	GitHub repo: https://github.com/besh81/nana-creator
  *
  * PLEASE EDIT ONLY INSIDE THE TAGS:
@@ -50,27 +50,27 @@ public:
 private:
 	void init_()
 	{
-		_place.bind(*this);
-		_place.div("vert margin=[5,5,5,5] <weight=34 margin=[5,5,5,5] gap=2 arrange=[180,60] field1><margin=[5,0,0,0] gap=2 field2><weight=36 margin=[5,5,5,5] gap=5 arrange=[variable,90,90] field3>");
+		place_.bind(*this);
+		place_.div("vert margin=[5,5,5,5] <weight=34 margin=[5,5,5,5] gap=2 arrange=[180,60] field1><margin=[5,0,0,0] gap=2 field2><weight=36 margin=[5,5,5,5] gap=5 arrange=[variable,90,90] field3>");
 		caption("Options");
 		icon(nana::paint::image("icons/creator.ico"));
 		bgcolor(nana::color(204,213,240));
 		// label1
 		label1.create(*this);
-		_place["field1"] << label1;
+		place_["field1"] << label1;
 		label1.bgcolor(nana::color(204,213,240));
 		label1.caption("Undo/Redo queue length");
 		label1.text_align(static_cast<nana::align>(0), static_cast<nana::align_v>(1));
 		// ur_spin
 		ur_spin.create(*this);
-		_place["field1"] << ur_spin;
+		place_["field1"] << ur_spin;
 		ur_spin.range(0, 99999, 1);
 		ur_spin.value("30");
 		// group1
 		group1.create(*this);
 		group1.div("vert margin=[5,5,5,5] gap=2 _field_");
 		group1.caption("Directories (read only)");
-		_place["field2"] << group1;
+		place_["field2"] << group1;
 		// label2
 		label2.create(group1);
 		group1["_field_"] << label2;
@@ -104,23 +104,23 @@ private:
 		// panel1
 		panel1.create(*this);
 		panel1.transparent(true);
-		_place["field3"] << panel1;
+		place_["field3"] << panel1;
 		// ok_btn
 		ok_btn.create(*this);
-		_place["field3"] << ok_btn;
+		place_["field3"] << ok_btn;
 		ok_btn.caption("OK");
 		// canc_btn
 		canc_btn.create(*this);
-		_place["field3"] << canc_btn;
+		place_["field3"] << canc_btn;
 		canc_btn.caption("Cancel");
 
-		_place.collocate();
+		place_.collocate();
 		group1.collocate();
 	}
 
 
 protected:
-	nana::place _place;
+	nana::place place_;
 	nana::label label1;
 	nana::spinbox ur_spin;
 	nana::group group1;

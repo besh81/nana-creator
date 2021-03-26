@@ -83,7 +83,7 @@ namespace ctrls
 		generatecode_fonts(cd, name);
 
 		if(!properties.property("extra_code").as_string().empty())
-			cd->init.push_back(parse_code(properties.property("extra_code").as_string(), name, ci->create));
+			cd->init.push_back(parse_code(properties.property("extra_code").as_escaped_string(), name, ci->create));
 	}
 
 

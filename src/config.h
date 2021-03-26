@@ -114,12 +114,8 @@
 
 #define CREATOR_SUPPORTED_IMG	"*.bmp;*.png;*.jpg;*.jpe*"
 #define CREATOR_SUPPORTED_ICO	"*.ico"
-#define CITEM_INNER_TKN			"\r"
-#define CITEM_TKN				"\n"
-#define CITEM_EMPTY				" "
-#define CITEM_SEPARATOR			"{sep}"
-// toolbar separator
-#define CITEM_TLB_SEPARATOR		CITEM_SEPARATOR CITEM_INNER_TKN CITEM_SEPARATOR
+
+#define INVALID_NAMES_ENDING	"place_","panel_","tabbar_","radiogroup_","submenu_"
 
 
 // UI

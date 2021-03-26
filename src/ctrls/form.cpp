@@ -137,17 +137,17 @@ namespace ctrls
 			cd->hpps.add("#include <nana/gui/widgets/panel.hpp>");
 		cd->hpps.add("#include <nana/gui/place.hpp>");
 		// declaration
-		cd->decl.push_back("nana::place _place;");
+		cd->decl.push_back("nana::place place_;");
 		// init
 		if(!ispanel && properties.property("zoom").as_bool())
 			cd->init.push_back("nana::API::zoom_window(*this, true);");
-		cd->init.push_back("_place.bind(*this);");
-		cd->init.push_back("_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
+		cd->init.push_back("place_.bind(*this);");
+		cd->init.push_back("place_.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 		if(!properties.property("enabled").as_bool())
 			cd->init.push_back("enabled(false);");
 		if(!ispanel)
 		{
-			cd->init.push_back("caption(\"" + properties.property("caption").as_string() + "\");");
+			cd->init.push_back("caption(\"" + properties.property("caption").as_escaped_string() + "\");");
 			if(!properties.property("icon").as_string().empty())
 				cd->init.push_back("icon(nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("icon").as_string()) + "\"));");
 		}
@@ -160,9 +160,9 @@ namespace ctrls
 		// placement
 		// ...
 		// collocate
-		cd->init_post.push_back("_place.collocate();");
+		cd->init_post.push_back("place_.collocate();");
 		// children
-		ci->place = "_place";
+		ci->place = "place_";
 		ci->field = DEFAULT_FIELD;
 	}
 

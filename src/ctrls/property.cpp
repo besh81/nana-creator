@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include "ctrls/property.h"
+#include <set>
 
 
 namespace ctrls
@@ -109,6 +110,23 @@ namespace ctrls
 	const std::string& property_proxy::as_string(const std::string& def) const
 	{
 		return !_prop ? def : (!_prop->value.empty() ? _prop->value : def);
+	}
+	std::string property_proxy::as_escaped_string(const std::string& def) const
+	{
+		const char* src =  !_prop ? def.c_str() : (!_prop->value.empty() ? _prop->value.c_str() : def.c_str());
+
+		const std::set<char> escapee = { '"', '\n' };
+		const char marker = '\\';
+		std::string r;
+
+		while(char c = *src++)
+		{
+			if(escapee.find(c) != escapee.end())
+				r += marker;
+			r += c; // to get the desired behavior, replace this line with: r += c == '\n' ? 'n' : c; //TODO da controllare
+		}
+
+		return r;
 	}
 	int property_proxy::as_int(int def) const
 	{

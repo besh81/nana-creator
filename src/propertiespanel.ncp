@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<nana-creator version="0.28.0">
+<nana-creator version="0.31.0">
 	<panel mainclass="true" filename="propertiespanel" rel_path="true" work_dir="" type="panel" name="propertiespanel" enabled="true" width="300" height="480" bgcolor="204,213,240" fgcolor="0,0,0" transparent="false" layout="1" margin="0" gap="0">
 		<field type="field" name="info" weight="45" layout="0" margin="3" gap="0">
 			<field type="field" name="icon" weight="42" layout="0" margin="5" gap="0">

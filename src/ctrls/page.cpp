@@ -74,15 +74,15 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::panel<true> " + name + ";");
 		if(children())
-			cd->decl.push_back("nana::place " + name + "_place;");
+			cd->decl.push_back("nana::place " + name + "_place_;");
 		// init
 		cd->init.push_back("// " + name);
-		cd->init.push_back(name + ".create(" + ci->create + "_pnl);");
+		cd->init.push_back(name + ".create(" + ci->create + "_panel_);");
 
 		if(children())
 		{
-			cd->init.push_back(name + "_place.bind(" + name + ");");
-			cd->init.push_back(name + "_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
+			cd->init.push_back(name + "_place_.bind(" + name + ");");
+			cd->init.push_back(name + "_place_.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 		}
 
 		if(!properties.property("enabled").as_bool())
@@ -91,22 +91,22 @@ namespace ctrls
 
 
 		// connect to notebook
-		cd->init.push_back(ci->create + "_tbb.push_back(\"" + properties.property("caption").as_string() + "\");");
+		cd->init.push_back(ci->create + "_tabbar_.push_back(\"" + properties.property("caption").as_escaped_string() + "\");");
 		if(!properties.property("image").as_string().empty())
-			cd->init.push_back(ci->create + "_tbb.tab_image(" + ci->create + "_tbb.length()-1, nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("image").as_string()) + "\"));");
-		cd->init.push_back(ci->create + "_tbb.tab_bgcolor(" + ci->create + "_tbb.length()-1, " + name + ".bgcolor());");
-		cd->init.push_back(ci->create + "_tbb.tab_fgcolor(" + ci->create + "_tbb.length()-1, " + name + ".fgcolor());");
-		cd->init.push_back(ci->create + "_tbb.attach(" + ci->create + "_tbb.length()-1, " + name + ");");
+			cd->init.push_back(ci->create + "_tabbar_.tab_image(" + ci->create + "_tabbar_.length()-1, nana::paint::image(\"" + g_file_mgr.to_relative(properties.property("image").as_string()) + "\"));");
+		cd->init.push_back(ci->create + "_tabbar_.tab_bgcolor(" + ci->create + "_tabbar_.length()-1, " + name + ".bgcolor());");
+		cd->init.push_back(ci->create + "_tabbar_.tab_fgcolor(" + ci->create + "_tabbar_.length()-1, " + name + ".fgcolor());");
+		cd->init.push_back(ci->create + "_tabbar_.attach(" + ci->create + "_tabbar_.length()-1, " + name + ");");
 
 				
 		// placement
 		cd->init.push_back(ci->place + "[\"" + ci->field + "\"].fasten(" + name + ");");
 		// collocate
 		if(children())
-			cd->init_post.push_back(name + "_place.collocate();");
+			cd->init_post.push_back(name + "_place_.collocate();");
 		// children
 		ci->create = name;
-		ci->place = name + "_place";
+		ci->place = name + "_place_";
 		ci->field = DEFAULT_FIELD;
 	}
 

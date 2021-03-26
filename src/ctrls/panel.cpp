@@ -58,15 +58,15 @@ namespace ctrls
 		// declaration
 		cd->decl.push_back("nana::panel<true> " + name + ";"); //TODO: add hasbackground prop
 		if(children())
-			cd->decl.push_back("nana::place " + name + "_place;");	
+			cd->decl.push_back("nana::place " + name + "_place_;");	
 		// init
 		cd->init.push_back("// " + name);
 		cd->init.push_back(name + ".create(" + ci->create + ");");
 
 		if(children())
 		{
-			cd->init.push_back(name + "_place.bind(" + name + ");");
-			cd->init.push_back(name + "_place.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
+			cd->init.push_back(name + "_place_.bind(" + name + ");");
+			cd->init.push_back(name + "_place_.div(\"" + boxmodel.get(DEFAULT_FIELD, true) + "\");");
 		}
 
 		if(!properties.property("enabled").as_bool())
@@ -78,10 +78,10 @@ namespace ctrls
 		cd->init.push_back(ci->place + "[\"" + ci->field + "\"] << " + name + ";");
 		// collocate
 		if(children())
-			cd->init_post.push_back(name + "_place.collocate();");
+			cd->init_post.push_back(name + "_place_.collocate();");
 		// children
 		ci->create = name;
-		ci->place = name + "_place";
+		ci->place = name + "_place_";
 		ci->field = DEFAULT_FIELD;
 	}
 

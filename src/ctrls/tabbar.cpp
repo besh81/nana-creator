@@ -27,6 +27,7 @@ namespace ctrls
 
 		// common
 		properties.append("tabs").label("Tabs").category(CAT_COMMON).type(pg_type::collection_tabbar) = "";
+		properties.append("activated").label("Activated").category(CAT_COMMON).type(pg_type::string_uint) = 0;
 		// appearance
 		properties.append("addbtn").label("Add button").category(CAT_APPEARANCE).type(pg_type::check) = false;
 		properties.append("closebtn").label("Close button").category(CAT_APPEARANCE).type(pg_type::check) = false;
@@ -103,6 +104,11 @@ namespace ctrls
 		internal_use = false;
 		// tabs - END
 
+		if(properties.property("activated").as_uint() < tbb.length())
+			tbb.activated(properties.property("activated").as_uint());
+		else if(tbb.length())
+			tbb.activated(0);
+
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::add, properties.property("addbtn").as_bool());
 		tbb.toolbox(nana::drawerbase::tabbar::trigger::kits::close, properties.property("closebtn").as_bool());
 		tbb.close_fly(properties.property("closefly").as_bool());
@@ -126,7 +132,7 @@ namespace ctrls
 		// tabs - START
 		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
 			{
-				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_string() + "\");");
+				cd->init.push_back(name + ".push_back(\"" + node->value.property("text").as_escaped_string() + "\");");
 
 				if(!node->value.property("image").as_string().empty())
 					cd->init.push_back(name + ".tab_image(" + std::to_string(node->pos()) + ", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\"));");
@@ -141,6 +147,11 @@ namespace ctrls
 				return true;
 			});
 		// tabs - END
+
+		if(properties.property("activated").as_uint() < tbb.length())
+			cd->init.push_back(name + ".activated(" + properties.property("activated").as_string() + ");");
+		else if(tbb.length())
+			cd->init.push_back(name + ".activated(0);");
 
 		if(properties.property("addbtn").as_bool())
 			cd->init.push_back(name + ".toolbox(nana::drawerbase::tabbar::trigger::kits::add, true);");

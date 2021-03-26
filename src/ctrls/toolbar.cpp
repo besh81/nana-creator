@@ -158,7 +158,7 @@ namespace ctrls
 				}
 				else if(type == "dropdown-item")
 				{
-					str = "ip_" + name + "_" + std::to_string(node->owner->pos()) + ".dropdown_append(\"" + node->value.property("text").as_string() + "\"";
+					str = "ip_" + name + "_" + std::to_string(node->owner->pos()) + ".dropdown_append(\"" + node->value.property("text").as_escaped_string() + "\"";
 					if(!node->value.property("image").as_string().empty())
 						str.append(", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\")");
 					str.append(")");
@@ -171,7 +171,7 @@ namespace ctrls
 					return true;
 				}
 
-				str.append(name + ".append(nana::toolbar::tools::" + type + ", \"" + node->value.property("text").as_string() + "\"");
+				str.append(name + ".append(nana::toolbar::tools::" + type + ", \"" + node->value.property("text").as_escaped_string() + "\"");
 				if(!node->value.property("image").as_string().empty())
 					str.append(", nana::paint::image(\"" + g_file_mgr.to_relative(node->value.property("image").as_string()) + "\")");
 				str.append(")");

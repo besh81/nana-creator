@@ -162,7 +162,7 @@ namespace ctrls
 		// columns - START
 		items.for_each([cd, &name](tree_node<ctrls::properties_collection>* node) -> bool
 			{
-				std::string str = name + ".append_header(\"" + node->value.property("text").as_string() + "\"";
+				std::string str = name + ".append_header(\"" + node->value.property("text").as_escaped_string() + "\"";
 				if(node->value.property("width").as_int() < 0)
 					str.append(");");
 				else
