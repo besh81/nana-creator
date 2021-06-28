@@ -20,7 +20,9 @@
 #include <nana/paint/text_renderer.hpp>
 
 
-#define DOCK_CAPTION_H		20
+#define DOCK_CAPTION_H		8
+#define DOCK_CAPTION_W		10
+#define DOCK_CAPTION_BTN	20
 #define DOCK_PANE_MIN_W		30 //TODO: aggiungere in paneinfo
 
 
@@ -155,6 +157,20 @@ namespace nana
 			}
 		};
 
+		struct display_metrics
+		{
+			std::size_t dpi;
+			double font_px{ 0 };
+
+			display_metrics(window wd) :
+				dpi(api::window_dpi(wd))
+			{
+				auto font_info = api::typeface(wd).info();
+				if (font_info)
+					font_px = font_info->size_pt * dpi / 72;
+			}
+		};
+
 		class dock_notifier_interface
 		{
 		public:
@@ -210,8 +226,9 @@ namespace nana
 
 				//draw caption
 				auto text = to_wstring(API::window_caption(window_handle_));
-				if((graph.size().width > DOCK_CAPTION_H) && (graph.size().width - DOCK_CAPTION_H > 10))
-					text_rd_->render({ 3, 1 }, { text.data(), text.size() }, graph.size().width - DOCK_CAPTION_H, paint::text_renderer::mode::truncate_with_ellipsis);
+				int dock_caption_avail = graph.size().width - DOCK_CAPTION_W - (info_->show_close() ? DOCK_CAPTION_BTN : 0);
+				if(dock_caption_avail > DOCK_CAPTION_W)
+					text_rd_->render({ 4, 1 }, { text.data(), text.size() }, dock_caption_avail, paint::text_renderer::mode::truncate_with_ellipsis);
 
 				//draw x button
 				if(info_->show_close())
@@ -276,7 +293,7 @@ namespace nana
 			::nana::rectangle _m_button_area() const
 			{
 				auto sz = API::window_size(window_handle_);
-				return{ static_cast<int>(sz.width) - DOCK_CAPTION_H, 0, DOCK_CAPTION_H, sz.height };
+				return{ static_cast<int>(sz.width) - DOCK_CAPTION_BTN, 0, DOCK_CAPTION_BTN, sz.height };
 			}
 		public:
 			window window_handle_{ nullptr };
@@ -454,17 +471,18 @@ namespace nana
 
 			void adjust_caption_area_(const nana::size& sz)
 			{
-				rectangle r{ 0, 0, sz.width, DOCK_CAPTION_H };
+				rectangle r{ {0, 0}, sz };
 
 				if(info_->show_caption())
 				{
+					const display_metrics dm{ host_window_ };
+					r.height = int(dm.font_px) + DOCK_CAPTION_H;
+
 					caption_.move(r);
 
-					r.y = DOCK_CAPTION_H;
-					r.height = sz.height - DOCK_CAPTION_H;
+					r.y = int(dm.font_px) + DOCK_CAPTION_H;
+					r.height = sz.height - r.y;
 				}
-				else
-					r.height = sz.height;
 
 				if(widget_ptr)
 					widget_ptr->move(r);
@@ -477,7 +495,6 @@ namespace nana
 				::nana::point start_container_pos;
 			} moves_;
 		};//class dockarea
-
 
 		void _indicator_left(paint::graphics& graph)
 		{
@@ -820,6 +837,22 @@ namespace nana
 			return (i < div_owner->children.size() - 1) ? div_owner->children[i + 1].get() : nullptr;
 		}
 
+		void save_weight() noexcept
+		{
+			is_weight_saved_ = true;
+			weight_saved_ = weight_;
+		}
+
+		void restore_weight() noexcept
+		{
+			if (is_weight_saved_)
+			{
+				is_weight_saved_ = false;
+				weight_ = weight_saved_;
+			}
+		}
+
+
 
 		//Collocate the division and its children divisions.
 		//The window parameter is specified for the window which the adi_place object binded.
@@ -834,6 +867,9 @@ namespace nana
 		::nana::rectangle field_area;
 		number_t weight_;
 		number_t min_px, max_px;
+
+		bool is_weight_saved_{ false };
+		number_t weight_saved_;
 
 		division* div_owner{ nullptr };
 	};//end class division
@@ -873,7 +909,7 @@ namespace nana
 			double position = area.x();
 			std::vector<division*> delay_collocates; // splitters are collocated after
 			double precise_px = 0;
-			for(auto& child_ptr : children)		/// First collocate child div's !!!
+			for(auto& child_ptr : children)		// First collocate child div's !!!
 			{
 				auto child = child_ptr.get();
 
@@ -882,7 +918,7 @@ namespace nana
 				child_area.y_ref() = area.y();
 				child_area.h_ref() = area.h();
 
-				double child_px;				// and calculate this div.
+				double child_px;				// and calculate this div
 				if(!child->is_fixed())			// with is fixed for fixed div
 				{
 					if(child->is_percent())		// and calculated for others: if the child div is percent - simple take it full
@@ -931,7 +967,7 @@ namespace nana
 						}
 					}
 
-					child->collocate(wd);	/// The child div have full position. Now we can collocate inside it the child fields and child-div.
+					child->collocate(wd);	// The child div have full position. Now we can collocate inside it the child fields and divs.
 				}
 			}
 
@@ -1109,6 +1145,7 @@ namespace nana
 
 			splitter_cursor_ = (vert ? cursor::size_ns : cursor::size_we);
 			weight_.assign(static_cast<int>(impl_->scheme.splitter_width));
+			min_px.assign(static_cast<int>(impl_->scheme.splitter_width));
 		}
 
 		~div_splitter()
@@ -1705,6 +1742,9 @@ namespace nana
 			}
 		}
 
+		for (size_t i = 0; i < owner->children.size(); ++i)
+			owner->children[i]->restore_weight();
+
 		return true;
 	}
 
@@ -1836,25 +1876,99 @@ namespace nana
 			splitter_ptr->div_owner = where_owner;
 
 			div->div_owner = where_owner;
-			if(div->weight_.empty())
+
+			int field_area_weight = static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width);
+			if(div->weight_.empty() && field_area_weight)
 			{
+				// NOTE: only works assumimg divs weight is percentage
+				int avail = is_vertical(pos) ? where_owner->field_area.height : where_owner->field_area.width;
+
 				// check available space
-				int children_fixed_px = 0;
+				int splitters_px = scheme.splitter_width; // new splitter
+				int divs_px = 0;
+				double divs_percent = 0.0;
 				for(auto& child : where_owner->children)
-					if(!child->weight_.empty())
-						children_fixed_px += child->weight_.integer();
+				{
+					if (child->kind_of_division == division::kind::splitter)
+						splitters_px += scheme.splitter_width;
 					else
-						children_fixed_px += child->min_px.integer();
-				children_fixed_px += scheme.splitter_width;
-				int avail = (is_vertical(pos) ? where_owner->field_area.height : where_owner->field_area.width) - children_fixed_px;
-				// adjust the weight according with the available space
-				if(avail < div->min_px.integer())
-					div->weight_.assign(static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width));
-				else
-					div->weight_.assign(std::min(avail, static_cast<int>(is_vertical(pos) ? div->field_area.height : div->field_area.width)));
-				
+					{
+						if(child->weight_.kind_of() == adi_place_parts::number_t::kind::percent)
+							divs_percent += child->weight_.real();
+						else
+							divs_percent += child->weight_.real() / avail;
+
+						if (!child->weight_.empty() && child->weight_.integer() != 0)
+							divs_px += child->weight_.integer();
+						else
+							divs_px += child->min_px.integer();
+					}
+				}
+				int avail_div = avail - splitters_px - divs_px;
+
+				// adjust the weight according with the available space				
+				div->weight_.assign(std::max(div->min_px.integer(), std::min(avail_div, field_area_weight)));
 				if(div->weight_.integer() == 0)
 					div->weight_.reset();
+
+				if (!where_owner->center())
+				{
+					// weight redistribution
+					// step 1: calc proportional weight
+					int remainder = avail - div->weight_.integer() - splitters_px;
+					int precise_px = remainder;
+					int tot_px = 0;
+					int children = 0;
+					for (auto& child : where_owner->children)
+					{
+						if (child->kind_of_division != division::kind::splitter)
+						{
+							child->save_weight(); // save previous weight in case of not successful dock
+
+							if (!child->next())
+								child->weight_.assign(std::max(div->min_px.integer(), precise_px));
+							else
+							{
+								double w = child->weight_.real();
+								if (child->weight_.kind_of() == adi_place_parts::number_t::kind::integer)
+									w /= avail;
+
+								int px = w * remainder / divs_percent;
+								child->weight_.assign(std::max(div->min_px.integer(), std::min(precise_px, px)));
+								precise_px -= child->weight_.integer();
+							}
+
+							tot_px += child->weight_.integer();
+							++children;
+						}
+					}
+					// step 2: adjust children weight
+					int prev_tot_px = 0;
+					while (tot_px > remainder && prev_tot_px != tot_px)
+					{
+						prev_tot_px = tot_px;
+						int diff = std::max(1, (tot_px - remainder) / children);
+
+						precise_px = remainder;
+						tot_px = 0;
+
+						for (auto& child : where_owner->children)
+						{
+							if (child->kind_of_division != division::kind::splitter && !child->weight_.empty())
+							{
+								if (!child->next())
+									child->weight_.assign(std::max(div->min_px.integer(), precise_px));
+								else
+								{
+									child->weight_.assign(std::max(div->min_px.integer(), child->weight_.integer() - diff));
+									precise_px -= child->weight_.integer();
+								}
+
+								tot_px += child->weight_.integer();
+							}
+						}
+					}
+				}
 			}
 
 			if(is_before(pos))
