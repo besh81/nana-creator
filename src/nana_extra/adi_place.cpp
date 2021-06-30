@@ -481,6 +481,8 @@ namespace nana
 					caption_.move(r);
 
 					r.y = int(dm.font_px) + DOCK_CAPTION_H;
+					if (r.y > sz.height)
+						return;
 					r.height = sz.height - r.y;
 				}
 

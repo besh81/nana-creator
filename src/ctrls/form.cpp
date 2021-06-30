@@ -87,7 +87,15 @@ namespace ctrls
 		col = nana::to_color(properties.property("fgcolor").as_string());
 		nanawdg->fgcolor(col);
 
-		frm.size(nana::size(properties.property("width").as_uint(), properties.property("height").as_uint()));
+		// High DPI scaling
+		nana::size sz(properties.property("width").as_uint(), properties.property("height").as_uint());
+		auto dpi = nana::api::window_dpi(frm) / 96.0f;
+		if (dpi > 1.0) {
+			sz.height *= dpi;
+			sz.width *= dpi;
+		}
+		frm.size(sz);
+
 		// not used here : properties.property("zoom")
 
 		if(ispanel)
