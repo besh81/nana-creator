@@ -24,6 +24,8 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
+build/cmake
+!build/cmake/CMakeLists.txt
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -251,3 +253,5 @@ wdir/*.ncp
 wdir/*.exe
 wdir/icons/*.db
 wdir/nc.ini
+
+libs/nana*
