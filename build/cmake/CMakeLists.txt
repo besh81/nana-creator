@@ -27,15 +27,22 @@ if(UNIX)
         X11::Xft
         X11::Xcursor
         fontconfig
+        common_dep
+        stdc++fs
+        png
+        jpeg
+        Threads::Threads
         )
 endif()
 
-list(APPEND common_dep
-    stdc++fs
-    png
-    jpeg
-    Threads::Threads
+if(WIN32)
+    list(APPEND 
+        common_dep
+        Threads::Threads
     )
+endif()
+
+link_directories(../../libs/)
 
 add_executable(${PROJECT_NAME}
     ../../libs/pugixml/pugixml.cpp
@@ -105,6 +112,7 @@ add_executable(test-ctrls
 
 list(REMOVE_ITEM common_dep png jpeg)
 target_link_libraries(test-ctrls ${common_dep})
+target_include_directories(test-ctrls PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../libs)
 
 add_test(NAME test-ctrls COMMAND test-ctrls)
 
