@@ -27,7 +27,6 @@ if(UNIX)
         X11::Xft
         X11::Xcursor
         fontconfig
-        common_dep
         stdc++fs
         png
         jpeg
